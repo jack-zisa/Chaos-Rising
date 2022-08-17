@@ -33,7 +33,7 @@ public class CameraController : MonoBehaviour
         }
     }
 
-    private void LateUpdate()
+    private void FixedUpdate()
     {
         seek = Input.mousePosition;
         seek.x -= Screen.width / 2f;

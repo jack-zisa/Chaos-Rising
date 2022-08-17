@@ -132,7 +132,7 @@ public class ProjectileGenerator : MonoBehaviour
         collision.bounce = attack.collision.bounce;
         collision.lifetimeLoss = attack.collision.lifetimeLoss;
         collision.sendCollisionMessages = true;
-        collision.collidesWith = LayerMask.GetMask("Blocking", transform.parent.tag.Equals("Player") ? "Enemy" : "Player");
+        collision.collidesWith = LayerMask.GetMask("Blocking", "Obstacle", transform.parent.tag.Equals("Player") ? "Enemy" : "Player");
         #endregion
 
         #region GPU & Material

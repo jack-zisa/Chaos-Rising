@@ -3,26 +3,16 @@ using UnityEngine.EventSystems;
 
 public class ItemPickAndPlace : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler
 {
-    [SerializeField] public Canvas canvas;
-
     private RectTransform rectTransform;
-    private Inventory inventory;
-    public bool draggable = false;
 
     private void Start()
     {
         rectTransform = GetComponent<RectTransform>();
-        inventory = GetComponentInChildren<Inventory>();
-    }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        print("collision");
     }
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        print("down");
+        Debug.Log("down");
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -37,6 +27,8 @@ public class ItemPickAndPlace : MonoBehaviour, IPointerDownHandler, IBeginDragHa
 
     public void OnDrag(PointerEventData eventData)
     {
+        print("drag");
+        rectTransform.anchoredPosition = eventData.position;
     }
 
     public void OnDrop(PointerEventData eventData)

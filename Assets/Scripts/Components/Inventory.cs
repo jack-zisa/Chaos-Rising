@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -28,7 +27,7 @@ public class Inventory : MonoBehaviour
         return slots[index].item;
     }
 
-    public ItemContainer SetItem(int index, Transform parent, ItemContainer item)
+    public ItemContainer SetItem(int index, ItemContainer item)
     {
         if (index >= 0 && index < slots.Count)
         {
@@ -37,7 +36,7 @@ public class Inventory : MonoBehaviour
         return item;
     }
 
-    public void AddItem(Transform parent, ItemContainer item)
+    public void AddItemToFirst(ItemContainer item)
     {
         for (int i = 0; i < slots.Count; ++i)
         {
@@ -45,6 +44,14 @@ public class Inventory : MonoBehaviour
             {
                 slots[i].SetItem(item);
             }
+        }
+    }
+
+    public void AddItemAt(ItemContainer item, int index)
+    {
+        if (slots[index] == null)
+        {
+            slots[index].SetItem(item);
         }
     }
 }

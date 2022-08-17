@@ -22,7 +22,7 @@ public class Living : MonoBehaviour
 
     private void Start()
     {
-        onDamaged += Living_onDamage;
+        onDamaged += Living_OnDamage;
     }
 
     private void OnEnable()
@@ -45,7 +45,7 @@ public class Living : MonoBehaviour
         if (onDamaged != null) onDamaged?.Invoke(this, new DamageEventArgs { damage = damage, armorIgnored = armorIgnored });
     }
 
-    public void Living_onDamage(object sender, DamageEventArgs e)
+    public void Living_OnDamage(object sender, DamageEventArgs e)
     {
         if (e.armorIgnored >= stats.armor) e.damage += stats.armor;
         else e.damage += e.armorIgnored;

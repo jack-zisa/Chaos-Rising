@@ -16,7 +16,7 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         fullMask = LayerMask.GetMask("Living", "Blocking", "LootContainer");
-        collisionMask = LayerMask.GetMask("Living", "Blocking");
+        collisionMask = LayerMask.GetMask("Living", "Blocking", "Obstacle");
 
         circle = GetComponent<CircleCollider2D>();
         stats = GetComponent<StatContainer>().stats;
