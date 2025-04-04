@@ -47,4 +47,6 @@ class LivingEntity(Entity):
         self.stats = stats
     
     def damage(self, amount: int):
-        self.stats.health -= amount
+        if self.stats.health <= 0:
+            return
+        self.stats.health = max(0, self.stats.health - amount)
