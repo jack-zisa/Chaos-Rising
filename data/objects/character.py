@@ -17,20 +17,20 @@ class CharacterController:
         self.character = character
         self.game = game
 
-    def move(self, dt: float, input_manager):
+    def move(self, dt: float):
         keys = pygame.key.get_pressed()
-        if keys[input_manager.keymap['up']]:
+        if keys[self.game.input_manager.keymap['up']]:
             self.character.pos.y -= self.character.stats.speed * 5 * dt
-        if keys[input_manager.keymap['down']]:
+        if keys[self.game.input_manager.keymap['down']]:
             self.character.pos.y += self.character.stats.speed * 5 * dt
-        if keys[input_manager.keymap['left']]:
+        if keys[self.game.input_manager.keymap['left']]:
             self.character.pos.x -= self.character.stats.speed * 5 * dt
-        if keys[input_manager.keymap['right']]:
+        if keys[self.game.input_manager.keymap['right']]:
             self.character.pos.x += self.character.stats.speed * 5 * dt
         
         self.character.update_collision()
     
-    def attack(self, dt: float, input_manager):
+    def attack(self, dt: float):
         if pygame.mouse.get_pressed()[0]:
             self.character.attacking = True
             bullet = self.game.data_manager.get_bullet('test').create(pygame.mouse.get_pos(), self.character)
@@ -38,9 +38,9 @@ class CharacterController:
         else:
             self.character.attacking = False
     
-    def control(self, dt: float, input_manager):
-        self.move(dt, input_manager)
-        self.attack(dt, input_manager)
+    def control(self, dt: float):
+        self.move(dt)
+        self.attack(dt)
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LSHIFT]:

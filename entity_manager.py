@@ -27,8 +27,8 @@ class EntityManager:
     def render(self, clock, screen: pygame.surface.Surface, font: pygame.font.Font, debug: bool):
         [entity.render_func(clock, screen, font, debug) for entity in self.get_active_entities().values()]
 
-    def control(self, dt, input_manager):
-        [entity.control_func(dt, input_manager) for entity in self.get_active_entities().values()]
+    def control(self, dt):
+        [entity.control_func(dt) for entity in self.get_active_entities().values()]
 
     def collide(self, dt):
         for i, entity_a in enumerate(self.get_active_entities().values()):

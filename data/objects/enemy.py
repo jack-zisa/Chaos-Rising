@@ -1,4 +1,5 @@
 import random
+import copy
 import pygame
 from data.objects import stat, entity
 from util import constants
@@ -8,9 +9,11 @@ class EnemyController:
         self.enemy = enemy
         self.game = game
     
-    def control(self, dt: float, input_manager):
-        self.enemy.pos.x += random.choice([-1, 1]) * self.enemy.stats.speed * 5 * dt
-        self.enemy.pos.y += random.choice([-1, 1]) * self.enemy.stats.speed * 5 * dt
+    def control(self, dt: float):
+        #self.enemy.pos.x += random.choice([-1, 1]) * self.enemy.stats.speed * 5 * dt
+        #self.enemy.pos.y += random.choice([-1, 1]) * self.enemy.stats.speed * 5 * dt
+
+        self.enemy.pos = self.enemy.pos.move_towards(self.enemy.game.main.character.pos, 1)
 
         self.enemy.update_collision()
     
@@ -18,18 +21,30 @@ class EnemyController:
         pass
 
 class Enemy(entity.LivingEntity):
-    def __init__(self, id: str, collider: pygame.Vector2, sprite_path: str, stats: stat.Stats):
+    def __init__(self, id: str, collider: pygame.Vector2, stats: stat.Stats, sprite_path: str = "", sprite = None):
         self.id = id
-        self.sprite = pygame.transform.scale(pygame.image.load(f'resources/assets/enemies/{sprite_path}.png'), (32, 32))
+
+        if sprite_path:
+            self.sprite = pygame.transform.scale(pygame.image.load(f'resources/assets/enemies/{sprite_path}.png'), (32, 32))
+        elif sprite:
+            self.sprite = sprite
+        else:
+            raise ValueError("Either sprite or sprite_path must be provided.")
+
         entity.LivingEntity.__init__(self, collider, self.spawn, self.tick, self.render, constants.ENTITY_GROUP_ENEMY, stats)
+        self.controller = None
+        self.control_func = None
+        self.collide_func = None
     
     def spawn(self, game, uuid, pos: pygame.Vector2) -> 'Enemy':
-        self.controller = EnemyController(self, game)
-        self.control_func = self.controller.control
-        self.collide_func = self.controller.collide
-        return entity.Entity.spawn(self, game, uuid, pos)
+        enemy = Enemy(self.id, self.collider, copy.copy(self.stats), sprite=self.sprite)
+        enemy.controller = EnemyController(enemy, game)
+        enemy.control_func = enemy.controller.control
+        enemy.collide_func = enemy.controller.collide
+        return entity.Entity.spawn(enemy, game, uuid, pos)
 
     def tick(self):
+        print(self.uuid)
         if self.stats.health <= 0:
             self.remove()
 
@@ -43,4 +58,4 @@ class Enemy(entity.LivingEntity):
         entity.Entity.render(self, clock, screen, debug)
 
     def from_json(data: dict) -> 'Enemy':
-        return Enemy(data.get('id', ''), pygame.Vector2(32, 32), data.get('sprite_path', ''), stat.Stats.from_json(data.get('stats', {})))
+        return Enemy(data.get('id', ''), pygame.Vector2(32, 32), stat.Stats.from_json(data.get('stats', {})), data.get('sprite_path', ''))

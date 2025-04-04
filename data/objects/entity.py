@@ -26,7 +26,7 @@ class Entity:
 
     def spawn(self, game: Game, uuid, pos: pygame.Vector2):
         self.game = game
-        self.uuid = uuid if not hasattr(self, 'uuid') or self.uuid is None else self.uuid
+        self.uuid = uuid
         self.pos = pos
         self.active = True
         return self

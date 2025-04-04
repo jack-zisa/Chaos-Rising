@@ -15,5 +15,5 @@ class Game:
         self.input_manager.input()
 
         self.entity_manager.tick()
-        self.entity_manager.control(self.main.dt, self.input_manager)
+        self.entity_manager.control(self.main.dt)
         self.entity_manager.collide(self.main.dt)

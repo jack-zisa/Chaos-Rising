@@ -22,9 +22,6 @@ class Main:
         self.character = ch.Character(pygame.Vector2(32, 32), self.game.data_manager.get_character_class('test'))
         self.game.entity_manager.add_entity(self.character, pygame.Vector2(self.screen.get_width() / 2, self.screen.get_height() / 2))
 
-        self.enemy = self.game.data_manager.get_enemy('test')
-        self.game.entity_manager.add_entity(self.enemy, pygame.Vector2(random.randint(0, self.screen.get_width()), random.randint(0, self.screen.get_height())))
-
     def stop(self):
         self.running = False
 
