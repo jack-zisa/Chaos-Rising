@@ -21,7 +21,6 @@ class Bullet(entity.Entity):
         self.id = id
         self.sprite = pygame.transform.scale(pygame.image.load(f'resources/assets/bullets/{sprite_path}.png'), (32, 32))
         self.lifetime = lifetime
-        self.controller = BulletController(self)
         entity.Entity.__init__(self, collider, self.spawn, self.tick, self.render, constants.ENTITY_GROUP_BULLET)
     
     def tick(self):
@@ -30,22 +29,23 @@ class Bullet(entity.Entity):
         if self.lifetime <= 0:
             self.remove()
     
-    def render(self, screen: pygame.surface.Surface, font: pygame.font.Font, debug: bool):
+    def render(self, clock, screen: pygame.surface.Surface, font: pygame.font.Font, debug: bool):
         screen.blit(self.sprite, self.pos)
 
-        entity.Entity.render(self, screen, debug)
+        entity.Entity.render(self, clock, screen, debug)
     
     def create(self, target: pygame.Vector2, parent: entity.Entity) -> 'Bullet':
         self.target = target
         self.parent = parent     
         return self
     
-    def spawn(self, game, pos: pygame.Vector2) -> 'Bullet':
+    def spawn(self, game, uuid, pos: pygame.Vector2) -> 'Bullet':
         self.game = game
         self.pos = pos
+        self.controller = BulletController(self)
         self.control_func = self.controller.control
         self.collide_func = self.controller.collide
-        return entity.Entity.spawn(self, game, pos)
+        return entity.Entity.spawn(self, game, uuid, pos)
 
     def from_json(data: dict) -> 'Bullet':
         return Bullet(data.get('id', ''), pygame.Vector2(32, 32), data.get('sprite_path', ''), data.get('lifetime', 0))

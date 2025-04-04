@@ -23,24 +23,24 @@ class Enemy(entity.LivingEntity):
         self.sprite = pygame.transform.scale(pygame.image.load(f'resources/assets/enemies/{sprite_path}.png'), (32, 32))
         entity.LivingEntity.__init__(self, collider, self.spawn, self.tick, self.render, constants.ENTITY_GROUP_ENEMY, stats)
     
-    def spawn(self, game, pos: pygame.Vector2) -> 'Enemy':
+    def spawn(self, game, uuid, pos: pygame.Vector2) -> 'Enemy':
         self.controller = EnemyController(self, game)
         self.control_func = self.controller.control
         self.collide_func = self.controller.collide
-        return entity.Entity.spawn(self, game, pos)
+        return entity.Entity.spawn(self, game, uuid, pos)
 
     def tick(self):
         if self.stats.health <= 0:
             self.remove()
 
-    def render(self, screen: pygame.surface.Surface, font: pygame.font.Font, debug: bool):
+    def render(self, clock, screen: pygame.surface.Surface, font: pygame.font.Font, debug: bool):
         screen.blit(self.sprite, self.pos)
 
         if debug:
             health_text = font.render(f'Enemy Health: {self.stats.health} / 1000', True, (255, 255, 255))
             screen.blit(health_text, health_text.get_rect(center = (screen.get_width() - (health_text.get_width() / 2), 80)))
 
-        entity.Entity.render(self, screen, debug)
+        entity.Entity.render(self, clock, screen, debug)
 
     def from_json(data: dict) -> 'Enemy':
         return Enemy(data.get('id', ''), pygame.Vector2(32, 32), data.get('sprite_path', ''), stat.Stats.from_json(data.get('stats', {})))

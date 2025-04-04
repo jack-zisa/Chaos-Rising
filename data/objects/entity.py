@@ -9,6 +9,7 @@ class Entity:
         self.tick_func = tick_func
         self.render_func = render_func
         self.group = group
+        self.active = False
 
     def get_center_pos(self) -> pygame.Vector2:
         if not self.active:
@@ -23,8 +24,9 @@ class Entity:
             return None
         return pygame.rect.Rect(self.pos.x, self.pos.y, self.collider.x, self.collider.y)
 
-    def spawn(self, game: Game, pos: pygame.Vector2):
+    def spawn(self, game: Game, uuid, pos: pygame.Vector2):
         self.game = game
+        self.uuid = uuid if not hasattr(self, 'uuid') or self.uuid is None else self.uuid
         self.pos = pos
         self.active = True
         return self
@@ -32,7 +34,7 @@ class Entity:
     def update_collision(self):
         self.get_collider_rect().topleft = self.pos
     
-    def render(self, screen: pygame.surface.Surface, debug: bool):
+    def render(self, clock, screen: pygame.surface.Surface, debug: bool):
         if debug:
             pygame.draw.rect(screen, (0, 255, 0), self.get_collider_rect(), 1)
     

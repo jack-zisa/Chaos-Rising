@@ -3,7 +3,7 @@ import data.objects.character as ch
 
 HEALTH_BAR_WIDTH: int = 400
 
-def render(screen: pygame.surface.Surface, character: ch.Character, font: pygame.font.Font, debug: bool):    
+def render(clock, screen: pygame.surface.Surface, character: ch.Character, font: pygame.font.Font, debug: bool):    
     screen.blit(character.clazz.sprite, (0, 0))
 
     text = font.render(character.clazz.id, True, (255, 255, 255))

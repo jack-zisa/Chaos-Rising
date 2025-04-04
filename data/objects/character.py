@@ -57,16 +57,16 @@ class Character(entity.LivingEntity):
         self.max_stats = clazz.base_stats.copy()
         self.attacking = False
     
-    def spawn(self, game, pos: pygame.Vector2):
+    def spawn(self, game, uuid, pos: pygame.Vector2):
         self.controller = CharacterController(self, game)
         self.control_func = self.controller.control
         self.collide_func = self.controller.collide
-        return entity.Entity.spawn(self, game, pos)
+        return entity.Entity.spawn(self, game, uuid, pos)
     
     def tick(self):
         pass
     
-    def render(self, screen: pygame.surface.Surface, font: pygame.font.Font, debug: bool):
+    def render(self, clock, screen: pygame.surface.Surface, font: pygame.font.Font, debug: bool):
         screen.blit(self.clazz.sprite, self.pos)
 
         if self.attacking:
@@ -78,4 +78,4 @@ class Character(entity.LivingEntity):
             screen.blit(health_text, health_text.get_rect(center = (screen.get_width() - (health_text.get_width() / 2), 16)))
             screen.blit(speed_text, speed_text.get_rect(center = (screen.get_width() - (speed_text.get_width() / 2), 48)))
 
-        entity.Entity.render(self, screen, debug)
+        entity.Entity.render(self, clock, screen, debug)

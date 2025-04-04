@@ -36,7 +36,7 @@ class Main:
 
             self.game.run()
 
-            renderer.render(self.game, self.screen, self.character, self.font, self.debug)
+            renderer.render(self.game, self.clock, self.screen, self.character, self.font, self.debug)
 
             pygame.display.flip()
             self.dt = self.clock.tick(60) / 1000
