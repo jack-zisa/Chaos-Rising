@@ -1,19 +1,22 @@
 import os
 import json
-from data.objects import character as ch, enemy as en
-import data.objects.character as ch
+from data.objects import character as ch, enemy as en, bullet
 
 data_schema: dict = {
-    'classes': ch.CharacterClass.from_json,
-    'enemies': en.Enemy.from_json
+    'class': ch.CharacterClass.from_json,
+    'enemy': en.Enemy.from_json,
+    'bullet': bullet.Bullet.from_json,
 }
 data: dict = {key: {} for key in data_schema.keys()}
 
-def get_character_class(name: str) -> ch.CharacterClass:
-    return data['classes'][name]
+def get_character_class(id: str) -> ch.CharacterClass:
+    return data['class'][id]
 
-def get_enemy(name: str) -> en.Enemy:
-    return data['enemies'][name]
+def get_enemy(id: str) -> en.Enemy:
+    return data['enemy'][id]
+
+def get_bullet(id: str) -> bullet.Bullet:
+    return data['bullet'][id]
 
 def load():
     global data_schema, data
@@ -37,6 +40,6 @@ def load():
                 try:
                     with open(file_path, "r", encoding="utf-8") as file:
                         obj = parser(json.load(file))
-                        data[folder][obj.name] = obj
+                        data[folder][obj.id] = obj
                 except json.JSONDecodeError as e:
                     print(f"Error parsing {filename} in {folder}: {e}")

@@ -8,9 +8,10 @@ GROUP_BULLET: str = 'bullet'
 GROUP_OBSTACLE: str = 'obstacle'
 
 class Entity:
-    def __init__(self, pos: pygame.Vector2, collider: pygame.Vector2, tick_func, control_func, render_func, collide_func, group: str):
+    def __init__(self, active: bool, pos: pygame.Vector2, collider: pygame.Vector2, tick_func, control_func, render_func, collide_func, group: str):
+        self.active = active
         self.pos = pos
-        self.collider = pygame.rect.Rect(pos.x, pos.y, collider.x, collider.y)
+        self.collider = collider
         self.tick_func = tick_func
         self.control_func = control_func
         self.render_func = render_func
@@ -21,12 +22,15 @@ class Entity:
         return self.pos + pygame.Vector2(16, 16)
     def get_name_pos(self) -> pygame.Vector2:
         return self.pos + pygame.Vector2(16, 40)
+    def get_collider_rect(self) -> pygame.rect.Rect:
+        return pygame.rect.Rect(self.pos.x, self.pos.y, self.collider.x, self.collider.y)
 
     def spawn(self, screen: pygame.surface.Surface, pos: pygame.Vector2):
         self.pos = pos
+        self.active = True
     
     def update_collision(self):
-        self.collider.topleft = self.pos
+        self.get_collider_rect().topleft = self.pos
     
     def render(self, screen: pygame.surface.Surface, debug: bool):
         if debug:
@@ -36,8 +40,8 @@ class Entity:
         entity_manager.remove_entity(self)
 
 class LivingEntity(Entity):
-    def __init__(self, pos: pygame.Vector2, collider: pygame.Vector2, tick_func, control_func, render_func, collide_func, group: str, stats: stat.Stats):
-        Entity.__init__(self, pos, collider, tick_func, control_func, render_func, collide_func, group)
+    def __init__(self, active: bool, pos: pygame.Vector2, collider: pygame.Vector2, tick_func, control_func, render_func, collide_func, group: str, stats: stat.Stats):
+        Entity.__init__(self, active, pos, collider, tick_func, control_func, render_func, collide_func, group)
         self.stats = stats
     
     def damage(self, amount: int):

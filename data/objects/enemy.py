@@ -16,11 +16,11 @@ class EnemyController:
         pass
 
 class Enemy(entity.LivingEntity):
-    def __init__(self, name: str, pos: pygame.Vector2, collider: pygame.Vector2, sprite_path: str, stats: stat.Stats):
-        self.name = name
+    def __init__(self, id: str, active: bool, pos: pygame.Vector2, collider: pygame.Vector2, sprite_path: str, stats: stat.Stats):
+        self.id = id
         self.sprite = pygame.transform.scale(pygame.image.load(f'resources/assets/enemies/{sprite_path}.png'), (32, 32))
         self.controller = EnemyController(self)
-        entity.LivingEntity.__init__(self, pos, collider, self.tick, self.controller.control, self.render, self.controller.collide, entity.GROUP_ENEMY, stats)
+        entity.LivingEntity.__init__(self, active, pos, collider, self.tick, self.controller.control, self.render, self.controller.collide, entity.GROUP_ENEMY, stats)
     
     def tick(self):
         if self.stats.health <= 0:
@@ -36,4 +36,4 @@ class Enemy(entity.LivingEntity):
         entity.Entity.render(self, screen, debug)
 
     def from_json(data: dict) -> 'Enemy':
-        return Enemy(data.get('name', ''), pygame.Vector2(), pygame.Vector2(32, 32), data.get('sprite_path', ''), stat.Stats.from_json(data.get('stats', {})))
+        return Enemy(data.get('id', ''), False, None, pygame.Vector2(32, 32), data.get('sprite_path', ''), stat.Stats.from_json(data.get('stats', {})))

@@ -1,5 +1,5 @@
 {
-    "name": "test",
+    "id": "test",
     "sprite_path": "test",
     "stats": {
         "health": 1000,

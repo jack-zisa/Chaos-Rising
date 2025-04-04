@@ -1,16 +1,15 @@
 import pygame
-import entity_manager
-from data.objects import stat, entity, bullet
+from data.objects import stat, entity
 
 class CharacterClass:
-    def __init__(self, name: str, sprite_path: str, base_stats: stat.Stats, max_stats: stat.Stats):
-        self.name = name
+    def __init__(self, id: str, sprite_path: str, base_stats: stat.Stats, max_stats: stat.Stats):
+        self.id = id
         self.sprite = pygame.transform.scale(pygame.image.load(f'resources/assets/classes/{sprite_path}.png'), (32, 32))
         self.base_stats = base_stats
         self.max_stats = max_stats
     
     def from_json(data: dict) -> 'CharacterClass':
-        return CharacterClass(data.get('name', ''), data.get('sprite_path', ''), stat.Stats.from_json(data.get('base_stats', {})), stat.Stats.from_json(data.get('max_stats', {})))
+        return CharacterClass(data.get('id', ''), data.get('sprite_path', ''), stat.Stats.from_json(data.get('base_stats', {})), stat.Stats.from_json(data.get('max_stats', {})))
 
 class CharacterController:
     def __init__(self, character: 'Character'):
@@ -32,7 +31,7 @@ class CharacterController:
     def attack(self, dt: float, input_manager):
         if pygame.mouse.get_pressed()[0]:
             self.character.attacking = True
-            entity_manager.add_entity(bullet.Bullet(self.character.pos, pygame.mouse.get_pos(), pygame.Vector2(32, 32), self.character, 'test', 100))
+            #entity_manager.add_entity(dm.get_bullet('test').create(self.character.pos, pygame.mouse.get_pos(), self.character))
         else:
             self.character.attacking = False
     
@@ -51,7 +50,7 @@ class CharacterController:
 class Character(entity.LivingEntity):
     def __init__(self, pos: pygame.Vector2, collider: pygame.Vector2, clazz: CharacterClass):
         self.controller = CharacterController(self)
-        entity.LivingEntity.__init__(self, pos, collider, self.tick, self.controller.control, self.render, self.controller.collide, entity.GROUP_PLAYER, clazz.base_stats.copy())
+        entity.LivingEntity.__init__(self, True, pos, collider, self.tick, self.controller.control, self.render, self.controller.collide, entity.GROUP_PLAYER, clazz.base_stats.copy())
         self.clazz = clazz
         self.max_stats = clazz.base_stats.copy()
         self.attacking = False

@@ -4,13 +4,13 @@ import entity_manager
 import event_manager
 import input_manager
 import render.renderer as renderer
-import data.data_loader as data_loader
+import data.data_manager as data_manager
 from data.objects import character as ch
 
 pygame.init()
 pygame.display.set_caption("Chaos Rising")
 
-data_loader.load()
+data_manager.load()
 
 screen: pygame.surface.Surface = pygame.display.set_mode((640, 360))
 clock = pygame.time.Clock()
@@ -19,11 +19,11 @@ debug = False
 dt = 0
 font = pygame.font.SysFont('Calibri', 24)
 
-character = ch.Character(pygame.Vector2(), pygame.Vector2(32, 32), data_loader.get_character_class('test'))
+character = ch.Character(pygame.Vector2(), pygame.Vector2(32, 32), data_manager.get_character_class('test'))
 character.spawn(screen, pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2))
 entity_manager.add_entity(character)
 
-enemy = data_loader.get_enemy('test')
+enemy = data_manager.get_enemy('test')
 enemy.spawn(screen, pygame.Vector2(random.randint(0, screen.get_width()), random.randint(0, screen.get_height())))
 entity_manager.add_entity(enemy)
 

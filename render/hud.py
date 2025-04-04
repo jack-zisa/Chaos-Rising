@@ -6,7 +6,7 @@ HEALTH_BAR_WIDTH: int = 400
 def render(screen: pygame.surface.Surface, character: ch.Character, font: pygame.font.Font, debug: bool):    
     screen.blit(character.clazz.sprite, (0, 0))
 
-    text = font.render(character.clazz.name, True, (255, 255, 255))
+    text = font.render(character.clazz.id, True, (255, 255, 255))
     screen.blit(text, text.get_rect(center = (56,16)))
 
     width = get_health_bar_width(character)
