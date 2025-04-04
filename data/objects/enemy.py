@@ -1,12 +1,13 @@
 import random
 import pygame
+import input_manager
 from data.objects import stat, entity
 
 class EnemyController:
     def __init__(self, enemy: 'Enemy'):
         self.enemy = enemy
     
-    def control(self, dt: float):        
+    def control(self, dt: float, input_manager):
         self.enemy.pos.x += random.choice([-1, 1]) * self.enemy.stats.speed * 5 * dt
         self.enemy.pos.y += random.choice([-1, 1]) * self.enemy.stats.speed * 5 * dt
 

@@ -1,4 +1,5 @@
 import pygame
+import input_manager
 from data.objects import stat, entity
 
 class CharacterClass:
@@ -15,26 +16,26 @@ class CharacterController:
     def __init__(self, character: 'Character'):
         self.character = character
 
-    def move(self, dt: float):
+    def move(self, dt: float, input_manager):
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_w]:
+        if keys[input_manager.keymap['up']]:
             self.character.pos.y -= self.character.stats.speed * 5 * dt
-        if keys[pygame.K_s]:
+        if keys[input_manager.keymap['down']]:
             self.character.pos.y += self.character.stats.speed * 5 * dt
-        if keys[pygame.K_a]:
+        if keys[input_manager.keymap['left']]:
             self.character.pos.x -= self.character.stats.speed * 5 * dt
-        if keys[pygame.K_d]:
+        if keys[input_manager.keymap['right']]:
             self.character.pos.x += self.character.stats.speed * 5 * dt
     
-    def attack(self, dt: float):
+    def attack(self, dt: float, input_manager):
         if pygame.mouse.get_pressed()[0]:
             self.character.attacking = True
         else:
             self.character.attacking = False
     
-    def control(self, dt: float):
-        self.move(dt)
-        self.attack(dt)
+    def control(self, dt: float, input_manager):
+        self.move(dt, input_manager)
+        self.attack(dt, input_manager)
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_SPACE]:
