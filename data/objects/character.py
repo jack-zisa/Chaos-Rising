@@ -1,5 +1,6 @@
 import pygame
-from data.objects import stat, entity
+from util import constants
+from data.objects import entity, stat
 
 class CharacterClass:
     def __init__(self, id: str, sprite_path: str, base_stats: stat.Stats, max_stats: stat.Stats):
@@ -12,8 +13,9 @@ class CharacterClass:
         return CharacterClass(data.get('id', ''), data.get('sprite_path', ''), stat.Stats.from_json(data.get('base_stats', {})), stat.Stats.from_json(data.get('max_stats', {})))
 
 class CharacterController:
-    def __init__(self, character: 'Character'):
+    def __init__(self, character: 'Character', game):
         self.character = character
+        self.game = game
 
     def move(self, dt: float, input_manager):
         keys = pygame.key.get_pressed()
@@ -31,7 +33,8 @@ class CharacterController:
     def attack(self, dt: float, input_manager):
         if pygame.mouse.get_pressed()[0]:
             self.character.attacking = True
-            #entity_manager.add_entity(dm.get_bullet('test').create(self.character.pos, pygame.mouse.get_pos(), self.character))
+            bullet = self.game.data_manager.get_bullet('test').create(pygame.mouse.get_pos(), self.character)
+            self.game.entity_manager.add_entity(bullet, self.character.pos)
         else:
             self.character.attacking = False
     
@@ -44,16 +47,21 @@ class CharacterController:
             self.character.stats.speed += 1 
 
     def collide(self, other: entity.Entity):
-        if other.group == entity.GROUP_ENEMY:
+        if other.group == constants.ENTITY_GROUP_ENEMY:
             self.character.damage(1)
 
 class Character(entity.LivingEntity):
-    def __init__(self, pos: pygame.Vector2, collider: pygame.Vector2, clazz: CharacterClass):
-        self.controller = CharacterController(self)
-        entity.LivingEntity.__init__(self, True, pos, collider, self.tick, self.controller.control, self.render, self.controller.collide, entity.GROUP_PLAYER, clazz.base_stats.copy())
+    def __init__(self, collider: pygame.Vector2, clazz: CharacterClass):
+        entity.LivingEntity.__init__(self, collider, self.spawn, self.tick, self.render, constants.ENTITY_GROUP_PLAYER, clazz.base_stats.copy())
         self.clazz = clazz
         self.max_stats = clazz.base_stats.copy()
         self.attacking = False
+    
+    def spawn(self, game, pos: pygame.Vector2):
+        self.controller = CharacterController(self, game)
+        self.control_func = self.controller.control
+        self.collide_func = self.controller.collide
+        return entity.Entity.spawn(self, game, pos)
     
     def tick(self):
         pass

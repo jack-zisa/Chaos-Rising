@@ -1,45 +1,47 @@
 import os
 import json
-from data.objects import character as ch, enemy as en, bullet
 
-data_schema: dict = {
-    'class': ch.CharacterClass.from_json,
-    'enemy': en.Enemy.from_json,
-    'bullet': bullet.Bullet.from_json,
-}
-data: dict = {key: {} for key in data_schema.keys()}
+class DataManager:
+    def __init__(self, main):
+        from data.objects import character as ch, enemy as en, bullet
 
-def get_character_class(id: str) -> ch.CharacterClass:
-    return data['class'][id]
+        self.main = main
+        self.data_schema: dict = {
+            'class': ch.CharacterClass.from_json,
+            'enemy': en.Enemy.from_json,
+            'bullet': bullet.Bullet.from_json,
+        }
+        self.data: dict = {key: {} for key in self.data_schema.keys()}
 
-def get_enemy(id: str) -> en.Enemy:
-    return data['enemy'][id]
+    def get_character_class(self, id: str):
+        return self.data['class'][id]
 
-def get_bullet(id: str) -> bullet.Bullet:
-    return data['bullet'][id]
+    def get_enemy(self, id: str):
+        return self.data['enemy'][id]
 
-def load():
-    global data_schema, data
-    
-    base = 'resources/data/'
+    def get_bullet(self, id: str):
+        return self.data['bullet'][id]
 
-    if not os.path.exists(base):
-        print(f"Directory '{base}' does not exist.")
-        return
+    def load(self):        
+        base = 'resources/data/'
 
-    for folder, parser in data_schema.items():
-        folder_path = os.path.join(base, folder)
+        if not os.path.exists(base):
+            print(f"Directory '{base}' does not exist.")
+            return
 
-        if not os.path.exists(folder_path):
-            print(f"Folder '{folder_path}' does not exist, skipping.")
-            continue
+        for folder, parser in self.data_schema.items():
+            folder_path = os.path.join(base, folder)
 
-        for filename in os.listdir(folder_path):
-            if filename.endswith(".json"):
-                file_path = os.path.join(folder_path, filename)
-                try:
-                    with open(file_path, "r", encoding="utf-8") as file:
-                        obj = parser(json.load(file))
-                        data[folder][obj.id] = obj
-                except json.JSONDecodeError as e:
-                    print(f"Error parsing {filename} in {folder}: {e}")
+            if not os.path.exists(folder_path):
+                print(f"Folder '{folder_path}' does not exist, skipping.")
+                continue
+
+            for filename in os.listdir(folder_path):
+                if filename.endswith(".json"):
+                    file_path = os.path.join(folder_path, filename)
+                    try:
+                        with open(file_path, "r", encoding="utf-8") as file:
+                            obj = parser(json.load(file))
+                            self.data[folder][obj.id] = obj
+                    except json.JSONDecodeError as e:
+                        print(f"Error parsing {filename} in {folder}: {e}")

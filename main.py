@@ -1,58 +1,47 @@
 import random
 import pygame
-import entity_manager
-import event_manager
-import input_manager
 import render.renderer as renderer
-import data.data_manager as data_manager
+from game import Game
 from data.objects import character as ch
 
-pygame.init()
-pygame.display.set_caption("Chaos Rising")
+class Main:
+    def __init__(self):
+        pygame.init()
+        pygame.display.set_caption("Chaos Rising")
 
-data_manager.load()
+        self.game = Game(self)
+        self.game.data_manager.load()
 
-screen: pygame.surface.Surface = pygame.display.set_mode((640, 360))
-clock = pygame.time.Clock()
-running = True
-debug = False
-dt = 0
-font = pygame.font.SysFont('Calibri', 24)
+        self.screen: pygame.surface.Surface = pygame.display.set_mode((640, 360))
+        self.clock = pygame.time.Clock()
+        self.running = True
+        self.debug = False
+        self.dt = 0
+        self.font = pygame.font.SysFont('Calibri', 24)
 
-character = ch.Character(pygame.Vector2(), pygame.Vector2(32, 32), data_manager.get_character_class('test'))
-character.spawn(screen, pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2))
-entity_manager.add_entity(character)
+        self.character = ch.Character(pygame.Vector2(32, 32), self.game.data_manager.get_character_class('test'))
+        self.game.entity_manager.add_entity(self.character, pygame.Vector2(self.screen.get_width() / 2, self.screen.get_height() / 2))
 
-enemy = data_manager.get_enemy('test')
-enemy.spawn(screen, pygame.Vector2(random.randint(0, screen.get_width()), random.randint(0, screen.get_height())))
-entity_manager.add_entity(enemy)
+        self.enemy = self.game.data_manager.get_enemy('test')
+        self.game.entity_manager.add_entity(self.enemy, pygame.Vector2(random.randint(0, self.screen.get_width()), random.randint(0, self.screen.get_height())))
 
-def stop():
-    global running
-    running = False
+    def stop(self):
+        self.running = False
 
-def set_debug(set_debug: bool):
-    global debug
-    debug = set_debug
+    def start(self):
+        while self.running:
+            self.game.event_manager.poll_events(self.stop)
 
-def get_debug() -> bool:
-    global debug
-    return debug
+            self.screen.fill('black')
 
-while running:
-    event_manager.poll_events(stop)
+            self.game.run()
 
-    screen.fill('black')
+            renderer.render(self.game, self.screen, self.character, self.font, self.debug)
 
-    input_manager.input(set_debug, get_debug)
+            pygame.display.flip()
+            self.dt = self.clock.tick(60) / 1000
 
-    entity_manager.tick()
-    entity_manager.control(dt, input_manager)
-    entity_manager.collide(dt)
+        pygame.quit()
 
-    renderer.render(screen, character, font, debug)
-
-    pygame.display.flip()
-    dt = clock.tick(60) / 1000
-
-pygame.quit()
+if __name__ == "__main__":
+    Main().start()
