@@ -1,16 +1,16 @@
 import pygame
 import data.objects.character as ch
 
-HEALTH_BAR_WIDTH: int = 600
+HEALTH_BAR_WIDTH: int = 400
 
-def render(screen: pygame.surface.Surface, character: ch.Character, font: pygame.font.Font):    
+def render(screen: pygame.surface.Surface, character: ch.Character, font: pygame.font.Font, debug: bool):    
     screen.blit(character.clazz.sprite, (0, 0))
 
     text = font.render(character.clazz.name, True, (255, 255, 255))
     screen.blit(text, text.get_rect(center = (56,16)))
 
     width = get_health_bar_width(character)
-    pygame.draw.rect(screen, get_health_bar_color(character), ((screen.get_width() / 2) - (width / 2), 10, width, 25))
+    pygame.draw.rect(screen, get_health_bar_color(character), ((screen.get_width() / 2) - (width / 2), 10, width, 20))
 
 def get_health_bar_width(character: ch.Character) -> int:
     return int(HEALTH_BAR_WIDTH * (character.stats.health / character.max_stats.health))

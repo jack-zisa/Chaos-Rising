@@ -2,7 +2,7 @@
     "name": "test",
     "sprite_path": "test",
     "stats": {
-        "health": 100,
+        "health": 1000,
         "speed": 10
     }
 }
