@@ -14,13 +14,13 @@ class DataManager:
         self.data: dict = {key: {} for key in self.data_schema.keys()}
 
     def get_character_class(self, id: str):
-        return self.data['class'][id]
+        return self.data['class'].get(id, None)
 
     def get_enemy(self, id: str):
-        return self.data['enemy'][id]
+        return self.data['enemy'].get(id, None)
 
     def get_bullet(self, id: str):
-        return self.data['bullet'][id]
+        return self.data['bullet'].get(id, None)
 
     def load(self):        
         base = 'resources/data/'

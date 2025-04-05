@@ -43,11 +43,7 @@ class CharacterController:
             return
 
         self.move(dt)
-        self.attack(dt)
-
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_LSHIFT]:
-            self.character.stats.speed += 1 
+        self.attack(dt) 
 
     def collide(self, other: entity.Entity):
         if other.group == constants.ENTITY_GROUP_ENEMY:

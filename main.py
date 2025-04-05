@@ -18,7 +18,7 @@ class Main:
         self.dt = 0
         self.font = pygame.font.SysFont('Calibri', 24)
 
-        self.character = ch.Character(pygame.Vector2(32, 32), self.game.data_manager.get_character_class('test'))
+        self.character = ch.Character(pygame.Vector2(32, 32), self.game.data_manager.get_character_class('wizard'))
         self.game.entity_manager.add_entity(self.character, pygame.Vector2(self.screen.get_width() / 2, self.screen.get_height() / 2))
 
     def start(self):

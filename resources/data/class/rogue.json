@@ -1,0 +1,8 @@
+{
+    "id": "rogue",
+    "sprite_path": "test",
+    "base_stats": {
+        "health": 75,
+        "speed": 30
+    }
+}
