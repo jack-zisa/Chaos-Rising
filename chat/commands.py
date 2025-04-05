@@ -22,42 +22,51 @@ def set_stat(main, args):
 def spawn_enemy(main, args):
     arg_count = len(args)
 
-    if arg_count == 0:
+    if arg_count == 1:
         x = random.randint(0, main.screen.get_width())
         y = random.randint(0, main.screen.get_height())
-        enemy = main.game.data_manager.get_enemy('test')
+        enemy = main.game.data_manager.get_enemy(args[0])
         main.game.entity_manager.add_entity(enemy, pygame.Vector2(x, y))
-    elif arg_count == 1:
-        for i in range(int(args[0])):
-            enemy = main.game.data_manager.get_enemy('test')
-            main.game.entity_manager.add_entity(enemy, pygame.Vector2(random.randrange(x1, x2), random.randrange(y1, y2)))
     elif arg_count == 2:
-        x = int(args[0])
-        y = int(args[1])
-        enemy = main.game.data_manager.get_enemy('test')
-        main.game.entity_manager.add_entity(enemy, pygame.Vector2(x, y))
-    elif arg_count == 3:
-        x = int(args[0])
-        y = int(args[1])
-        count = int(args[2])
+        id = args[0]
+        count = int(args[1])
+        enemy = main.game.data_manager.get_enemy(id)
         for i in range(count):
-            enemy = main.game.data_manager.get_enemy('test')
+            x = random.randint(0, main.screen.get_width())
+            y = random.randint(0, main.screen.get_height())
             main.game.entity_manager.add_entity(enemy, pygame.Vector2(x, y))
+    elif arg_count == 3:
+        id = args[0]
+        x = int(args[1])
+        y = int(args[2])
+        enemy = main.game.data_manager.get_enemy(id)
+        main.game.entity_manager.add_entity(enemy, pygame.Vector2(x, y))
     elif arg_count == 4:
-        x1 = int(args[0])
-        y1 = int(args[1])
-        x2 = int(args[2])
-        y2 = int(args[3])
-        enemy = main.game.data_manager.get_enemy('test')
-        main.game.entity_manager.add_entity(enemy, pygame.Vector2(random.randrange(x1, x2), random.randrange(y1, y2)))
-    elif arg_count == 5:
-        x1 = int(args[0])
-        y1 = int(args[1])
-        x2 = int(args[2])
-        y2 = int(args[3])
-        count = int(args[4])
+        id = args[0]
+        x = int(args[1])
+        y = int(args[2])
+        count = int(args[1])
+        enemy = main.game.data_manager.get_enemy(id)
         for i in range(count):
-            enemy = main.game.data_manager.get_enemy('test')
+            main.game.entity_manager.add_entity(enemy, pygame.Vector2(x, y))
+
+    elif arg_count == 5:
+        id = args[0]
+        x1 = int(args[1])
+        y1 = int(args[2])
+        x2 = int(args[3])
+        y2 = int(args[4])
+        enemy = main.game.data_manager.get_enemy(id)
+        main.game.entity_manager.add_entity(enemy, pygame.Vector2(random.randrange(x1, x2), random.randrange(y1, y2)))
+    elif arg_count == 6:
+        id = args[0]
+        x1 = int(args[1])
+        y1 = int(args[2])
+        x2 = int(args[3])
+        y2 = int(args[4])
+        count = int(args[5])
+        enemy = main.game.data_manager.get_enemy(id)
+        for i in range(count):
             main.game.entity_manager.add_entity(enemy, pygame.Vector2(random.randrange(x1, x2), random.randrange(y1, y2)))
 
 def set_class(main, args):
@@ -80,12 +89,19 @@ def set_item(main, args):
     if len(args) > 0:
         main.character.current_item = main.game.data_manager.get_item(args[0])
 
+def set_scale(main, args):
+    if len(args) > 0:
+        main.character.scale = max(0.1, float(args[0]))
+        main.character.clazz.sprite = pygame.transform.scale(main.character.clazz.sprite, (32 * main.character.scale, 32 * main.character.scale))
+
+
 commands: dict = {
     '/setstat': set_stat,
     '/spawnenemy': spawn_enemy,
     '/setclass': set_class,
     '/addeffect': add_effect,
-    '/setitem': set_item
+    '/setitem': set_item,
+    '/setscale': set_scale,
 }
 
 def execute(main, command_str: str):

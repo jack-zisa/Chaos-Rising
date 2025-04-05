@@ -58,9 +58,10 @@ class CharacterController:
             self.character.damage(1)
 
 class Character(entity.LivingEntity):
-    def __init__(self, collider: pygame.Vector2, clazz: CharacterClass):
-        entity.LivingEntity.__init__(self, collider, self.spawn, self.tick, self.render, constants.ENTITY_GROUP_PLAYER, clazz.base_stats.copy())
+    def __init__(self, collider: pygame.Vector2, clazz: CharacterClass, scale: float = 1):
+        entity.LivingEntity.__init__(self, collider, self.spawn, self.tick, self.render, constants.ENTITY_GROUP_PLAYER, scale, clazz.base_stats.copy())
         self.clazz = clazz
+        self.clazz.sprite = pygame.transform.scale(self.clazz.sprite, (32 * self.scale, 32 * self.scale))
         self.max_stats = clazz.base_stats.copy()
         self.attacking = False
         self.current_item = None

@@ -25,7 +25,7 @@ class CommandManager:
                 self.command = '/'
                 self.active = False
             else:
-                if event.unicode in string.ascii_letters + string.digits + ' ':
+                if event.unicode in string.ascii_letters + string.digits + ' ' + '_' + '.':
                     self.command += event.unicode
 
     def render(self, clock: pygame.time.Clock, screen: pygame.surface.Surface, font: pygame.font.Font, debug: bool):

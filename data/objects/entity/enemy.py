@@ -1,5 +1,4 @@
 import random
-import copy
 import pygame
 from data.objects.entity import stat, entity
 from util import constants
@@ -21,23 +20,23 @@ class EnemyController:
         pass
 
 class Enemy(entity.LivingEntity):
-    def __init__(self, id: str, collider: pygame.Vector2, stats: stat.Stats, sprite_path: str = "", sprite = None):
+    def __init__(self, id: str, collider: pygame.Vector2, stats: stat.Stats, sprite_path: str = "", sprite = None, scale: float = 1):
+        entity.LivingEntity.__init__(self, collider, self.spawn, self.tick, self.render, constants.ENTITY_GROUP_ENEMY, scale, stats)
         self.id = id
 
         if sprite_path:
-            self.sprite = pygame.transform.scale(pygame.image.load(f'resources/assets/enemies/{sprite_path}.png'), (32, 32))
+            self.sprite = pygame.transform.scale(pygame.image.load(f'resources/assets/enemies/{sprite_path}.png'), (32 * scale, 32 * scale))
         elif sprite:
             self.sprite = sprite
         else:
             raise ValueError("Either sprite or sprite_path must be provided.")
 
-        entity.LivingEntity.__init__(self, collider, self.spawn, self.tick, self.render, constants.ENTITY_GROUP_ENEMY, stats)
         self.controller = None
         self.control_func = None
         self.collide_func = None
     
     def spawn(self, game, uuid, pos: pygame.Vector2) -> 'Enemy':
-        enemy = Enemy(self.id, self.collider, copy.copy(self.stats), sprite=self.sprite)
+        enemy = Enemy(self.id, self.collider, self.stats.copy(), sprite=self.sprite, scale=self.scale)
         enemy.controller = EnemyController(enemy, game)
         enemy.control_func = enemy.controller.control
         enemy.collide_func = enemy.controller.collide
@@ -58,4 +57,4 @@ class Enemy(entity.LivingEntity):
         entity.Entity.render(self, clock, screen, debug)
 
     def from_json(data: dict) -> 'Enemy':
-        return Enemy(data.get('id', ''), pygame.Vector2(32, 32), stat.Stats.from_json(data.get('stats', {})), data.get('sprite_path', ''))
+        return Enemy(data.get('id', ''), pygame.Vector2(32, 32), stat.Stats.from_json(data.get('stats', {})), data.get('sprite_path', ''), scale=data.get('scale', 1))

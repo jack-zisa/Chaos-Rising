@@ -3,12 +3,13 @@ import data.objects.entity.stat as stat
 from game import Game
 
 class Entity:
-    def __init__(self, collider: pygame.Vector2, spawn_func, tick_func, render_func, group: str):
+    def __init__(self, collider: pygame.Vector2, spawn_func, tick_func, render_func, group: str, scale: float):
         self.collider = collider
         self.spawn_func = spawn_func
         self.tick_func = tick_func
         self.render_func = render_func
         self.group = group
+        self.scale = scale
         self.active = False
 
     def get_center_pos(self) -> pygame.Vector2:
@@ -22,7 +23,7 @@ class Entity:
     def get_collider_rect(self) -> pygame.rect.Rect:
         if not self.active:
             return None
-        return pygame.rect.Rect(self.pos.x, self.pos.y, self.collider.x, self.collider.y)
+        return pygame.rect.Rect(self.pos.x, self.pos.y, self.collider.x * self.scale, self.collider.y * self.scale)
 
     def spawn(self, game: Game, uuid, pos: pygame.Vector2):
         self.game = game
@@ -51,8 +52,8 @@ class Entity:
         self.game.entity_manager.remove_entity(self)
 
 class LivingEntity(Entity):
-    def __init__(self, collider: pygame.Vector2, spawn_func, tick_func, render_func, group: str, stats: stat.Stats):
-        Entity.__init__(self, collider, spawn_func, tick_func, render_func, group)
+    def __init__(self, collider: pygame.Vector2, spawn_func, tick_func, render_func, group: str, scale: float, stats: stat.Stats):
+        Entity.__init__(self, collider, spawn_func, tick_func, render_func, group, scale)
         self.stats = stats
     
     def damage(self, amount: int):
