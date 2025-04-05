@@ -81,8 +81,8 @@ def add_effect(main, args):
         import effect.status_effect
 
         effect_id = args[0]
-        amplifier = args[1] if len(args) > 1 else 1
-        duration = args[2] if len(args) > 2 else 30
+        amplifier = int(args[1]) if len(args) > 1 else 1
+        duration = int(args[2]) if len(args) > 2 else 30
         effect.status_effect.apply(effect_id, amplifier, duration, main.character)
 
 def set_item(main, args):

@@ -38,10 +38,11 @@ class Entity:
     
     def tick(self, gametime):
         for status_effect in self.status_effects:
-            status_effect.applier(self.game.main, self, status_effect.amplifier, status_effect.duration)
+            status_effect.applier(self.game.main, self, status_effect.amplifier, status_effect.duration, status_effect.data)
             status_effect.duration -= 1
             
             if status_effect.duration <= 0:
+                status_effect.remover(self.game.main, self, status_effect.amplifier, status_effect.duration, status_effect.data)
                 self.status_effects.remove(status_effect)
     
     def render(self, clock, screen: pygame.surface.Surface, debug: bool):
