@@ -25,7 +25,7 @@ class EntityManager:
     def tick(self):
         [entity.tick_func() for entity in self.get_active_entities().values()]
 
-    def render(self, clock, screen: pygame.surface.Surface, font: pygame.font.Font, debug: bool):
+    def render(self, clock: pygame.time.Clock, screen: pygame.surface.Surface, font: pygame.font.Font, debug: bool):
         [entity.render_func(clock, screen, font, debug) for entity in self.get_active_entities().values()]
 
     def control(self, dt):
@@ -38,20 +38,18 @@ class EntityManager:
     def collide(self, dt):
         grid = defaultdict(list)
     
-        # Bucket entities into grid cells
         for entity in self.get_active_entities().values():
             cell = self.get_cell(entity.pos)
             grid[cell].append(entity)
 
-        # Now check only nearby entities
-        for cell, cell_entities in grid.items():
+        for cell, entities in grid.items():
             neighbor_cells = [
                 (cell[0] + dx, cell[1] + dy)
                 for dx in [-1, 0, 1]
                 for dy in [-1, 0, 1]
             ]
             for c in neighbor_cells:
-                for a in grid[cell]:
+                for a in entities:
                     for b in grid.get(c, []):
                         if a is b:
                             continue

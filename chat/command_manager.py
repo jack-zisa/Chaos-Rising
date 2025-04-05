@@ -28,7 +28,7 @@ class CommandManager:
                 if event.unicode in string.ascii_letters + string.digits + ' ':
                     self.command += event.unicode
 
-    def render(self, clock, screen: pygame.surface.Surface, font: pygame.font.Font, debug: bool):
+    def render(self, clock: pygame.time.Clock, screen: pygame.surface.Surface, font: pygame.font.Font, debug: bool):
         if self.active:
             cursor = (pygame.time.get_ticks() // 400) % 2 == 0
             text = '> ' + self.command + ('_' if cursor else '')
