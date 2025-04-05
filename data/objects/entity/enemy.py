@@ -1,6 +1,6 @@
-import random
 import pygame
 from data.objects.entity import stat, entity
+from data.objects.entity.ai import behavior
 from util import constants
 
 class EnemyController:
@@ -9,20 +9,17 @@ class EnemyController:
         self.game = game
     
     def control(self, dt: float, events):
-        #self.enemy.pos.x += random.choice([-1, 1]) * self.enemy.stats.speed * 5 * dt
-        #self.enemy.pos.y += random.choice([-1, 1]) * self.enemy.stats.speed * 5 * dt
-
-        self.enemy.pos = self.enemy.pos.move_towards(self.enemy.game.main.character.pos, 1)
-
+        behavior.behaviors.get(self.enemy.behavior, '')(self.enemy, dt)
         self.enemy.update_collision()
     
     def collide(self, other: entity.Entity):
         pass
 
 class Enemy(entity.LivingEntity):
-    def __init__(self, id: str, collider: pygame.Vector2, stats: stat.Stats, sprite_path: str = "", sprite = None, scale: float = 1):
+    def __init__(self, id: str, collider: pygame.Vector2, stats: stat.Stats, behavior: str, sprite_path: str = "", sprite = None, scale: float = 1):
         entity.LivingEntity.__init__(self, collider, self.spawn, self.tick, self.render, constants.ENTITY_GROUP_ENEMY, scale, stats)
         self.id = id
+        self.behavior = behavior
 
         if sprite_path:
             self.sprite = pygame.transform.scale(pygame.image.load(f'resources/assets/enemies/{sprite_path}.png'), (32 * scale, 32 * scale))
@@ -36,7 +33,7 @@ class Enemy(entity.LivingEntity):
         self.collide_func = None
     
     def spawn(self, game, uuid, pos: pygame.Vector2) -> 'Enemy':
-        enemy = Enemy(self.id, self.collider, self.stats.copy(), sprite=self.sprite, scale=self.scale)
+        enemy = Enemy(self.id, self.collider, self.stats.copy(), self.behavior, sprite=self.sprite, scale=self.scale)
         enemy.controller = EnemyController(enemy, game)
         enemy.control_func = enemy.controller.control
         enemy.collide_func = enemy.controller.collide
@@ -57,4 +54,4 @@ class Enemy(entity.LivingEntity):
         entity.Entity.render(self, clock, screen, debug)
 
     def from_json(data: dict) -> 'Enemy':
-        return Enemy(data.get('id', ''), pygame.Vector2(32, 32), stat.Stats.from_json(data.get('stats', {})), data.get('sprite_path', ''), scale=data.get('scale', 1))
+        return Enemy(data.get('id', ''), pygame.Vector2(32, 32), stat.Stats.from_json(data.get('stats', {})), data.get('behavior', ''), data.get('sprite_path', ''), scale=data.get('scale', 1))

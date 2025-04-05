@@ -5,5 +5,6 @@
     "stats": {
         "health": 200,
         "speed": 5
-    }
+    },
+    "behavior": "chase"
 }

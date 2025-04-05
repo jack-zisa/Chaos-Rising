@@ -10,7 +10,7 @@ def set_stat(main, args):
             main.character.stats.health = max(0, value)
         elif stat == 'speed':
             main.character.stats.speed = max(0, value)
-        elif stat == 'attackspeed':
+        elif stat == 'attack_speed':
             main.character.stats.attack_speed = max(0, value)
         elif stat == 'defense':
             main.character.stats.defense = max(0, value)
@@ -96,12 +96,12 @@ def set_scale(main, args):
 
 
 commands: dict = {
-    '/setstat': set_stat,
-    '/spawnenemy': spawn_enemy,
-    '/setclass': set_class,
-    '/addeffect': add_effect,
-    '/setitem': set_item,
-    '/setscale': set_scale,
+    '/set_stat': set_stat,
+    '/spawn_enemy': spawn_enemy,
+    '/set_class': set_class,
+    '/add_effect': add_effect,
+    '/set_item': set_item,
+    '/set_scale': set_scale,
 }
 
 def execute(main, command_str: str):
