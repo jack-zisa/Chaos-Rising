@@ -1,5 +1,6 @@
 import uuid as u
 import pygame
+from collections import defaultdict
 
 class EntityManager:
     def __init__(self, main):
@@ -30,12 +31,31 @@ class EntityManager:
     def control(self, dt):
         [entity.control_func(dt) for entity in self.get_active_entities().values()]
 
-    def collide(self, dt):
-        for i, entity_a in enumerate(self.get_active_entities().values()):
-            for j, entity_b in enumerate(self.get_active_entities().values()):
-                if i == j:
-                    continue
+    def get_cell(self, pos):
+        cell_size = 64
+        return (int(pos.x // cell_size), int(pos.y // cell_size))
 
-                if entity_a.get_collider_rect().colliderect(entity_b.get_collider_rect()):
-                    entity_a.collide_func(entity_b)
-                    entity_b.collide_func(entity_a)
+    def collide(self, dt):
+        grid = defaultdict(list)
+    
+        # Bucket entities into grid cells
+        for entity in self.get_active_entities().values():
+            cell = self.get_cell(entity.pos)
+            grid[cell].append(entity)
+
+        # Now check only nearby entities
+        for cell, cell_entities in grid.items():
+            neighbor_cells = [
+                (cell[0] + dx, cell[1] + dy)
+                for dx in [-1, 0, 1]
+                for dy in [-1, 0, 1]
+            ]
+            for c in neighbor_cells:
+                for a in grid[cell]:
+                    for b in grid.get(c, []):
+                        if a is b:
+                            continue
+                        if a.pos.distance_to(b.pos) < 32:
+                            if a.get_collider_rect().colliderect(b.get_collider_rect()):
+                                a.collide_func(b)
+                                b.collide_func(a)
