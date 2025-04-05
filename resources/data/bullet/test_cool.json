@@ -1,0 +1,9 @@
+{
+    "id": "test_cool",
+    "sprite_path": "test1",
+    "lifetime": 150,
+    "speed": 0,
+    "acceleration": 0.5,
+    "frequency": 0.1,
+    "amplitude": 5
+}

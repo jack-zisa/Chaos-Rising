@@ -1,0 +1,8 @@
+{
+    "id": "test_sin",
+    "sprite_path": "test1",
+    "lifetime": 150,
+    "speed": 10,
+    "frequency": 0.2,
+    "amplitude": 8
+}
