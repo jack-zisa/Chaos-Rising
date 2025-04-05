@@ -1,5 +1,5 @@
 import pygame
-import data.objects.stat as stat
+import data.objects.entity.stat as stat
 from game import Game
 
 class Entity:
@@ -35,7 +35,7 @@ class Entity:
     def update_collision(self):
         self.get_collider_rect().topleft = self.pos
     
-    def tick(self):
+    def tick(self, gametime):
         for status_effect in self.status_effects:
             status_effect.applier(self.game.main, self, status_effect.amplifier, status_effect.duration)
             status_effect.duration -= 1
@@ -58,4 +58,5 @@ class LivingEntity(Entity):
     def damage(self, amount: int):
         if self.stats.health <= 0:
             return
+        amount = amount - self.stats.defense
         self.stats.health = max(0, self.stats.health - amount)

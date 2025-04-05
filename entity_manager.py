@@ -22,8 +22,8 @@ class EntityManager:
     def get_active_entities(self) -> dict:
         return {key: entity for key, entity in self.entities.items() if entity is not None and entity.active}
 
-    def tick(self):
-        [entity.tick_func() for entity in self.get_active_entities().values()]
+    def tick(self, gametime):
+        [entity.tick_func(gametime) for entity in self.get_active_entities().values()]
 
     def render(self, clock: pygame.time.Clock, screen: pygame.surface.Surface, font: pygame.font.Font, debug: bool):
         [entity.render_func(clock, screen, font, debug) for entity in self.get_active_entities().values()]

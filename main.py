@@ -1,7 +1,7 @@
 import pygame
 import render.renderer as renderer
 from game import Game
-from data.objects import character as ch
+from data.objects.entity import character as ch
 
 class Main:
     def __init__(self):
@@ -17,6 +17,7 @@ class Main:
         self.debug = False
         self.dt = 0
         self.font = pygame.font.SysFont('Calibri', 24)
+        self.gametime = 0
 
         self.character = ch.Character(pygame.Vector2(32, 32), self.game.data_manager.get_character_class('wizard'))
         self.game.entity_manager.add_entity(self.character, pygame.Vector2(self.screen.get_width() / 2, self.screen.get_height() / 2))
@@ -25,7 +26,8 @@ class Main:
         while self.running:
             self.screen.fill('black')
 
-            self.game.run()
+            self.gametime += 1
+            self.game.run(self.gametime)
 
             renderer.render(self.game, self.clock, self.screen, self.character, self.font, self.debug)
 

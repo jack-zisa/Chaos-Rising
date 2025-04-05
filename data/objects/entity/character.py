@@ -1,6 +1,6 @@
 import pygame
 from util import constants
-from data.objects import entity, stat
+from data.objects.entity import entity, stat
 
 class CharacterClass:
     def __init__(self, id: str, sprite_path: str, base_stats: stat.Stats, max_stats: stat.Stats):
@@ -32,11 +32,14 @@ class CharacterController:
         self.character.update_collision()
     
     def attack(self, dt: float, events):
+        if self.character.current_item is None:
+            return
+        
         cooldown = max(1, 150 / max(1, self.character.stats.attack_speed)) # 150 is the fastest
 
         if pygame.mouse.get_pressed()[0] and self.attack_cooldown <= 0:
             self.character.attacking = True
-            bullet = self.game.data_manager.get_bullet('test').create(pygame.mouse.get_pos(), self.character)
+            bullet = self.game.data_manager.get_bullet(self.character.current_item.bullet_id).create(pygame.mouse.get_pos(), self.character)
             self.game.entity_manager.add_entity(bullet, self.character.pos)
             self.attack_cooldown = cooldown
         else:
@@ -60,6 +63,7 @@ class Character(entity.LivingEntity):
         self.clazz = clazz
         self.max_stats = clazz.base_stats.copy()
         self.attacking = False
+        self.current_item = None
     
     def spawn(self, game, uuid, pos: pygame.Vector2):
         self.controller = CharacterController(self, game)
@@ -67,8 +71,11 @@ class Character(entity.LivingEntity):
         self.collide_func = self.controller.collide
         return entity.Entity.spawn(self, game, uuid, pos)
     
-    def tick(self):
-        entity.Entity.tick(self)
+    def tick(self, gametime):
+        entity.Entity.tick(self, gametime)
+
+        if self.stats.health != self.max_stats.health and gametime % 20 == 0:
+            self.stats.health = min(self.max_stats.health, self.stats.health + int(0.24 * self.stats.vitality))
     
     def render(self, clock, screen: pygame.surface.Surface, font: pygame.font.Font, debug: bool):
         screen.blit(self.clazz.sprite, self.pos)
@@ -77,8 +84,14 @@ class Character(entity.LivingEntity):
             health_text = font.render(f'Health: {self.stats.health} / {self.max_stats.health}', True, (255, 255, 255))
             speed_text = font.render(f'Speed: {self.stats.speed} / {self.max_stats.speed}', True, (255, 255, 255))
             attack_speed_text = font.render(f'AttackSpeed: {self.stats.attack_speed} / {self.max_stats.attack_speed}', True, (255, 255, 255))
-            screen.blit(health_text, health_text.get_rect(center = (screen.get_width() - (health_text.get_width() / 2), 16)))
-            screen.blit(speed_text, speed_text.get_rect(center = (screen.get_width() - (speed_text.get_width() / 2), 48)))
-            screen.blit(attack_speed_text, attack_speed_text.get_rect(center = (screen.get_width() - (attack_speed_text.get_width() / 2), 80)))
+            defense_text = font.render(f'Defense: {self.stats.defense} / {self.max_stats.defense}', True, (255, 255, 255))
+            attack_text = font.render(f'Attack: {self.stats.attack} / {self.max_stats.attack}', True, (255, 255, 255))
+            vitality_text = font.render(f'Vitality: {self.stats.vitality} / {self.max_stats.vitality}', True, (255, 255, 255))
+            screen.blit(health_text, health_text.get_rect(center = (screen.get_width() - (health_text.get_width() / 2), 10)))
+            screen.blit(speed_text, speed_text.get_rect(center = (screen.get_width() - (speed_text.get_width() / 2), 30)))
+            screen.blit(attack_speed_text, attack_speed_text.get_rect(center = (screen.get_width() - (attack_speed_text.get_width() / 2), 50)))
+            screen.blit(defense_text, defense_text.get_rect(center = (screen.get_width() - (defense_text.get_width() / 2), 70)))
+            screen.blit(attack_text, attack_text.get_rect(center = (screen.get_width() - (attack_text.get_width() / 2), 90)))
+            screen.blit(vitality_text, vitality_text.get_rect(center = (screen.get_width() - (vitality_text.get_width() / 2), 110)))
 
         entity.Entity.render(self, clock, screen, debug)

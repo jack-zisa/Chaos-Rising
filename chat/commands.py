@@ -12,6 +12,12 @@ def set_stat(main, args):
             main.character.stats.speed = max(0, value)
         elif stat == 'attackspeed':
             main.character.stats.attack_speed = max(0, value)
+        elif stat == 'defense':
+            main.character.stats.defense = max(0, value)
+        elif stat == 'attack':
+            main.character.stats.attack = max(0, value)
+        elif stat == 'vitality':
+            main.character.stats.vitality = max(0, value)
 
 def spawn_enemy(main, args):
     arg_count = len(args)
@@ -70,11 +76,16 @@ def add_effect(main, args):
         duration = args[2] if len(args) > 2 else 30
         effect.status_effect.apply(effect_id, amplifier, duration, main.character)
 
+def set_item(main, args):
+    if len(args) > 0:
+        main.character.current_item = main.game.data_manager.get_item(args[0])
+
 commands: dict = {
     '/setstat': set_stat,
     '/spawnenemy': spawn_enemy,
     '/setclass': set_class,
     '/addeffect': add_effect,
+    '/setitem': set_item
 }
 
 def execute(main, command_str: str):

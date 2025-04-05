@@ -1,5 +1,5 @@
 import pygame
-import data.objects.character as ch
+import data.objects.entity.character as ch
 
 def render(clock: pygame.time.Clock, screen: pygame.surface.Surface, character: ch.Character, font: pygame.font.Font, debug: bool):    
     screen.blit(character.clazz.sprite, (0, 0))

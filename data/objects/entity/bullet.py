@@ -1,5 +1,5 @@
 import pygame
-from data.objects import entity
+from data.objects.entity import entity
 from util import constants
 
 class BulletController:
@@ -13,11 +13,15 @@ class BulletController:
     
     def collide(self, other: entity.Entity):
         if other.group != constants.ENTITY_GROUP_BULLET and other.group != self.bullet.parent.group and isinstance(other, entity.LivingEntity):
-                other.damage(1)
+            other.damage(self.bullet.damage)
+
+            if not self.bullet.piercing:
+                self.bullet.remove()
 
 class Bullet(entity.Entity):
-    def __init__(self, id: str, collider: pygame.Vector2, lifetime: int, sprite_path: str = "", sprite = None):
+    def __init__(self, id: str, collider: pygame.Vector2, lifetime: int, sprite_path: str = "", sprite = None, piercing = False):
         self.id = id
+        self.lifetime = lifetime
 
         if sprite_path:
             self.sprite = pygame.transform.scale(pygame.image.load(f'resources/assets/bullets/{sprite_path}.png'), (32, 32))
@@ -26,13 +30,14 @@ class Bullet(entity.Entity):
         else:
             raise ValueError("Either sprite or sprite_path must be provided.")
 
-        self.lifetime = lifetime
+        self.piercing = piercing
         self.target = None
         self.parent = None
+        self.damage = 0
         entity.Entity.__init__(self, collider, self.spawn, self.tick, self.render, constants.ENTITY_GROUP_BULLET)
     
-    def tick(self):
-        entity.Entity.tick(self)
+    def tick(self, gametime):
+        entity.Entity.tick(self, gametime)
         self.lifetime -= 1
 
         if self.lifetime <= 0:
@@ -47,6 +52,7 @@ class Bullet(entity.Entity):
         bullet = Bullet(self.id, self.collider, self.lifetime, sprite=self.sprite)
         bullet.target = target
         bullet.parent = parent
+        bullet.damage = parent.current_item.damage
         return bullet
     
     def spawn(self, game, uuid, pos: pygame.Vector2) -> 'Bullet':

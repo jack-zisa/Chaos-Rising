@@ -1,5 +1,5 @@
 import pygame
-from data.objects import character as ch, enemy as en
+from data.objects.entity import character as ch, enemy as en
 from render import hud
 from game import Game
 

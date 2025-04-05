@@ -3,24 +3,26 @@ import json
 
 class DataManager:
     def __init__(self, main):
-        from data.objects import character as ch, enemy as en, bullet
+        from data.objects.entity import character as ch, enemy as en, bullet
+        from data.objects.item import item
 
         self.main = main
         self.data_schema: dict = {
             'class': ch.CharacterClass.from_json,
             'enemy': en.Enemy.from_json,
             'bullet': bullet.Bullet.from_json,
+            'item': item.Item.from_json,
         }
         self.data: dict = {key: {} for key in self.data_schema.keys()}
 
     def get_character_class(self, id: str):
         return self.data['class'].get(id, None)
-
     def get_enemy(self, id: str):
         return self.data['enemy'].get(id, None)
-
     def get_bullet(self, id: str):
         return self.data['bullet'].get(id, None)
+    def get_item(self, id: str):
+        return self.data['item'].get(id, None)
 
     def load(self):        
         base = 'resources/data/'

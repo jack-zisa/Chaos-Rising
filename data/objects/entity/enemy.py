@@ -1,7 +1,7 @@
 import random
 import copy
 import pygame
-from data.objects import stat, entity
+from data.objects.entity import stat, entity
 from util import constants
 
 class EnemyController:
@@ -43,8 +43,8 @@ class Enemy(entity.LivingEntity):
         enemy.collide_func = enemy.controller.collide
         return entity.Entity.spawn(enemy, game, uuid, pos)
 
-    def tick(self):
-        entity.Entity.tick(self)
+    def tick(self, gametime):
+        entity.Entity.tick(self, gametime)
         if self.stats.health <= 0:
             self.remove()
 

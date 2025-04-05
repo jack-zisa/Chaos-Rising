@@ -14,7 +14,7 @@ class Game:
         self.event_manager = EventManager(main)
         self.input_manager = InputManager(main)
     
-    def run(self):
+    def run(self, gametime):
         events = pygame.event.get()
         self.event_manager.poll_events(events)
 
@@ -22,6 +22,6 @@ class Game:
         if not self.command_manager.active:
             self.input_manager.input(events)
 
-        self.entity_manager.tick()
+        self.entity_manager.tick(gametime)
         self.entity_manager.control(self.main.dt, events)
         self.entity_manager.collide(self.main.dt)

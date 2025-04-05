@@ -4,6 +4,9 @@
     "base_stats": {
         "health": 100,
         "speed": 20,
-        "attack_speed": 10
+        "attack_speed": 10,
+        "defense": 0,
+        "attack": 15,
+        "vitality": 15
     }
 }
