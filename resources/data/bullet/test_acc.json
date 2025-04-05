@@ -1,0 +1,7 @@
+{
+    "id": "test_acc",
+    "sprite_path": "test1",
+    "lifetime": 50,
+    "speed": 20,
+    "acceleration": 1
+}

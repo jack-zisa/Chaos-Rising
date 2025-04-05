@@ -7,7 +7,7 @@ class BulletController:
         self.bullet = bullet
     
     def control(self, dt: float, events):
-        self.bullet.pos = self.bullet.pos.move_towards(self.bullet.target, 10)
+        self.bullet.pos += self.bullet.direction * self.bullet.speed * 5 * dt
         
         self.bullet.update_collision()
     
@@ -19,10 +19,12 @@ class BulletController:
                 self.bullet.remove()
 
 class Bullet(entity.Entity):
-    def __init__(self, id: str, collider: pygame.Vector2, lifetime: int, sprite_path: str = "", sprite = None, piercing = False, scale: float = 1):
+    def __init__(self, id: str, collider: pygame.Vector2, lifetime: int, speed: float, acceleration: float, sprite_path: str = "", sprite = None, piercing = False, scale: float = 1):
         entity.Entity.__init__(self, collider, self.spawn, self.tick, self.render, constants.ENTITY_GROUP_BULLET, scale)
         self.id = id
         self.lifetime = lifetime
+        self.speed = speed
+        self.acceleration = acceleration
 
         if sprite_path:
             self.sprite = pygame.transform.scale(pygame.image.load(f'resources/assets/bullets/{sprite_path}.png'), (32 * scale, 32 * scale))
@@ -35,10 +37,12 @@ class Bullet(entity.Entity):
         self.target = None
         self.parent = None
         self.damage = 0
+        self.direction = None
     
     def tick(self, gametime):
         entity.Entity.tick(self, gametime)
         self.lifetime -= 1
+        self.speed += self.acceleration
 
         if self.lifetime <= 0:
             self.remove()
@@ -49,7 +53,7 @@ class Bullet(entity.Entity):
         entity.Entity.render(self, clock, screen, debug)
     
     def create(self, target: pygame.Vector2, parent: entity.Entity) -> 'Bullet':
-        bullet = Bullet(self.id, self.collider, self.lifetime, sprite=self.sprite, scale=self.scale)
+        bullet = Bullet(self.id, self.collider, self.lifetime, self.speed, self.acceleration, sprite=self.sprite, scale=self.scale)
         bullet.target = target
         bullet.parent = parent
         bullet.damage = parent.current_item.damage
@@ -59,7 +63,8 @@ class Bullet(entity.Entity):
         self.controller = BulletController(self)
         self.control_func = self.controller.control
         self.collide_func = self.controller.collide
+        self.direction = (self.target - pos).normalize()
         return entity.Entity.spawn(self, game, uuid, pos)
 
     def from_json(data: dict) -> 'Bullet':
-        return Bullet(data.get('id', ''), pygame.Vector2(32, 32), data.get('lifetime', 0), data.get('sprite_path', ''), scale=data.get('scale', 1))
+        return Bullet(data.get('id', ''), pygame.Vector2(32, 32), data.get('lifetime', 0), data.get('speed', 0), data.get('acceleration', 0), data.get('sprite_path', ''), scale=data.get('scale', 1))

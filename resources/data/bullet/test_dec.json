@@ -1,0 +1,7 @@
+{
+    "id": "test_dec",
+    "sprite_path": "test1",
+    "lifetime": 150,
+    "speed": 40,
+    "acceleration": -0.5
+}

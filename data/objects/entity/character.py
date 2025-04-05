@@ -40,7 +40,7 @@ class CharacterController:
         if pygame.mouse.get_pressed()[0] and self.attack_cooldown <= 0:
             self.character.attacking = True
             bullet = self.game.data_manager.get_bullet(self.character.current_item.bullet_id).create(pygame.mouse.get_pos(), self.character)
-            self.game.entity_manager.add_entity(bullet, self.character.pos)
+            self.game.entity_manager.add_entity(bullet, self.character.pos.copy())
             self.attack_cooldown = cooldown
         else:
             self.character.attacking = False

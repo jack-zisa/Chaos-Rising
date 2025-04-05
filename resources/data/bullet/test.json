@@ -1,5 +1,6 @@
 {
     "id": "test",
     "sprite_path": "test",
-    "lifetime": 100
+    "lifetime": 100,
+    "speed": 20
 }
