@@ -12,3 +12,6 @@ class Stats:
     
     def from_json(data: dict) -> 'Stats':
         return Stats(data.get('health', 1), data.get('speed', 1), data.get('attack_speed', 1), data.get('defense', 1), data.get('attack', 0), data.get('vitality', 1))
+
+    def __str__(self):
+        return f'H:{self.health},S:{self.speed},AS:{self.attack_speed},D:{self.defense},A:{self.attack},V:{self.vitality}'

@@ -39,11 +39,13 @@ class Entity:
     def tick(self, gametime):
         for status_effect in self.status_effects:            
             if gametime % 20 == 0:
-                status_effect.applier(self.game.main, self, status_effect.amplifier, status_effect.duration, status_effect.data)
+                if status_effect.applier is not None:
+                    status_effect.applier(self.game.main, self, status_effect.amplifier, status_effect.duration, status_effect.data)
                 status_effect.duration -= 1
             
                 if status_effect.duration <= 0:
-                    status_effect.remover(self.game.main, self, status_effect.amplifier, status_effect.duration, status_effect.data)
+                    if status_effect.remover is not None:
+                        status_effect.remover(self.game.main, self, status_effect.amplifier, status_effect.duration, status_effect.data)
                     self.status_effects.remove(status_effect)
     
     def render(self, clock, screen: pygame.surface.Surface, debug: bool):
@@ -54,12 +56,24 @@ class Entity:
         self.game.entity_manager.remove_entity(self)
 
 class LivingEntity(Entity):
-    def __init__(self, collider: pygame.Vector2, spawn_func, tick_func, render_func, group: str, scale: float, stats: stat.Stats):
+    def __init__(self, collider: pygame.Vector2, spawn_func, tick_func, render_func, group: str, scale: float, stats: stat.Stats, max_stats: stat.Stats):
         Entity.__init__(self, collider, spawn_func, tick_func, render_func, group, scale)
         self.stats = stats
+        self.max_stats = max_stats
     
     def damage(self, amount: int):
-        if self.stats.health <= 0:
+        if self.stats.health <= 0 or any(e.id == 'invincible' for e in self.status_effects):
             return
         amount = amount - self.stats.defense
         self.stats.health = max(0, self.stats.health - amount)
+    
+    def heal(self, amount: int):
+        if self.stats.health <= 0 or any(e.id == 'sickened' for e in self.status_effects):
+            return
+        self.stats.health = min(self.max_stats.health, self.stats.health + amount)
+    
+    def tick(self, gametime):
+        if self.stats.health != self.max_stats.health and gametime % 20 == 0:
+            self.heal(int(0.25 * self.stats.vitality))
+
+

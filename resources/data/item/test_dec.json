@@ -1,5 +1,6 @@
 {
     "id": "test_dec",
+    "sprite_path": "test",
     "bullet_id": "test_dec",
     "damage": 25
 }

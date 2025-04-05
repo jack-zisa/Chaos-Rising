@@ -17,7 +17,7 @@ class EnemyController:
 
 class Enemy(entity.LivingEntity):
     def __init__(self, id: str, collider: pygame.Vector2, stats: stat.Stats, behavior: str, sprite_path: str = "", sprite = None, scale: float = 1):
-        entity.LivingEntity.__init__(self, collider, self.spawn, self.tick, self.render, constants.ENTITY_GROUP_ENEMY, scale, stats)
+        entity.LivingEntity.__init__(self, collider, self.spawn, self.tick, self.render, constants.ENTITY_GROUP_ENEMY, scale, stats, stats.copy())
         self.id = id
         self.behavior = behavior
 
@@ -40,7 +40,7 @@ class Enemy(entity.LivingEntity):
         return entity.Entity.spawn(enemy, game, uuid, pos)
 
     def tick(self, gametime):
-        entity.Entity.tick(self, gametime)
+        entity.LivingEntity.tick(self, gametime)
         if self.stats.health <= 0:
             self.remove()
 

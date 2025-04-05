@@ -85,6 +85,11 @@ def add_effect(main, args):
         duration = int(args[2]) if len(args) > 2 else 30
         effect.status_effect.apply(effect_id, amplifier, duration, main.character)
 
+def remove_effect(main, args):
+    if len(args) > 0:
+        effect_id = args[0]
+        main.character.status_effects = [effect for effect in main.character.status_effects if effect.id == effect_id]
+
 def set_item(main, args):
     if len(args) > 0:
         main.character.current_item = main.game.data_manager.get_item(args[0])
@@ -100,6 +105,7 @@ commands: dict = {
     '/spawn_enemy': spawn_enemy,
     '/set_class': set_class,
     '/add_effect': add_effect,
+    '/remove_effect': remove_effect,
     '/set_item': set_item,
     '/set_scale': set_scale,
 }
