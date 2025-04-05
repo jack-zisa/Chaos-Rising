@@ -67,9 +67,6 @@ class Character(entity.LivingEntity):
     
     def render(self, clock, screen: pygame.surface.Surface, font: pygame.font.Font, debug: bool):
         screen.blit(self.clazz.sprite, self.pos)
-
-        if self.attacking:
-            pygame.draw.line(screen, (255, 255, 255), self.get_center_pos(), pygame.mouse.get_pos(), 2)
         
         if debug:
             health_text = font.render(f'Health: {self.stats.health} / {self.max_stats.health}', True, (255, 255, 255))

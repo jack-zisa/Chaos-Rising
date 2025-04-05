@@ -30,5 +30,7 @@ class CommandManager:
 
     def render(self, clock, screen: pygame.surface.Surface, font: pygame.font.Font, debug: bool):
         if self.active:
-            input_box = font.render("> " + self.command, True, (255, 255, 255))
+            cursor = (pygame.time.get_ticks() // 400) % 2 == 0
+            text = '> ' + self.command + ('_' if cursor else '')
+            input_box = font.render(text, True, (255, 255, 255))
             screen.blit(input_box, (10, screen.get_height() - input_box.get_height() - 5))
