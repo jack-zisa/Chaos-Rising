@@ -29,10 +29,19 @@ class Entity:
         self.uuid = uuid
         self.pos = pos
         self.active = True
+        self.status_effects: list = []
         return self
     
     def update_collision(self):
         self.get_collider_rect().topleft = self.pos
+    
+    def tick(self):
+        for status_effect in self.status_effects:
+            status_effect.applier(self.game.main, self, status_effect.amplifier, status_effect.duration)
+            status_effect.duration -= 1
+            
+            if status_effect.duration <= 0:
+                self.status_effects.remove(status_effect)
     
     def render(self, clock, screen: pygame.surface.Surface, debug: bool):
         if debug:

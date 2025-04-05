@@ -9,7 +9,7 @@ class EnemyController:
         self.enemy = enemy
         self.game = game
     
-    def control(self, dt: float):
+    def control(self, dt: float, events):
         #self.enemy.pos.x += random.choice([-1, 1]) * self.enemy.stats.speed * 5 * dt
         #self.enemy.pos.y += random.choice([-1, 1]) * self.enemy.stats.speed * 5 * dt
 
@@ -44,6 +44,7 @@ class Enemy(entity.LivingEntity):
         return entity.Entity.spawn(enemy, game, uuid, pos)
 
     def tick(self):
+        entity.Entity.tick(self)
         if self.stats.health <= 0:
             self.remove()
 

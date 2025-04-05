@@ -1,13 +1,6 @@
 import random
 import pygame
 
-def set_class(main, args):
-    if len(args) > 0:
-        clazz = main.game.data_manager.get_character_class(args[0])
-        if clazz is not None:
-            main.character.clazz = clazz
-            main.character.max_stats = clazz.base_stats
-
 def set_stat(main, args):
     if len(args) > 1:
         stat = args[0]
@@ -17,6 +10,8 @@ def set_stat(main, args):
             main.character.stats.health = max(0, value)
         elif stat == 'speed':
             main.character.stats.speed = max(0, value)
+        elif stat == 'attackspeed':
+            main.character.stats.attack_speed = max(0, value)
 
 def spawn_enemy(main, args):
     arg_count = len(args)
@@ -59,10 +54,27 @@ def spawn_enemy(main, args):
             enemy = main.game.data_manager.get_enemy('test')
             main.game.entity_manager.add_entity(enemy, pygame.Vector2(random.randrange(x1, x2), random.randrange(y1, y2)))
 
+def set_class(main, args):
+    if len(args) > 0:
+        clazz = main.game.data_manager.get_character_class(args[0])
+        if clazz is not None:
+            main.character.clazz = clazz
+            main.character.max_stats = clazz.base_stats
+
+def add_effect(main, args):
+    if len(args) > 0:
+        import effect.status_effect
+
+        effect_id = args[0]
+        amplifier = args[1] if len(args) > 1 else 1
+        duration = args[2] if len(args) > 2 else 30
+        effect.status_effect.apply(effect_id, amplifier, duration, main.character)
+
 commands: dict = {
     '/setstat': set_stat,
     '/spawnenemy': spawn_enemy,
     '/setclass': set_class,
+    '/addeffect': add_effect,
 }
 
 def execute(main, command_str: str):

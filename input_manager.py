@@ -12,7 +12,8 @@ class InputManager:
             'command': pygame.K_SLASH,
         }
 
-    def input(self):
-        keys = pygame.key.get_pressed()
-        if keys[self.keymap['debug']]:
-            self.main.debug = not self.main.debug
+    def input(self, events):
+        for event in events:
+            if event.type == pygame.KEYDOWN:
+                if event.key == self.keymap['debug']:
+                    self.main.debug = not self.main.debug

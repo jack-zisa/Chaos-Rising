@@ -6,7 +6,7 @@ class BulletController:
     def __init__(self, bullet: 'Bullet'):
         self.bullet = bullet
     
-    def control(self, dt: float):
+    def control(self, dt: float, events):
         self.bullet.pos = self.bullet.pos.move_towards(self.bullet.target, 10)
         
         self.bullet.update_collision()
@@ -32,6 +32,7 @@ class Bullet(entity.Entity):
         entity.Entity.__init__(self, collider, self.spawn, self.tick, self.render, constants.ENTITY_GROUP_BULLET)
     
     def tick(self):
+        entity.Entity.tick(self)
         self.lifetime -= 1
 
         if self.lifetime <= 0:

@@ -3,6 +3,7 @@
     "sprite_path": "test",
     "base_stats": {
         "health": 100,
-        "speed": 20
+        "speed": 20,
+        "attack_speed": 10
     }
 }

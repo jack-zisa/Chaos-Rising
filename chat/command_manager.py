@@ -8,7 +8,7 @@ class CommandManager:
         self.active = False
         self.command = '/'
 
-    def input(self):
+    def input(self, events):
         keys = pygame.key.get_pressed()
         if keys[self.main.game.input_manager.keymap['command']]:
             self.active = True
