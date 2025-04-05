@@ -48,8 +48,8 @@ class Enemy(entity.LivingEntity):
         screen.blit(self.sprite, self.pos)
 
         if debug:
-            health_text = font.render(f'Enemy Health: {self.stats.health} / 1000', True, (255, 255, 255))
-            screen.blit(health_text, health_text.get_rect(center = (screen.get_width() - (health_text.get_width() / 2), 80)))
+            health_text = font.render(f'{self.stats.health}/100', True, (255, 255, 255))
+            screen.blit(health_text, health_text.get_rect(center = (self.pos.x + 8, self.pos.y - 8)))
 
         entity.Entity.render(self, clock, screen, debug)
 

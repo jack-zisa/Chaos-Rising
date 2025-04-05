@@ -16,7 +16,7 @@ class Main:
         self.running = True
         self.debug = False
         self.dt = 0
-        self.font = pygame.font.SysFont('Calibri', 24)
+        self.font = pygame.font.SysFont('Calibri', 20)
         self.gametime = 0
 
         self.character = ch.Character(pygame.Vector2(32, 32), self.game.data_manager.get_character_class('wizard'))

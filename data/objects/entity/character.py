@@ -82,17 +82,7 @@ class Character(entity.LivingEntity):
         screen.blit(self.clazz.sprite, self.pos)
         
         if debug:
-            health_text = font.render(f'Health: {self.stats.health} / {self.max_stats.health}', True, (255, 255, 255))
-            speed_text = font.render(f'Speed: {self.stats.speed} / {self.max_stats.speed}', True, (255, 255, 255))
-            attack_speed_text = font.render(f'AttackSpeed: {self.stats.attack_speed} / {self.max_stats.attack_speed}', True, (255, 255, 255))
-            defense_text = font.render(f'Defense: {self.stats.defense} / {self.max_stats.defense}', True, (255, 255, 255))
-            attack_text = font.render(f'Attack: {self.stats.attack} / {self.max_stats.attack}', True, (255, 255, 255))
-            vitality_text = font.render(f'Vitality: {self.stats.vitality} / {self.max_stats.vitality}', True, (255, 255, 255))
-            screen.blit(health_text, health_text.get_rect(center = (screen.get_width() - (health_text.get_width() / 2), 10)))
-            screen.blit(speed_text, speed_text.get_rect(center = (screen.get_width() - (speed_text.get_width() / 2), 30)))
-            screen.blit(attack_speed_text, attack_speed_text.get_rect(center = (screen.get_width() - (attack_speed_text.get_width() / 2), 50)))
-            screen.blit(defense_text, defense_text.get_rect(center = (screen.get_width() - (defense_text.get_width() / 2), 70)))
-            screen.blit(attack_text, attack_text.get_rect(center = (screen.get_width() - (attack_text.get_width() / 2), 90)))
-            screen.blit(vitality_text, vitality_text.get_rect(center = (screen.get_width() - (vitality_text.get_width() / 2), 110)))
+            stats_text = font.render(f'H: {self.stats.health}/{self.max_stats.health},S: {self.stats.speed}/{self.max_stats.speed},AS: {self.stats.attack_speed}/{self.max_stats.attack_speed},D: {self.stats.defense}/{self.max_stats.defense},A: {self.stats.attack}/{self.max_stats.attack},V: {self.stats.vitality}/{self.max_stats.vitality}', True, (255, 255, 255))
+            screen.blit(stats_text, stats_text.get_rect(center = (screen.get_width() - (stats_text.get_width() / 2), 10)))
 
         entity.Entity.render(self, clock, screen, debug)

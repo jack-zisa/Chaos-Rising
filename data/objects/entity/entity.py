@@ -37,13 +37,14 @@ class Entity:
         self.get_collider_rect().topleft = self.pos
     
     def tick(self, gametime):
-        for status_effect in self.status_effects:
-            status_effect.applier(self.game.main, self, status_effect.amplifier, status_effect.duration, status_effect.data)
-            status_effect.duration -= 1
+        for status_effect in self.status_effects:            
+            if gametime % 20 == 0:
+                status_effect.applier(self.game.main, self, status_effect.amplifier, status_effect.duration, status_effect.data)
+                status_effect.duration -= 1
             
-            if status_effect.duration <= 0:
-                status_effect.remover(self.game.main, self, status_effect.amplifier, status_effect.duration, status_effect.data)
-                self.status_effects.remove(status_effect)
+                if status_effect.duration <= 0:
+                    status_effect.remover(self.game.main, self, status_effect.amplifier, status_effect.duration, status_effect.data)
+                    self.status_effects.remove(status_effect)
     
     def render(self, clock, screen: pygame.surface.Surface, debug: bool):
         if debug:

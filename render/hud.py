@@ -10,6 +10,10 @@ def render(clock: pygame.time.Clock, screen: pygame.surface.Surface, character: 
     width = get_health_bar_width(screen, character)
     pygame.draw.rect(screen, get_health_bar_color(character), ((screen.get_width() / 2) - (width / 2), 10, width, 15))
 
+    if debug:
+        fps_text = font.render(f'{int(clock.get_fps())} FPS', True, (255, 255, 255))
+        screen.blit(fps_text, fps_text.get_rect(center = (screen.get_width() - (fps_text.get_width() / 2), 30)))
+
 def get_health_bar_width(screen: pygame.surface.Surface, character: ch.Character) -> int:
     width = int(screen.get_width() * 0.625)
     return min(width, int(width * (character.stats.health / character.max_stats.health)))
