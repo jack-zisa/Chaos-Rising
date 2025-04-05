@@ -25,8 +25,8 @@ class EntityManager:
     def tick(self, gametime):
         [entity.tick_func(gametime) for entity in self.get_active_entities().values()]
 
-    def render(self, clock: pygame.time.Clock, screen: pygame.surface.Surface, font: pygame.font.Font, debug: bool):
-        [entity.render_func(clock, screen, font, debug) for entity in self.get_active_entities().values()]
+    def render(self, renderer, clock: pygame.time.Clock, screen: pygame.surface.Surface, font: pygame.font.Font, debug: bool):
+        [entity.render_func(renderer, clock, screen, font, debug) for entity in self.get_active_entities().values()]
 
     def control(self, dt, events):
         [entity.control_func(dt, events) for entity in self.get_active_entities().values()]

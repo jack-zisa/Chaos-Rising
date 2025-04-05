@@ -1,8 +1,10 @@
 {
-    "id": "test",
+    "id": "test_many",
     "sprite_path": "test",
     "damage": 10,
     "attack": {
+        "bullet_count": 20,
+        "arc_gap": 15,
         "bullet_id": "test"
     }
 }

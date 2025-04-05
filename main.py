@@ -2,6 +2,7 @@ import pygame
 import render.renderer as renderer
 from game import Game
 from data.objects.entity import character as ch
+from render import camera
 
 class Main:
     def __init__(self):
@@ -19,8 +20,11 @@ class Main:
         self.font = pygame.font.SysFont('Calibri', 20)
         self.gametime = 0
 
+        self.renderer = renderer.Renderer(self)
+        self.camera = camera.Camera(self.screen.get_width(), self.screen.get_height())
+
         self.character = ch.Character(pygame.Vector2(32, 32), self.game.data_manager.get_character_class('wizard'))
-        self.game.entity_manager.add_entity(self.character, pygame.Vector2(self.screen.get_width() / 2, self.screen.get_height() / 2))
+        self.game.entity_manager.add_entity(self.character, pygame.Vector2(0, 0))
 
     def start(self):
         while self.running:
@@ -29,7 +33,7 @@ class Main:
             self.gametime += 1
             self.game.run(self.gametime)
 
-            renderer.render(self.game, self.clock, self.screen, self.character, self.font, self.debug)
+            self.renderer.render(self.game, self.clock, self.screen, self.character, self.font, self.debug)
 
             pygame.display.flip()
             self.dt = self.clock.tick(60) / 1000

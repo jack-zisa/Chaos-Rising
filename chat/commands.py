@@ -88,7 +88,7 @@ def add_effect(main, args):
 def remove_effect(main, args):
     if len(args) > 0:
         effect_id = args[0]
-        main.character.status_effects = [effect for effect in main.character.status_effects if effect.id == effect_id]
+        main.character.status_effects = [effect for effect in main.character.status_effects if effect.id != effect_id]
 
 def set_item(main, args):
     if len(args) > 0:
@@ -99,6 +99,11 @@ def set_scale(main, args):
         main.character.scale = max(0.1, float(args[0]))
         main.character.clazz.sprite = pygame.transform.scale(main.character.clazz.sprite, (32 * main.character.scale, 32 * main.character.scale))
 
+def set_pos(main, args):
+    if len(args) > 1:
+        x = int(args[0])
+        y = int(args[0])
+        main.character.pos = pygame.Vector2(x, y)
 
 commands: dict = {
     '/set_stat': set_stat,
@@ -108,6 +113,7 @@ commands: dict = {
     '/remove_effect': remove_effect,
     '/set_item': set_item,
     '/set_scale': set_scale,
+    '/set_pos': set_pos,
 }
 
 def execute(main, command_str: str):

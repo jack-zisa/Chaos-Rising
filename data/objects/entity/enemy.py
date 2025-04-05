@@ -9,7 +9,7 @@ class EnemyController:
         self.game = game
     
     def control(self, dt: float, events):
-        behavior.behaviors.get(self.enemy.behavior, '')(self.enemy, dt)
+        behavior.behaviors.get(self.enemy.behavior, '')(self.enemy, dt, {}) # empty dict for future custom data per-behavior
         self.enemy.update_collision()
     
     def collide(self, other: entity.Entity):
@@ -44,14 +44,18 @@ class Enemy(entity.LivingEntity):
         if self.stats.health <= 0:
             self.remove()
 
-    def render(self, clock, screen: pygame.surface.Surface, font: pygame.font.Font, debug: bool):
+    def render(self, renderer, clock, screen: pygame.surface.Surface, font: pygame.font.Font, debug: bool):
         screen.blit(self.sprite, self.pos)
+
+        if debug:
+            collider_rect = self.get_collider_rect()
+            pygame.draw.rect(screen, (0, 255, 0), collider_rect, 1)
 
         if debug:
             health_text = font.render(f'{self.stats.health}/100', True, (255, 255, 255))
             screen.blit(health_text, health_text.get_rect(center = (self.pos.x + 8, self.pos.y - 8)))
 
-        entity.Entity.render(self, clock, screen, debug)
+        entity.Entity.render(self, renderer, clock, screen, debug)
 
     def from_json(data: dict) -> 'Enemy':
         return Enemy(data.get('id', ''), pygame.Vector2(32, 32), stat.Stats.from_json(data.get('stats', {})), data.get('behavior', ''), data.get('sprite_path', ''), scale=data.get('scale', 1))

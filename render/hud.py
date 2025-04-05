@@ -1,7 +1,7 @@
 import pygame
 import data.objects.entity.character as ch
 
-def render(clock: pygame.time.Clock, screen: pygame.surface.Surface, character: ch.Character, font: pygame.font.Font, debug: bool):    
+def render(renderer, clock: pygame.time.Clock, screen: pygame.surface.Surface, character: ch.Character, font: pygame.font.Font, debug: bool):    
     screen.blit(character.clazz.sprite, (0, 0))
 
     text = font.render(character.clazz.id, True, (255, 255, 255))
@@ -12,7 +12,9 @@ def render(clock: pygame.time.Clock, screen: pygame.surface.Surface, character: 
 
     if debug:
         fps_text = font.render(f'{int(clock.get_fps())} FPS', True, (255, 255, 255))
+        pos_text = font.render(f'{round(character.pos.x, 2)},{round(character.pos.y, 2)}', True, (255, 255, 255))
         screen.blit(fps_text, fps_text.get_rect(center = (screen.get_width() - (fps_text.get_width() / 2), 30)))
+        screen.blit(pos_text, pos_text.get_rect(center = (screen.get_width() - (pos_text.get_width() / 2), 50)))
 
 def get_health_bar_width(screen: pygame.surface.Surface, character: ch.Character) -> int:
     width = int(screen.get_width() * 0.625)

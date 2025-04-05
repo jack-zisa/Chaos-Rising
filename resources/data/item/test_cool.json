@@ -1,6 +1,10 @@
 {
     "id": "test_cool",
     "sprite_path": "test",
-    "bullet_id": "test_cool",
-    "damage": 25
+    "damage": 25,
+    "attack": {
+        "bullet_count": 2,
+        "arc_gap": 30,
+        "bullet_id": "test_cool"
+    }
 }

@@ -2,7 +2,7 @@ import pygame
 from data.objects.entity import stat
 
 class Item:
-    def __init__(self, id: str, bullet_id: str, damage: int, stats: stat.Stats, sprite_path: str = "", sprite = None):
+    def __init__(self, id: str, damage: int, attack, stats: stat.Stats, sprite_path: str = "", sprite = None):
         self.id = id
 
         if sprite_path:
@@ -12,8 +12,8 @@ class Item:
         else:
             raise ValueError("Either sprite or sprite_path must be provided.")
         
-        self.bullet_id = bullet_id
         self.damage = damage
+        self.attack = attack
         self.stats = stats
     
     def render(self, clock, screen: pygame.surface.Surface, font: pygame.font.Font, debug: bool):
@@ -44,4 +44,5 @@ class Item:
                 y_offset += surf.get_height()
 
     def from_json(data: dict) -> 'Item':
-        return Item(data.get('id', ''), data.get('bullet_id', ''), data.get('damage', 0), stat.Stats.from_json(data.get('stats', {})), data.get('sprite_path', ''))
+        import data.objects.attack.attack as attack
+        return Item(data.get('id', ''), data.get('damage', 0), attack.Attack.from_json(data.get('attack', {})), stat.Stats.from_json(data.get('stats', {})), data.get('sprite_path', ''))

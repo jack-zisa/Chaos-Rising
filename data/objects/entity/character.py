@@ -35,16 +35,7 @@ class CharacterController:
         if self.character.current_item is None:
             return
         
-        cooldown = max(1, 150 / max(1, self.character.stats.attack_speed)) # 150 is the fastest
-
-        if pygame.mouse.get_pressed()[0] and self.attack_cooldown <= 0:
-            self.character.attacking = True
-            bullet = self.game.data_manager.get_bullet(self.character.current_item.bullet_id).create(pygame.mouse.get_pos(), self.character)
-            self.game.entity_manager.add_entity(bullet, self.character.pos.copy())
-            self.attack_cooldown = cooldown
-        else:
-            self.character.attacking = False
-            self.attack_cooldown -= 1
+        self.character.current_item.attack.attack(self.character, self)
     
     def control(self, dt: float, events):
         if self.game.command_manager.active:
@@ -70,13 +61,16 @@ class Character(entity.LivingEntity):
         self.control_func = self.controller.control
         self.collide_func = self.controller.collide
         return entity.Entity.spawn(self, game, uuid, pos)
+
+    def update_collision(self):
+        self.get_collider_rect().topleft = self.pos
     
     def tick(self, gametime):
         entity.LivingEntity.tick(self, gametime)
     
-    def render(self, clock, screen: pygame.surface.Surface, font: pygame.font.Font, debug: bool):
+    def render(self, renderer, clock, screen: pygame.surface.Surface, font: pygame.font.Font, debug: bool):
         screen.blit(self.clazz.sprite, self.pos)
-        
+
         if self.current_item is not None:
             self.current_item.render(clock, screen, font, debug)
         
@@ -84,4 +78,4 @@ class Character(entity.LivingEntity):
             stats_text = font.render(f'H: {self.stats.health}/{self.max_stats.health},S: {self.stats.speed}/{self.max_stats.speed},AS: {self.stats.attack_speed}/{self.max_stats.attack_speed},D: {self.stats.defense}/{self.max_stats.defense},A: {self.stats.attack}/{self.max_stats.attack},V: {self.stats.vitality}/{self.max_stats.vitality}', True, (255, 255, 255))
             screen.blit(stats_text, stats_text.get_rect(center = (screen.get_width() - (stats_text.get_width() / 2), 10)))
 
-        entity.Entity.render(self, clock, screen, debug)
+        entity.Entity.render(self, renderer, clock, screen, debug)

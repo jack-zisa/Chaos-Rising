@@ -16,10 +16,6 @@ class Entity:
         if not self.active:
             return None
         return self.pos + pygame.Vector2(16, 16)
-    def get_name_pos(self) -> pygame.Vector2:
-        if not self.active:
-            return None
-        return self.pos + pygame.Vector2(16, 40)
     def get_collider_rect(self) -> pygame.rect.Rect:
         if not self.active:
             return None
@@ -48,9 +44,10 @@ class Entity:
                         status_effect.remover(self.game.main, self, status_effect.amplifier, status_effect.duration, status_effect.data)
                     self.status_effects.remove(status_effect)
     
-    def render(self, clock, screen: pygame.surface.Surface, debug: bool):
+    def render(self, renderer, clock, screen: pygame.surface.Surface, debug: bool):
         if debug:
-            pygame.draw.rect(screen, (0, 255, 0), self.get_collider_rect(), 1)
+            collider_rect = self.get_collider_rect()
+            pygame.draw.rect(screen, (0, 255, 0), collider_rect, 1)
     
     def remove(self):
         self.game.entity_manager.remove_entity(self)

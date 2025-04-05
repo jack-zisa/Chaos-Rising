@@ -10,7 +10,7 @@ class BulletController:
     def control(self, dt: float, events):
         forward = self.bullet.direction * self.bullet.speed * 5 * dt
 
-        offset = self.bullet.perpendicular.copy() * math.cos((self.bullet.game.main.gametime - self.bullet.spawntime) * self.bullet.frequency) * self.bullet.amplitude
+        offset = self.bullet.perpendicular.copy() * math.cos((self.bullet.game.main.gametime - self.bullet.spawntime) * self.bullet.frequency) * self.bullet.amplitude * (-1 if self.bullet.index % 2 else 1)
 
         self.bullet.pos += forward + offset
         
@@ -50,6 +50,7 @@ class Bullet(entity.Entity):
         self.parent = None
         self.damage = 0
         self.direction = None
+        self.index = 0
     
     def tick(self, gametime):
         entity.Entity.tick(self, gametime)
@@ -59,32 +60,31 @@ class Bullet(entity.Entity):
         if self.lifetime <= 0:
             self.remove()
     
-    def render(self, clock, screen: pygame.surface.Surface, font: pygame.font.Font, debug: bool):
-        screen.blit(self.sprite, self.pos)
-
-        entity.Entity.render(self, clock, screen, debug)
+    def render(self, renderer, clock, screen: pygame.surface.Surface, font: pygame.font.Font, debug: bool):
+        screen.blit(self.sprite, self.sprite.get_rect(center=self.pos))
+        entity.Entity.render(self, renderer, clock, screen, debug)
     
-    def create(self, target: pygame.Vector2, parent: entity.Entity) -> 'Bullet':
+    def create(self, target: pygame.Vector2, parent: entity.Entity, direction = None) -> 'Bullet':
         bullet = Bullet(self.id, self.collider, self.lifetime, self.speed, self.acceleration, self.frequency, self.amplitude, self.arc_speed, sprite=self.sprite, scale=self.scale)
         bullet.target = target
         bullet.parent = parent
         bullet.damage = parent.current_item.damage
+
+        vector = direction or (target - parent.pos)
+        if vector.length_squared() != 0:
+            bullet.direction = vector.normalize()
+            bullet.sprite = pygame.transform.rotate(self.sprite, -pygame.Vector2(vector.x, -vector.y).angle_to(pygame.Vector2(1, 0)) - 45)
+        else:
+            bullet.direction = pygame.Vector2()
+
         return bullet
     
     def spawn(self, game, uuid, pos: pygame.Vector2) -> 'Bullet':
         self.controller = BulletController(self)
         self.control_func = self.controller.control
         self.collide_func = self.controller.collide
-
-        vector = self.target - pos
-        if vector.length_squared() != 0:
-            self.direction = vector.normalize()
-        else:
-            self.direction = pygame.Vector2()
         self.perpendicular = pygame.Vector2(-self.direction.y, self.direction.x).normalize()
-
         self.spawntime = game.main.gametime
-        
         return entity.Entity.spawn(self, game, uuid, pos)
 
     def from_json(data: dict) -> 'Bullet':
