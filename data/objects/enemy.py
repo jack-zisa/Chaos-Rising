@@ -44,7 +44,6 @@ class Enemy(entity.LivingEntity):
         return entity.Entity.spawn(enemy, game, uuid, pos)
 
     def tick(self):
-        print(self.uuid)
         if self.stats.health <= 0:
             self.remove()
 

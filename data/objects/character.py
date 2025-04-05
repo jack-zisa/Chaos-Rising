@@ -39,6 +39,9 @@ class CharacterController:
             self.character.attacking = False
     
     def control(self, dt: float):
+        if self.game.command_manager.active:
+            return
+
         self.move(dt)
         self.attack(dt)
 

@@ -1,4 +1,3 @@
-import random
 import pygame
 import render.renderer as renderer
 from game import Game
@@ -22,13 +21,8 @@ class Main:
         self.character = ch.Character(pygame.Vector2(32, 32), self.game.data_manager.get_character_class('test'))
         self.game.entity_manager.add_entity(self.character, pygame.Vector2(self.screen.get_width() / 2, self.screen.get_height() / 2))
 
-    def stop(self):
-        self.running = False
-
     def start(self):
         while self.running:
-            self.game.event_manager.poll_events(self.stop)
-
             self.screen.fill('black')
 
             self.game.run()

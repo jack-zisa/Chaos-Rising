@@ -4,8 +4,9 @@ class EventManager:
     def __init__(self, main):
         self.main = main
 
-    def poll_events(self, stop):
-        global running
-        for event in pygame.event.get():
+    def poll_events(self, events):
+        for event in events:
             if event.type == pygame.QUIT:
-                stop()
+                self.main.running = False
+            
+            self.main.game.command_manager.poll_events(event)
