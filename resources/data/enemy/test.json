@@ -5,5 +5,8 @@
         "health": 100,
         "speed": 10
     },
-    "behavior": "random"
+    "behavior": {
+        "id": "random",
+        "speed": 10
+    }
 }

@@ -9,7 +9,8 @@ class EnemyController:
         self.game = game
     
     def control(self, dt: float, events):
-        behavior.behaviors.get(self.enemy.behavior, '')(self.enemy, dt, {}) # empty dict for future custom data per-behavior
+        if self.enemy.behavior:
+            behavior.behaviors.get(self.enemy.behavior.get('id', ''), '')(self.enemy, dt, self.enemy.behavior) # empty dict for future custom data per-behavior
         if self.enemy.moving:
             self.enemy.update_collision()
     
@@ -17,7 +18,7 @@ class EnemyController:
         pass
 
 class Enemy(entity.LivingEntity):
-    def __init__(self, id: str, collider: pygame.Vector2, stats: stat.Stats, behavior: str, sprite_path: str = "", sprite = None, scale: float = 1):
+    def __init__(self, id: str, collider: pygame.Vector2, stats: stat.Stats, behavior: dict = {}, sprite_path: str = "", sprite = None, scale: float = 1):
         entity.LivingEntity.__init__(self, collider, self.spawn, self.tick, self.render, constants.ENTITY_GROUP_ENEMY, scale, stats, stats.copy())
         self.id = id
         self.behavior = behavior
@@ -53,10 +54,10 @@ class Enemy(entity.LivingEntity):
             pygame.draw.rect(screen, (0, 255, 0), collider_rect, 1)
 
         if debug:
-            health_text = font.render(f'{self.stats.health}/100', True, (255, 255, 255))
+            health_text = font.render(f'{self.stats.health}/{self.max_stats.health}', True, (255, 255, 255))
             screen.blit(health_text, health_text.get_rect(center = (self.pos.x + 8, self.pos.y - 8)))
 
         entity.Entity.render(self, renderer, clock, screen, debug)
 
     def from_json(data: dict) -> 'Enemy':
-        return Enemy(data.get('id', ''), pygame.Vector2(32, 32), stat.Stats.from_json(data.get('stats', {})), data.get('behavior', ''), data.get('sprite_path', ''), scale=data.get('scale', 1))
+        return Enemy(data.get('id', ''), pygame.Vector2(32, 32), stat.Stats.from_json(data.get('stats', {})), data.get('behavior', {}), data.get('sprite_path', ''), scale=data.get('scale', 1))

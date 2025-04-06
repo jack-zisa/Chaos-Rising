@@ -6,5 +6,8 @@
         "health": 200,
         "speed": 5
     },
-    "behavior": "chase"
+    "behavior": {
+        "id": "chase",
+        "distance": 100
+    }
 }

@@ -16,7 +16,8 @@ class Entity:
     def get_center_pos(self) -> pygame.Vector2:
         if not self.active:
             return None
-        return self.pos + pygame.Vector2(16, 16)
+        return self.pos + pygame.Vector2(16 * self.scale, 16 * self.scale)
+
     def get_collider_rect(self) -> pygame.rect.Rect:
         if not self.active:
             return None

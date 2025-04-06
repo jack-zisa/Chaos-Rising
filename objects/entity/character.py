@@ -25,16 +25,16 @@ class CharacterController:
             self.character.moving = False
         else:
             if keys[self.game.input_manager.keymap['up']]:
-                self.character.pos.y -= self.character.stats.speed * 5 * dt
+                self.character.pos.y -= self.character.stats.speed * dt
                 self.character.moving = True
             if keys[self.game.input_manager.keymap['down']]:
-                self.character.pos.y += self.character.stats.speed * 5 * dt
+                self.character.pos.y += self.character.stats.speed * dt
                 self.character.moving = True
             if keys[self.game.input_manager.keymap['left']]:
-                self.character.pos.x -= self.character.stats.speed * 5 * dt
+                self.character.pos.x -= self.character.stats.speed * dt
                 self.character.moving = True
             if keys[self.game.input_manager.keymap['right']]:
-                self.character.pos.x += self.character.stats.speed * 5 * dt
+                self.character.pos.x += self.character.stats.speed * dt
                 self.character.moving = True
 
             self.character.update_collision() # self.character.moving is always True here

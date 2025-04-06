@@ -1,4 +1,4 @@
-import data.objects.entity.entity as en
+import objects.entity.entity as en
 
 class StatusEffect():
     def __init__(self, id: str, amplifier: int, duration: int, starter = None, applier = None, remover = None):
@@ -68,6 +68,20 @@ def cursed(main, entity, amplifier, duration, data):
 def cursed_end(main, entity, amplifier, duration, data):
     entity.stats.health = data['prev_health']
 
+def enlarged_start(main, entity, amplifier, duration, data):
+    data['prev_scale'] = entity.scale
+def enlarged(main, entity, amplifier, duration, data):
+    entity.scale = amplifier
+def enlarged_end(main, entity, amplifier, duration, data):
+    entity.scale = data['prev_scale']
+
+def minified_start(main, entity, amplifier, duration, data):
+    data['prev_scale'] = entity.scale
+def minified(main, entity, amplifier, duration, data):
+    entity.scale = amplifier
+def minified_end(main, entity, amplifier, duration, data):
+    entity.scale = data['prev_scale']
+
 status_effects: dict = {
     'poison': StatusEffect('', 0, 0, applier=poison),
     'burned': StatusEffect('', 0, 0, applier=poison),
@@ -87,4 +101,6 @@ status_effects: dict = {
     'vivacious': StatusEffect('', 0, 0),
     'health_boost': StatusEffect('', 0, 0, health_boost_start, health_boost, health_boost_end),
     'cursed': StatusEffect('', 0, 0, cursed_start, cursed, cursed_end),
+    'enlarged': StatusEffect('', 0, 0, enlarged_start, enlarged, enlarged_end),
+    'minified': StatusEffect('', 0, 0, minified_start, minified, minified_end),
 }
