@@ -30,7 +30,19 @@ class CommandManager:
 
     def render(self, renderer, clock: pygame.time.Clock, screen: pygame.surface.Surface, font: pygame.font.Font, debug: bool):
         if self.active:
+            cmd_text = '> ' + self.command
             cursor = (pygame.time.get_ticks() // 400) % 2 == 0
-            text = '> ' + self.command + ('_' if cursor else '')
-            input_box = font.render(text, True, (255, 255, 255))
-            screen.blit(input_box, (10, screen.get_height() - input_box.get_height() - 5))
+            text = cmd_text + ('_' if cursor else '')
+
+            x = 10
+            y = screen.get_height() - font.get_height() - 5
+
+            for i in range(len(text)):
+                char = text[i]
+                char_surface = font.render(char, True, (255, 255, 255))
+                screen.blit(char_surface, (int(x), y))
+
+                if (char == '_' and i + 1 < len(text) and text[i + 1] == '_' and i < len(cmd_text) - 1):
+                    x += char_surface.get_width() + 1
+                else:
+                    x += char_surface.get_width()

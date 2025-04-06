@@ -1,6 +1,6 @@
 import math
 import pygame
-from data.objects.entity import entity
+from objects.entity import entity
 from util import constants
 
 BASE_SIZE: int = 32

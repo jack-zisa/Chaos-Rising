@@ -1,6 +1,6 @@
 import pygame
-from data.objects.entity import stat, entity
-from data.objects.entity.ai import behavior
+from objects.entity import stat, entity
+from objects.entity.ai import behavior
 from util import constants
 
 class EnemyController:

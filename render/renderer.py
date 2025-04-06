@@ -1,5 +1,5 @@
 import pygame
-from data.objects.entity import character as ch
+from objects.entity import character as ch
 from render import hud
 from game import Game
 

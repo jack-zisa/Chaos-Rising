@@ -1,6 +1,6 @@
 import pygame
 from util import constants
-from data.objects.entity import entity, stat
+from objects.entity import entity, stat
 
 class CharacterClass:
     def __init__(self, id: str, sprite_path: str, base_stats: stat.Stats, max_stats: stat.Stats):

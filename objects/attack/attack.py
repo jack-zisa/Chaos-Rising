@@ -1,5 +1,5 @@
 import pygame
-from data.objects.entity import entity as en
+from objects.entity import entity as en
 
 class Attack:
     def __init__(self, bullet_count: int, arc_gap: float, bullet_id: str):

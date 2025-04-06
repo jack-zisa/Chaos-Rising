@@ -1,7 +1,7 @@
 import pygame
 import render.renderer as renderer
 from game import Game
-from data.objects.entity import character as ch
+from objects.entity import character as ch
 from render import camera
 
 class Main:

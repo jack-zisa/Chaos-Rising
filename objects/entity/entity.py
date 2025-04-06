@@ -1,5 +1,5 @@
 import pygame
-import data.objects.entity.stat as stat
+import objects.entity.stat as stat
 from game import Game
 
 class Entity:

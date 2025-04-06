@@ -1,6 +1,6 @@
 import pygame
 from chat.command_manager import CommandManager
-from data.data_manager import DataManager
+from data_manager import DataManager
 from entity_manager import EntityManager
 from event_manager import EventManager
 from input_manager import InputManager

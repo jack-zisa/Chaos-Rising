@@ -3,8 +3,8 @@ import json
 
 class DataManager:
     def __init__(self, main):
-        from data.objects.entity import character as ch, enemy as en, bullet
-        from data.objects.item import item
+        from objects.entity import character as ch, enemy as en, bullet
+        from objects.item import item
 
         self.main = main
         self.data_schema: dict = {

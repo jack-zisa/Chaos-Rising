@@ -1,5 +1,5 @@
 import pygame
-from data.objects.entity import stat
+from objects.entity import stat
 
 class Item:
     def __init__(self, id: str, damage: int, attack, stats: stat.Stats, sprite_path: str = "", sprite = None):
@@ -44,5 +44,5 @@ class Item:
                 y_offset += surf.get_height()
 
     def from_json(data: dict) -> 'Item':
-        import data.objects.attack.attack as attack
+        import objects.attack.attack as attack
         return Item(data.get('id', ''), data.get('damage', 0), attack.Attack.from_json(data.get('attack', {})), stat.Stats.from_json(data.get('stats', {})), data.get('sprite_path', ''))
