@@ -3,6 +3,9 @@ import pygame
 from data.objects.entity import entity
 from util import constants
 
+BASE_SIZE: int = 32
+BASE_OFFSET_VEC: pygame.Vector2 = pygame.Vector2(BASE_SIZE / 2, BASE_SIZE / 2)
+
 class BulletController:
     def __init__(self, bullet: 'Bullet'):
         self.bullet = bullet
@@ -39,7 +42,7 @@ class Bullet(entity.Entity):
         self.arc_speed = arc_speed
 
         if sprite_path:
-            self.sprite = pygame.transform.scale(pygame.image.load(f'resources/assets/bullets/{sprite_path}.png'), (32 * scale, 32 * scale))
+            self.sprite = pygame.transform.scale(pygame.image.load(f'resources/assets/bullets/{sprite_path}.png'), (BASE_SIZE * scale, BASE_SIZE * scale))
         elif sprite:
             self.sprite = sprite
         else:
@@ -61,16 +64,16 @@ class Bullet(entity.Entity):
             self.remove()
     
     def render(self, renderer, clock, screen: pygame.surface.Surface, font: pygame.font.Font, debug: bool):
-        screen.blit(self.sprite, self.sprite.get_rect(center=self.pos))
+        screen.blit(self.sprite, self.sprite.get_rect(center=self.pos + BASE_OFFSET_VEC))
         entity.Entity.render(self, renderer, clock, screen, debug)
     
     def create(self, target: pygame.Vector2, parent: entity.Entity, direction = None) -> 'Bullet':
         bullet = Bullet(self.id, self.collider, self.lifetime, self.speed, self.acceleration, self.frequency, self.amplitude, self.arc_speed, sprite=self.sprite, scale=self.scale)
-        bullet.target = target
+        bullet.target = target + BASE_OFFSET_VEC
         bullet.parent = parent
         bullet.damage = parent.current_item.damage
 
-        vector = direction or (target - parent.pos)
+        vector = direction or (bullet.target - parent.get_center_pos())
         if vector.length_squared() != 0:
             bullet.direction = vector.normalize()
             bullet.sprite = pygame.transform.rotate(self.sprite, -pygame.Vector2(vector.x, -vector.y).angle_to(pygame.Vector2(1, 0)) - 45)
