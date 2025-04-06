@@ -3,5 +3,5 @@
     "sprite_path": "test1",
     "lifetime": 75,
     "speed": 100,
-    "acceleration": 1
+    "acceleration": 5
 }

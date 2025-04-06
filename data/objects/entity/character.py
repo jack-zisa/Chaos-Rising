@@ -37,7 +37,7 @@ class CharacterController:
                 self.character.pos.x += self.character.stats.speed * 5 * dt
                 self.character.moving = True
 
-            self.character.update_collision()
+            self.character.update_collision() # self.character.moving is always True here
     
     def attack(self, dt: float, events):
         if self.character.current_item is None:

@@ -24,6 +24,7 @@ class Entity:
 
     def spawn(self, game: Game, uuid, pos: pygame.Vector2):
         self.game = game
+        self.spawntime = game.main.gametime
         self.uuid = uuid
         self.pos = pos
         self.active = True

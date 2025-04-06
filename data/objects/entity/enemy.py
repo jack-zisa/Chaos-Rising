@@ -10,7 +10,8 @@ class EnemyController:
     
     def control(self, dt: float, events):
         behavior.behaviors.get(self.enemy.behavior, '')(self.enemy, dt, {}) # empty dict for future custom data per-behavior
-        self.enemy.update_collision()
+        if self.enemy.moving:
+            self.enemy.update_collision()
     
     def collide(self, other: entity.Entity):
         pass
