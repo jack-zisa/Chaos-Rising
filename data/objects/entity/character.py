@@ -20,16 +20,24 @@ class CharacterController:
 
     def move(self, dt: float, events):
         keys = pygame.key.get_pressed()
-        if keys[self.game.input_manager.keymap['up']]:
-            self.character.pos.y -= self.character.stats.speed * 5 * dt
-        if keys[self.game.input_manager.keymap['down']]:
-            self.character.pos.y += self.character.stats.speed * 5 * dt
-        if keys[self.game.input_manager.keymap['left']]:
-            self.character.pos.x -= self.character.stats.speed * 5 * dt
-        if keys[self.game.input_manager.keymap['right']]:
-            self.character.pos.x += self.character.stats.speed * 5 * dt
-        
-        self.character.update_collision()
+
+        if not keys[self.game.input_manager.keymap['up']] and not keys[self.game.input_manager.keymap['down']] and not keys[self.game.input_manager.keymap['left']] and not keys[self.game.input_manager.keymap['right']]:
+            self.character.moving = False
+        else:
+            if keys[self.game.input_manager.keymap['up']]:
+                self.character.pos.y -= self.character.stats.speed * 5 * dt
+                self.character.moving = True
+            if keys[self.game.input_manager.keymap['down']]:
+                self.character.pos.y += self.character.stats.speed * 5 * dt
+                self.character.moving = True
+            if keys[self.game.input_manager.keymap['left']]:
+                self.character.pos.x -= self.character.stats.speed * 5 * dt
+                self.character.moving = True
+            if keys[self.game.input_manager.keymap['right']]:
+                self.character.pos.x += self.character.stats.speed * 5 * dt
+                self.character.moving = True
+
+            self.character.update_collision()
     
     def attack(self, dt: float, events):
         if self.character.current_item is None:
@@ -41,8 +49,10 @@ class CharacterController:
         if self.game.command_manager.active:
             return
 
-        self.move(dt, events)
-        self.attack(dt, events)
+        if not self.character.has_effect('paralyzed') or not self.character.has_effect('frozen') or not self.character.has_effect('petrified'):
+            self.move(dt, events)
+        if not self.character.has_effect('stunned') or not self.character.has_effect('petrified'):
+            self.attack(dt, events)
 
     def collide(self, other: entity.Entity):
         if other.group == constants.ENTITY_GROUP_ENEMY:

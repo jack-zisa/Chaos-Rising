@@ -11,7 +11,7 @@ class BulletController:
         self.bullet = bullet
     
     def control(self, dt: float, events):
-        forward = self.bullet.direction * self.bullet.speed * 5 * dt
+        forward = self.bullet.direction * self.bullet.speed * dt
 
         offset = self.bullet.perpendicular.copy() * math.cos((self.bullet.game.main.gametime - self.bullet.spawntime) * self.bullet.frequency) * self.bullet.amplitude * (-1 if self.bullet.index % 2 else 1)
 

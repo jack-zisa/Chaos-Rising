@@ -2,6 +2,6 @@
     "id": "test_acc",
     "sprite_path": "test1",
     "lifetime": 75,
-    "speed": 20,
+    "speed": 100,
     "acceleration": 1
 }

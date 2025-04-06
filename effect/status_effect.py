@@ -54,13 +54,37 @@ def berserk(main, entity, amplifier, duration, data):
 def berserk_end(main, entity, amplifier, duration, data):
     entity.stats.attack_speed = data['prev_attack_speed']
 
+def health_boost_start(main, entity, amplifier, duration, data):
+    data['prev_health'] = entity.stats.health
+def health_boost(main, entity, amplifier, duration, data):
+    entity.stats.health = min(entity.max_stats.health, entity.stats.health + (amplifier * 10))
+def health_boost_end(main, entity, amplifier, duration, data):
+    entity.stats.health = data['prev_health']
+
+def cursed_start(main, entity, amplifier, duration, data):
+    data['prev_health'] = entity.stats.health
+def cursed(main, entity, amplifier, duration, data):
+    entity.stats.health = min(entity.max_stats.health, entity.stats.health - (amplifier * 10))
+def cursed_end(main, entity, amplifier, duration, data):
+    entity.stats.health = data['prev_health']
+
 status_effects: dict = {
     'poison': StatusEffect('', 0, 0, applier=poison),
+    'burned': StatusEffect('', 0, 0, applier=poison),
     'regeneration': StatusEffect('', 0, 0, applier=regeneration),
     'slowness': StatusEffect('', 0, 0, slowness_start, slowness, slowness_end),
+    'paralyzed': StatusEffect('', 0, 0),
+    'frozen': StatusEffect('', 0, 0),
+    'petrified': StatusEffect('', 0, 0),
     'speed': StatusEffect('', 0, 0, speed_start, speed_start, speed_end),
     'dazed': StatusEffect('', 0, 0, dazed_start, dazed, dazed_end),
+    'stunned': StatusEffect('', 0, 0),
     'berserk': StatusEffect('', 0, 0, berserk_start, berserk, berserk_end),
     'sickened': StatusEffect('', 0, 0),
     'invincible': StatusEffect('', 0, 0),
+    'armor_broken': StatusEffect('', 0, 0),
+    'armored': StatusEffect('', 0, 0),
+    'vivacious': StatusEffect('', 0, 0),
+    'health_boost': StatusEffect('', 0, 0, health_boost_start, health_boost, health_boost_end),
+    'cursed': StatusEffect('', 0, 0, cursed_start, cursed, cursed_end),
 }
