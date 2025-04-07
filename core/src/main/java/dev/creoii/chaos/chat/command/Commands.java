@@ -41,18 +41,7 @@ public final class Commands {
         if (argCount >= 1) {
             Entity enemy = game.getDataManager().getEnemy(args[0]);
 
-            if (argCount == 1) {
-                float x = random.nextInt(Gdx.graphics.getWidth());
-                float y = random.nextInt(Gdx.graphics.getHeight());
-                game.getEntityManager().addEntity(enemy, new Vector2(x, y));
-            } else if (argCount == 2) {
-                int count = Integer.parseInt(args[1]);
-                for (int i = 0; i < count; i++) {
-                    float x = random.nextInt(Gdx.graphics.getWidth());
-                    float y = random.nextInt(Gdx.graphics.getHeight());
-                    game.getEntityManager().addEntity(enemy, new Vector2(x, y));
-                }
-            } else if (argCount == 3) {
+            if (argCount == 3) {
                 float x = Float.parseFloat(args[1]);
                 float y = Float.parseFloat(args[2]);
                 game.getEntityManager().addEntity(enemy, new Vector2(x, y));

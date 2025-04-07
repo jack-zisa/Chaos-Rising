@@ -14,7 +14,7 @@ public class EnemyEntity extends LivingEntity implements DataManager.Identifiabl
     private final String id;
 
     public EnemyEntity(String id, float scale) {
-        super(scale, new Vector2(1, 1).scl(scale), Group.ENEMY, new Stats(), new Stats());
+        super("textures/enemy/skeleton.png", scale, new Vector2(1, 1), Group.ENEMY, new Stats(), new Stats());
         this.id = id;
     }
 

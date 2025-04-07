@@ -21,6 +21,7 @@ public abstract class Entity implements Positioned, Tickable {
     public static final float DEFAULT_SCALE = 32f;
     // template (non-active) fields
     private final float scale;
+    private final Sprite sprite;
     private final Vector2 collider;
     private final Group group;
     private boolean active;
@@ -31,8 +32,10 @@ public abstract class Entity implements Positioned, Tickable {
     private Vector2 pos;
     private UUID uuid;
 
-    public Entity(float scale, Vector2 collider, Group group) {
+    public Entity(String spritePath, float scale, Vector2 collider, Group group) {
         this.scale = scale;
+        sprite = new Sprite(new Texture(spritePath));
+        sprite.setSize(getScale(), getScale());
         this.collider = collider;
         this.group = group;
         active = false;
@@ -109,11 +112,8 @@ public abstract class Entity implements Positioned, Tickable {
         getColliderRect().setPosition(pos.x, pos.y);
     }
 
-    Texture texture = new Texture("textures/enemy/skeleton.png");
-    Sprite sprite = new Sprite(texture);
     public void render(Renderer renderer, @Nullable SpriteBatch batch, @Nullable ShapeRenderer shapeRenderer, BitmapFont font, boolean debug) {
         if (batch != null) {
-            sprite.setSize(getScale(), getScale());
             sprite.setPosition(getPos().x, getPos().y);
             sprite.draw(batch);
         }

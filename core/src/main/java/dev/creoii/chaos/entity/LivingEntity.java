@@ -7,8 +7,8 @@ public abstract class LivingEntity extends Entity {
     private final Stats stats;
     private final Stats maxStats;
 
-    public LivingEntity(float scale, Vector2 collider, Group group, Stats stats, Stats maxStats) {
-        super(scale, collider, group);
+    public LivingEntity(String spritePath, float scale, Vector2 collider, Group group, Stats stats, Stats maxStats) {
+        super(spritePath, scale, collider, group);
         this.stats = stats;
         this.maxStats = maxStats;
     }
