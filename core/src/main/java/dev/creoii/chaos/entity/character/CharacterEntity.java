@@ -11,8 +11,8 @@ import dev.creoii.chaos.util.stat.Stats;
 import java.util.UUID;
 
 public class CharacterEntity extends LivingEntity {
-    public CharacterEntity(Vector2 collider) {
-        super(collider, Group.CHARACTER, new Stats(100, 5, 1, 4, 5, 5), new Stats(100, 10, 1, 10, 10, 10));
+    public CharacterEntity() {
+        super(1f, new Vector2(1, 1), Group.CHARACTER, new Stats(100, 5, 1, 4, 5, 5), new Stats(100, 10, 1, 10, 10, 10));
     }
 
     @Override

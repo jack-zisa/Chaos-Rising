@@ -1,5 +1,5 @@
 package dev.creoii.chaos.util;
 
 public interface Tickable {
-    void tick(int gametime);
+    void tick(int gametime, float delta);
 }

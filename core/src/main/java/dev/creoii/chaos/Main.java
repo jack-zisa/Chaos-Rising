@@ -29,8 +29,7 @@ public class Main extends ApplicationAdapter {
     public void render() {
         ScreenUtils.clear(Color.BLACK);
 
-        float delta = Gdx.graphics.getDeltaTime();
-        game.run(delta);
+        game.run(Gdx.graphics.getDeltaTime());
 
         renderer.render(debug);
     }

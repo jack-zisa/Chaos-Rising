@@ -12,21 +12,15 @@ import java.util.UUID;
 
 public class EnemyEntity extends LivingEntity implements DataManager.Identifiable {
     private final String id;
-    private final float scale;
 
     public EnemyEntity(String id, float scale) {
-        super(new Vector2(32, 32).scl(scale), Group.ENEMY, new Stats(), new Stats());
+        super(scale, new Vector2(1, 1).scl(scale), Group.ENEMY, new Stats(), new Stats());
         this.id = id;
-        this.scale = scale;
     }
 
     @Override
     public String getId() {
         return id;
-    }
-
-    public float getScale() {
-        return scale;
     }
 
     @Override
@@ -38,7 +32,7 @@ public class EnemyEntity extends LivingEntity implements DataManager.Identifiabl
 
     @Override
     public Entity create(Game game, UUID uuid, Vector2 pos) {
-        return new EnemyEntity(id, scale);
+        return new EnemyEntity(id, getScale() / DEFAULT_SCALE);
     }
 
     @Override

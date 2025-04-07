@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import dev.creoii.chaos.chat.command.CommandManager;
+import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.entity.character.CharacterEntity;
 import dev.creoii.chaos.util.Renderable;
 
@@ -26,7 +27,7 @@ public class HudRenderer implements Renderable {
             if (debug) {
                 int fps = Gdx.graphics.getFramesPerSecond();
                 CharacterEntity character = renderer.getMain().getGame().getCharacter();
-                String posText = String.format("%.2f, %.2f", character.getPos().x, character.getPos().y);
+                String posText = String.format("%.2f, %.2f", character.getPos().x / Entity.DEFAULT_SCALE, character.getPos().y / Entity.DEFAULT_SCALE);
                 String statsText = character.getStats().toDebugString(character.getMaxStats());
 
                 String[] lines = new String[]{fps + " FPS", posText, statsText};

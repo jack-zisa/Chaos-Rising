@@ -3,6 +3,7 @@ package dev.creoii.chaos.entity.ai.controller;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
+import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.entity.character.CharacterEntity;
 
 public class CharacterController extends EntityController<CharacterEntity> {
@@ -20,10 +21,10 @@ public class CharacterController extends EntityController<CharacterEntity> {
         float dx = 0f;
         float dy = 0f;
 
-        if (input.isKeyPressed(Input.Keys.A)) dx -= 1;
-        if (input.isKeyPressed(Input.Keys.D)) dx += 1;
-        if (input.isKeyPressed(Input.Keys.W)) dy += 1;
-        if (input.isKeyPressed(Input.Keys.S)) dy -= 1;
+        if (input.isKeyPressed(getInputManager().getKeycode("left"))) dx -= 1;
+        if (input.isKeyPressed(getInputManager().getKeycode("right"))) dx += 1;
+        if (input.isKeyPressed(getInputManager().getKeycode("up"))) dy += 1;
+        if (input.isKeyPressed(getInputManager().getKeycode("down"))) dy -= 1;
 
         if (dx == 0 && dy == 0) {
             entity.setMoving(false);
@@ -32,7 +33,7 @@ public class CharacterController extends EntityController<CharacterEntity> {
 
         Vector2 direction = new Vector2(dx, dy).nor();
 
-        entity.getPos().add(direction.scl(entity.getStats().speed * delta));
+        entity.getPos().add(direction.scl(entity.getStats().speed * Entity.DEFAULT_SCALE * delta));
         entity.setMoving(true);
     }
 }

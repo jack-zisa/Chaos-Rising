@@ -31,14 +31,14 @@ public class Game {
     }
 
     public void init() {
-        character = entityManager.addEntity(new CharacterEntity(new Vector2(32, 32)), new Vector2(0, 0));
+        character = entityManager.addEntity(new CharacterEntity(), new Vector2(0, 0));
     }
 
     public void run(float delta) {
         ++gametime;
 
         commandManager.update(gametime);
-        tickManager.tick(gametime);
+        tickManager.tick(gametime, delta);
         entityManager.checkCollisions();
     }
 

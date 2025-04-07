@@ -1,7 +1,9 @@
 package dev.creoii.chaos.entity;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
@@ -16,7 +18,9 @@ import javax.annotation.Nullable;
 import java.util.UUID;
 
 public abstract class Entity implements Positioned, Tickable {
+    public static final float DEFAULT_SCALE = 32f;
     // template (non-active) fields
+    private final float scale;
     private final Vector2 collider;
     private final Group group;
     private boolean active;
@@ -27,7 +31,8 @@ public abstract class Entity implements Positioned, Tickable {
     private Vector2 pos;
     private UUID uuid;
 
-    public Entity(Vector2 collider, Group group) {
+    public Entity(float scale, Vector2 collider, Group group) {
+        this.scale = scale;
         this.collider = collider;
         this.group = group;
         active = false;
@@ -38,10 +43,19 @@ public abstract class Entity implements Positioned, Tickable {
 
     public abstract EntityController<?> getController();
 
-    public void tick(int gametime) {
+    public void tick(int gametime, float delta) {
         if (getController() != null) {
-            getController().control(1f);
+            getController().control(delta);
         }
+    }
+
+    public float getScale() {
+        return scale * DEFAULT_SCALE;
+    }
+
+    public Rectangle getColliderRect() {
+        if (!active) return null;
+        return new Rectangle(pos.x, pos.y, collider.x * getScale(), collider.y * getScale());
     }
 
     public Group getGroup() {
@@ -82,11 +96,6 @@ public abstract class Entity implements Positioned, Tickable {
         return uuid;
     }
 
-    public Rectangle getColliderRect() {
-        if (!active) return null;
-        return new Rectangle(pos.x, pos.y, collider.x, collider.y);
-    }
-
     public Entity spawn(Game game, UUID uuid, Vector2 pos) {
         Entity entity = create(game, uuid, pos);
         entity.game = game;
@@ -100,7 +109,15 @@ public abstract class Entity implements Positioned, Tickable {
         getColliderRect().setPosition(pos.x, pos.y);
     }
 
+    Texture texture = new Texture("textures/enemy/skeleton.png");
+    Sprite sprite = new Sprite(texture);
     public void render(Renderer renderer, @Nullable SpriteBatch batch, @Nullable ShapeRenderer shapeRenderer, BitmapFont font, boolean debug) {
+        if (batch != null) {
+            sprite.setSize(getScale(), getScale());
+            sprite.setPosition(getPos().x, getPos().y);
+            sprite.draw(batch);
+        }
+
         if (debug && shapeRenderer != null) {
             shapeRenderer.setColor(Color.GREEN);
             shapeRenderer.rect(getColliderRect().x, getColliderRect().y, getColliderRect().width, getColliderRect().height);
