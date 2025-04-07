@@ -1,2 +1,4 @@
-*.pyc
-todo
+.gradle/
+.idea/
+*/build/
+lwjgl3/
