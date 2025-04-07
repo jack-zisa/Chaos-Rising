@@ -93,6 +93,9 @@ class ItemEntity(Entity):
         Entity.__init__(self, None, self.spawn, self.tick, self.render, constants.ENTITY_GROUP_ITEM, scale)
         self.collider = pygame.Vector2(0, 0)
         self.item = item
+        self.control_func = self.control
+        self.dragging = False
+        self.drag_offset = pygame.Vector2()
     
     def tick(self, gametime: int):
         pass
@@ -105,5 +108,17 @@ class ItemEntity(Entity):
             f'{self.item.id}', f'Damage: {self.item.damage}'
             ])
     
-    def control():
-        pass
+    def control(self, dt, events):
+        mouse_pos = pygame.Vector2(pygame.mouse.get_pos())
+
+        for event in events:
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                if self.item.sprite.get_rect(topleft=self.pos).collidepoint(mouse_pos):
+                    self.dragging = True
+                    self.drag_offset = mouse_pos - self.pos
+
+            elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+                self.dragging = False
+
+        if self.dragging:
+            self.pos = mouse_pos - self.drag_offset

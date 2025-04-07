@@ -29,44 +29,43 @@ def spawn_enemy(main, args):
         enemy = main.game.data_manager.get_enemy(args[0])
         main.game.entity_manager.add_entity(enemy, pygame.Vector2(x, y))
     elif arg_count == 2:
-        id = args[0]
         count = int(args[1])
-        enemy = main.game.data_manager.get_enemy(id)
+        enemy = main.game.data_manager.get_enemy(args[0])
         for i in range(count):
             x = random.randint(0, main.screen.get_width())
             y = random.randint(0, main.screen.get_height())
             main.game.entity_manager.add_entity(enemy, pygame.Vector2(x, y))
     elif arg_count == 3:
-        id = args[0]
         x = int(args[1])
         y = int(args[2])
-        enemy = main.game.data_manager.get_enemy(id)
+        enemy = main.game.data_manager.get_enemy(args[0])
         main.game.entity_manager.add_entity(enemy, pygame.Vector2(x, y))
     elif arg_count == 4:
-        id = args[0]
         x = int(args[1])
         y = int(args[2])
         count = int(args[1])
-        enemy = main.game.data_manager.get_enemy(id)
+        enemy = main.game.data_manager.get_enemy(args[0])
         for i in range(count):
             main.game.entity_manager.add_entity(enemy, pygame.Vector2(x, y))
 
     elif arg_count == 5:
-        id = args[0]
         x1 = int(args[1])
         y1 = int(args[2])
         x2 = int(args[3])
         y2 = int(args[4])
-        enemy = main.game.data_manager.get_enemy(id)
+        enemy = main.game.data_manager.get_enemy(args[0])
         main.game.entity_manager.add_entity(enemy, pygame.Vector2(random.randrange(x1, x2), random.randrange(y1, y2)))
     elif arg_count == 6:
-        id = args[0]
         x1 = int(args[1])
         y1 = int(args[2])
         x2 = int(args[3])
         y2 = int(args[4])
+        if x1 >= x2:
+            x1, x2 = min(x1, x2), max(x1 + 1, x2 + 1)
+        if y1 >= y2:
+            y1, y2 = min(y1, y2), max(y1 + 1, y2 + 1)
         count = int(args[5])
-        enemy = main.game.data_manager.get_enemy(id)
+        enemy = main.game.data_manager.get_enemy(args[0])
         for i in range(count):
             main.game.entity_manager.add_entity(enemy, pygame.Vector2(random.randrange(x1, x2), random.randrange(y1, y2)))
 

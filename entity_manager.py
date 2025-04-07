@@ -30,7 +30,7 @@ class EntityManager:
         [entity.render_func(renderer, clock, screen, font, debug) for entity in self.get_active_entities().values()]
 
     def control(self, dt, events):
-        [entity.control_func(dt, events) for entity in self.get_active_entities().values() if entity.group is not constants.ENTITY_GROUP_ITEM]
+        [entity.control_func(dt, events) for entity in self.get_active_entities().values()]
 
     def get_cell(self, pos):
         cell_size = 64
