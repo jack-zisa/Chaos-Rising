@@ -11,7 +11,7 @@ import dev.creoii.chaos.util.stat.Stats;
 import java.util.UUID;
 
 public class EnemyEntity extends LivingEntity implements DataManager.Identifiable {
-    private static final String DEFAULT_SPRITE_PATH = "textures/enemy/skeleton.png";
+    private static final String DEFAULT_SPRITE_PATH = "enemy/skeleton";
     private final String id;
 
     public EnemyEntity(String id, String spritePath, float scale) {

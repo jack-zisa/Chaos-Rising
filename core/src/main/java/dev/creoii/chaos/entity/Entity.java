@@ -11,13 +11,13 @@ import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.Game;
 import dev.creoii.chaos.entity.ai.controller.EntityController;
 import dev.creoii.chaos.render.Renderer;
-import dev.creoii.chaos.util.Positioned;
+import dev.creoii.chaos.util.Positionable;
 import dev.creoii.chaos.util.Tickable;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public abstract class Entity implements Positioned, Tickable {
+public abstract class Entity implements Positionable, Tickable {
     public static final float DEFAULT_SCALE = 32f;
     // template (non-active) fields
     private final float scale;
@@ -35,8 +35,8 @@ public abstract class Entity implements Positioned, Tickable {
 
     public Entity(String spritePath, float scale, Vector2 collider, Group group) {
         this.scale = scale;
-        this.spritePath = spritePath;
-        sprite = new Sprite(new Texture(spritePath));
+        this.spritePath = "textures/" + spritePath + ".png";
+        sprite = new Sprite(new Texture(this.spritePath));
         sprite.setSize(getScale(), getScale());
         this.collider = collider;
         this.group = group;

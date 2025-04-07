@@ -2,7 +2,7 @@ package dev.creoii.chaos.util;
 
 import com.badlogic.gdx.math.Vector2;
 
-public interface Positioned {
+public interface Positionable {
     Vector2 getPos();
 
     void setPos(Vector2 pos);
