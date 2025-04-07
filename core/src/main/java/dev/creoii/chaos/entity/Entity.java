@@ -34,6 +34,8 @@ public abstract class Entity implements Positioned, Tickable {
         moving = false;
     }
 
+    public abstract Entity create(Game game, UUID uuid, Vector2 pos);
+
     public abstract EntityController<?> getController();
 
     public void tick(int gametime) {
@@ -48,6 +50,10 @@ public abstract class Entity implements Positioned, Tickable {
 
     public boolean isActive() {
         return active;
+    }
+
+    public void setActive() {
+        this.active = true;
     }
 
     public boolean isMoving() {
@@ -82,11 +88,12 @@ public abstract class Entity implements Positioned, Tickable {
     }
 
     public Entity spawn(Game game, UUID uuid, Vector2 pos) {
-        this.game = game;
-        this.uuid = uuid;
-        this.pos = pos;
-        this.active = true;
-        return this;
+        Entity entity = create(game, uuid, pos);
+        entity.game = game;
+        entity.uuid = uuid;
+        entity.pos = pos;
+        entity.setActive();
+        return entity;
     }
 
     public void updateCollision() {

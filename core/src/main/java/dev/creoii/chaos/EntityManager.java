@@ -19,12 +19,12 @@ public class EntityManager {
         this.entities = new ObjectMap<>();
     }
 
-    public <T extends Entity> T addEntity(T template, Vector2 pos) {
+    public <T extends Entity> T addEntity(T entity, Vector2 pos) {
         UUID uuid = UUID.randomUUID();
-        T entity = (T) template.spawn(main.getGame(), uuid, pos);
-        entities.put(uuid, entity);
-        main.getGame().getTickManager().addTickable(entity);
-        return entity;
+        T spawned = (T) entity.spawn(main.getGame(), uuid, pos);
+        entities.put(uuid, spawned);
+        main.getGame().getTickManager().addTickable(spawned); // add boolean value to not tick
+        return spawned;
     }
 
     public boolean removeEntity(Entity entity) {

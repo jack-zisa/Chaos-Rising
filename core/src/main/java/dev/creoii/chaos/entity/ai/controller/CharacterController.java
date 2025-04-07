@@ -2,6 +2,7 @@ package dev.creoii.chaos.entity.ai.controller;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.entity.character.CharacterEntity;
 
 public class CharacterController extends EntityController<CharacterEntity> {
@@ -15,32 +16,23 @@ public class CharacterController extends EntityController<CharacterEntity> {
             return;
 
         Input input = Gdx.input;
-        boolean[] keys = new boolean[4];
 
-        keys[0] = input.isKeyPressed(Input.Keys.A);
-        keys[1] = input.isKeyPressed(Input.Keys.W);
-        keys[2] = input.isKeyPressed(Input.Keys.S);
-        keys[3] = input.isKeyPressed(Input.Keys.D);
+        float dx = 0f;
+        float dy = 0f;
 
-        if (!keys[0] && !keys[1] && !keys[2] && !keys[3]) {
+        if (input.isKeyPressed(Input.Keys.A)) dx -= 1;
+        if (input.isKeyPressed(Input.Keys.D)) dx += 1;
+        if (input.isKeyPressed(Input.Keys.W)) dy += 1;
+        if (input.isKeyPressed(Input.Keys.S)) dy -= 1;
+
+        if (dx == 0 && dy == 0) {
             entity.setMoving(false);
-        } else {
-            if (keys[0]) {
-                entity.getPos().x = entity.getPos().x - entity.getStats().speed * delta;
-                entity.setMoving(true);
-            }
-            if (keys[1]) {
-                entity.getPos().y = entity.getPos().y + entity.getStats().speed * delta;
-                entity.setMoving(true);
-            }
-            if (keys[2]) {
-                entity.getPos().y = entity.getPos().y - entity.getStats().speed * delta;
-                entity.setMoving(true);
-            }
-            if (keys[3]) {
-                entity.getPos().x = entity.getPos().x + entity.getStats().speed * delta;
-                entity.setMoving(true);
-            }
+            return;
         }
+
+        Vector2 direction = new Vector2(dx, dy).nor();
+
+        entity.getPos().add(direction.scl(entity.getStats().speed * delta));
+        entity.setMoving(true);
     }
 }

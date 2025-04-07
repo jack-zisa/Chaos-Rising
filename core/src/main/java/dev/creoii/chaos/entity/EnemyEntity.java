@@ -4,8 +4,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import dev.creoii.chaos.DataManager;
+import dev.creoii.chaos.Game;
 import dev.creoii.chaos.entity.ai.controller.EntityController;
 import dev.creoii.chaos.util.stat.Stats;
+
+import java.util.UUID;
 
 public class EnemyEntity extends LivingEntity implements DataManager.Identifiable {
     private final String id;
@@ -31,6 +34,11 @@ public class EnemyEntity extends LivingEntity implements DataManager.Identifiabl
         if (other.getGroup() == Group.CHARACTER) {
             other.damage(5);
         }
+    }
+
+    @Override
+    public Entity create(Game game, UUID uuid, Vector2 pos) {
+        return new EnemyEntity(id, scale);
     }
 
     @Override
