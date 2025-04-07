@@ -1,5 +1,6 @@
 import uuid as u
 import pygame
+import util.constants as constants
 from collections import defaultdict
 
 class EntityManager:
@@ -29,7 +30,7 @@ class EntityManager:
         [entity.render_func(renderer, clock, screen, font, debug) for entity in self.get_active_entities().values()]
 
     def control(self, dt, events):
-        [entity.control_func(dt, events) for entity in self.get_active_entities().values()]
+        [entity.control_func(dt, events) for entity in self.get_active_entities().values() if entity.group is not constants.ENTITY_GROUP_ITEM]
 
     def get_cell(self, pos):
         cell_size = 64
@@ -39,6 +40,8 @@ class EntityManager:
         grid = defaultdict(list)
     
         for entity in self.get_active_entities().values():
+            if entity.group == constants.ENTITY_GROUP_ITEM:
+                continue
             cell = self.get_cell(entity.pos)
             grid[cell].append(entity)
 
@@ -51,9 +54,6 @@ class EntityManager:
             for c in neighbor_cells:
                 for a in entities:
                     for b in grid.get(c, []):
-                        if a is b:
-                            continue
-                        if a.pos.distance_to(b.pos) < 32:
-                            if a.get_collider_rect().colliderect(b.get_collider_rect()):
-                                a.collide_func(b)
-                                b.collide_func(a)
+                        if a is not b and a.pos.distance_to(b.pos) < 32 and a.get_collider_rect().colliderect(b.get_collider_rect()):
+                            a.collide_func(b)
+                            b.collide_func(a)

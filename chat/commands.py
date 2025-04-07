@@ -1,5 +1,6 @@
 import random
 import pygame
+import objects.entity.entity as entity
 
 def set_stat(main, args):
     if len(args) > 1:
@@ -92,7 +93,7 @@ def remove_effect(main, args):
 
 def set_item(main, args):
     if len(args) > 0:
-        main.character.current_item = main.game.data_manager.get_item(args[0])
+        main.character.current_item = main.game.entity_manager.add_entity(entity.ItemEntity(1, main.game.data_manager.get_item(args[0])), pygame.Vector2(0, 32))
 
 def set_scale(main, args):
     if len(args) > 0:

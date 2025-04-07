@@ -43,7 +43,7 @@ class CharacterController:
         if self.character.current_item is None:
             return
         
-        self.character.current_item.attack.attack(self.character, self)
+        self.character.current_item.item.attack.attack(self.character, self)
     
     def control(self, dt: float, events):
         if self.game.command_manager.active:
@@ -71,9 +71,6 @@ class Character(entity.LivingEntity):
         self.control_func = self.controller.control
         self.collide_func = self.controller.collide
         return entity.Entity.spawn(self, game, uuid, pos)
-
-    def update_collision(self):
-        self.get_collider_rect().topleft = self.pos
     
     def tick(self, gametime):
         entity.LivingEntity.tick(self, gametime)
@@ -82,7 +79,7 @@ class Character(entity.LivingEntity):
         screen.blit(self.clazz.sprite, self.pos)
 
         if self.current_item is not None:
-            self.current_item.render(clock, screen, font, debug)
+            self.current_item.render(renderer, clock, screen, font, debug)
         
         if debug:
             stats_text = font.render(f'H: {self.stats.health}/{self.max_stats.health},S: {self.stats.speed}/{self.max_stats.speed},AS: {self.stats.attack_speed}/{self.max_stats.attack_speed},D: {self.stats.defense}/{self.max_stats.defense},A: {self.stats.attack}/{self.max_stats.attack},V: {self.stats.vitality}/{self.max_stats.vitality}', True, (255, 255, 255))

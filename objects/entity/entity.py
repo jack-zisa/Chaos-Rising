@@ -1,5 +1,8 @@
 import pygame
 import objects.entity.stat as stat
+import objects.item.item as item
+import render.tooltip as tooltip
+import util.constants as constants
 from game import Game
 
 class Entity:
@@ -12,7 +15,7 @@ class Entity:
         self.scale = scale
         self.active = False
         self.moving = False
-
+    
     def get_center_pos(self) -> pygame.Vector2:
         if not self.active:
             return None
@@ -49,11 +52,13 @@ class Entity:
     
     def render(self, renderer, clock, screen: pygame.surface.Surface, debug: bool):
         if debug:
-            collider_rect = self.get_collider_rect()
-            pygame.draw.rect(screen, (0, 255, 0), collider_rect, 1)
+            pygame.draw.rect(screen, (0, 255, 0), self.get_collider_rect(), 1)
     
     def remove(self):
         self.game.entity_manager.remove_entity(self)
+
+    def has_effect(self, id) -> bool:
+        return any(e.id == id for e in self.status_effects)
 
 class LivingEntity(Entity):
     def __init__(self, collider: pygame.Vector2, spawn_func, tick_func, render_func, group: str, scale: float, stats: stat.Stats, max_stats: stat.Stats):
@@ -75,11 +80,26 @@ class LivingEntity(Entity):
             amount += 5
         self.stats.health = min(self.max_stats.health, self.stats.health + amount)
     
-    def tick(self, gametime):
+    def tick(self, gametime: int):
         if self.stats.health != self.max_stats.health and gametime % 20 == 0:
             self.heal(int(0.25 * self.stats.vitality))
     
-    def has_effect(self, id) -> bool:
-        return any(e.id == id for e in self.status_effects)
+class ItemEntity(Entity):
+    def __init__(self, scale, item: item.Item):
+        Entity.__init__(self, None, self.spawn, self.tick, self.render, constants.ENTITY_GROUP_ITEM, scale)
+        self.collider = pygame.Vector2(0, 0)
+        self.item = item
+    
+    def tick(self, gametime: int):
+        pass
+    
+    def render(self, renderer, clock, screen: pygame.surface.Surface, font: pygame.font.Font, debug: bool):
+        rect = self.item.sprite.get_rect(topleft=self.pos)
+        screen.blit(self.item.sprite, rect.topleft)
 
-
+        tooltip.render_tooltip(screen, rect, font, [
+            f'{self.item.id}', f'Damage: {self.item.damage}'
+            ])
+    
+    def control():
+        pass

@@ -71,7 +71,7 @@ class Bullet(entity.Entity):
     def create(self, parent: entity.Entity, direction: pygame.Vector2 = None) -> 'Bullet':
         bullet = Bullet(self.id, self.collider, self.lifetime, self.speed, self.acceleration, self.frequency, self.amplitude, self.arc_speed, sprite=self.sprite, scale=self.scale)
         bullet.parent = parent
-        bullet.damage = parent.current_item.damage
+        bullet.damage = parent.current_item.item.damage
 
         if direction is not None and direction.length_squared() != 0:
             bullet.direction = direction.normalize()
