@@ -1,7 +1,0 @@
-{
-    "id": "test_dummy",
-    "sprite_path": "test",
-    "stats": {
-        "health": 1000
-    }
-}

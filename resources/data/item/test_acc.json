@@ -1,8 +1,0 @@
-{
-    "id": "test_acc",
-    "sprite_path": "test",
-    "damage": 25,
-    "attack": {
-        "bullet_id": "test_acc"
-    }
-}

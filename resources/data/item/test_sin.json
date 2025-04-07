@@ -1,8 +1,0 @@
-{
-    "id": "test_sin",
-    "sprite_path": "test",
-    "damage": 25,
-    "attack": {
-        "bullet_id": "test_sin"
-    }
-}
