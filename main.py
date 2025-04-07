@@ -7,7 +7,7 @@ from render import camera
 class Main:
     def __init__(self):
         pygame.init()
-        pygame.display.set_caption("Chaos Rising")
+        pygame.display.set_caption('Chaos Rising')
 
         self.game = Game(self)
         self.game.data_manager.load()
@@ -40,5 +40,5 @@ class Main:
 
         pygame.quit()
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     Main().start()

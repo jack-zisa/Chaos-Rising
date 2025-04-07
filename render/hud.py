@@ -1,11 +1,10 @@
 import pygame
 import objects.entity.character as ch
+import render.tooltip as tooltip
 
 def render(renderer, clock: pygame.time.Clock, screen: pygame.surface.Surface, character: ch.Character, font: pygame.font.Font, debug: bool):    
     screen.blit(character.clazz.sprite, (0, 0))
-
-    text = font.render(character.clazz.id, True, (255, 255, 255))
-    screen.blit(text, text.get_rect(center = (56,16)))
+    tooltip.render_tooltip(screen, pygame.rect.Rect(0, 0, 32 * character.scale, 32 * character.scale), font, [character.clazz.id])
 
     width = get_health_bar_width(screen, character)
     pygame.draw.rect(screen, get_health_bar_color(character), ((screen.get_width() / 2) - (width / 2), 10, width, 15))
@@ -20,7 +19,7 @@ def get_health_bar_width(screen: pygame.surface.Surface, character: ch.Character
     width = int(screen.get_width() * 0.625)
     return min(width, int(width * (character.stats.health / character.max_stats.health)))
 
-def get_health_bar_color(character: ch.Character) -> pygame.Vector3:
+def get_health_bar_color(character: ch.Character):
     ratio = character.stats.health / character.max_stats.health
     
     if ratio > 0.75:

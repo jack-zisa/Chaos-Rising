@@ -49,9 +49,9 @@ class CharacterController:
         if self.game.command_manager.active:
             return
 
-        if not self.character.has_effect('paralyzed') or not self.character.has_effect('frozen') or not self.character.has_effect('petrified'):
+        if not self.character.has_effect(constants.STATUS_EFFECT_PARALYZED) or not self.character.has_effect(constants.STATUS_EFFECT_FROZEN) or not self.character.has_effect(constants.STATUS_EFFECT_PETRIFIED):
             self.move(dt, events)
-        if not self.character.has_effect('stunned') or not self.character.has_effect('petrified'):
+        if not self.character.has_effect(constants.STATUS_EFFECT_STUNNED) or not self.character.has_effect(constants.STATUS_EFFECT_PETRIFIED):
             self.attack(dt, events)
 
     def collide(self, other: entity.Entity):

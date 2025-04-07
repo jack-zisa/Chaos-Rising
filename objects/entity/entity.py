@@ -43,14 +43,17 @@ class Entity:
             if gametime % 20 == 0:
                 if status_effect.applier is not None:
                     status_effect.applier(self.game.main, self, status_effect.amplifier, status_effect.duration, status_effect.data)
-                status_effect.duration -= 1
             
                 if status_effect.duration <= 0:
                     if status_effect.remover is not None:
                         status_effect.remover(self.game.main, self, status_effect.amplifier, status_effect.duration, status_effect.data)
                     self.status_effects.remove(status_effect)
-    
+                status_effect.duration -= 1
+
     def render(self, renderer, clock, screen: pygame.surface.Surface, debug: bool):
+        if len(self.status_effects) > 0:
+            pygame.draw.rect(screen, self.status_effects[0].color, pygame.rect.Rect(self.pos.x - 8, self.pos.y - 8, 8, 8))
+
         if debug:
             pygame.draw.rect(screen, (0, 255, 0), self.get_collider_rect(), 1)
     
@@ -67,20 +70,21 @@ class LivingEntity(Entity):
         self.max_stats = max_stats
     
     def damage(self, amount: int):
-        if self.stats.health <= 0 or self.has_effect('invincible'):
+        if self.stats.health <= 0 or self.has_effect(constants.STATUS_EFFECT_INVINCIBLE):
             return
-        defense = self.stats.defense + (20 if self.has_effect('armored') else 0)
-        amount = amount - (0 if self.has_effect('armor_broken') else defense)
+        defense = self.stats.defense + (20 if self.has_effect(constants.STATUS_EFFECT_ARMORED) else 0)
+        amount = amount - (0 if self.has_effect(constants.STATUS_EFFECT_ARMOR_BROKEN) else defense)
         self.stats.health = max(0, self.stats.health - amount)
     
     def heal(self, amount: int):
-        if self.stats.health <= 0 or self.has_effect('sickened'):
+        if self.stats.health <= 0 or self.has_effect(constants.STATUS_EFFECT_SICKENED):
             return
-        if self.has_effect('vivacious'):
+        if self.has_effect(constants.STATUS_EFFECT_VIVACIOUS):
             amount += 5
         self.stats.health = min(self.max_stats.health, self.stats.health + amount)
     
     def tick(self, gametime: int):
+        Entity.tick(self, gametime)
         if self.stats.health != self.max_stats.health and gametime % 20 == 0:
             self.heal(int(0.25 * self.stats.vitality))
     
