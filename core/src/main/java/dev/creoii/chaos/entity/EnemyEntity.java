@@ -11,6 +11,9 @@ public class EnemyEntity extends LivingEntity {
 
     @Override
     public void collide(LivingEntity other) {
+        if (other.getGroup() == Group.CHARACTER) {
+            other.damage(1);
+        }
     }
 
     @Override
