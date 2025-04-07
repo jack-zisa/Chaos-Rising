@@ -7,7 +7,7 @@ public interface Positioned {
 
     void setPos(Vector2 pos);
 
-    default void setPos(int x, int y) {
+    default void setPos(float x, float y) {
         setPos(new Vector2(x, y));
     }
 }

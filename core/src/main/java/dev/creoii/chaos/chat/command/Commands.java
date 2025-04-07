@@ -14,8 +14,8 @@ public final class Commands {
 
     public static final Command SET_POS = Command.register("set_pos", (game, args) -> {
         if (args.length > 1) {
-            int x = Integer.parseInt(args[0]);
-            int y = Integer.parseInt(args[1]);
+            float x = Integer.parseInt(args[0]) * Entity.DEFAULT_SCALE;
+            float y = Integer.parseInt(args[1]) * Entity.DEFAULT_SCALE;
             game.getCharacter().setPos(x, y);
         }
     });

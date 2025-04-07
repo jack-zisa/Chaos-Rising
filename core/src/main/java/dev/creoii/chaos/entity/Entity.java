@@ -118,10 +118,6 @@ public abstract class Entity implements Positioned, Tickable {
         return entity;
     }
 
-    public void updateCollision() {
-        getColliderRect().setPosition(pos.x, pos.y);
-    }
-
     public void render(Renderer renderer, @Nullable SpriteBatch batch, @Nullable ShapeRenderer shapeRenderer, BitmapFont font, boolean debug) {
         if (batch != null) {
             sprite.setPosition(getPos().x, getPos().y);
