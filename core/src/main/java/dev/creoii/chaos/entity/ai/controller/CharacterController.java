@@ -25,21 +25,20 @@ public class CharacterController extends EntityController<CharacterEntity> {
         if (!keys[0] && !keys[1] && !keys[2] && !keys[3]) {
             entity.setMoving(false);
         } else {
-            int speed = 1;
             if (keys[0]) {
-                entity.getPos().x = entity.getPos().x - speed * delta;
+                entity.getPos().x = entity.getPos().x - entity.getStats().speed * delta;
                 entity.setMoving(true);
             }
             if (keys[1]) {
-                entity.getPos().y = entity.getPos().y + speed * delta;
+                entity.getPos().y = entity.getPos().y + entity.getStats().speed * delta;
                 entity.setMoving(true);
             }
             if (keys[2]) {
-                entity.getPos().y = entity.getPos().y - speed * delta;
+                entity.getPos().y = entity.getPos().y - entity.getStats().speed * delta;
                 entity.setMoving(true);
             }
             if (keys[3]) {
-                entity.getPos().x = entity.getPos().x + speed * delta;
+                entity.getPos().x = entity.getPos().x + entity.getStats().speed * delta;
                 entity.setMoving(true);
             }
         }

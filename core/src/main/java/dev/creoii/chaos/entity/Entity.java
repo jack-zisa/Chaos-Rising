@@ -50,10 +50,6 @@ public abstract class Entity implements Positioned, Tickable {
         return active;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
     public boolean isMoving() {
         return moving;
     }

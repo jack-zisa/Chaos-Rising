@@ -3,6 +3,8 @@ package dev.creoii.chaos;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonValue;
+import dev.creoii.chaos.entity.EnemyEntity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,34 +12,35 @@ import java.util.Map;
 public class DataManager {
     private final Json json;
 
-    private final Map<String, Parser> dataSchema;
+    private final Map<String, Parser> schema;
     private final Map<String, Map<String, Identifiable>> data;
 
     public DataManager() {
-        this.json = new Json();
+        json = new Json();
 
-        // Initialize schema
-        this.dataSchema = new HashMap<>();
-        //this.dataSchema.put("class", jsonData -> json.readValue(CharacterClass.class, jsonData));
-        //this.dataSchema.put("enemy", jsonData -> json.readValue(Enemy.class, jsonData));
-        //this.dataSchema.put("bullet", jsonData -> json.readValue(Bullet.class, jsonData));
-        //this.dataSchema.put("item", jsonData -> json.readValue(Item.class, jsonData));
+        json.setSerializer(EnemyEntity.class, new EnemyEntity.Serializer());
 
-        this.data = new HashMap<>();
-        for (String key : dataSchema.keySet()) {
-            this.data.put(key, new HashMap<>());
+        schema = new HashMap<>();
+        //dataSchema.put("class", fileHandle -> json.fromJson(CharacterClass.class, fileHandle));
+        schema.put("enemy", fileHandle -> json.fromJson(EnemyEntity.class, fileHandle));
+        //dataSchema.put("bullet", fileHandle -> json.fromJson(Bullet.class, fileHandle));
+        //dataSchema.put("item", fileHandle -> json.fromJson(Item.class, fileHandle));
+
+        data = new HashMap<>();
+        for (String key : schema.keySet()) {
+            data.put(key, new HashMap<>());
         }
     }
 
     /*public CharacterClass getCharacterClass(String id) {
         return (CharacterClass) data.get("class").get(id);
+    }*/
+
+    public EnemyEntity getEnemy(String id) {
+        return (EnemyEntity) data.get("enemy").get(id);
     }
 
-    public Enemy getEnemy(String id) {
-        return (Enemy) data.get("enemy").get(id);
-    }
-
-    public Bullet getBullet(String id) {
+    /*public Bullet getBullet(String id) {
         return (Bullet) data.get("bullet").get(id);
     }
 
@@ -53,7 +56,7 @@ public class DataManager {
             return;
         }
 
-        for (Map.Entry<String, Parser> entry : dataSchema.entrySet()) {
+        for (Map.Entry<String, Parser> entry : schema.entrySet()) {
             String folder = entry.getKey();
             Parser parser = entry.getValue();
 

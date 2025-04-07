@@ -26,7 +26,7 @@ public abstract class LivingEntity extends Entity {
     public void damage(int amount) {
         if (stats.health <= 0)
             return;
-        stats.health = Math.max(0, stats.health - (amount - stats.defense));
+        stats.health = Math.max(0, stats.health - Math.max(0, amount - stats.defense));
     }
 
     public void heal(int amount) {

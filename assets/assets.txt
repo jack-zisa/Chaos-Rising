@@ -1,0 +1,2 @@
+data/enemy/test.json
+data/enemy/test_big.json

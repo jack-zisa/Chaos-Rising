@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.chat.command.CommandManager;
-import dev.creoii.chaos.entity.EnemyEntity;
 import dev.creoii.chaos.entity.character.CharacterEntity;
 
 public class Game {
@@ -32,8 +31,8 @@ public class Game {
     }
 
     public void init() {
-        character = entityManager.addEntity(new CharacterEntity(new Vector2(32, 32)), new Vector2(100, 100));
-        EnemyEntity enemy = entityManager.addEntity(new EnemyEntity(new Vector2(32, 32)), new Vector2(200, 200));
+        character = entityManager.addEntity(new CharacterEntity(new Vector2(32, 32)), new Vector2(0, 0));
+        entityManager.addEntity(dataManager.getEnemy("test_big"), new Vector2(200, 200));
     }
 
     public void run(float delta) {
@@ -76,6 +75,5 @@ public class Game {
         return character;
     }
 
-    public void dispose() {
-    }
+    public void dispose() {}
 }
