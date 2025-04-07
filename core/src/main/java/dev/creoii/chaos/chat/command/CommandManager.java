@@ -65,7 +65,7 @@ public class CommandManager extends InputAdapter {
     public boolean keyTyped(char character) {
         if (!active) return false;
 
-        if (Character.isLetterOrDigit(character) || character == ' ' || character == '_' || character == '.') {
+        if (Character.isLetterOrDigit(character) || character == ' ' || character == '_' || character == '.' || character == '-') {
             command.append(character);
             return true;
         }
