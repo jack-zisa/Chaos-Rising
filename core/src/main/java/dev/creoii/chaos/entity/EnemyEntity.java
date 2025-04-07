@@ -11,10 +11,11 @@ import dev.creoii.chaos.util.stat.Stats;
 import java.util.UUID;
 
 public class EnemyEntity extends LivingEntity implements DataManager.Identifiable {
+    private static final String DEFAULT_SPRITE_PATH = "textures/enemy/skeleton.png";
     private final String id;
 
-    public EnemyEntity(String id, float scale) {
-        super("textures/enemy/skeleton.png", scale, new Vector2(1, 1), Group.ENEMY, new Stats(), new Stats());
+    public EnemyEntity(String id, String spritePath, float scale) {
+        super(spritePath, scale, new Vector2(1, 1), Group.ENEMY, new Stats(), new Stats());
         this.id = id;
     }
 
@@ -32,7 +33,7 @@ public class EnemyEntity extends LivingEntity implements DataManager.Identifiabl
 
     @Override
     public Entity create(Game game, UUID uuid, Vector2 pos) {
-        return new EnemyEntity(id, getScale() / DEFAULT_SCALE);
+        return new EnemyEntity(id, getSpritePath(), getScale() / DEFAULT_SCALE);
     }
 
     @Override
@@ -46,14 +47,16 @@ public class EnemyEntity extends LivingEntity implements DataManager.Identifiabl
             json.writeObjectStart();
             json.writeValue("id", enemy.getId());
             json.writeValue("scale", enemy.getScale());
+            json.writeValue("sprite_path", enemy.getSpritePath());
             json.writeObjectEnd();
         }
 
         @Override
         public EnemyEntity read(Json json, JsonValue jsonValue, Class aClass) {
             String id = jsonValue.getString("id");
+            String spritePath = jsonValue.getString("sprite_path", DEFAULT_SPRITE_PATH);
             float scale = jsonValue.getFloat("scale", 1f);
-            return new EnemyEntity(id, scale);
+            return new EnemyEntity(id, spritePath, scale);
         }
     }
 }

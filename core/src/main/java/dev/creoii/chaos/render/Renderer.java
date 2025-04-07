@@ -6,8 +6,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import dev.creoii.chaos.Main;
-import dev.creoii.chaos.chat.command.Commands;
-import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.util.Renderable;
 
 import java.util.ArrayList;

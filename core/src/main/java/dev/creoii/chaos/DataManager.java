@@ -3,7 +3,6 @@ package dev.creoii.chaos;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonValue;
 import dev.creoii.chaos.entity.EnemyEntity;
 
 import java.util.HashMap;
@@ -52,7 +51,7 @@ public class DataManager {
         FileHandle baseDir = Gdx.files.internal("data");
 
         if (!baseDir.exists()) {
-            Gdx.app.log("DataManager", "Directory 'data/' does not exist.");
+            Gdx.app.log(DataManager.class.getSimpleName(), "Directory 'data/' does not exist.");
             return;
         }
 
@@ -62,7 +61,7 @@ public class DataManager {
 
             FileHandle folderHandle = baseDir.child(folder);
             if (!folderHandle.exists()) {
-                Gdx.app.log("DataManager", "Folder '" + folderHandle.path() + "' does not exist, skipping.");
+                Gdx.app.log(DataManager.class.getSimpleName(), "Folder '" + folderHandle.path() + "' does not exist, skipping.");
                 continue;
             }
 
@@ -71,7 +70,7 @@ public class DataManager {
                     Identifiable obj = parser.parse(file);
                     data.get(folder).put(obj.getId(), obj);
                 } catch (Exception e) {
-                    Gdx.app.error("DataManager", "Error parsing " + file.name() + " in " + folder + ": " + e.getMessage());
+                    Gdx.app.error(DataManager.class.getSimpleName(), "Error parsing " + file.name() + " in " + folder + ": " + e.getMessage());
                 }
             }
         }

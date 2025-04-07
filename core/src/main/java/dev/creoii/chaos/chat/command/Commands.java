@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Random;
 
 public final class Commands {
+    private static final Random RANDOM = new Random();
     static final Map<String, Command> ALL = new HashMap<>();
 
     public static final Command SET_POS = Command.register("set_pos", (game, args) -> {
@@ -36,51 +37,51 @@ public final class Commands {
 
     public static final Command SPAWN = Command.register("spawn", (game, args) -> {
         int argCount = args.length;
-        Random random = new Random();
 
-        if (argCount >= 1) {
-            Entity enemy = game.getDataManager().getEnemy(args[0]);
+        if (argCount < 3)
+            return;
 
-            if (argCount == 3) {
-                float x = Float.parseFloat(args[1]);
-                float y = Float.parseFloat(args[2]);
+        Entity enemy = game.getDataManager().getEnemy(args[0]);
+
+        if (argCount == 3) {
+            float x = Float.parseFloat(args[1]);
+            float y = Float.parseFloat(args[2]);
+            game.getEntityManager().addEntity(enemy, new Vector2(x, y));
+        } else if (argCount == 4) {
+            float x = Float.parseFloat(args[1]);
+            float y = Float.parseFloat(args[2]);
+            int count = Integer.parseInt(args[3]);
+            for (int i = 0; i < count; i++) {
                 game.getEntityManager().addEntity(enemy, new Vector2(x, y));
-            } else if (argCount == 4) {
-                float x = Float.parseFloat(args[1]);
-                float y = Float.parseFloat(args[2]);
-                int count = Integer.parseInt(args[3]);
-                for (int i = 0; i < count; i++) {
-                    game.getEntityManager().addEntity(enemy, new Vector2(x, y));
-                }
-            } else if (argCount == 5) {
-                int x1 = Integer.parseInt(args[1]);
-                int y1 = Integer.parseInt(args[2]);
-                int x2 = Integer.parseInt(args[3]);
-                int y2 = Integer.parseInt(args[4]);
-                float x = x1 + random.nextInt(Math.max(1, x2 - x1));
-                float y = y1 + random.nextInt(Math.max(1, y2 - y1));
+            }
+        } else if (argCount == 5) {
+            int x1 = Integer.parseInt(args[1]);
+            int y1 = Integer.parseInt(args[2]);
+            int x2 = Integer.parseInt(args[3]);
+            int y2 = Integer.parseInt(args[4]);
+            float x = x1 + RANDOM.nextInt(Math.max(1, x2 - x1));
+            float y = y1 + RANDOM.nextInt(Math.max(1, y2 - y1));
+            game.getEntityManager().addEntity(enemy, new Vector2(x, y));
+        } else if (argCount == 6) {
+            int x1 = Integer.parseInt(args[1]);
+            int y1 = Integer.parseInt(args[2]);
+            int x2 = Integer.parseInt(args[3]);
+            int y2 = Integer.parseInt(args[4]);
+            int count = Integer.parseInt(args[5]);
+
+            if (x1 >= x2) {
+                x1 = Math.min(x1, x2);
+                x2 = Math.max(x1 + 1, x2 + 1);
+            }
+            if (y1 >= y2) {
+                y1 = Math.min(y1, y2);
+                y2 = Math.max(y1 + 1, y2 + 1);
+            }
+
+            for (int i = 0; i < count; i++) {
+                float x = x1 + RANDOM.nextInt(Math.max(1, x2 - x1));
+                float y = y1 + RANDOM.nextInt(Math.max(1, y2 - y1));
                 game.getEntityManager().addEntity(enemy, new Vector2(x, y));
-            } else if (argCount == 6) {
-                int x1 = Integer.parseInt(args[1]);
-                int y1 = Integer.parseInt(args[2]);
-                int x2 = Integer.parseInt(args[3]);
-                int y2 = Integer.parseInt(args[4]);
-                int count = Integer.parseInt(args[5]);
-
-                if (x1 >= x2) {
-                    x1 = Math.min(x1, x2);
-                    x2 = Math.max(x1 + 1, x2 + 1);
-                }
-                if (y1 >= y2) {
-                    y1 = Math.min(y1, y2);
-                    y2 = Math.max(y1 + 1, y2 + 1);
-                }
-
-                for (int i = 0; i < count; i++) {
-                    float x = x1 + random.nextInt(Math.max(1, x2 - x1));
-                    float y = y1 + random.nextInt(Math.max(1, y2 - y1));
-                    game.getEntityManager().addEntity(enemy, new Vector2(x, y));
-                }
             }
         }
     });

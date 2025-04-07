@@ -31,9 +31,9 @@ public class CommandManager extends InputAdapter {
         if (Commands.ALL.containsKey(commandType)) {
             String[] args = Arrays.copyOfRange(elements, 1, elements.length);
             Commands.ALL.get(commandType).execute(main.getGame(), args);
-            Gdx.app.log("CommandManager", "Executed '/" + commandType + "' with args " + Arrays.toString(args));
+            Gdx.app.log(CommandManager.class.getSimpleName(), "Executed '/" + commandType + "' with args " + Arrays.toString(args));
         } else {
-            Gdx.app.log("CommandManager", "Command '/" + commandType + "' not found");
+            Gdx.app.log(CommandManager.class.getSimpleName(), "Command '/" + commandType + "' not found");
         }
     }
 
