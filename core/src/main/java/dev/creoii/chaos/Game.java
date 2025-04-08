@@ -15,7 +15,7 @@ public class Game {
     private final EntityManager entityManager;
     private int gametime;
 
-    private CharacterEntity character;
+    private CharacterEntity activeCharacter;
 
     public Game(Main main) {
         this.main = main;
@@ -31,7 +31,7 @@ public class Game {
     }
 
     public void init() {
-        character = entityManager.addEntity(new CharacterEntity(dataManager.getCharacterClass("wizard")), new Vector2(0, 0));
+        activeCharacter = entityManager.addEntity(new CharacterEntity(dataManager.getCharacterClass("wizard")), new Vector2(0, 0));
     }
 
     public void run(float delta) {
@@ -70,8 +70,8 @@ public class Game {
         return gametime;
     }
 
-    public CharacterEntity getCharacter() {
-        return character;
+    public CharacterEntity getActiveCharacter() {
+        return activeCharacter;
     }
 
     public void dispose() {}

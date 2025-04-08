@@ -100,6 +100,10 @@ public abstract class Entity implements Positionable, Tickable {
         return pos;
     }
 
+    public Vector2 getCenterPos() {
+        return new Vector2(getPos()).add(COORDINATE_SCALE / 2f, COORDINATE_SCALE / 2f);
+    }
+
     @Override
     public void setPos(Vector2 pos) {
         this.pos = pos;
@@ -132,6 +136,14 @@ public abstract class Entity implements Positionable, Tickable {
 
     public void remove() {
         game.getEntityManager().removeEntity(this);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Entity entity && entity.isActive() && isActive()) {
+            return entity.getUuid().equals(getUuid());
+        }
+        return false;
     }
 
     public enum Group {

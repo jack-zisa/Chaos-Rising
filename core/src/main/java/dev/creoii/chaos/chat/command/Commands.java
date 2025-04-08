@@ -15,7 +15,7 @@ public final class Commands {
         if (args.length > 1) {
             float x = Integer.parseInt(args[0]) * Entity.COORDINATE_SCALE;
             float y = Integer.parseInt(args[1]) * Entity.COORDINATE_SCALE;
-            game.getCharacter().setPos(x, y);
+            game.getActiveCharacter().setPos(x, y);
         }
     });
 
@@ -24,12 +24,12 @@ public final class Commands {
             String stat = args[0];
             int value = Integer.parseInt(args[1]);
             switch (stat) {
-                case "health" -> game.getCharacter().getStats().health = value;
-                case "speed" -> game.getCharacter().getStats().speed = value;
-                case "attack_speed" -> game.getCharacter().getStats().attackSpeed = value;
-                case "defense" -> game.getCharacter().getStats().defense = value;
-                case "attack" -> game.getCharacter().getStats().attack = value;
-                case "vitality" -> game.getCharacter().getStats().vitality = value;
+                case "health" -> game.getActiveCharacter().getStats().health = value;
+                case "speed" -> game.getActiveCharacter().getStats().speed = value;
+                case "attack_speed" -> game.getActiveCharacter().getStats().attackSpeed = value;
+                case "defense" -> game.getActiveCharacter().getStats().defense = value;
+                case "attack" -> game.getActiveCharacter().getStats().attack = value;
+                case "vitality" -> game.getActiveCharacter().getStats().vitality = value;
             }
         }
     });

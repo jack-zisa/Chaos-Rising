@@ -55,8 +55,8 @@ public class Renderer {
     }
 
     public void render(boolean debug) {
-        camera.position.x += (main.getGame().getCharacter().getPos().x - camera.position.x) * .2f;
-        camera.position.y += (main.getGame().getCharacter().getPos().y - camera.position.y) * .2f;
+        camera.position.x += (main.getGame().getActiveCharacter().getPos().x - camera.position.x) * .2f;
+        camera.position.y += (main.getGame().getActiveCharacter().getPos().y - camera.position.y) * .2f;
         camera.update();
 
         shapeRenderer.setProjectionMatrix(camera.combined);
