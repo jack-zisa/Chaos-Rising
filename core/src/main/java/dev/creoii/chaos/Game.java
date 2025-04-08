@@ -31,7 +31,7 @@ public class Game {
     }
 
     public void init() {
-        character = entityManager.addEntity(new CharacterEntity(), new Vector2(0, 0));
+        character = entityManager.addEntity(new CharacterEntity(dataManager.getCharacterClass("wizard")), new Vector2(0, 0));
     }
 
     public void run(float delta) {

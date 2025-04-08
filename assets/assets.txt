@@ -1,4 +1,6 @@
+data/class/wizard.json
 data/enemy/test.json
 data/enemy/test_big.json
 textures/class/wizard.png
 textures/enemy/skeleton.png
+textures/missing.png

@@ -1,6 +1,8 @@
 package dev.creoii.chaos.util.stat;
 
+import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
+import dev.creoii.chaos.entity.character.CharacterClass;
 
 public class Stats {
     public int health;
@@ -29,12 +31,6 @@ public class Stats {
 
     public static Stats fromJson(JsonValue json) {
         return new Stats(
-            json.getInt("health", 1),
-            json.getInt("speed", 1),
-            json.getInt("attack_speed", 1),
-            json.getInt("defense", 0),
-            json.getInt("attack", 1),
-            json.getInt("vitality", 1)
         );
     }
 
@@ -45,5 +41,30 @@ public class Stats {
             + ",D:" + defense + "/" + maxStats.defense
             + ",A:" + attack + "/" + maxStats.attack
             + ",V:" + vitality + "/" + maxStats.vitality;
+    }
+
+    public static class Serializer implements Json.Serializer<Stats> {
+        @Override
+        public void write(Json json, Stats stats, Class knownType) {
+            json.writeObjectStart();
+            json.writeValue("health", stats.health);
+            json.writeValue("speed", stats.speed);
+            json.writeValue("attack_speed", stats.attackSpeed);
+            json.writeValue("defense", stats.defense);
+            json.writeValue("attack", stats.attack);
+            json.writeValue("vitality", stats.vitality);
+            json.writeObjectEnd();
+        }
+
+        @Override
+        public Stats read(Json json, JsonValue jsonValue, Class aClass) {
+            return new Stats(jsonValue.getInt("health", 1),
+                jsonValue.getInt("speed", 1),
+                jsonValue.getInt("attack_speed", 1),
+                jsonValue.getInt("defense", 0),
+                jsonValue.getInt("attack", 1),
+                jsonValue.getInt("vitality", 1)
+            );
+        }
     }
 }

@@ -11,7 +11,6 @@ import dev.creoii.chaos.util.stat.Stats;
 import java.util.UUID;
 
 public class EnemyEntity extends LivingEntity implements DataManager.Identifiable {
-    private static final String DEFAULT_SPRITE_PATH = "enemy/skeleton";
     private final String id;
 
     public EnemyEntity(String id, String spritePath, float scale) {
@@ -33,7 +32,7 @@ public class EnemyEntity extends LivingEntity implements DataManager.Identifiabl
 
     @Override
     public Entity create(Game game, UUID uuid, Vector2 pos) {
-        return new EnemyEntity(id, getSpritePath(), getScale() / DEFAULT_SCALE);
+        return new EnemyEntity(id, getSpritePath().substring(9, getSpritePath().length() - 4), getScale() / COORDINATE_SCALE);
     }
 
     @Override
@@ -54,7 +53,7 @@ public class EnemyEntity extends LivingEntity implements DataManager.Identifiabl
         @Override
         public EnemyEntity read(Json json, JsonValue jsonValue, Class aClass) {
             String id = jsonValue.getString("id");
-            String spritePath = jsonValue.getString("sprite_path", DEFAULT_SPRITE_PATH);
+            String spritePath = jsonValue.getString("sprite_path", DataManager.DEFAULT_SPRITE_PATH);
             float scale = jsonValue.getFloat("scale", 1f);
             return new EnemyEntity(id, spritePath, scale);
         }

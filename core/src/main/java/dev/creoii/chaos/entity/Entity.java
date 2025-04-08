@@ -18,7 +18,7 @@ import javax.annotation.Nullable;
 import java.util.UUID;
 
 public abstract class Entity implements Positionable, Tickable {
-    public static final float DEFAULT_SCALE = 32f;
+    public static final float COORDINATE_SCALE = 32f;
     // template (non-active) fields
     private final float scale;
     private final String spritePath;
@@ -55,7 +55,7 @@ public abstract class Entity implements Positionable, Tickable {
     }
 
     public float getScale() {
-        return scale * DEFAULT_SCALE;
+        return scale * COORDINATE_SCALE;
     }
 
     public String getSpritePath() {

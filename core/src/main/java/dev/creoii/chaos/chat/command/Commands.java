@@ -1,6 +1,5 @@
 package dev.creoii.chaos.chat.command;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.entity.Entity;
 
@@ -14,8 +13,8 @@ public final class Commands {
 
     public static final Command SET_POS = Command.register("set_pos", (game, args) -> {
         if (args.length > 1) {
-            float x = Integer.parseInt(args[0]) * Entity.DEFAULT_SCALE;
-            float y = Integer.parseInt(args[1]) * Entity.DEFAULT_SCALE;
+            float x = Integer.parseInt(args[0]) * Entity.COORDINATE_SCALE;
+            float y = Integer.parseInt(args[1]) * Entity.COORDINATE_SCALE;
             game.getCharacter().setPos(x, y);
         }
     });
@@ -44,29 +43,29 @@ public final class Commands {
         Entity enemy = game.getDataManager().getEnemy(args[0]);
 
         if (argCount == 3) {
-            float x = Float.parseFloat(args[1]);
-            float y = Float.parseFloat(args[2]);
+            float x = Float.parseFloat(args[1]) * Entity.COORDINATE_SCALE;
+            float y = Float.parseFloat(args[2]) * Entity.COORDINATE_SCALE;
             game.getEntityManager().addEntity(enemy, new Vector2(x, y));
         } else if (argCount == 4) {
-            float x = Float.parseFloat(args[1]);
-            float y = Float.parseFloat(args[2]);
+            float x = Float.parseFloat(args[1]) * Entity.COORDINATE_SCALE;
+            float y = Float.parseFloat(args[2]) * Entity.COORDINATE_SCALE;
             int count = Integer.parseInt(args[3]);
             for (int i = 0; i < count; i++) {
                 game.getEntityManager().addEntity(enemy, new Vector2(x, y));
             }
         } else if (argCount == 5) {
-            int x1 = Integer.parseInt(args[1]);
-            int y1 = Integer.parseInt(args[2]);
-            int x2 = Integer.parseInt(args[3]);
-            int y2 = Integer.parseInt(args[4]);
+            int x1 = Integer.parseInt(args[1]) * (int) Entity.COORDINATE_SCALE;
+            int y1 = Integer.parseInt(args[2]) * (int) Entity.COORDINATE_SCALE;
+            int x2 = Integer.parseInt(args[3]) * (int) Entity.COORDINATE_SCALE;
+            int y2 = Integer.parseInt(args[4]) * (int) Entity.COORDINATE_SCALE;
             float x = x1 + RANDOM.nextInt(Math.max(1, x2 - x1));
             float y = y1 + RANDOM.nextInt(Math.max(1, y2 - y1));
             game.getEntityManager().addEntity(enemy, new Vector2(x, y));
         } else if (argCount == 6) {
-            int x1 = Integer.parseInt(args[1]);
-            int y1 = Integer.parseInt(args[2]);
-            int x2 = Integer.parseInt(args[3]);
-            int y2 = Integer.parseInt(args[4]);
+            int x1 = Integer.parseInt(args[1]) * (int) Entity.COORDINATE_SCALE;
+            int y1 = Integer.parseInt(args[2]) * (int) Entity.COORDINATE_SCALE;
+            int x2 = Integer.parseInt(args[3]) * (int) Entity.COORDINATE_SCALE;
+            int y2 = Integer.parseInt(args[4]) * (int) Entity.COORDINATE_SCALE;
             int count = Integer.parseInt(args[5]);
 
             if (x1 >= x2) {
