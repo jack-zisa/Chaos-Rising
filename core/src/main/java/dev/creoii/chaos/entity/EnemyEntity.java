@@ -5,7 +5,6 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import dev.creoii.chaos.DataManager;
 import dev.creoii.chaos.Game;
-import dev.creoii.chaos.entity.ai.controller.CharacterController;
 import dev.creoii.chaos.entity.ai.controller.EnemyController;
 import dev.creoii.chaos.entity.ai.controller.EntityController;
 import dev.creoii.chaos.util.stat.Stats;

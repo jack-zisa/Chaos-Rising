@@ -10,6 +10,7 @@ public class Game {
     private final Main main;
     private final DataManager dataManager;
     private final TickManager tickManager;
+    private final CollisionManager collisionManager;
     private final InputManager inputManager;
     private final CommandManager commandManager;
     private final EntityManager entityManager;
@@ -21,6 +22,7 @@ public class Game {
         this.main = main;
         this.dataManager = new DataManager();
         this.tickManager = new TickManager(main);
+        this.collisionManager = new CollisionManager(main);
         this.inputManager = new InputManager(main);
         this.commandManager = new CommandManager(main);
         this.entityManager = new EntityManager(main);
@@ -39,7 +41,7 @@ public class Game {
 
         commandManager.update(gametime);
         tickManager.tick(gametime, delta);
-        entityManager.checkCollisions();
+        collisionManager.checkCollisions();
     }
 
     public Main getMain() {
