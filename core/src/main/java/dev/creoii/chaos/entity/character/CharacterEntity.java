@@ -13,14 +13,24 @@ import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class CharacterEntity extends LivingEntity {
+    private CharacterClass characterClass;
     private final EntityController<CharacterEntity> controller;
     @Nullable
     private Item currentItem;
 
     public CharacterEntity(CharacterClass characterClass) {
         super(characterClass.spritePath(), 1f, new Vector2(1, 1), Group.CHARACTER, characterClass.baseStats().copy(), characterClass.baseStats().copy());
+        this.characterClass = characterClass;
         controller = new CharacterController(this);
         currentItem = null;
+    }
+
+    public CharacterClass getCharacterClass() {
+        return characterClass;
+    }
+
+    public void setCharacterClass(CharacterClass characterClass) {
+        this.characterClass = characterClass;
     }
 
     @Nullable

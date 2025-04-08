@@ -90,4 +90,10 @@ public final class Commands {
             game.getActiveCharacter().setCurrentItem(game.getDataManager().getItem(args[0]));
         }
     });
+
+    public static final Command SET_CLASS = Command.register("set_class", (game, args) -> {
+        if (args.length > 0) {
+            game.getActiveCharacter().setCharacterClass(game.getDataManager().getCharacterClass(args[0]));
+        }
+    });
 }
