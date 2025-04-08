@@ -1,0 +1,7 @@
+{
+  "id": "test_dec",
+  "texture": "test2",
+  "lifetime": 150,
+  "speed": 12,
+  "acceleration": -0.1
+}

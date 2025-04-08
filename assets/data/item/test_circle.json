@@ -1,6 +1,6 @@
 {
   "id": "test_circle",
-  "bullet_id": "test",
+  "bullet_id": "test_dec",
   "damage": 2,
   "bullet_count": 10,
   "arc_gap": 36

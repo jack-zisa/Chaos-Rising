@@ -63,6 +63,7 @@ public class CharacterController extends EntityController<CharacterEntity> {
 
                 BulletEntity bullet = getEntity().getGame().getEntityManager().addEntity(getEntity().getGame().getDataManager().getBullet(entity.getCurrentItem().bulletId()), new Vector2(entity.getPos()), customData);
                 bullet.setParentId(entity.getUuid());
+                bullet.setIndex(i % 2 == 0 ? 1 : -1);
             }
             attackCooldown = Math.max(1, 150 / Math.max(1, entity.getStats().attackSpeed));
         }
