@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class CollisionManager {
     private final Main main;
-    private final Map<Cell, Array<LivingEntity>> grid; // like a chunk system
+    private final Map<Cell, Array<Entity>> grid; // like a chunk system
 
     public CollisionManager(Main main) {
         this.main = main;
@@ -23,20 +23,20 @@ public class CollisionManager {
 
     public void checkCollisions() {
         for (Entity entity : main.getGame().getEntityManager().getActiveEntities().values()) {
-            if (entity instanceof LivingEntity livingEntity && livingEntity.isMoving()) {
+            if (entity.isMoving()) {
                 Cell cell = getCell(entity.getPos());
-                grid.computeIfAbsent(cell, k -> new Array<>()).add(livingEntity);
+                grid.computeIfAbsent(cell, k -> new Array<>()).add(entity);
             }
         }
 
-        for (Map.Entry<Cell, Array<LivingEntity>> entry : grid.entrySet()) {
+        for (Map.Entry<Cell, Array<Entity>> entry : grid.entrySet()) {
             Cell cell = entry.getKey();
-            Array<LivingEntity> entitiesInCell = entry.getValue();
+            Array<Entity> entitiesInCell = entry.getValue();
 
             for (int i = 0; i < entitiesInCell.size; i++) {
-                LivingEntity a = entitiesInCell.get(i);
+                Entity a = entitiesInCell.get(i);
                 for (int j = i + 1; j < entitiesInCell.size; j++) {
-                    LivingEntity b = entitiesInCell.get(j);
+                    Entity b = entitiesInCell.get(j);
                     if (a.getColliderRect().overlaps(b.getColliderRect())) {
                         a.collide(b);
                         b.collide(a);
@@ -48,13 +48,13 @@ public class CollisionManager {
                 for (int dy = -1; dy <= 1; dy++) {
                     if (dx == 0 && dy <= 0) continue;
                     Cell neighborCell = new Cell(cell.x + dx, cell.y + dy);
-                    Array<LivingEntity> neighbors = grid.get(neighborCell);
+                    Array<Entity> neighbors = grid.get(neighborCell);
                     if (neighbors == null) continue;
 
                     for (int i = 0; i < entitiesInCell.size; i++) {
-                        LivingEntity a = entitiesInCell.get(i);
+                        Entity a = entitiesInCell.get(i);
                         for (int j = 0; j < neighbors.size; j++) {
-                            LivingEntity b = neighbors.get(j);
+                            Entity b = neighbors.get(j);
                             if (a != b && a.getColliderRect().overlaps(b.getColliderRect())) {
                                 a.collide(b);
                                 b.collide(a);
@@ -64,7 +64,7 @@ public class CollisionManager {
                 }
             }
         }
-        for (Array<LivingEntity> cellEntities : grid.values()) {
+        for (Array<Entity> cellEntities : grid.values()) {
             cellEntities.clear();
         }
     }

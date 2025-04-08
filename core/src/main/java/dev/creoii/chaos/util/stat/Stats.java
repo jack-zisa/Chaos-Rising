@@ -13,7 +13,7 @@ public class Stats {
     public int vitality;
 
     public Stats() {
-        this(1, 1, 1, 0, 1, 1);
+        this(10, 1, 1, 0, 1, 1);
     }
 
     public Stats(int health, int speed, int attackSpeed, int defense, int attack, int vitality) {

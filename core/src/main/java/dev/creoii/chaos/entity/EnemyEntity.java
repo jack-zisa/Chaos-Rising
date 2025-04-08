@@ -6,8 +6,8 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import dev.creoii.chaos.DataManager;
 import dev.creoii.chaos.Game;
-import dev.creoii.chaos.entity.ai.controller.EnemyController;
-import dev.creoii.chaos.entity.ai.controller.EntityController;
+import dev.creoii.chaos.entity.controller.EnemyController;
+import dev.creoii.chaos.entity.controller.EntityController;
 import dev.creoii.chaos.texture.TextureManager;
 import dev.creoii.chaos.util.stat.Stats;
 
@@ -15,10 +15,12 @@ import java.util.UUID;
 
 public class EnemyEntity extends LivingEntity implements DataManager.Identifiable {
     private final String id;
+    private final EntityController<EnemyEntity> controller;
 
-    public EnemyEntity(String id, String spritePath, float scale) {
-        super(spritePath, scale, new Vector2(1, 1), Group.ENEMY, new Stats(), new Stats());
+    public EnemyEntity(String id, String textureId, float scale) {
+        super(textureId, scale, new Vector2(1, 1), Group.ENEMY, new Stats(), new Stats());
         this.id = id;
+        controller = new EnemyController(this);
     }
 
     @Override
@@ -27,10 +29,15 @@ public class EnemyEntity extends LivingEntity implements DataManager.Identifiabl
     }
 
     @Override
-    public void collide(LivingEntity other) {
-        if (other.getGroup() == Group.CHARACTER) {
-            other.damage(5);
-        }
+    public void collide(Entity other) {
+    }
+
+    @Override
+    public void tick(int gametime, float delta) {
+        super.tick(gametime, delta);
+
+        if (getStats().health <= 0)
+            remove();
     }
 
     @Override
@@ -44,7 +51,7 @@ public class EnemyEntity extends LivingEntity implements DataManager.Identifiabl
 
     @Override
     public EntityController<EnemyEntity> getController() {
-        return new EnemyController(this);
+        return controller;
     }
 
     public static class Serializer implements Json.Serializer<EnemyEntity> {

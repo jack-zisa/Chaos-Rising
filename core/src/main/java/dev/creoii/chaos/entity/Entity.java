@@ -7,8 +7,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.TimeUtils;
 import dev.creoii.chaos.Game;
-import dev.creoii.chaos.entity.ai.controller.EntityController;
+import dev.creoii.chaos.entity.controller.EntityController;
 import dev.creoii.chaos.render.Renderer;
 import dev.creoii.chaos.util.Positionable;
 import dev.creoii.chaos.util.Tickable;
@@ -25,6 +26,7 @@ public abstract class Entity implements Positionable, Tickable {
     private final Group group;
     private boolean active;
     private boolean moving;
+    private long spawnTime;
 
     // active fields
     private Game game;
@@ -39,11 +41,14 @@ public abstract class Entity implements Positionable, Tickable {
         this.group = group;
         active = false;
         moving = false;
+        spawnTime = -1;
     }
 
     public abstract Entity create(Game game, UUID uuid, Vector2 pos);
 
     public abstract EntityController<?> getController();
+
+    public abstract void collide(Entity other);
 
     public void tick(int gametime, float delta) {
         if (getController() != null) {
@@ -88,6 +93,10 @@ public abstract class Entity implements Positionable, Tickable {
         this.moving = moving;
     }
 
+    public long getSpawnTime() {
+        return spawnTime;
+    }
+
     public Game getGame() {
         return game;
     }
@@ -98,7 +107,9 @@ public abstract class Entity implements Positionable, Tickable {
     }
 
     public Vector2 getCenterPos() {
-        return new Vector2(getPos()).add(COORDINATE_SCALE / 2f, COORDINATE_SCALE / 2f);
+        Vector2 center = new Vector2(getPos()).add(COORDINATE_SCALE / 2f, COORDINATE_SCALE / 2f);
+        sprite.setCenter(center.x, center.y);
+        return center;
     }
 
     @Override
@@ -115,6 +126,7 @@ public abstract class Entity implements Positionable, Tickable {
         entity.game = game;
         entity.uuid = uuid;
         entity.pos = pos;
+        entity.spawnTime = TimeUtils.millis();
         entity.setActive();
         return entity;
     }

@@ -1,4 +1,4 @@
-package dev.creoii.chaos.entity.ai.controller;
+package dev.creoii.chaos.entity.controller;
 
 import dev.creoii.chaos.entity.EnemyEntity;
 import dev.creoii.chaos.entity.ai.movement.Movements;

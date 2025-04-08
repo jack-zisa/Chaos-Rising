@@ -1,6 +1,9 @@
+data/bullet/test.json
+data/bullet/test_sin.json
 data/class/wizard.json
 data/enemy/test.json
 data/enemy/test_big.json
+textures/bullet/test.png
 textures/class/wizard.png
 textures/enemy/skeleton.png
 textures/missing.png

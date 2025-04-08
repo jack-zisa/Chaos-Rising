@@ -15,7 +15,9 @@ public class TickManager {
     }
 
     public void tick(int gametime, float delta) {
-        tickables.forEach(tickable -> tickable.tick(gametime, delta));
+        for (int i = tickables.size() - 1; i >= 0; --i) {
+            tickables.get(i).tick(gametime, delta);
+        }
     }
 
     public void addTickable(Tickable tickable) {

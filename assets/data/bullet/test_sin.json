@@ -1,0 +1,8 @@
+{
+  "id": "test_sin",
+  "texture": "test",
+  "lifetime": 150,
+  "speed": 5,
+  "frequency": 0.2,
+  "amplitude": 8
+}

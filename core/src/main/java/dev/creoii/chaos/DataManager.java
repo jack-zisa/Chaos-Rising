@@ -3,6 +3,7 @@ package dev.creoii.chaos;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
+import dev.creoii.chaos.entity.BulletEntity;
 import dev.creoii.chaos.entity.EnemyEntity;
 import dev.creoii.chaos.entity.character.CharacterClass;
 import dev.creoii.chaos.util.stat.Stats;
@@ -21,11 +22,12 @@ public class DataManager {
         json.setSerializer(Stats.class, new Stats.Serializer());
         json.setSerializer(CharacterClass.class, new CharacterClass.Serializer());
         json.setSerializer(EnemyEntity.class, new EnemyEntity.Serializer());
+        json.setSerializer(BulletEntity.class, new BulletEntity.Serializer());
 
         schema = new HashMap<>();
         schema.put("class", fileHandle -> json.fromJson(CharacterClass.class, fileHandle));
         schema.put("enemy", fileHandle -> json.fromJson(EnemyEntity.class, fileHandle));
-        //schema.put("bullet", fileHandle -> json.fromJson(Bullet.class, fileHandle));
+        schema.put("bullet", fileHandle -> json.fromJson(BulletEntity.class, fileHandle));
         //schema.put("item", fileHandle -> json.fromJson(Item.class, fileHandle));
 
         data = new HashMap<>();
@@ -46,11 +48,11 @@ public class DataManager {
         return (EnemyEntity) data.get("enemy").get(id);
     }
 
-    /*public Bullet getBullet(String id) {
-        return (Bullet) data.get("bullet").get(id);
+    public BulletEntity getBullet(String id) {
+        return (BulletEntity) data.get("bullet").get(id);
     }
 
-    public Item getItem(String id) {
+    /*public Item getItem(String id) {
         return (Item) data.get("item").get(id);
     }*/
 
