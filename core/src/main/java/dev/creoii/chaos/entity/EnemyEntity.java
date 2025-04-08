@@ -30,6 +30,9 @@ public class EnemyEntity extends LivingEntity implements DataManager.Identifiabl
 
     @Override
     public void collide(Entity other) {
+        if (other.getGroup() == Group.CHARACTER) {
+            ((LivingEntity) other).damage(5);
+        }
     }
 
     @Override
