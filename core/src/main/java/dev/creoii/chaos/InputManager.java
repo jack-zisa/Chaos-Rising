@@ -11,7 +11,7 @@ public class InputManager extends InputAdapter {
     private final Main main;
     private final Map<String, Integer> keymap;
     private final Vector3 mousePos = new Vector3();
-    private boolean keyHeld;
+    private int keyHeld;
     private boolean dragging;
 
     public InputManager(Main main) {
@@ -23,11 +23,15 @@ public class InputManager extends InputAdapter {
         keymap.put("right", Input.Keys.D);
         keymap.put("debug", Input.Keys.F3);
         keymap.put("command", Input.Keys.SLASH);
-        keyHeld = false;
+        keyHeld = -1;
         dragging = false;
     }
 
     public boolean isKeyHeld() {
+        return keyHeld >= 0;
+    }
+
+    public int getKeyHeld() {
         return keyHeld;
     }
 
@@ -43,9 +47,15 @@ public class InputManager extends InputAdapter {
         return mousePos;
     }
 
+    protected void update(int gametime) {
+        if (isKeyHeld()) {
+            keyHeld(keyHeld);
+        }
+    }
+
     @Override
     public boolean keyDown(int keycode) {
-        keyHeld = true;
+        keyHeld = keycode;
         if (keycode == getKeycode("debug")) {
             main.setDebug(!main.getDebug());
             return true;
@@ -53,9 +63,13 @@ public class InputManager extends InputAdapter {
         return false;
     }
 
+    public boolean keyHeld(int keycode) {
+        return false;
+    }
+
     @Override
     public boolean keyUp(int keycode) {
-        keyHeld = false;
+        keyHeld = -1;
         return super.keyUp(keycode);
     }
 

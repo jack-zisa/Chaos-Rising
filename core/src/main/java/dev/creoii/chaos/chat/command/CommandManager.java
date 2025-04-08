@@ -50,8 +50,6 @@ public class CommandManager extends InputAdapter {
         if (keycode == Input.Keys.ESCAPE) {
             active = false;
             command.setLength(1);
-        } else if (keycode == Input.Keys.BACKSPACE && command.length() > 1) {
-            command.deleteCharAt(command.length() - 1);
         } else if (keycode == Input.Keys.ENTER) {
             execute(command.toString());
             command.setLength(1);
@@ -68,6 +66,8 @@ public class CommandManager extends InputAdapter {
         if (Character.isLetterOrDigit(character) || character == ' ' || character == '_' || character == '.' || character == '-') {
             command.append(character);
             return true;
+        } else if (character == '\b' && command.length() > 1) {
+            command.deleteCharAt(command.length() - 1);
         }
 
         return false;

@@ -45,6 +45,7 @@ public class Game implements Disposable {
         ++gametime;
 
         commandManager.update(gametime);
+        inputManager.update(gametime);
         tickManager.tick(gametime, delta);
         collisionManager.checkCollisions();
     }
