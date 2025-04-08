@@ -12,11 +12,11 @@ import dev.creoii.chaos.util.Renderable;
 
 import javax.annotation.Nullable;
 
-public class EntityRenderer implements Renderable {
+public class EntityRenderManager implements Renderable {
     private static final float RENDER_DISTANCE = 17578.125f * Entity.COORDINATE_SCALE; // sqrt(17578.125 * 32) = 750 units
     private final ObjectSet<Vector2> renderedPositions;
 
-    public EntityRenderer() {
+    public EntityRenderManager() {
         renderedPositions = new ObjectSet<>();
     }
 

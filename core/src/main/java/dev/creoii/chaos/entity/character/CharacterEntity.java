@@ -1,20 +1,14 @@
 package dev.creoii.chaos.entity.character;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.Game;
 import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.entity.LivingEntity;
 import dev.creoii.chaos.entity.controller.CharacterController;
 import dev.creoii.chaos.entity.controller.EntityController;
-import dev.creoii.chaos.render.Renderer;
 import dev.creoii.chaos.util.stat.Stats;
 
-import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class CharacterEntity extends LivingEntity {
@@ -39,15 +33,5 @@ public class CharacterEntity extends LivingEntity {
 
     @Override
     public void collide(Entity other) {
-    }
-
-    @Override
-    public void render(Renderer renderer, @Nullable SpriteBatch batch, @Nullable ShapeRenderer shapeRenderer, BitmapFont font, boolean debug) {
-        super.render(renderer, batch, shapeRenderer, font, debug);
-
-        if (shapeRenderer != null && debug && Gdx.input.isTouched()) {
-            Vector2 centerPos = getCenterPos();
-            shapeRenderer.line(centerPos.x, centerPos.y, getGame().getInputManager().getMousePos().x, getGame().getInputManager().getMousePos().y);
-        }
     }
 }

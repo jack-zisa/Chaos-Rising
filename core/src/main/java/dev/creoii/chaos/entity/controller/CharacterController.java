@@ -42,7 +42,7 @@ public class CharacterController extends EntityController<CharacterEntity> {
 
     private void attack() {
         if (Gdx.input.isTouched() && --attackCooldown <= 0) {
-            BulletEntity bullet = getEntity().getGame().getEntityManager().addEntity(getEntity().getGame().getDataManager().getBullet("test"), new Vector2(entity.getCenterPos()));
+            BulletEntity bullet = getEntity().getGame().getEntityManager().addEntity(getEntity().getGame().getDataManager().getBullet("test_sin"), new Vector2(entity.getPos()));
             bullet.setParentId(entity.getUuid());
 
             attackCooldown = 20;

@@ -112,11 +112,6 @@ public abstract class Entity implements Positionable, Tickable {
         return center;
     }
 
-    @Override
-    public void setPos(Vector2 pos) {
-        this.pos = pos;
-    }
-
     public UUID getUuid() {
         return uuid;
     }

@@ -16,8 +16,8 @@ public class Renderer implements Disposable {
     private final Main main;
     private final OrthographicCamera camera;
     private final FitViewport viewport;
-    private final SpriteBatch batch;
     private final BitmapFont font;
+    private final SpriteBatch batch;
     private final ShapeRenderer shapeRenderer;
 
     private final List<Renderable> worldRenderables;
@@ -28,19 +28,25 @@ public class Renderer implements Disposable {
         camera = new OrthographicCamera(Main.WINDOW_WIDTH, Main.WINDOW_HEIGHT);
         camera.setToOrtho(false);
         viewport = new FitViewport(Main.WINDOW_WIDTH, Main.WINDOW_HEIGHT);
-        batch = new SpriteBatch();
 
         font = new BitmapFont();
         font.setUseIntegerPositions(false);
         font.getData().setScale(2f);
 
+        batch = new SpriteBatch();
         shapeRenderer = new ShapeRenderer();
         shapeRenderer.setAutoShapeType(true);
 
         worldRenderables = new ArrayList<>();
-        worldRenderables.add(new EntityRenderer());
+        worldRenderables.add(new EntityRenderManager());
         screenRenderables = new ArrayList<>();
         screenRenderables.add(new HudRenderer());
+    }
+
+    public void initCamera() {
+        camera.position.x = main.getGame().getActiveCharacter().getPos().x;
+        camera.position.y = main.getGame().getActiveCharacter().getPos().y;
+        camera.update();
     }
 
     public Main getMain() {
@@ -56,31 +62,33 @@ public class Renderer implements Disposable {
     }
 
     public void render(boolean debug) {
-        camera.position.x += (main.getGame().getActiveCharacter().getPos().x - camera.position.x) * .2f;
-        camera.position.y += (main.getGame().getActiveCharacter().getPos().y - camera.position.y) * .2f;
-        camera.update();
+        if (main.getGame().getActiveCharacter().isMoving()) {
+            camera.position.x += (main.getGame().getActiveCharacter().getPos().x - camera.position.x) * .2f;
+            camera.position.y += (main.getGame().getActiveCharacter().getPos().y - camera.position.y) * .2f;
+            camera.update();
+        }
 
         shapeRenderer.setProjectionMatrix(camera.combined);
         batch.setProjectionMatrix(camera.combined);
-
-        shapeRenderer.begin();
-        worldRenderables.forEach(renderable -> renderable.render(this, null, shapeRenderer, font, debug));
-        shapeRenderer.end();
 
         batch.begin();
         worldRenderables.forEach(renderable -> renderable.render(this, batch, null, font, debug));
         batch.end();
 
+        shapeRenderer.begin();
+        worldRenderables.forEach(renderable -> renderable.render(this, null, shapeRenderer, font, debug));
+        shapeRenderer.end();
+
         viewport.apply();
         batch.setProjectionMatrix(viewport.getCamera().combined);
-
-        shapeRenderer.begin();
-        screenRenderables.forEach(renderable -> renderable.render(this, null, shapeRenderer, font, debug));
-        shapeRenderer.end();
 
         batch.begin();
         screenRenderables.forEach(renderable -> renderable.render(this, batch, null, font, debug));
         batch.end();
+
+        shapeRenderer.begin();
+        screenRenderables.forEach(renderable -> renderable.render(this, null, shapeRenderer, font, debug));
+        shapeRenderer.end();
     }
 
     @Override

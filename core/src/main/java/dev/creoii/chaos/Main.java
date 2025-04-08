@@ -19,6 +19,7 @@ public class Main extends ApplicationAdapter implements Disposable {
         renderer = new Renderer(this);
         game = new Game(this);
         game.init();
+        renderer.initCamera();
     }
 
     @Override
