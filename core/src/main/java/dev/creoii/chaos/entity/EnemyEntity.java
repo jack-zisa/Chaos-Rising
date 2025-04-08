@@ -38,6 +38,7 @@ public class EnemyEntity extends LivingEntity implements DataManager.Identifiabl
         EnemyEntity entity = new EnemyEntity(id, getTextureId(), getScale() / COORDINATE_SCALE);
         entity.sprite = new Sprite(game.getTextureManager().getTexture("enemy", getTextureId()));
         entity.sprite.setSize(getScale(), getScale());
+        entity.setMoving(true);
         return entity;
     }
 

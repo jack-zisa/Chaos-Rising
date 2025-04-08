@@ -18,7 +18,7 @@ public class CollisionManager {
     }
 
     public Cell getCell(Vector2 pos) {
-        return new Cell((int)(pos.x / 96f), (int)(pos.y / 96f));
+        return new Cell((int)(pos.x / 32f), (int)(pos.y / 32f));
     }
 
     public void checkCollisions() {
