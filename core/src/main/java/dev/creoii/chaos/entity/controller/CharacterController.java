@@ -19,15 +19,13 @@ public class CharacterController extends EntityController<CharacterEntity> {
         if (getEntity().getGame().getCommandManager().isActive())
             return;
 
-        Input input = Gdx.input;
-
         float dx = 0f;
         float dy = 0f;
 
-        if (input.isKeyPressed(entity.getGame().getInputManager().getKeycode("left"))) dx -= 1;
-        if (input.isKeyPressed(entity.getGame().getInputManager().getKeycode("right"))) dx += 1;
-        if (input.isKeyPressed(entity.getGame().getInputManager().getKeycode("up"))) dy += 1;
-        if (input.isKeyPressed(entity.getGame().getInputManager().getKeycode("down"))) dy -= 1;
+        if (Gdx.input.isKeyPressed(entity.getGame().getInputManager().getKeycode("left"))) dx -= 1;
+        if (Gdx.input.isKeyPressed(entity.getGame().getInputManager().getKeycode("right"))) dx += 1;
+        if (Gdx.input.isKeyPressed(entity.getGame().getInputManager().getKeycode("up"))) dy += 1;
+        if (Gdx.input.isKeyPressed(entity.getGame().getInputManager().getKeycode("down"))) dy -= 1;
 
         if (dx == 0 && dy == 0) {
             entity.setMoving(false);

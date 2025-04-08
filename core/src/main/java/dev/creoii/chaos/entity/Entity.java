@@ -149,7 +149,7 @@ public abstract class Entity implements Positionable, Tickable {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof Entity entity && entity.isActive() && isActive()) {
+        if (obj instanceof Entity entity) {
             return entity.getUuid().equals(getUuid());
         }
         return false;
