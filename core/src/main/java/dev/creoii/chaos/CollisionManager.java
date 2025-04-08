@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class CollisionManager {
     private final Main main;
-    private final Map<Cell, Array<LivingEntity>> grid;
+    private final Map<Cell, Array<LivingEntity>> grid; // like a chunk system
 
     public CollisionManager(Main main) {
         this.main = main;

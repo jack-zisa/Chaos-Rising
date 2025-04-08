@@ -45,6 +45,10 @@ public class Main extends ApplicationAdapter implements Disposable {
         return game;
     }
 
+    public Renderer getRenderer() {
+        return renderer;
+    }
+
     public boolean getDebug() {
         return debug;
     }
