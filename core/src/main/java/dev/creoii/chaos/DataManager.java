@@ -6,6 +6,7 @@ import com.badlogic.gdx.utils.Json;
 import dev.creoii.chaos.entity.BulletEntity;
 import dev.creoii.chaos.entity.EnemyEntity;
 import dev.creoii.chaos.entity.character.CharacterClass;
+import dev.creoii.chaos.item.Item;
 import dev.creoii.chaos.util.stat.Stats;
 
 import java.util.HashMap;
@@ -23,14 +24,15 @@ public class DataManager {
 
         json.setSerializer(Stats.class, new Stats.Serializer());
         json.setSerializer(CharacterClass.class, new CharacterClass.Serializer());
+        json.setSerializer(Item.class, new Item.Serializer());
         json.setSerializer(EnemyEntity.class, new EnemyEntity.Serializer());
         json.setSerializer(BulletEntity.class, new BulletEntity.Serializer());
 
         schema = new HashMap<>();
         schema.put("class", fileHandle -> json.fromJson(CharacterClass.class, fileHandle));
+        schema.put("item", fileHandle -> json.fromJson(Item.class, fileHandle));
         schema.put("enemy", fileHandle -> json.fromJson(EnemyEntity.class, fileHandle));
         schema.put("bullet", fileHandle -> json.fromJson(BulletEntity.class, fileHandle));
-        //schema.put("item", fileHandle -> json.fromJson(Item.class, fileHandle));
 
         data = new HashMap<>();
         for (String key : schema.keySet()) {
@@ -54,9 +56,9 @@ public class DataManager {
         return (BulletEntity) data.get("bullet").get(id);
     }
 
-    /*public Item getItem(String id) {
+    public Item getItem(String id) {
         return (Item) data.get("item").get(id);
-    }*/
+    }
 
     public void load() {
         FileHandle baseDir = Gdx.files.internal("data");
@@ -80,7 +82,7 @@ public class DataManager {
                 try {
                     Identifiable obj = parser.parse(file);
                     obj.onLoad(main);
-                    data.get(folder).put(obj.getId(), obj);
+                    data.get(folder).put(obj.id(), obj);
                 } catch (Exception e) {
                     Gdx.app.error(DataManager.class.getSimpleName(), "Error parsing " + file.name() + " in " + folder + ": " + e.getMessage());
                 }
@@ -94,10 +96,8 @@ public class DataManager {
     }
 
     public interface Identifiable {
-        String getId();
+        String id();
 
-        default void onLoad(Main main) {
-
-        }
+        default void onLoad(Main main) {}
     }
 }

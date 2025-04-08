@@ -11,6 +11,7 @@ import dev.creoii.chaos.entity.controller.BulletController;
 import dev.creoii.chaos.entity.controller.EntityController;
 import dev.creoii.chaos.texture.TextureManager;
 
+import java.util.Map;
 import java.util.UUID;
 
 public class BulletEntity extends Entity implements DataManager.Identifiable {
@@ -26,6 +27,7 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
     private UUID parentId;
     private Vector2 direction;
     private Vector2 perpendicular;
+    private int damage;
     private int index;
 
     public BulletEntity(String id, String textureId, int lifetime, float speed, float acceleration, float frequency, float amplitude, float arcSpeed, boolean piercing, float scale) {
@@ -39,11 +41,12 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
         this.arcSpeed = arcSpeed;
         this.piercing = piercing;
         controller = new BulletController(this);
+        damage = 0;
         index = -1;
     }
 
     @Override
-    public String getId() {
+    public String id() {
         return id;
     }
 
@@ -96,7 +99,7 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
     @Override
     public void collide(Entity other) {
         if (other instanceof LivingEntity && other.getUuid() != parentId) {
-            ((LivingEntity) other).damage(2);
+            ((LivingEntity) other).damage(damage);
             if (!piercing) {
                 remove();
             }
@@ -113,12 +116,13 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
     }
 
     @Override
-    public Entity spawn(Game game, UUID uuid, Vector2 pos) {
-        Entity entity = super.spawn(game, uuid, pos);
+    public Entity spawn(Game game, UUID uuid, Vector2 pos, Map<String, Object> customData) {
+        Entity entity = super.spawn(game, uuid, pos, customData);
         if (entity instanceof BulletEntity bullet) {
-            bullet.direction = new Vector2(entity.getGame().getInputManager().getMousePos().x, entity.getGame().getInputManager().getMousePos().y).sub(entity.getCenterPos()).nor();
+            bullet.direction = (Vector2) customData.get("direction");
             bullet.perpendicular = new Vector2(-bullet.direction.y, bullet.direction.x).nor();
             bullet.sprite.setRotation(bullet.direction.angleDeg() - 45);
+            bullet.damage = (int) customData.getOrDefault("damage", 0);
         }
         return entity;
     }
@@ -143,7 +147,7 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
         @Override
         public void write(Json json, BulletEntity bullet, Class knownType) {
             json.writeObjectStart();
-            json.writeValue("id", bullet.getId());
+            json.writeValue("id", bullet.id());
             json.writeValue("texture", bullet.getTextureId());
             json.writeValue("lifetime", bullet.lifetime);
             json.writeValue("speed", bullet.speed);

@@ -18,8 +18,12 @@ public class EntityManager {
     }
 
     public <T extends Entity> T addEntity(T entity, Vector2 pos) {
+        return addEntity(entity, pos, new HashMap<>());
+    }
+
+    public <T extends Entity> T addEntity(T entity, Vector2 pos, Map<String, Object> customData) {
         UUID uuid = UUID.randomUUID();
-        T spawned = (T) entity.spawn(main.getGame(), uuid, pos);
+        T spawned = (T) entity.spawn(main.getGame(), uuid, pos, customData);
         entities.put(uuid, spawned);
         main.getGame().getTickManager().addTickable(spawned); // add boolean value to not tick
         return spawned;

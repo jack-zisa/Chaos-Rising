@@ -30,7 +30,7 @@ public class EnemyEntity extends LivingEntity implements DataManager.Identifiabl
     }
 
     @Override
-    public String getId() {
+    public String id() {
         return id;
     }
 
@@ -82,7 +82,7 @@ public class EnemyEntity extends LivingEntity implements DataManager.Identifiabl
         @Override
         public void write(Json json, EnemyEntity enemy, Class knownType) {
             json.writeObjectStart();
-            json.writeValue("id", enemy.getId());
+            json.writeValue("id", enemy.id());
             json.writeValue("scale", enemy.getScale());
             json.writeValue("texture", enemy.getTextureId());
             json.writeObjectEnd();

@@ -7,7 +7,7 @@ import dev.creoii.chaos.util.stat.Stats;
 
 public record CharacterClass(String id, String spritePath, Stats baseStats, Stats maxStats) implements DataManager.Identifiable {
     @Override
-    public String getId() {
+    public String id() {
         return id;
     }
 

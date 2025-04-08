@@ -1,0 +1,7 @@
+{
+  "id": "test_spread",
+  "bullet_id": "test_sin",
+  "damage": 4,
+  "bullet_count": 8,
+  "arc_gap": 16
+}

@@ -7,15 +7,29 @@ import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.entity.LivingEntity;
 import dev.creoii.chaos.entity.controller.CharacterController;
 import dev.creoii.chaos.entity.controller.EntityController;
+import dev.creoii.chaos.item.Item;
 
+import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class CharacterEntity extends LivingEntity {
     private final EntityController<CharacterEntity> controller;
+    @Nullable
+    private Item currentItem;
 
     public CharacterEntity(CharacterClass characterClass) {
         super(characterClass.spritePath(), 1f, new Vector2(1, 1), Group.CHARACTER, characterClass.baseStats().copy(), characterClass.baseStats().copy());
         controller = new CharacterController(this);
+        currentItem = null;
+    }
+
+    @Nullable
+    public Item getCurrentItem() {
+        return currentItem;
+    }
+
+    public void setCurrentItem(@Nullable Item currentItem) {
+        this.currentItem = currentItem;
     }
 
     @Override

@@ -84,4 +84,10 @@ public final class Commands {
             }
         }
     });
+
+    public static final Command SET_ITEM = Command.register("set_item", (game, args) -> {
+        if (args.length > 0) {
+            game.getActiveCharacter().setCurrentItem(game.getDataManager().getItem(args[0]));
+        }
+    });
 }

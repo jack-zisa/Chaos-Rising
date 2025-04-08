@@ -15,6 +15,7 @@ import dev.creoii.chaos.util.Positionable;
 import dev.creoii.chaos.util.Tickable;
 
 import javax.annotation.Nullable;
+import java.util.Map;
 import java.util.UUID;
 
 public abstract class Entity implements Positionable, Tickable {
@@ -116,7 +117,7 @@ public abstract class Entity implements Positionable, Tickable {
         return uuid;
     }
 
-    public Entity spawn(Game game, UUID uuid, Vector2 pos) {
+    public Entity spawn(Game game, UUID uuid, Vector2 pos, Map<String, Object> customData) {
         Entity entity = create(game, uuid, pos);
         entity.game = game;
         entity.uuid = uuid;

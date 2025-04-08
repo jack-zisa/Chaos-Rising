@@ -1,0 +1,7 @@
+{
+  "id": "test_circle",
+  "bullet_id": "test",
+  "damage": 2,
+  "bullet_count": 10,
+  "arc_gap": 36
+}
