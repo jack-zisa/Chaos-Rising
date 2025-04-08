@@ -1,7 +1,6 @@
 package dev.creoii.chaos.entity.controller;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.entity.BulletEntity;
 import dev.creoii.chaos.entity.Entity;
@@ -42,7 +41,7 @@ public class CharacterController extends EntityController<CharacterEntity> {
 
     private void attack() {
         if (Gdx.input.isTouched() && --attackCooldown <= 0) {
-            BulletEntity bullet = getEntity().getGame().getEntityManager().addEntity(getEntity().getGame().getDataManager().getBullet("test_sin"), new Vector2(entity.getPos()));
+            BulletEntity bullet = getEntity().getGame().getEntityManager().addEntity(getEntity().getGame().getDataManager().getBullet("test"), new Vector2(entity.getPos()));
             bullet.setParentId(entity.getUuid());
 
             attackCooldown = 20;

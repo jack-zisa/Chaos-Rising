@@ -8,7 +8,7 @@ public class CollisionManager {
     private static final int[][] FORWARD_NEIGHBORS = {
             {1, 0}, {1, 1}, {0, 1}, {-1, 1}
     };
-    private static final int KEY_OFFSET = 32768;
+    public static final int KEY_OFFSET = 32768;
     private final Main main;
     private final ObjectMap<Integer, Array<Entity>> grid;
 
@@ -17,10 +17,18 @@ public class CollisionManager {
         grid = new ObjectMap<>();
     }
 
+    public ObjectMap<Integer, Array<Entity>> getGrid() {
+        return grid;
+    }
+
     public void checkCollisions() {
+        for (Array<Entity> cellEntities : grid.values()) {
+            cellEntities.clear();
+        }
+
         for (Entity entity : main.getGame().getEntityManager().getActiveEntities().values()) {
-            int x = (int) (entity.getPos().x / 32f);
-            int y = (int) (entity.getPos().y / 32f);
+            int x = (int) (entity.getPos().x / Entity.COORDINATE_SCALE);
+            int y = (int) (entity.getPos().y / Entity.COORDINATE_SCALE);
 
             int key = ((x + KEY_OFFSET) << 16) | ((y + KEY_OFFSET) & 0xffff);
             Array<Entity> cellEntities = grid.get(key);
@@ -64,10 +72,6 @@ public class CollisionManager {
                     }
                 }
             }
-        }
-
-        for (Array<Entity> cellEntities : grid.values()) {
-            cellEntities.clear();
         }
     }
 }

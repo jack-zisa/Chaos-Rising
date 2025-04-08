@@ -134,7 +134,8 @@ public abstract class Entity implements Positionable, Tickable {
 
         if (debug && shapeRenderer != null) {
             shapeRenderer.setColor(Color.GREEN);
-            shapeRenderer.rect(getColliderRect().x, getColliderRect().y, getColliderRect().width, getColliderRect().height);
+            Rectangle collider = getColliderRect();
+            shapeRenderer.rect(collider.x, collider.y, collider.width, collider.height);
         }
     }
 
