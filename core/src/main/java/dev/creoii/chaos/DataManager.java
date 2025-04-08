@@ -12,11 +12,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DataManager {
+    private final Main main;
     private final Json json;
     private final Map<String, Parser> schema;
     private final Map<String, Map<String, Identifiable>> data;
 
-    public DataManager() {
+    public DataManager(Main main) {
+        this.main = main;
         json = new Json();
 
         json.setSerializer(Stats.class, new Stats.Serializer());
@@ -77,6 +79,7 @@ public class DataManager {
             for (FileHandle file : folderHandle.list("json")) {
                 try {
                     Identifiable obj = parser.parse(file);
+                    obj.onLoad(main);
                     data.get(folder).put(obj.getId(), obj);
                 } catch (Exception e) {
                     Gdx.app.error(DataManager.class.getSimpleName(), "Error parsing " + file.name() + " in " + folder + ": " + e.getMessage());
@@ -92,5 +95,9 @@ public class DataManager {
 
     public interface Identifiable {
         String getId();
+
+        default void onLoad(Main main) {
+
+        }
     }
 }

@@ -24,20 +24,20 @@ public class Game implements Disposable {
     public Game(Main main) {
         this.main = main;
         this.textureManager = new TextureManager();
-        this.dataManager = new DataManager();
+        this.dataManager = new DataManager(main);
         this.tickManager = new TickManager(main);
         this.collisionManager = new CollisionManager(main);
         this.inputManager = new InputManager(main);
         this.commandManager = new CommandManager(main);
         this.entityManager = new EntityManager(main);
 
-        textureManager.load();
-        dataManager.load();
-
         Gdx.input.setInputProcessor(new InputMultiplexer(commandManager, inputManager));
     }
 
     public void init() {
+        textureManager.load();
+        dataManager.load();
+
         activeCharacter = entityManager.addEntity(new CharacterEntity(dataManager.getCharacterClass("wizard")), new Vector2(0, 0));
     }
 

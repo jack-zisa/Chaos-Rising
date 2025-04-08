@@ -29,9 +29,9 @@ public abstract class Entity implements Positionable, Tickable {
     private long spawnTime;
 
     // active fields
-    private Game game;
-    private Vector2 pos;
-    private UUID uuid;
+    protected Game game;
+    protected Vector2 pos;
+    protected UUID uuid;
     protected Sprite sprite;
 
     public Entity(String textureId, float scale, Vector2 collider, Group group) {

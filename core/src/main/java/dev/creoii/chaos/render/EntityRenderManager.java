@@ -47,7 +47,8 @@ public class EntityRenderManager implements Renderable {
                 int x = (entry.key >> 16) - CollisionManager.KEY_OFFSET;
                 int y = (entry.key & 0xffff) - CollisionManager.KEY_OFFSET;
                 shapeRenderer.setColor(Color.RED);
-                shapeRenderer.rect(x * Entity.COORDINATE_SCALE, y * Entity.COORDINATE_SCALE, Entity.COORDINATE_SCALE, Entity.COORDINATE_SCALE);
+                float cellSize = main.getGame().getCollisionManager().getCellSize();
+                shapeRenderer.rect(x * cellSize, y * cellSize, cellSize, cellSize);
             }
         }
     }

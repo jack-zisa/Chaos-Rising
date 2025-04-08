@@ -6,6 +6,7 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import dev.creoii.chaos.DataManager;
 import dev.creoii.chaos.Game;
+import dev.creoii.chaos.Main;
 import dev.creoii.chaos.entity.controller.BulletController;
 import dev.creoii.chaos.entity.controller.EntityController;
 import dev.creoii.chaos.texture.TextureManager;
@@ -44,6 +45,12 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
     @Override
     public String getId() {
         return id;
+    }
+
+    @Override
+    public void onLoad(Main main) {
+        if (main.getGame().getCollisionManager().getCellSize() < getScale())
+            main.getGame().getCollisionManager().setCellSize(getScale());
     }
 
     public float getSpeed() {
@@ -109,7 +116,7 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
     public Entity spawn(Game game, UUID uuid, Vector2 pos) {
         Entity entity = super.spawn(game, uuid, pos);
         if (entity instanceof BulletEntity bullet) {
-            bullet.direction = new Vector2(entity.getGame().getInputManager().getMousePos().x, entity.getGame().getInputManager().getMousePos().y).scl(entity.getCenterPos().x, entity.getCenterPos().y).nor();
+            bullet.direction = new Vector2(entity.getGame().getInputManager().getMousePos().x, entity.getGame().getInputManager().getMousePos().y).sub(entity.getCenterPos()).nor();
             bullet.perpendicular = new Vector2(-bullet.direction.y, bullet.direction.x).nor();
             bullet.sprite.setRotation(bullet.direction.angleDeg() - 45);
         }

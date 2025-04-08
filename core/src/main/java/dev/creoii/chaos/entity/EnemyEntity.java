@@ -6,6 +6,7 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import dev.creoii.chaos.DataManager;
 import dev.creoii.chaos.Game;
+import dev.creoii.chaos.Main;
 import dev.creoii.chaos.entity.controller.EnemyController;
 import dev.creoii.chaos.entity.controller.EntityController;
 import dev.creoii.chaos.texture.TextureManager;
@@ -26,6 +27,12 @@ public class EnemyEntity extends LivingEntity implements DataManager.Identifiabl
     @Override
     public String getId() {
         return id;
+    }
+
+    @Override
+    public void onLoad(Main main) {
+        if (main.getGame().getCollisionManager().getCellSize() < getScale())
+            main.getGame().getCollisionManager().setCellSize(getScale());
     }
 
     @Override

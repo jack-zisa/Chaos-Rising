@@ -9,6 +9,7 @@ public class CollisionManager {
             {1, 0}, {1, 1}, {0, 1}, {-1, 1}
     };
     public static final int KEY_OFFSET = 32768;
+    private float cellSize = Entity.COORDINATE_SCALE;
     private final Main main;
     private final ObjectMap<Integer, Array<Entity>> grid;
 
@@ -17,18 +18,26 @@ public class CollisionManager {
         grid = new ObjectMap<>();
     }
 
+    public float getCellSize() {
+        return cellSize;
+    }
+
+    public void setCellSize(float cellSize) {
+        this.cellSize = cellSize;
+    }
+
     public ObjectMap<Integer, Array<Entity>> getGrid() {
         return grid;
     }
 
     public void checkCollisions() {
-        for (Array<Entity> cellEntities : grid.values()) {
+        for (Array<Entity> cellEntities : grid.values()) { // improve grid clearing with a boolean flag storing in the integer key
             cellEntities.clear();
         }
 
         for (Entity entity : main.getGame().getEntityManager().getActiveEntities().values()) {
-            int x = (int) (entity.getPos().x / Entity.COORDINATE_SCALE);
-            int y = (int) (entity.getPos().y / Entity.COORDINATE_SCALE);
+            int x = Math.round(entity.getPos().x / cellSize);
+            int y = Math.round(entity.getPos().y / cellSize);
 
             int key = ((x + KEY_OFFSET) << 16) | ((y + KEY_OFFSET) & 0xffff);
             Array<Entity> cellEntities = grid.get(key);
