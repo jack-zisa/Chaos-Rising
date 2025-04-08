@@ -7,10 +7,11 @@ import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.entity.character.CharacterEntity;
 
 public class CharacterController extends EntityController<CharacterEntity> {
-    private int attackCooldown = 20;
+    private int attackCooldown;
 
     public CharacterController(CharacterEntity character) {
         super(character);
+        attackCooldown = Math.max(1, 150 / Math.max(1, entity.getStats().attackSpeed));
     }
 
     @Override
@@ -44,7 +45,7 @@ public class CharacterController extends EntityController<CharacterEntity> {
             BulletEntity bullet = getEntity().getGame().getEntityManager().addEntity(getEntity().getGame().getDataManager().getBullet("test"), new Vector2(entity.getPos()));
             bullet.setParentId(entity.getUuid());
 
-            attackCooldown = 20;
+            attackCooldown = Math.max(1, 150 / Math.max(1, entity.getStats().attackSpeed));
         }
     }
 }

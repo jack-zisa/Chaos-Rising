@@ -7,7 +7,6 @@ import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.entity.LivingEntity;
 import dev.creoii.chaos.entity.controller.CharacterController;
 import dev.creoii.chaos.entity.controller.EntityController;
-import dev.creoii.chaos.util.stat.Stats;
 
 import java.util.UUID;
 
@@ -15,7 +14,7 @@ public class CharacterEntity extends LivingEntity {
     private final EntityController<CharacterEntity> controller;
 
     public CharacterEntity(CharacterClass characterClass) {
-        super(characterClass.spritePath(), 1f, new Vector2(1, 1), Group.CHARACTER, new Stats(100, 5, 1, 4, 5, 5), new Stats(100, 10, 1, 10, 10, 10));
+        super(characterClass.spritePath(), 1f, new Vector2(1, 1), Group.CHARACTER, characterClass.baseStats().copy(), characterClass.baseStats().copy());
         controller = new CharacterController(this);
     }
 

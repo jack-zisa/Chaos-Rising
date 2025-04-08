@@ -1,5 +1,13 @@
 {
   "id": "wizard",
-  "base_stats": {},
-  "max_stats": {}
+  "base_stats": {
+    "health": 100,
+    "speed": 10,
+    "attack_speed": 10
+  },
+  "max_stats": {
+    "health": 100,
+    "speed": 10,
+    "attack_speed": 50
+  }
 }

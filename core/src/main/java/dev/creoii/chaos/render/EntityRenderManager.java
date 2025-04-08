@@ -40,7 +40,7 @@ public class EntityRenderManager implements Renderable {
         }
 
         renderedPositions.clear();
-        
+
         for (Entity entity : renderer.getMain().getGame().getEntityManager().getActiveEntities().values()) {
             if (entity == renderer.getMain().getGame().getActiveCharacter() || isEntityInView(renderer.getCamera(), entity)) {
                 Vector2 posKey = new Vector2(entity.getPos()).scl(.5f); // adjust .5 for precision (1 = exact, .25 = loose)
