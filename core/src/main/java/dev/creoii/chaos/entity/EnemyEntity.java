@@ -1,6 +1,9 @@
 package dev.creoii.chaos.entity;
 
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
@@ -9,9 +12,11 @@ import dev.creoii.chaos.Game;
 import dev.creoii.chaos.Main;
 import dev.creoii.chaos.entity.controller.EnemyController;
 import dev.creoii.chaos.entity.controller.EntityController;
+import dev.creoii.chaos.render.Renderer;
 import dev.creoii.chaos.texture.TextureManager;
 import dev.creoii.chaos.util.stat.Stats;
 
+import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class EnemyEntity extends LivingEntity implements DataManager.Identifiable {
@@ -62,6 +67,15 @@ public class EnemyEntity extends LivingEntity implements DataManager.Identifiabl
     @Override
     public EntityController<EnemyEntity> getController() {
         return controller;
+    }
+
+    @Override
+    public void render(Renderer renderer, @Nullable SpriteBatch batch, @Nullable ShapeRenderer shapeRenderer, BitmapFont font, boolean debug) {
+        super.render(renderer, batch, shapeRenderer, font, debug);
+
+        if (debug && batch != null) {
+            font.draw(batch, getStats().health + "/" + getMaxStats().health, pos.x, pos.y);
+        }
     }
 
     public static class Serializer implements Json.Serializer<EnemyEntity> {

@@ -25,12 +25,11 @@ public class HudRenderer implements Renderable {
             }
 
             if (debug) {
-                int fps = Gdx.graphics.getFramesPerSecond();
                 CharacterEntity character = renderer.getMain().getGame().getActiveCharacter();
                 String posText = String.format("%.2f, %.2f", character.getPos().x / Entity.COORDINATE_SCALE, character.getPos().y / Entity.COORDINATE_SCALE);
                 String statsText = character.getStats().toDebugString(character.getMaxStats());
 
-                String[] lines = new String[]{fps + " FPS", posText, statsText};
+                String[] lines = new String[]{Gdx.graphics.getFramesPerSecond() + " FPS", posText, statsText};
 
                 float baseY = Gdx.graphics.getHeight() - TEXT_PADDING;
                 float x;

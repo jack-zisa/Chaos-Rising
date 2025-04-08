@@ -29,8 +29,18 @@ public class EntityRenderManager implements Renderable {
 
     @Override
     public void render(Renderer renderer, @Nullable SpriteBatch batch, @Nullable ShapeRenderer shapeRenderer, BitmapFont font, boolean debug) {
-        renderedPositions.clear();
+        if (debug && shapeRenderer != null) {
+            for (ObjectMap.Entry<Integer, Array<Entity>> entry : main.getGame().getCollisionManager().getGrid().entries()) {
+                int x = (entry.key >> 16) - CollisionManager.KEY_OFFSET;
+                int y = (entry.key & 0xffff) - CollisionManager.KEY_OFFSET;
+                shapeRenderer.setColor(Color.FIREBRICK);
+                float cellSize = main.getGame().getCollisionManager().getCellSize();
+                shapeRenderer.rect(x * cellSize, y * cellSize, cellSize, cellSize);
+            }
+        }
 
+        renderedPositions.clear();
+        
         for (Entity entity : renderer.getMain().getGame().getEntityManager().getActiveEntities().values()) {
             if (entity == renderer.getMain().getGame().getActiveCharacter() || isEntityInView(renderer.getCamera(), entity)) {
                 Vector2 posKey = new Vector2(entity.getPos()).scl(.5f); // adjust .5 for precision (1 = exact, .25 = loose)
@@ -39,16 +49,6 @@ public class EntityRenderManager implements Renderable {
                     entity.render(renderer, batch, shapeRenderer, font, debug);
                     renderedPositions.add(posKey);
                 }
-            }
-        }
-
-        if (debug && shapeRenderer != null) {
-            for (ObjectMap.Entry<Integer, Array<Entity>> entry : main.getGame().getCollisionManager().getGrid().entries()) {
-                int x = (entry.key >> 16) - CollisionManager.KEY_OFFSET;
-                int y = (entry.key & 0xffff) - CollisionManager.KEY_OFFSET;
-                shapeRenderer.setColor(Color.RED);
-                float cellSize = main.getGame().getCollisionManager().getCellSize();
-                shapeRenderer.rect(x * cellSize, y * cellSize, cellSize, cellSize);
             }
         }
     }
