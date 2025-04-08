@@ -25,7 +25,7 @@ public record CharacterClass(String id, String spritePath, Stats baseStats, Stat
         @Override
         public CharacterClass read(Json json, JsonValue jsonValue, Class aClass) {
             String id = jsonValue.getString("id");
-            String spritePath = jsonValue.getString("sprite_path", "class/" + id);
+            String spritePath = jsonValue.getString("sprite_path", id);
             Stats baseStats = json.readValue(Stats.class, jsonValue.get("base_stats"));
             Stats maxStats = json.readValue(Stats.class, jsonValue.get("max_stats"));
             return new CharacterClass(id, spritePath, baseStats, maxStats);

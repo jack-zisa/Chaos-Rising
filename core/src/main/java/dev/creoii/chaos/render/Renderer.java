@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import dev.creoii.chaos.Main;
 import dev.creoii.chaos.util.Renderable;
@@ -11,7 +12,7 @@ import dev.creoii.chaos.util.Renderable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Renderer {
+public class Renderer implements Disposable {
     private final Main main;
     private final OrthographicCamera camera;
     private final FitViewport viewport;
@@ -82,6 +83,7 @@ public class Renderer {
         batch.end();
     }
 
+    @Override
     public void dispose() {
         batch.dispose();
         font.dispose();

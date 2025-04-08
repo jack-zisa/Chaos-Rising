@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DataManager {
-    public static final String DEFAULT_SPRITE_PATH = "missing";
     private final Json json;
     private final Map<String, Parser> schema;
     private final Map<String, Map<String, Identifiable>> data;

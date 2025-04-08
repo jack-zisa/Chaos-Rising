@@ -1,7 +1,6 @@
 package dev.creoii.chaos.entity;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -21,8 +20,7 @@ public abstract class Entity implements Positionable, Tickable {
     public static final float COORDINATE_SCALE = 32f;
     // template (non-active) fields
     private final float scale;
-    private final String spritePath;
-    private final Sprite sprite;
+    private final String textureId;
     private final Vector2 collider;
     private final Group group;
     private boolean active;
@@ -32,12 +30,11 @@ public abstract class Entity implements Positionable, Tickable {
     private Game game;
     private Vector2 pos;
     private UUID uuid;
+    protected Sprite sprite;
 
-    public Entity(String spritePath, float scale, Vector2 collider, Group group) {
+    public Entity(String textureId, float scale, Vector2 collider, Group group) {
         this.scale = scale;
-        this.spritePath = "textures/" + spritePath + ".png";
-        sprite = new Sprite(new Texture(this.spritePath));
-        sprite.setSize(getScale(), getScale());
+        this.textureId = textureId;
         this.collider = collider;
         this.group = group;
         active = false;
@@ -58,8 +55,8 @@ public abstract class Entity implements Positionable, Tickable {
         return scale * COORDINATE_SCALE;
     }
 
-    public String getSpritePath() {
-        return spritePath;
+    public String getTextureId() {
+        return textureId;
     }
 
     public Sprite getSprite() {

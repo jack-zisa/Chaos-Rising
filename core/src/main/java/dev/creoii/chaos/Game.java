@@ -3,11 +3,14 @@ package dev.creoii.chaos;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Disposable;
 import dev.creoii.chaos.chat.command.CommandManager;
 import dev.creoii.chaos.entity.character.CharacterEntity;
+import dev.creoii.chaos.texture.TextureManager;
 
-public class Game {
+public class Game implements Disposable {
     private final Main main;
+    private final TextureManager textureManager;
     private final DataManager dataManager;
     private final TickManager tickManager;
     private final CollisionManager collisionManager;
@@ -20,6 +23,7 @@ public class Game {
 
     public Game(Main main) {
         this.main = main;
+        this.textureManager = new TextureManager();
         this.dataManager = new DataManager();
         this.tickManager = new TickManager(main);
         this.collisionManager = new CollisionManager(main);
@@ -27,6 +31,7 @@ public class Game {
         this.commandManager = new CommandManager(main);
         this.entityManager = new EntityManager(main);
 
+        textureManager.load();
         dataManager.load();
 
         Gdx.input.setInputProcessor(new InputMultiplexer(commandManager, inputManager));
@@ -48,12 +53,20 @@ public class Game {
         return main;
     }
 
+    public TextureManager getTextureManager() {
+        return textureManager;
+    }
+
     public DataManager getDataManager() {
         return dataManager;
     }
 
     public TickManager getTickManager() {
         return tickManager;
+    }
+
+    public CollisionManager getCollisionManager() {
+        return collisionManager;
     }
 
     public InputManager getInputManager() {
@@ -76,5 +89,8 @@ public class Game {
         return activeCharacter;
     }
 
-    public void dispose() {}
+    @Override
+    public void dispose() {
+        textureManager.dispose();
+    }
 }

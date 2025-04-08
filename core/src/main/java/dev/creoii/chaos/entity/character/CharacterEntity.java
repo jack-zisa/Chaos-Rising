@@ -1,5 +1,6 @@
 package dev.creoii.chaos.entity.character;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.Game;
 import dev.creoii.chaos.entity.Entity;
@@ -17,6 +18,8 @@ public class CharacterEntity extends LivingEntity {
 
     @Override
     public Entity create(Game game, UUID uuid, Vector2 pos) {
+        sprite = new Sprite(game.getTextureManager().getTexture("class", getTextureId()));
+        sprite.setSize(getScale(), getScale());
         return this;
     }
 

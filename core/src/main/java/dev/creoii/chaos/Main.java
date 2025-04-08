@@ -3,10 +3,11 @@ package dev.creoii.chaos;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import dev.creoii.chaos.render.Renderer;
 
-public class Main extends ApplicationAdapter {
+public class Main extends ApplicationAdapter implements Disposable {
     public static final int WINDOW_WIDTH = 1280;
     public static final int WINDOW_HEIGHT = 720;
     private Game game;

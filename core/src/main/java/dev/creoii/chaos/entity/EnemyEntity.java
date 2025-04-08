@@ -1,5 +1,6 @@
 package dev.creoii.chaos.entity;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
@@ -7,6 +8,7 @@ import dev.creoii.chaos.DataManager;
 import dev.creoii.chaos.Game;
 import dev.creoii.chaos.entity.ai.controller.EnemyController;
 import dev.creoii.chaos.entity.ai.controller.EntityController;
+import dev.creoii.chaos.texture.TextureManager;
 import dev.creoii.chaos.util.stat.Stats;
 
 import java.util.UUID;
@@ -33,7 +35,10 @@ public class EnemyEntity extends LivingEntity implements DataManager.Identifiabl
 
     @Override
     public Entity create(Game game, UUID uuid, Vector2 pos) {
-        return new EnemyEntity(id, getSpritePath().substring(9, getSpritePath().length() - 4), getScale() / COORDINATE_SCALE);
+        EnemyEntity entity = new EnemyEntity(id, getTextureId(), getScale() / COORDINATE_SCALE);
+        entity.sprite = new Sprite(game.getTextureManager().getTexture("enemy", getTextureId()));
+        entity.sprite.setSize(getScale(), getScale());
+        return entity;
     }
 
     @Override
@@ -47,14 +52,14 @@ public class EnemyEntity extends LivingEntity implements DataManager.Identifiabl
             json.writeObjectStart();
             json.writeValue("id", enemy.getId());
             json.writeValue("scale", enemy.getScale());
-            json.writeValue("sprite_path", enemy.getSpritePath());
+            json.writeValue("texture", enemy.getTextureId());
             json.writeObjectEnd();
         }
 
         @Override
         public EnemyEntity read(Json json, JsonValue jsonValue, Class aClass) {
             String id = jsonValue.getString("id");
-            String spritePath = jsonValue.getString("sprite_path", DataManager.DEFAULT_SPRITE_PATH);
+            String spritePath = jsonValue.getString("texture", TextureManager.DEFAULT_TEXTURE_ID);
             float scale = jsonValue.getFloat("scale", 1f);
             return new EnemyEntity(id, spritePath, scale);
         }
