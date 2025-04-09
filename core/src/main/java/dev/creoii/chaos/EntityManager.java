@@ -21,6 +21,7 @@ public class EntityManager {
         return addEntity(entity, pos, new HashMap<>());
     }
 
+    @SuppressWarnings("unchecked")
     public <T extends Entity> T addEntity(T entity, Vector2 pos, Map<String, Object> customData) {
         UUID uuid = UUID.randomUUID();
         T spawned = (T) entity.spawn(main.getGame(), uuid, pos, customData);

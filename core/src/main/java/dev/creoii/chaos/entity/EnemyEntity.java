@@ -69,15 +69,6 @@ public class EnemyEntity extends LivingEntity implements DataManager.Identifiabl
         return controller;
     }
 
-    @Override
-    public void render(Renderer renderer, @Nullable SpriteBatch batch, @Nullable ShapeRenderer shapeRenderer, BitmapFont font, boolean debug) {
-        super.render(renderer, batch, shapeRenderer, font, debug);
-
-        if (debug && batch != null) {
-            font.draw(batch, getStats().health + "/" + getMaxStats().health, pos.x, pos.y);
-        }
-    }
-
     public static class Serializer implements Json.Serializer<EnemyEntity> {
         @Override
         public void write(Json json, EnemyEntity enemy, Class knownType) {

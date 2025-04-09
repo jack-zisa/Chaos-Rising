@@ -1,20 +1,13 @@
 package dev.creoii.chaos.entity;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.TimeUtils;
 import dev.creoii.chaos.Game;
 import dev.creoii.chaos.entity.controller.EntityController;
-import dev.creoii.chaos.render.Renderer;
 import dev.creoii.chaos.util.Positionable;
 import dev.creoii.chaos.util.Tickable;
 
-import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.UUID;
 
@@ -131,19 +124,6 @@ public abstract class Entity implements Positionable, Tickable {
         return entity;
     }
 
-    public void render(Renderer renderer, @Nullable SpriteBatch batch, @Nullable ShapeRenderer shapeRenderer, BitmapFont font, boolean debug) {
-        if (batch != null) {
-            sprite.setPosition(getPos().x, getPos().y);
-            sprite.draw(batch);
-        }
-
-        if (debug && shapeRenderer != null) {
-            shapeRenderer.setColor(Color.GREEN);
-            Rectangle collider = getColliderRect();
-            shapeRenderer.rect(collider.x, collider.y, collider.width, collider.height);
-        }
-    }
-
     public void remove() {
         game.getEntityManager().removeEntity(this);
     }
@@ -159,8 +139,6 @@ public abstract class Entity implements Positionable, Tickable {
     public enum Group {
         CHARACTER,
         ENEMY,
-        OBSTACLE,
-        BULLET,
-        ITEM
+        BULLET;
     }
 }

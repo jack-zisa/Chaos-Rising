@@ -12,7 +12,10 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;
 import dev.creoii.chaos.CollisionManager;
 import dev.creoii.chaos.Main;
+import dev.creoii.chaos.entity.BulletEntity;
+import dev.creoii.chaos.entity.EnemyEntity;
 import dev.creoii.chaos.entity.Entity;
+import dev.creoii.chaos.entity.character.CharacterEntity;
 import dev.creoii.chaos.util.Renderable;
 
 import javax.annotation.Nullable;
@@ -25,6 +28,10 @@ public class EntityRenderManager implements Renderable {
     public EntityRenderManager(Main main) {
         this.main = main;
         renderedPositions = new ObjectSet<>();
+
+        EntityRenderers.register(CharacterEntity.class, SimpleEntityRenderer::new);
+        EntityRenderers.register(BulletEntity.class, SimpleEntityRenderer::new);
+        EntityRenderers.register(EnemyEntity.class, EnemyEntityRenderer::new);
     }
 
     @Override
@@ -46,7 +53,7 @@ public class EntityRenderManager implements Renderable {
                 Vector2 posKey = new Vector2(entity.getPos()).scl(.5f); // adjust .5 for precision (1 = exact, .25 = loose)
 
                 if (!renderedPositions.contains(posKey)) {
-                    entity.render(renderer, batch, shapeRenderer, font, debug);
+                    EntityRenderers.getRenderer(entity).render(entity, renderer, batch, shapeRenderer, font, debug);
                     renderedPositions.add(posKey);
                 }
             }
