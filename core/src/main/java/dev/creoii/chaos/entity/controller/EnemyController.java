@@ -16,7 +16,7 @@ public class EnemyController extends EntityController<EnemyEntity> {
 
 
     @Override
-    public void control(float delta) {
+    public void control(int gametime, float delta) {
         Movements.BEHAVIORS.get("chase").accept(entity, delta, data);
     }
 }

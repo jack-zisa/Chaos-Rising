@@ -53,7 +53,7 @@ public abstract class Entity implements Positionable, Tickable {
 
     public void tick(int gametime, float delta) {
         if (getController() != null) {
-            getController().control(delta);
+            getController().control(gametime, delta);
         }
     }
 
@@ -126,7 +126,7 @@ public abstract class Entity implements Positionable, Tickable {
         entity.game = game;
         entity.uuid = uuid;
         entity.pos = pos;
-        entity.spawnTime = TimeUtils.millis();
+        entity.spawnTime = game.getGametime();
         entity.setActive();
         return entity;
     }

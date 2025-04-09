@@ -9,7 +9,7 @@ public abstract class EntityController<T extends Entity> {
         this.entity = entity;
     }
 
-    public abstract void control(float delta);
+    public abstract void control(int gametime, float delta);
 
     public T getEntity() {
         return entity;

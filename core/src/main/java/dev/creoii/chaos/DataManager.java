@@ -84,7 +84,7 @@ public class DataManager {
                     obj.onLoad(main);
                     data.get(folder).put(obj.id(), obj);
                 } catch (Exception e) {
-                    Gdx.app.error(DataManager.class.getSimpleName(), "Error parsing " + file.name() + " in " + folder + ": " + e.getMessage());
+                    Gdx.app.error(DataManager.class.getSimpleName(), "Error parsing " + file.name() + " in '/" + folder + "': " + e.getMessage());
                 }
             }
         }

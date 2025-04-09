@@ -34,6 +34,7 @@ public class CollisionManager {
         for (Array<Entity> cellEntities : grid.values()) { // improve grid clearing with a boolean flag storing in the integer key
             cellEntities.clear();
         }
+        grid.clear();
 
         for (Entity entity : main.getGame().getEntityManager().getActiveEntities().values()) {
             int x = Math.round(entity.getPos().x / cellSize);

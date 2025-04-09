@@ -11,15 +11,18 @@ import dev.creoii.chaos.Main;
 import dev.creoii.chaos.entity.controller.BulletController;
 import dev.creoii.chaos.entity.controller.EntityController;
 import dev.creoii.chaos.texture.TextureManager;
+import dev.creoii.chaos.util.provider.FloatProvider;
+import dev.creoii.chaos.util.provider.FloatProviders;
+import dev.creoii.chaos.util.provider.Provider;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 public class BulletEntity extends Entity implements DataManager.Identifiable {
     private final String id;
     private int lifetime;
-    private float speed;
-    private final float acceleration;
+    private final Provider<Float> speed;
     private final float frequency;
     private final float amplitude;
     private final float arcSpeed;
@@ -31,12 +34,11 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
     private int damage;
     private int index;
 
-    public BulletEntity(String id, String textureId, int lifetime, float speed, float acceleration, float frequency, float amplitude, float arcSpeed, boolean piercing, float scale) {
+    public BulletEntity(String id, String textureId, int lifetime, Provider<Float> speed, float frequency, float amplitude, float arcSpeed, boolean piercing, float scale) {
         super(textureId, scale, new Vector2(1, 1), Group.BULLET);
         this.id = id;
         this.lifetime = lifetime;
         this.speed = speed;
-        this.acceleration = acceleration;
         this.frequency = frequency;
         this.amplitude = amplitude;
         this.arcSpeed = arcSpeed;
@@ -58,11 +60,7 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
     }
 
     public float getSpeed() {
-        return speed;
-    }
-
-    public float getAcceleration() {
-        return acceleration;
+        return speed.get(game);
     }
 
     public float getFrequency() {
@@ -115,7 +113,7 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
 
     @Override
     public Entity create(Game game, UUID uuid, Vector2 pos) {
-        BulletEntity entity = new BulletEntity(id, getTextureId(), lifetime, speed, acceleration, frequency, amplitude, arcSpeed, piercing, getScale() / COORDINATE_SCALE);
+        BulletEntity entity = new BulletEntity(id, getTextureId(), lifetime, speed.copy(), frequency, amplitude, arcSpeed, piercing, getScale() / COORDINATE_SCALE);
         entity.sprite = new Sprite(game.getTextureManager().getTexture("bullet", entity.getTextureId()));
         entity.sprite.setSize(entity.getScale(), entity.getScale());
         entity.setMoving(true);
@@ -143,7 +141,6 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
     public void tick(int gametime, float delta) {
         super.tick(gametime, delta);
         lifetime--;
-        speed += acceleration;
 
         if (lifetime <= 0) {
             remove();
@@ -158,7 +155,6 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
             json.writeValue("texture", bullet.getTextureId());
             json.writeValue("lifetime", bullet.lifetime);
             json.writeValue("speed", bullet.speed);
-            json.writeValue("acceleration", bullet.acceleration);
             json.writeValue("frequency", bullet.frequency);
             json.writeValue("amplitude", bullet.amplitude);
             json.writeValue("arc_speed", bullet.arcSpeed);
@@ -172,14 +168,13 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
             String id = jsonValue.getString("id");
             String spritePath = jsonValue.getString("texture", TextureManager.DEFAULT_TEXTURE_ID);
             int lifetime = jsonValue.getInt("lifetime", 0);
-            float speed = jsonValue.getFloat("speed", 0f);
-            float acceleration = jsonValue.getFloat("acceleration", 0f);
+            FloatProvider speed = FloatProvider.parse(jsonValue.get("speed"));
             float frequency = jsonValue.getFloat("frequency", 0f);
             float amplitude = jsonValue.getFloat("amplitude", 0f);
             float arcSpeed = jsonValue.getFloat("arc_speed", 0f);
             boolean piercing = jsonValue.getBoolean("piercing", false);
             float scale = jsonValue.getFloat("scale", 1f);
-            return new BulletEntity(id, spritePath, lifetime, speed, acceleration, frequency, amplitude, arcSpeed, piercing, scale);
+            return new BulletEntity(id, spritePath, lifetime, speed, frequency, amplitude, arcSpeed, piercing, scale);
         }
     }
 }

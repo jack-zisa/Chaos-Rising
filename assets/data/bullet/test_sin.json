@@ -3,6 +3,6 @@
   "texture": "test2",
   "lifetime": 150,
   "speed": 5,
-  "frequency": 0.2,
-  "amplitude": 8
+  "frequency": 0.075,
+  "amplitude": 4
 }

@@ -19,7 +19,7 @@ public class CharacterController extends EntityController<CharacterEntity> {
     }
 
     @Override
-    public void control(float delta) {
+    public void control(int gametime, float delta) {
         if (getEntity().getGame().getCommandManager().isActive())
             return;
 
