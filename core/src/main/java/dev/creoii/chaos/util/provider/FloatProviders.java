@@ -14,6 +14,10 @@ public final class FloatProviders {
         return value + data.getFloat("acceleration", 0f);
     });
 
+    public static final FloatProvider ACCELERATE_2 = FloatProvider.register("accelerate_2", (game, value, data) -> {
+        return value * data.getFloat("acceleration", 1f);
+    });
+
     public static final FloatProvider CLAMP = FloatProvider.register("clamp", (game, value, data) -> {
         float min;
         if (data.has("min") && value < (min = data.getFloat("min"))) {

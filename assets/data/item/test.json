@@ -1,5 +1,8 @@
 {
   "id": "test",
-  "bullet_id": "test",
-  "damage": 10
+  "type": "weapon",
+  "attack": {
+    "bullet_id": "test",
+    "damage": 10
+  }
 }
