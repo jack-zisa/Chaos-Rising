@@ -20,6 +20,7 @@ import java.util.UUID;
 public class BulletEntity extends Entity implements DataManager.Identifiable {
     private final String id;
     private int lifetime;
+    private int angleOffset;
     private final Provider<Float> speed;
     private final Provider<Float> frequency;
     private final Provider<Float> amplitude;
@@ -32,10 +33,11 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
     private int damage;
     private int index;
 
-    public BulletEntity(String id, String textureId, int lifetime, Provider<Float> speed, Provider<Float> frequency, Provider<Float> amplitude, Provider<Float> arcSpeed, boolean piercing, float scale) {
+    public BulletEntity(String id, String textureId, int lifetime, int angleOffset, Provider<Float> speed, Provider<Float> frequency, Provider<Float> amplitude, Provider<Float> arcSpeed, boolean piercing, float scale) {
         super(textureId, scale, new Vector2(1, 1), Group.BULLET);
         this.id = id;
         this.lifetime = lifetime;
+        this.angleOffset = angleOffset;
         this.speed = speed;
         this.frequency = frequency;
         this.amplitude = amplitude;
@@ -111,7 +113,7 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
 
     @Override
     public Entity create(Game game, UUID uuid, Vector2 pos) {
-        BulletEntity entity = new BulletEntity(id, getTextureId(), lifetime, speed.copy(), frequency.copy(), amplitude.copy(), arcSpeed.copy(), piercing, getScale() / COORDINATE_SCALE);
+        BulletEntity entity = new BulletEntity(id, getTextureId(), lifetime, angleOffset, speed.copy(), frequency.copy(), amplitude.copy(), arcSpeed.copy(), piercing, getScale() / COORDINATE_SCALE);
         entity.sprite = new Sprite(game.getTextureManager().getTexture("bullet", entity.getTextureId()));
         entity.sprite.setSize(entity.getScale(), entity.getScale());
         entity.setMoving(true);
@@ -125,7 +127,7 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
             bullet.direction = (Vector2) customData.get("direction");
             bullet.perpendicular = new Vector2(-bullet.direction.y, bullet.direction.x).nor();
             bullet.sprite.setOriginCenter();
-            bullet.sprite.setRotation(bullet.direction.angleDeg() - 45);
+            bullet.sprite.setRotation(bullet.direction.angleDeg() - bullet.angleOffset);
             bullet.damage = (int) customData.getOrDefault("damage", 0);
         }
         return entity;
@@ -153,6 +155,7 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
             json.writeValue("id", bullet.id());
             json.writeValue("texture", bullet.getTextureId());
             json.writeValue("lifetime", bullet.lifetime);
+            json.writeValue("angle_offset", bullet.lifetime);
             json.writeValue("speed", bullet.speed);
             json.writeValue("frequency", bullet.frequency);
             json.writeValue("amplitude", bullet.amplitude);
@@ -167,13 +170,14 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
             String id = jsonValue.getString("id");
             String spritePath = jsonValue.getString("texture", TextureManager.DEFAULT_TEXTURE_ID);
             int lifetime = jsonValue.getInt("lifetime", 0);
+            int angleOffset = jsonValue.getInt("angle_offset", 45);
             Provider<Float> speed = FloatProvider.parse(jsonValue.get("speed"));
             Provider<Float> frequency = FloatProvider.parse(jsonValue.get("frequency"));
             Provider<Float> amplitude = FloatProvider.parse(jsonValue.get("amplitude"));
             Provider<Float> arcSpeed = FloatProvider.parse(jsonValue.get("arc_speed"));
             boolean piercing = jsonValue.getBoolean("piercing", false);
             float scale = jsonValue.getFloat("scale", 1f);
-            return new BulletEntity(id, spritePath, lifetime, speed, frequency, amplitude, arcSpeed, piercing, scale);
+            return new BulletEntity(id, spritePath, lifetime, angleOffset, speed, frequency, amplitude, arcSpeed, piercing, scale);
         }
     }
 }
