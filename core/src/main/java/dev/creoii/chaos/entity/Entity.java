@@ -65,6 +65,10 @@ public abstract class Entity implements Positionable, Tickable {
         return textureId;
     }
 
+    public Vector2 getCollider() {
+        return collider;
+    }
+
     public Sprite getSprite() {
         return sprite;
     }

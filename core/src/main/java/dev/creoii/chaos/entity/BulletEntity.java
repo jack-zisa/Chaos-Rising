@@ -1,6 +1,7 @@
 package dev.creoii.chaos.entity;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
@@ -94,6 +95,12 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
 
     public void setParentId(UUID parentId) {
         this.parentId = parentId;
+    }
+
+    @Override
+    public Rectangle getColliderRect() {
+        if (!isActive()) return null;
+        return new Rectangle(pos.x, pos.y, getCollider().x * getScale() * .8f, getCollider().y * getScale() * .8f);
     }
 
     @Override
