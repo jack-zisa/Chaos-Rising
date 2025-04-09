@@ -42,6 +42,12 @@ public class CharacterEntity extends LivingEntity {
         this.currentItem = currentItem;
     }
 
+    public Item removeCurrentItem() {
+        Item temp = currentItem;
+        currentItem = null;
+        return temp;
+    }
+
     @Override
     public Entity create(Game game, UUID uuid, Vector2 pos) {
         sprite = new Sprite(game.getTextureManager().getTexture("class", getTextureId()));

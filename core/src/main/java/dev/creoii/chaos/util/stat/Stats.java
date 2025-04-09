@@ -2,7 +2,6 @@ package dev.creoii.chaos.util.stat;
 
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
-import dev.creoii.chaos.entity.character.CharacterClass;
 
 public class Stats {
     public int health;
@@ -27,11 +26,6 @@ public class Stats {
 
     public Stats copy() {
         return new Stats(health, speed, attackSpeed, defense, attack, vitality);
-    }
-
-    public static Stats fromJson(JsonValue json) {
-        return new Stats(
-        );
     }
 
     public String toDebugString(Stats maxStats) {
