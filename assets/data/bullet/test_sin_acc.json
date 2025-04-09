@@ -1,0 +1,12 @@
+{
+  "id": "test_sin_acc",
+  "texture": "test2",
+  "lifetime": 150,
+  "speed": 5,
+  "frequency": {
+    "id": "accelerate",
+    "value": 0.1,
+    "acceleration": -0.0075
+  },
+  "amplitude": 5
+}

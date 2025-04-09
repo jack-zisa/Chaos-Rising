@@ -4,9 +4,8 @@ import com.badlogic.gdx.utils.JsonValue;
 import dev.creoii.chaos.Game;
 import dev.creoii.chaos.util.TriFunction;
 
-import javax.annotation.Nullable;
-
 public class IntProvider extends Number implements Provider<Integer> {
+    public static final Provider<Integer> DEFAULT = IntProvider.create(IntProviders.ALL.get("constant"));
     private final TriFunction<Game, Integer, JsonValue, Integer> provider;
     private JsonValue data;
     private int value;
@@ -19,16 +18,23 @@ public class IntProvider extends Number implements Provider<Integer> {
         return IntProviders.ALL.put(id, new IntProvider(provider));
     }
 
-    @Nullable
-    public static IntProvider parse(JsonValue jsonValue) {
+    public static Provider<Integer> parse(JsonValue jsonValue) {
+        return parse(jsonValue, 0);
+    }
+
+    public static Provider<Integer> parse(JsonValue jsonValue, Integer defaultValue) {
+        if (jsonValue == null) {
+            return DEFAULT.copy();
+        }
+
         if (jsonValue.isNumber()) {
-            return IntProvider.create(IntProviders.CONSTANT, jsonValue.asInt(), jsonValue);
+            return IntProvider.create(IntProviders.ALL.get("constant").copy(), jsonValue.asInt(), jsonValue);
         } else if (jsonValue.isObject()) {
             String id = jsonValue.getString("id", "constant");
-            int value = jsonValue.getInt("value", 0);
-            return IntProvider.create(IntProviders.ALL.get(id), value, jsonValue);
+            int value = jsonValue.getInt("value", defaultValue);
+            return IntProvider.create(IntProviders.ALL.get(id).copy(), value, jsonValue);
         }
-        return null;
+        return DEFAULT.copy();
     }
 
     public static IntProvider create(IntProvider template, int startValue, JsonValue data) {
@@ -43,11 +49,12 @@ public class IntProvider extends Number implements Provider<Integer> {
     }
 
     public static IntProvider create(IntProvider template) {
+        template.value = 0;
         return template;
     }
 
     @Override
-    public Provider<Integer> copy() {
+    public IntProvider copy() {
         return create(new IntProvider(provider), value, data);
     }
 

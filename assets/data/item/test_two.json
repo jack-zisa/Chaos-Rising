@@ -1,6 +1,6 @@
 {
   "id": "test_two",
-  "bullet_id": "test_sin",
+  "bullet_id": "test_sin_acc",
   "damage": 5,
   "bullet_count": 2,
   "arc_gap": 20

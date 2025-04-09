@@ -4,9 +4,8 @@ import com.badlogic.gdx.utils.JsonValue;
 import dev.creoii.chaos.Game;
 import dev.creoii.chaos.util.TriFunction;
 
-import javax.annotation.Nullable;
-
 public class FloatProvider extends Number implements Provider<Float> {
+    public static final Provider<Float> DEFAULT = FloatProvider.create(FloatProviders.ALL.get("constant"));
     private final TriFunction<Game, Float, JsonValue, Float> provider;
     private JsonValue data;
     private float value;
@@ -19,16 +18,23 @@ public class FloatProvider extends Number implements Provider<Float> {
         return FloatProviders.ALL.put(id, new FloatProvider(provider));
     }
 
-    @Nullable
-    public static FloatProvider parse(JsonValue jsonValue) {
+    public static Provider<Float> parse(JsonValue jsonValue) {
+        return parse(jsonValue, 0f);
+    }
+
+    public static Provider<Float> parse(JsonValue jsonValue, Float defaultValue) {
+        if (jsonValue == null) {
+            return DEFAULT.copy();
+        }
+
         if (jsonValue.isNumber()) {
-            return FloatProvider.create(FloatProviders.ALL.get("constant"), jsonValue.asInt(), jsonValue);
+            return FloatProvider.create(FloatProviders.ALL.get("constant").copy(), jsonValue.asFloat(), jsonValue);
         } else if (jsonValue.isObject()) {
             String id = jsonValue.getString("id", "constant");
-            float value = jsonValue.getFloat("value", 0f);
-            return FloatProvider.create(FloatProviders.ALL.get(id), value, jsonValue);
+            float value = jsonValue.getFloat("value", defaultValue);
+            return FloatProvider.create(FloatProviders.ALL.get(id).copy(), value, jsonValue);
         }
-        return null;
+        return DEFAULT.copy();
     }
 
     public static FloatProvider create(FloatProvider template, float startValue, JsonValue data) {
@@ -43,11 +49,12 @@ public class FloatProvider extends Number implements Provider<Float> {
     }
 
     public static FloatProvider create(FloatProvider template) {
+        template.value = 0f;
         return template;
     }
 
     @Override
-    public Provider<Float> copy() {
+    public FloatProvider copy() {
         return create(new FloatProvider(provider), value, data);
     }
 

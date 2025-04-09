@@ -12,10 +12,8 @@ import dev.creoii.chaos.entity.controller.BulletController;
 import dev.creoii.chaos.entity.controller.EntityController;
 import dev.creoii.chaos.texture.TextureManager;
 import dev.creoii.chaos.util.provider.FloatProvider;
-import dev.creoii.chaos.util.provider.FloatProviders;
 import dev.creoii.chaos.util.provider.Provider;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -23,9 +21,9 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
     private final String id;
     private int lifetime;
     private final Provider<Float> speed;
-    private final float frequency;
-    private final float amplitude;
-    private final float arcSpeed;
+    private final Provider<Float> frequency;
+    private final Provider<Float> amplitude;
+    private final Provider<Float> arcSpeed;
     private final boolean piercing;
     private final EntityController<BulletEntity> controller;
     private UUID parentId;
@@ -34,7 +32,7 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
     private int damage;
     private int index;
 
-    public BulletEntity(String id, String textureId, int lifetime, Provider<Float> speed, float frequency, float amplitude, float arcSpeed, boolean piercing, float scale) {
+    public BulletEntity(String id, String textureId, int lifetime, Provider<Float> speed, Provider<Float> frequency, Provider<Float> amplitude, Provider<Float> arcSpeed, boolean piercing, float scale) {
         super(textureId, scale, new Vector2(1, 1), Group.BULLET);
         this.id = id;
         this.lifetime = lifetime;
@@ -64,15 +62,15 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
     }
 
     public float getFrequency() {
-        return frequency;
+        return frequency.get(game);
     }
 
     public float getAmplitude() {
-        return amplitude;
+        return amplitude.get(game);
     }
 
     public float getArcSpeed() {
-        return arcSpeed;
+        return arcSpeed.get(game);
     }
 
     public Vector2 getDirection() {
@@ -113,7 +111,7 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
 
     @Override
     public Entity create(Game game, UUID uuid, Vector2 pos) {
-        BulletEntity entity = new BulletEntity(id, getTextureId(), lifetime, speed.copy(), frequency, amplitude, arcSpeed, piercing, getScale() / COORDINATE_SCALE);
+        BulletEntity entity = new BulletEntity(id, getTextureId(), lifetime, speed.copy(), frequency.copy(), amplitude.copy(), arcSpeed.copy(), piercing, getScale() / COORDINATE_SCALE);
         entity.sprite = new Sprite(game.getTextureManager().getTexture("bullet", entity.getTextureId()));
         entity.sprite.setSize(entity.getScale(), entity.getScale());
         entity.setMoving(true);
@@ -168,10 +166,10 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
             String id = jsonValue.getString("id");
             String spritePath = jsonValue.getString("texture", TextureManager.DEFAULT_TEXTURE_ID);
             int lifetime = jsonValue.getInt("lifetime", 0);
-            FloatProvider speed = FloatProvider.parse(jsonValue.get("speed"));
-            float frequency = jsonValue.getFloat("frequency", 0f);
-            float amplitude = jsonValue.getFloat("amplitude", 0f);
-            float arcSpeed = jsonValue.getFloat("arc_speed", 0f);
+            Provider<Float> speed = FloatProvider.parse(jsonValue.get("speed"));
+            Provider<Float> frequency = FloatProvider.parse(jsonValue.get("frequency"));
+            Provider<Float> amplitude = FloatProvider.parse(jsonValue.get("amplitude"));
+            Provider<Float> arcSpeed = FloatProvider.parse(jsonValue.get("arc_speed"));
             boolean piercing = jsonValue.getBoolean("piercing", false);
             float scale = jsonValue.getFloat("scale", 1f);
             return new BulletEntity(id, spritePath, lifetime, speed, frequency, amplitude, arcSpeed, piercing, scale);

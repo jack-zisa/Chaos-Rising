@@ -13,4 +13,16 @@ public final class IntProviders {
     public static final IntProvider ACCELERATE = IntProvider.register("accelerate", (game, value, data) -> {
         return value + data.getInt("acceleration", 0);
     });
+
+    public static final IntProvider CLAMP = IntProvider.register("clamp", (game, value, data) -> {
+        int min;
+        if (data.has("min") && value < (min = data.getInt("min"))) {
+            value = min;
+        }
+        int max;
+        if (data.has("max") && value > (max = data.getInt("max"))) {
+            value = max;
+        }
+        return value;
+    });
 }

@@ -16,9 +16,8 @@ public class BulletController extends EntityController<BulletEntity> {
             Vector2 offset = new Vector2(bullet.getPerpendicular()).scl((float) (Math.cos((gametime - bullet.getSpawnTime()) * bullet.getFrequency()) * bullet.getAmplitude()) * bullet.getIndex());
             bullet.getPos().add(forward).add(offset);
 
-            // Update direction with arc speed
-            //float angle = (float) (Math.atan2(bullet.getDirection().y, bullet.getDirection().x) + bullet.getArcSpeed());
-            //bullet.getDirection().set((float) Math.cos(angle), (float) Math.sin(angle));
+            float angle = (float) (Math.atan2(bullet.getDirection().y, bullet.getDirection().x) + bullet.getArcSpeed());
+            bullet.getDirection().set((float) Math.cos(angle), (float) Math.sin(angle));
         }
     }
 }
