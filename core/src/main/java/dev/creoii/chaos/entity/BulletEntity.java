@@ -124,6 +124,7 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
         if (entity instanceof BulletEntity bullet) {
             bullet.direction = (Vector2) customData.get("direction");
             bullet.perpendicular = new Vector2(-bullet.direction.y, bullet.direction.x).nor();
+            bullet.sprite.setOriginCenter();
             bullet.sprite.setRotation(bullet.direction.angleDeg() - 45);
             bullet.damage = (int) customData.getOrDefault("damage", 0);
         }
