@@ -2,7 +2,7 @@ package dev.creoii.chaos.util.provider;
 
 import com.badlogic.gdx.utils.JsonValue;
 import dev.creoii.chaos.Game;
-import dev.creoii.chaos.util.TriFunction;
+import dev.creoii.chaos.util.function.TriFunction;
 
 public class FloatProvider extends Number implements Provider<Float> {
     public static final Provider<Float> DEFAULT = FloatProvider.create(FloatProviders.ALL.get("constant"));

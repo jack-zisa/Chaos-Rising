@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import dev.creoii.chaos.Main;
+import dev.creoii.chaos.render.entity.EntityRenderManager;
 import dev.creoii.chaos.util.Renderable;
 
 import java.util.ArrayList;

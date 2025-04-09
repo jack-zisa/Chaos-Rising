@@ -1,4 +1,4 @@
-package dev.creoii.chaos.render;
+package dev.creoii.chaos.render.entity;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import dev.creoii.chaos.entity.Entity;
+import dev.creoii.chaos.render.Renderer;
 
 import javax.annotation.Nullable;
 

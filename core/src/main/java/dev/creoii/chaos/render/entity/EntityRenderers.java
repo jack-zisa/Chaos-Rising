@@ -1,4 +1,4 @@
-package dev.creoii.chaos.render;
+package dev.creoii.chaos.render.entity;
 
 import dev.creoii.chaos.entity.Entity;
 

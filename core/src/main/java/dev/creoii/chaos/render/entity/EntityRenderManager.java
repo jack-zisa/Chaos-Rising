@@ -1,4 +1,4 @@
-package dev.creoii.chaos.render;
+package dev.creoii.chaos.render.entity;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -16,6 +16,7 @@ import dev.creoii.chaos.entity.BulletEntity;
 import dev.creoii.chaos.entity.EnemyEntity;
 import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.entity.character.CharacterEntity;
+import dev.creoii.chaos.render.Renderer;
 import dev.creoii.chaos.util.Renderable;
 
 import javax.annotation.Nullable;

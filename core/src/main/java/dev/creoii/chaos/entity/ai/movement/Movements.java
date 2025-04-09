@@ -3,7 +3,7 @@ package dev.creoii.chaos.entity.ai.movement;
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.entity.LivingEntity;
-import dev.creoii.chaos.util.TriConsumer;
+import dev.creoii.chaos.util.function.TriConsumer;
 
 import java.util.Map;
 

@@ -1,4 +1,4 @@
-package dev.creoii.chaos.util;
+package dev.creoii.chaos.util.function;
 
 import java.util.Objects;
 
