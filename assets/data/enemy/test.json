@@ -9,19 +9,40 @@
         "transition": {
           "id": "to",
           "to": "test2"
-        }
+        },
+        "actions": [
+          {
+            "id": "movement",
+            "movement": "chase",
+            "speed": 2
+          }
+        ]
       },
       "test1": {
         "duration": 100,
         "transition": {
           "id": "next"
-        }
+        },
+        "actions": [
+          {
+            "id": "movement",
+            "movement": "random",
+            "speed": 4
+          }
+        ]
       },
       "test2": {
         "duration": 100,
         "transition": {
           "id": "random"
-        }
+        },
+        "actions": [
+          {
+            "id": "movement",
+            "movement": "chase",
+            "speed": 5
+          }
+        ]
       }
     }
   }

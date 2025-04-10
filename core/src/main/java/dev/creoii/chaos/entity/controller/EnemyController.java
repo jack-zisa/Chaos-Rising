@@ -50,16 +50,8 @@ public class EnemyController extends EntityController<EnemyEntity> {
         return entity;
     }
 
-    public Phase[] getPhases() {
-        return phases;
-    }
-
-    public BiMap<String, Integer> getPhaseKeys() {
-        return phaseKeys;
-    }
-
-    public String getStartPhaseKey() {
-        return startPhaseKey;
+    public Phase getCurrentPhase() {
+        return currentPhase;
     }
 
     public Random getRandom() {
