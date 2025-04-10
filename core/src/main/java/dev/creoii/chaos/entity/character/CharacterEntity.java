@@ -56,6 +56,11 @@ public class CharacterEntity extends LivingEntity {
     }
 
     @Override
+    public void postSpawn() {
+
+    }
+
+    @Override
     public EntityController<CharacterEntity> getController() {
         return controller;
     }

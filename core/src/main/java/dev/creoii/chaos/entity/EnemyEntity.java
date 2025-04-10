@@ -1,32 +1,31 @@
 package dev.creoii.chaos.entity;
 
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import dev.creoii.chaos.DataManager;
 import dev.creoii.chaos.Game;
 import dev.creoii.chaos.Main;
+import dev.creoii.chaos.entity.ai.phase.Phase;
+import dev.creoii.chaos.entity.ai.phase.PhaseKey;
 import dev.creoii.chaos.entity.controller.EnemyController;
 import dev.creoii.chaos.entity.controller.EntityController;
-import dev.creoii.chaos.render.Renderer;
 import dev.creoii.chaos.texture.TextureManager;
 import dev.creoii.chaos.util.stat.Stats;
 
-import javax.annotation.Nullable;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class EnemyEntity extends LivingEntity implements DataManager.Identifiable {
     private final String id;
-    private final EntityController<EnemyEntity> controller;
+    private final EnemyController controller;
 
-    public EnemyEntity(String id, String textureId, float scale) {
+    public EnemyEntity(String id, String textureId, float scale, EnemyController controller) {
         super(textureId, scale, new Vector2(1, 1), Group.ENEMY, new Stats(), new Stats());
         this.id = id;
-        controller = new EnemyController(this);
+        this.controller = controller;
     }
 
     @Override
@@ -48,6 +47,12 @@ public class EnemyEntity extends LivingEntity implements DataManager.Identifiabl
     }
 
     @Override
+    public void postSpawn() {
+        if (controller != null)
+            controller.start(this);
+    }
+
+    @Override
     public void tick(int gametime, float delta) {
         super.tick(gametime, delta);
 
@@ -57,7 +62,7 @@ public class EnemyEntity extends LivingEntity implements DataManager.Identifiabl
 
     @Override
     public Entity create(Game game, UUID uuid, Vector2 pos) {
-        EnemyEntity entity = new EnemyEntity(id, getTextureId(), getScale() / COORDINATE_SCALE);
+        EnemyEntity entity = new EnemyEntity(id, getTextureId(), getScale() / COORDINATE_SCALE, controller);
         entity.sprite = new Sprite(game.getTextureManager().getTexture("enemy", getTextureId()));
         entity.sprite.setSize(getScale(), getScale());
         entity.setMoving(true);
@@ -76,6 +81,7 @@ public class EnemyEntity extends LivingEntity implements DataManager.Identifiabl
             json.writeValue("id", enemy.id());
             json.writeValue("scale", enemy.getScale());
             json.writeValue("texture", enemy.getTextureId());
+            // write phases
             json.writeObjectEnd();
         }
 
@@ -84,7 +90,21 @@ public class EnemyEntity extends LivingEntity implements DataManager.Identifiabl
             String id = jsonValue.getString("id");
             String spritePath = jsonValue.getString("texture", TextureManager.DEFAULT_TEXTURE_ID);
             float scale = jsonValue.getFloat("scale", 1f);
-            return new EnemyEntity(id, spritePath, scale);
+
+            if (jsonValue.has("controller")) {
+                JsonValue controller = jsonValue.get("controller");
+                String startPhaseKey = controller.getString("start_phase");
+
+                Map<PhaseKey, Phase> phases = new LinkedHashMap<>();
+                int i = 0;
+                for (JsonValue jsonValue1 : controller.get("phases")) {
+                    Phase phase = new Phase(jsonValue1.name, jsonValue1.getInt("duration"));
+                    phases.put(new PhaseKey(jsonValue1.name, i), phase);
+                    ++i;
+                }
+                return new EnemyEntity(id, spritePath, scale, new EnemyController(phases, startPhaseKey));
+            }
+            return new EnemyEntity(id, spritePath, scale, null);
         }
     }
 }

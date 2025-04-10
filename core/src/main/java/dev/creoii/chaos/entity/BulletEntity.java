@@ -112,6 +112,11 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
     }
 
     @Override
+    public void postSpawn() {
+
+    }
+
+    @Override
     public Entity create(Game game, UUID uuid, Vector2 pos) {
         BulletEntity entity = new BulletEntity(id, getTextureId(), lifetime, angleOffset, speed.copy(), frequency.copy(), amplitude.copy(), arcSpeed.copy(), piercing, getScale() / COORDINATE_SCALE);
         entity.sprite = new Sprite(game.getTextureManager().getTexture("bullet", entity.getTextureId()));

@@ -44,6 +44,8 @@ public abstract class Entity implements Positionable, Tickable {
 
     public abstract void collide(Entity other);
 
+    public abstract void postSpawn();
+
     public void tick(int gametime, float delta) {
         if (getController() != null) {
             getController().control(gametime, delta);
@@ -121,6 +123,7 @@ public abstract class Entity implements Positionable, Tickable {
         entity.pos = pos;
         entity.spawnTime = game.getGametime();
         entity.setActive();
+        entity.postSpawn();
         return entity;
     }
 

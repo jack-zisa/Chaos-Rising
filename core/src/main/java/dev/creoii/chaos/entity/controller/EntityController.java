@@ -3,7 +3,7 @@ package dev.creoii.chaos.entity.controller;
 import dev.creoii.chaos.entity.Entity;
 
 public abstract class EntityController<T extends Entity> {
-    protected final T entity;
+    protected T entity;
 
     protected EntityController(T entity) {
         this.entity = entity;

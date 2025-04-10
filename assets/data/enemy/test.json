@@ -1,4 +1,18 @@
 {
   "id": "test",
-  "texture": "skeleton"
+  "texture": "skeleton",
+  "controller": {
+    "start_phase": "test",
+    "phases": {
+      "test": {
+        "duration": 100
+      },
+      "test1": {
+        "duration": 100
+      },
+      "test2": {
+        "duration": 100
+      }
+    }
+  }
 }

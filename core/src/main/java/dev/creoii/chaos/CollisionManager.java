@@ -31,7 +31,7 @@ public class CollisionManager {
     }
 
     public void checkCollisions() {
-        for (Array<Entity> cellEntities : grid.values()) { // improve grid clearing with a boolean flag storing in the integer key
+        for (Array<Entity> cellEntities : grid.values()) {
             cellEntities.clear();
         }
         grid.clear();
@@ -41,12 +41,12 @@ public class CollisionManager {
             int y = Math.round(entity.getPos().y / cellSize);
 
             int key = ((x + KEY_OFFSET) << 16) | ((y + KEY_OFFSET) & 0xffff);
-            Array<Entity> cellEntities = grid.get(key);
-            if (cellEntities == null) {
-                cellEntities = new Array<>();
-                grid.put(key, cellEntities);
+            Array<Entity> entities = grid.get(key);
+            if (entities == null) {
+                entities = new Array<>();
+                grid.put(key, entities);
             }
-            cellEntities.add(entity);
+            entities.add(entity);
         }
 
         for (ObjectMap.Entry<Integer, Array<Entity>> entry : grid.entries()) {
