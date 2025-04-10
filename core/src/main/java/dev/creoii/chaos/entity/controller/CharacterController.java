@@ -35,6 +35,9 @@ public class CharacterController extends EntityController<CharacterEntity> {
 
         Vector2 direction = new Vector2(dx, dy).nor();
 
+        if (entity instanceof CharacterEntity character) {
+            character.setPrevPos(entity.getPos());
+        }
         entity.getPos().add(direction.scl(entity.getStats().speed * Entity.COORDINATE_SCALE * delta));
         entity.setMoving(true);
 

@@ -6,6 +6,7 @@ import dev.creoii.chaos.entity.EnemyEntity;
 import dev.creoii.chaos.entity.behavior.phase.Phase;
 import dev.creoii.chaos.entity.behavior.phase.PhaseKey;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Random;
 
@@ -30,12 +31,28 @@ public class EnemyController extends EntityController<EnemyEntity> {
         random = new Random();
     }
 
+    public EnemyController(EnemyController controller) {
+        super(null);
+        this.startPhaseKey = controller.getStartPhaseKey();
+        phaseKeys = controller.phaseKeys;
+        phases = Arrays.copyOf(controller.phases, controller.phases.length);
+        random = new Random();
+    }
+
     public Phase getPhase(int index) {
         return phases[index];
     }
 
     public Phase getPhase(String id) {
         return phases[phaseKeys.get(id)];
+    }
+
+    public Phase[] getPhases() {
+        return phases;
+    }
+
+    public String getStartPhaseKey() {
+        return startPhaseKey;
     }
 
     public int getIndex(Phase phase) {

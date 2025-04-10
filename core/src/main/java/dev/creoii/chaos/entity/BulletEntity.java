@@ -20,14 +20,14 @@ import java.util.UUID;
 public class BulletEntity extends Entity implements DataManager.Identifiable {
     private final String id;
     private int lifetime;
-    private int angleOffset;
+    private final int angleOffset;
     private final Provider<Float> speed;
     private final Provider<Float> frequency;
     private final Provider<Float> amplitude;
     private final Provider<Float> arcSpeed;
     private final boolean piercing;
     private final EntityController<BulletEntity> controller;
-    private UUID parentId;
+    private Group parentGroup;
     private Vector2 direction;
     private Vector2 perpendicular;
     private int damage;
@@ -91,8 +91,8 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
         this.index = index;
     }
 
-    public void setParentId(UUID parentId) {
-        this.parentId = parentId;
+    public void setParentGroup(Group parentGroup) {
+        this.parentGroup = parentGroup;
     }
 
     @Override
@@ -103,7 +103,7 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
 
     @Override
     public void collide(Entity other) {
-        if (other instanceof LivingEntity && other.getUuid() != parentId) {
+        if (other instanceof LivingEntity && other.getGroup() != parentGroup) {
             ((LivingEntity) other).damage(damage);
             if (!piercing) {
                 remove();

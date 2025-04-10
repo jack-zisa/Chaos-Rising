@@ -30,6 +30,10 @@ public class EntityManager {
         return spawned;
     }
 
+    public Entity getEntity(UUID uuid) {
+        return entities.get(uuid);
+    }
+
     public boolean removeEntity(Entity entity) {
         if (entities.containsKey(entity.getUuid())) {
             main.getGame().getTickManager().removeTickable(entity);

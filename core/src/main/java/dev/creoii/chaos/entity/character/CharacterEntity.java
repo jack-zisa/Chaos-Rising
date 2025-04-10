@@ -15,6 +15,7 @@ import java.util.UUID;
 public class CharacterEntity extends LivingEntity {
     private CharacterClass characterClass;
     private final EntityController<CharacterEntity> controller;
+    private final Vector2 prevPos;
     @Nullable
     private Item currentItem;
 
@@ -23,6 +24,7 @@ public class CharacterEntity extends LivingEntity {
         this.characterClass = characterClass;
         controller = new CharacterController(this);
         currentItem = null;
+        prevPos = new Vector2();
     }
 
     public CharacterClass getCharacterClass() {
@@ -42,10 +44,16 @@ public class CharacterEntity extends LivingEntity {
         this.currentItem = currentItem;
     }
 
-    public Item removeCurrentItem() {
-        Item temp = currentItem;
-        currentItem = null;
-        return temp;
+    public Vector2 getPrevPos() {
+        return prevPos;
+    }
+
+    public void setPrevPos(Vector2 prevPos) {
+        this.prevPos.set(prevPos);
+    }
+
+    public Vector2 getPrevCenterPos() {
+        return new Vector2(getPrevPos()).add(COORDINATE_SCALE / 2f, COORDINATE_SCALE / 2f);
     }
 
     @Override

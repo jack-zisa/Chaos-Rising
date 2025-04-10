@@ -24,6 +24,7 @@ public abstract class Entity implements Positionable, Tickable {
     // active fields
     protected Game game;
     protected Vector2 pos;
+    protected Vector2 centerPos;
     protected UUID uuid;
     protected Sprite sprite;
 
@@ -97,9 +98,9 @@ public abstract class Entity implements Positionable, Tickable {
     }
 
     public Vector2 getCenterPos() {
-        Vector2 center = new Vector2(getPos()).add(COORDINATE_SCALE / 2f, COORDINATE_SCALE / 2f);
-        sprite.setCenter(center.x, center.y);
-        return center;
+        centerPos.set(getPos()).add(COORDINATE_SCALE / 2f, COORDINATE_SCALE / 2f);
+        sprite.setCenter(centerPos.x, centerPos.y);
+        return centerPos;
     }
 
     public UUID getUuid() {
@@ -111,6 +112,8 @@ public abstract class Entity implements Positionable, Tickable {
         entity.game = game;
         entity.uuid = uuid;
         entity.pos = pos;
+        entity.centerPos = new Vector2();
+        entity.getCenterPos();
         entity.spawnTime = game.getGametime();
         entity.postSpawn();
         return entity;

@@ -20,7 +20,10 @@
             "id": "attack",
             "attack": {
               "bullet_id": "test",
-              "damage": 5
+              "damage": 5,
+              "bullet_count": 2,
+              "arc_gap": 20,
+              "predictability": 100
             },
             "cooldown": 20
           }
@@ -49,6 +52,16 @@
             "id": "move",
             "movement": "chase",
             "speed": 5
+          },
+          {
+            "id": "attack",
+            "attack": {
+              "bullet_id": "test",
+              "damage": 5,
+              "bullet_count": 3,
+              "arc_gap": 120
+            },
+            "cooldown": 60
           }
         ]
       }
