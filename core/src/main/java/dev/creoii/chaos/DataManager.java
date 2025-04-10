@@ -42,10 +42,6 @@ public class DataManager {
         }
     }
 
-    public Json getJson() {
-        return json;
-    }
-
     public CharacterClass getCharacterClass(String id) {
         return (CharacterClass) data.get("class").get(id);
     }

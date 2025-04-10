@@ -42,9 +42,7 @@ public class Renderer implements Disposable {
         worldRenderables.add(new EntityRenderManager(main));
         screenRenderables = new ArrayList<>();
         screenRenderables.add(new HudRenderer());
-    }
 
-    public void initCamera() {
         camera.position.x = main.getGame().getActiveCharacter().getPos().x;
         camera.position.y = main.getGame().getActiveCharacter().getPos().y;
         camera.update();
