@@ -33,4 +33,12 @@ public abstract class LivingEntity extends Entity {
             return;
         stats.health = Math.min(maxStats.health, stats.health + amount);
     }
+
+    @Override
+    public void tick(int gametime, float delta) {
+        super.tick(gametime, delta);
+
+        if (stats.health != maxStats.health && gametime % 40 == 0)
+            heal(Math.round(1f + .2f * stats.vitality));
+    }
 }

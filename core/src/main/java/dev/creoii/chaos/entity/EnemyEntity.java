@@ -63,7 +63,7 @@ public class EnemyEntity extends LivingEntity implements DataManager.Identifiabl
 
     @Override
     public Entity create(Game game, UUID uuid, Vector2 pos) {
-        EnemyEntity entity = new EnemyEntity(getTextureId(), getScale() / COORDINATE_SCALE, new EnemyController(controller), getMaxStats().copy());
+        EnemyEntity entity = new EnemyEntity(getTextureId(), getScale() / COORDINATE_SCALE, controller == null ? null : new EnemyController(controller), getMaxStats().copy());
         entity.setId(id);
         entity.sprite = new Sprite(game.getTextureManager().getTexture("enemy", getTextureId()));
         entity.sprite.setSize(getScale(), getScale());

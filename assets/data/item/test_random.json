@@ -1,0 +1,11 @@
+{
+  "type": "weapon",
+  "attack": {
+    "bullet_id": "test",
+    "damage": {
+      "id": "random",
+      "min": 0,
+      "max": 20
+    }
+  }
+}
