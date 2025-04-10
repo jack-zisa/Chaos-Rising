@@ -97,7 +97,7 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
 
     @Override
     public Rectangle getColliderRect() {
-        if (!isActive()) return null;
+        if (pos == null || getCollider() == null) return null;
         return new Rectangle(pos.x, pos.y, getCollider().x * getScale() * .8f, getCollider().y * getScale() * .8f);
     }
 

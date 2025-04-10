@@ -6,7 +6,6 @@ import dev.creoii.chaos.entity.EnemyEntity;
 import dev.creoii.chaos.entity.ai.phase.Phase;
 import dev.creoii.chaos.entity.ai.phase.PhaseKey;
 
-import java.util.Arrays;
 import java.util.Map;
 import java.util.Random;
 

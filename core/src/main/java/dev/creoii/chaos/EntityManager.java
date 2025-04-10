@@ -43,7 +43,7 @@ public class EntityManager {
         Map<UUID, Entity> activeEntities = new HashMap<>();
         for (ObjectMap.Entry<UUID, Entity> entry : entities) {
             Entity entity = entry.value;
-            if (entity != null && entity.isActive()) {
+            if (entity != null && entity.getGame() != null) {
                 activeEntities.put(entry.key, entity);
             }
         }

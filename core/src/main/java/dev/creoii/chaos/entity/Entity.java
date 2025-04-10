@@ -18,7 +18,6 @@ public abstract class Entity implements Positionable, Tickable {
     private final String textureId;
     private final Vector2 collider;
     private final Group group;
-    private boolean active;
     private boolean moving;
     private long spawnTime;
 
@@ -33,7 +32,6 @@ public abstract class Entity implements Positionable, Tickable {
         this.textureId = textureId;
         this.collider = collider;
         this.group = group;
-        active = false;
         moving = false;
         spawnTime = -1;
     }
@@ -69,20 +67,12 @@ public abstract class Entity implements Positionable, Tickable {
     }
 
     public Rectangle getColliderRect() {
-        if (!active) return null;
+        if (pos == null || collider == null) return null;
         return new Rectangle(pos.x, pos.y, collider.x * getScale(), collider.y * getScale());
     }
 
     public Group getGroup() {
         return group;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive() {
-        this.active = true;
     }
 
     public boolean isMoving() {
@@ -122,7 +112,6 @@ public abstract class Entity implements Positionable, Tickable {
         entity.uuid = uuid;
         entity.pos = pos;
         entity.spawnTime = game.getGametime();
-        entity.setActive();
         entity.postSpawn();
         return entity;
     }
