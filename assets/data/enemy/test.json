@@ -8,7 +8,7 @@
         "duration": 100,
         "transition": {
           "id": "to",
-          "to": 2
+          "to": "test2"
         }
       },
       "test1": {
