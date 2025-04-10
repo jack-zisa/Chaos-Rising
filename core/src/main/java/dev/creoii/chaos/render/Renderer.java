@@ -63,12 +63,9 @@ public class Renderer implements Disposable {
     }
 
     public void render(boolean debug) {
-        if (main.getGame().getActiveCharacter().isMoving()) {
-            camera.position.x += (main.getGame().getActiveCharacter().getPos().x - camera.position.x) * .2f;
-            camera.position.y += (main.getGame().getActiveCharacter().getPos().y - camera.position.y) * .2f;
-            camera.update();
-        }
-
+        camera.position.x += (main.getGame().getActiveCharacter().getPos().x - camera.position.x) * .2f;
+        camera.position.y += (main.getGame().getActiveCharacter().getPos().y - camera.position.y) * .2f;
+        camera.update();
         shapeRenderer.setProjectionMatrix(camera.combined);
         batch.setProjectionMatrix(camera.combined);
 

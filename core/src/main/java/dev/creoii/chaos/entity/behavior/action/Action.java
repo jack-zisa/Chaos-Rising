@@ -18,7 +18,7 @@ public abstract class Action {
     public static Action parse(JsonValue jsonValue) {
         String actionTypeId = jsonValue.getString("id");
         return switch (actionTypeId) {
-            case "movement" -> new MovementAction(jsonValue.getString("movement"), jsonValue);
+            case "move" -> new MoveAction(jsonValue.getString("movement"), jsonValue);
             case "attack" -> new AttackAction(Attack.parse(jsonValue.get("attack")), jsonValue);
             default -> throw new IllegalStateException("Unexpected value: " + actionTypeId);
         };

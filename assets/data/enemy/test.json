@@ -12,7 +12,7 @@
         },
         "actions": [
           {
-            "id": "movement",
+            "id": "move",
             "movement": "chase",
             "speed": 2
           },
@@ -33,7 +33,7 @@
         },
         "actions": [
           {
-            "id": "movement",
+            "id": "move",
             "movement": "random",
             "speed": 4
           }
@@ -46,7 +46,7 @@
         },
         "actions": [
           {
-            "id": "movement",
+            "id": "move",
             "movement": "chase",
             "speed": 5
           }

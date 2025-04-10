@@ -42,6 +42,7 @@ public class Phase {
 
     public void end(EnemyController controller) {
         this.startTime = 0;
+        actions.forEach(action -> action.reset(controller));
     }
 
     public void update(EnemyController controller, int time, float delta) {
