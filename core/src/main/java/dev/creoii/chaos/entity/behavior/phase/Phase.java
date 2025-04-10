@@ -1,5 +1,6 @@
 package dev.creoii.chaos.entity.behavior.phase;
 
+import com.badlogic.gdx.utils.JsonValue;
 import dev.creoii.chaos.entity.behavior.transition.Transition;
 import dev.creoii.chaos.entity.controller.EnemyController;
 
@@ -16,6 +17,10 @@ public class Phase {
         startTime = -1;
     }
 
+    public static Phase parse(JsonValue jsonValue) {
+        return new Phase(jsonValue.name, jsonValue.getInt("duration"), Transition.parse(jsonValue.get("transition")));
+    }
+
     public String getId() {
         return id;
     }
@@ -30,7 +35,7 @@ public class Phase {
 
     public void update(EnemyController controller, int time, float delta) {
         if (startTime >= 0) {
-            System.out.println(id);
+            //System.out.println(id);
         }
     }
 

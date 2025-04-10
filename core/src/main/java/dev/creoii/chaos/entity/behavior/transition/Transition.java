@@ -25,8 +25,8 @@ public class Transition {
         this.data = data;
     }
 
-    static Transition register(String id, TriFunction<EnemyController, Phase, JsonValue, Phase> function) {
-        return Transitions.ALL.put(id, new Transition(function));
+    static void register(String id, TriFunction<EnemyController, Phase, JsonValue, Phase> function) {
+        Transitions.ALL.put(id, new Transition(function));
     }
 
     public static Transition parse(JsonValue jsonValue) {

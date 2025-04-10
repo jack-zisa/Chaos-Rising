@@ -9,7 +9,7 @@ public record Command(BiConsumer<Game, String[]> executor) {
         executor.accept(game, args);
     }
 
-    static Command register(String id, BiConsumer<Game, String[]> executor) {
-        return Commands.ALL.put(id, new Command(executor));
+    static void register(String id, BiConsumer<Game, String[]> executor) {
+        Commands.ALL.put(id, new Command(executor));
     }
 }

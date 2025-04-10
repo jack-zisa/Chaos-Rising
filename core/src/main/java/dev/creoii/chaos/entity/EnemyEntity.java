@@ -99,10 +99,8 @@ public class EnemyEntity extends LivingEntity implements DataManager.Identifiabl
 
                 Map<PhaseKey, Phase> phases = new LinkedHashMap<>();
                 int i = 0;
-                for (JsonValue jsonValue1 : controller.get("phases")) {
-                    JsonValue transition = jsonValue1.get("transition");
-                    Phase phase = new Phase(jsonValue1.name, jsonValue1.getInt("duration"), Transition.parse(transition));
-                    phases.put(new PhaseKey(jsonValue1.name, i), phase);
+                for (JsonValue phaseValue : controller.get("phases")) {
+                    phases.put(new PhaseKey(phaseValue.name, i), Phase.parse(phaseValue));
                     ++i;
                 }
                 return new EnemyEntity(id, spritePath, scale, new EnemyController(phases, startPhaseKey));
