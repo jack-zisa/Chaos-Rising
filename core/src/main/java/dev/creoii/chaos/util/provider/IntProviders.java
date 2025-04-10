@@ -2,8 +2,10 @@ package dev.creoii.chaos.util.provider;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 public final class IntProviders {
+    private static final Random RANDOM = new Random();
     static final Map<String, IntProvider> ALL = new HashMap<>();
 
     static {
@@ -20,6 +22,11 @@ public final class IntProviders {
                 value = max;
             }
             return value;
+        });
+        IntProvider.register("random", (game, value, data) -> {
+            int min = data.getInt("min");
+            int max = data.getInt("max");
+            return RANDOM.nextInt(max - min + 1) + min;
         });
     }
 }

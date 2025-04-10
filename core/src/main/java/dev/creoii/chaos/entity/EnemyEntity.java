@@ -9,8 +9,6 @@ import dev.creoii.chaos.Game;
 import dev.creoii.chaos.Main;
 import dev.creoii.chaos.entity.behavior.phase.Phase;
 import dev.creoii.chaos.entity.behavior.phase.PhaseKey;
-import dev.creoii.chaos.entity.behavior.transition.Transition;
-import dev.creoii.chaos.entity.behavior.transition.Transitions;
 import dev.creoii.chaos.entity.controller.EnemyController;
 import dev.creoii.chaos.entity.controller.EntityController;
 import dev.creoii.chaos.texture.TextureManager;
@@ -24,8 +22,8 @@ public class EnemyEntity extends LivingEntity implements DataManager.Identifiabl
     private String id;
     private final EnemyController controller;
 
-    public EnemyEntity(String textureId, float scale, EnemyController controller) {
-        super(textureId, scale, new Vector2(1, 1), Group.ENEMY, new Stats(), new Stats());
+    public EnemyEntity(String textureId, float scale, EnemyController controller, Stats stats) {
+        super(textureId, scale, new Vector2(1, 1), Group.ENEMY, stats.copy(), stats.copy());
         this.controller = controller;
     }
 
@@ -47,9 +45,6 @@ public class EnemyEntity extends LivingEntity implements DataManager.Identifiabl
 
     @Override
     public void collide(Entity other) {
-        if (other.getGroup() == Group.CHARACTER) {
-            ((LivingEntity) other).damage(5);
-        }
     }
 
     @Override
@@ -68,7 +63,7 @@ public class EnemyEntity extends LivingEntity implements DataManager.Identifiabl
 
     @Override
     public Entity create(Game game, UUID uuid, Vector2 pos) {
-        EnemyEntity entity = new EnemyEntity(getTextureId(), getScale() / COORDINATE_SCALE, new EnemyController(controller));
+        EnemyEntity entity = new EnemyEntity(getTextureId(), getScale() / COORDINATE_SCALE, new EnemyController(controller), getMaxStats().copy());
         entity.setId(id);
         entity.sprite = new Sprite(game.getTextureManager().getTexture("enemy", getTextureId()));
         entity.sprite.setSize(getScale(), getScale());
@@ -88,6 +83,8 @@ public class EnemyEntity extends LivingEntity implements DataManager.Identifiabl
             json.writeValue("id", enemy.id());
             json.writeValue("scale", enemy.getScale());
             json.writeValue("texture", enemy.getTextureId());
+            json.writeValue("base_stats", enemy.getMaxStats());
+            json.writeValue("max_stats", enemy.getMaxStats());
             // write phases
             json.writeObjectEnd();
         }
@@ -96,6 +93,7 @@ public class EnemyEntity extends LivingEntity implements DataManager.Identifiabl
         public EnemyEntity read(Json json, JsonValue jsonValue, Class aClass) {
             String spritePath = jsonValue.getString("texture", TextureManager.DEFAULT_TEXTURE_ID);
             float scale = jsonValue.getFloat("scale", 1f);
+            Stats stats = jsonValue.has("stats") ? json.readValue(Stats.class, jsonValue.get("stats")) : new Stats();
 
             if (jsonValue.has("controller")) {
                 JsonValue controller = jsonValue.get("controller");
@@ -107,9 +105,9 @@ public class EnemyEntity extends LivingEntity implements DataManager.Identifiabl
                     phases.put(new PhaseKey(phaseValue.name, i), Phase.parse(phaseValue));
                     ++i;
                 }
-                return new EnemyEntity(spritePath, scale, new EnemyController(phases, startPhaseKey));
+                return new EnemyEntity(spritePath, scale, new EnemyController(phases, startPhaseKey), stats);
             }
-            return new EnemyEntity(spritePath, scale, null);
+            return new EnemyEntity(spritePath, scale, null, stats);
         }
     }
 }

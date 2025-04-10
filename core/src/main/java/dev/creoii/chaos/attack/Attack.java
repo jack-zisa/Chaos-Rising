@@ -6,17 +6,19 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import dev.creoii.chaos.entity.BulletEntity;
 import dev.creoii.chaos.entity.Entity;
+import dev.creoii.chaos.entity.LivingEntity;
 import dev.creoii.chaos.entity.character.CharacterEntity;
+import dev.creoii.chaos.util.provider.IntProvider;
+import dev.creoii.chaos.util.provider.Provider;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
-public record Attack(String bulletId, int damage, int bulletCount, int arcGap, float predictability) {
+public record Attack(String bulletId, Provider<Integer> damage, int bulletCount, int arcGap, float predictability) {
     public static Attack parse(JsonValue jsonValue) {
         String bulletId = jsonValue.getString("bullet_id");
-        int damage = jsonValue.getInt("damage", 0);
+        Provider<Integer> damage = IntProvider.parse(jsonValue.get("damage"), 0);
         int bulletCount = jsonValue.getInt("bullet_count", 1);
         int arcGap = jsonValue.getInt("arc_gap", 0);
         float predictability = jsonValue.getFloat("predictability", 0f);
@@ -32,7 +34,8 @@ public record Attack(String bulletId, int damage, int bulletCount, int arcGap, f
 
             Map<String, Object> customData = new HashMap<>();
             customData.put("direction", direction.cpy().rotateDeg(angle));
-            customData.put("damage", damage);
+            if (entity instanceof LivingEntity livingEntity)
+                customData.put("damage", Math.round(damage.get(entity.getGame()) * .5f + livingEntity.getStats().attack / 50f));
 
             BulletEntity bullet = entity.getGame().getEntityManager().addEntity(entity.getGame().getDataManager().getBullet(bulletId), new Vector2(entity.getPos()), customData);
             bullet.setParentGroup(entity.getGroup());

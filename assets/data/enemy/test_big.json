@@ -1,5 +1,8 @@
 {
   "scale": 2,
+  "stats": {
+    "health": 50
+  },
   "controller": {
     "start_phase": "test",
     "phases": {
