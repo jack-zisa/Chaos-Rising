@@ -2,14 +2,10 @@ package dev.creoii.chaos.entity.controller;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
-import dev.creoii.chaos.entity.BulletEntity;
+import dev.creoii.chaos.attack.Attack;
 import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.entity.character.CharacterEntity;
 import dev.creoii.chaos.item.Item;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class CharacterController extends EntityController<CharacterEntity> {
     private int attackCooldown;
@@ -43,7 +39,7 @@ public class CharacterController extends EntityController<CharacterEntity> {
         entity.setMoving(true);
 
         if (Gdx.input.isTouched() && --attackCooldown <= 0 && entity.getCurrentItem() != null && entity.getCurrentItem().type() == Item.Type.WEAPON) {
-            entity.getCurrentItem().attack().attack(entity);
+            entity.getCurrentItem().attack().attack(Attack.Target.MOUSE_POS, entity);
             attackCooldown = Math.max(1, 150 / Math.max(1, entity.getStats().attackSpeed));
         }
     }

@@ -15,6 +15,14 @@
             "id": "movement",
             "movement": "chase",
             "speed": 2
+          },
+          {
+            "id": "attack",
+            "attack": {
+              "bullet_id": "test",
+              "damage": 5
+            },
+            "cooldown": 20
           }
         ]
       },

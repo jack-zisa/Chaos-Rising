@@ -5,15 +5,19 @@ import dev.creoii.chaos.entity.controller.EnemyController;
 
 public class MovementAction extends Action {
     private final String movementId;
-    private final JsonValue data;
 
     public MovementAction(String movementId, JsonValue data) {
+        super(data);
         this.movementId = movementId;
-        this.data = data;
     }
 
     @Override
     public void update(EnemyController controller, int time, float delta) {
-        Movements.MOVEMENTS.get(movementId).accept(controller.getEntity(), delta, data);
+        Movements.MOVEMENTS.get(movementId).accept(controller.getEntity(), delta, getData());
+    }
+
+    @Override
+    public void reset(EnemyController controller) {
+
     }
 }
