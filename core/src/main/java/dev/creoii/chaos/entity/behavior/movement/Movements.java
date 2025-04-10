@@ -1,4 +1,4 @@
-package dev.creoii.chaos.entity.ai.movement;
+package dev.creoii.chaos.entity.behavior.movement;
 
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.entity.Entity;
@@ -8,7 +8,7 @@ import dev.creoii.chaos.util.function.TriConsumer;
 import java.util.Map;
 
 public class Movements {
-    public static final Map<String, TriConsumer<Entity, Float, Map<String, Object>>> BEHAVIORS = Map.of(
+    public static final Map<String, TriConsumer<Entity, Float, Map<String, Object>>> MOVEMENTS = Map.of(
         "random", Movements::random,
         "chase", Movements::chase
     );

@@ -7,8 +7,10 @@ import com.badlogic.gdx.utils.JsonValue;
 import dev.creoii.chaos.DataManager;
 import dev.creoii.chaos.Game;
 import dev.creoii.chaos.Main;
-import dev.creoii.chaos.entity.ai.phase.Phase;
-import dev.creoii.chaos.entity.ai.phase.PhaseKey;
+import dev.creoii.chaos.entity.behavior.phase.Phase;
+import dev.creoii.chaos.entity.behavior.phase.PhaseKey;
+import dev.creoii.chaos.entity.behavior.transition.Transition;
+import dev.creoii.chaos.entity.behavior.transition.Transitions;
 import dev.creoii.chaos.entity.controller.EnemyController;
 import dev.creoii.chaos.entity.controller.EntityController;
 import dev.creoii.chaos.texture.TextureManager;
@@ -98,7 +100,8 @@ public class EnemyEntity extends LivingEntity implements DataManager.Identifiabl
                 Map<PhaseKey, Phase> phases = new LinkedHashMap<>();
                 int i = 0;
                 for (JsonValue jsonValue1 : controller.get("phases")) {
-                    Phase phase = new Phase(jsonValue1.name, jsonValue1.getInt("duration"));
+                    JsonValue transition = jsonValue1.get("transition");
+                    Phase phase = new Phase(jsonValue1.name, jsonValue1.getInt("duration"), Transition.parse(transition));
                     phases.put(new PhaseKey(jsonValue1.name, i), phase);
                     ++i;
                 }

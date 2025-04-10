@@ -3,8 +3,8 @@ package dev.creoii.chaos.entity.controller;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import dev.creoii.chaos.entity.EnemyEntity;
-import dev.creoii.chaos.entity.ai.phase.Phase;
-import dev.creoii.chaos.entity.ai.phase.PhaseKey;
+import dev.creoii.chaos.entity.behavior.phase.Phase;
+import dev.creoii.chaos.entity.behavior.phase.PhaseKey;
 
 import java.util.Map;
 import java.util.Random;

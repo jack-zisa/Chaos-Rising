@@ -1,4 +1,4 @@
-package dev.creoii.chaos.entity.ai.phase;
+package dev.creoii.chaos.entity.behavior.phase;
 
 public record PhaseKey(String name, int index) {
 }

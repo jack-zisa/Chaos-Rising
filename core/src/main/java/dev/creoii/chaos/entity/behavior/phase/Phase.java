@@ -1,15 +1,18 @@
-package dev.creoii.chaos.entity.ai.phase;
+package dev.creoii.chaos.entity.behavior.phase;
 
+import dev.creoii.chaos.entity.behavior.transition.Transition;
 import dev.creoii.chaos.entity.controller.EnemyController;
 
 public class Phase {
     private final String id;
     private final int duration;
+    private final Transition transition;
     private int startTime;
 
-    public Phase(String id, int duration) {
+    public Phase(String id, int duration, Transition transition) {
         this.id = id;
         this.duration = duration;
+        this.transition = transition;
         startTime = -1;
     }
 
@@ -36,7 +39,6 @@ public class Phase {
     }
 
     public Phase getNext(EnemyController controller) {
-        int index = (controller.getIndex(this) + 1) % controller.getPhaseCount();
-        return controller.getPhase(index);
+        return transition.getFunction().apply(controller, this, transition.getData());
     }
 }

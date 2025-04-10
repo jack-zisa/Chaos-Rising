@@ -2,16 +2,26 @@
   "id": "test",
   "texture": "skeleton",
   "controller": {
-    "start_phase": "test",
+    "start_phase": "test0",
     "phases": {
-      "test": {
-        "duration": 100
+      "test0": {
+        "duration": 100,
+        "transition": {
+          "id": "to",
+          "to": 2
+        }
       },
       "test1": {
-        "duration": 100
+        "duration": 100,
+        "transition": {
+          "id": "next"
+        }
       },
       "test2": {
-        "duration": 100
+        "duration": 100,
+        "transition": {
+          "id": "random"
+        }
       }
     }
   }
