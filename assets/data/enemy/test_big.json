@@ -1,4 +1,27 @@
 {
-  "id": "test_big",
-  "scale": 2
+  "scale": 2,
+  "controller": {
+    "start_phase": "test",
+    "phases": {
+      "test": {
+        "actions": [
+          {
+            "id": "move",
+            "movement": "chase",
+            "speed": 0.5
+          },
+          {
+            "id": "attack",
+            "attack": {
+              "bullet_id": "test_big",
+              "damage": 20,
+              "bullet_count": 6,
+              "arc_gap": 60
+            },
+            "cooldown": 100
+          }
+        ]
+      }
+    }
+  }
 }

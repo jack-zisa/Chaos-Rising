@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class BulletEntity extends Entity implements DataManager.Identifiable {
-    private final String id;
+    private String id;
     private int lifetime;
     private final int angleOffset;
     private final Provider<Float> speed;
@@ -33,9 +33,8 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
     private int damage;
     private int index;
 
-    public BulletEntity(String id, String textureId, int lifetime, int angleOffset, Provider<Float> speed, Provider<Float> frequency, Provider<Float> amplitude, Provider<Float> arcSpeed, boolean piercing, float scale) {
+    public BulletEntity(String textureId, int lifetime, int angleOffset, Provider<Float> speed, Provider<Float> frequency, Provider<Float> amplitude, Provider<Float> arcSpeed, boolean piercing, float scale) {
         super(textureId, scale, new Vector2(1, 1), Group.BULLET);
-        this.id = id;
         this.lifetime = lifetime;
         this.angleOffset = angleOffset;
         this.speed = speed;
@@ -51,6 +50,11 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
     @Override
     public String id() {
         return id;
+    }
+
+    @Override
+    public void setId(String id) {
+        this.id = id;
     }
 
     @Override
@@ -118,7 +122,8 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
 
     @Override
     public Entity create(Game game, UUID uuid, Vector2 pos) {
-        BulletEntity entity = new BulletEntity(id, getTextureId(), lifetime, angleOffset, speed.copy(), frequency.copy(), amplitude.copy(), arcSpeed.copy(), piercing, getScale() / COORDINATE_SCALE);
+        BulletEntity entity = new BulletEntity(getTextureId(), lifetime, angleOffset, speed.copy(), frequency.copy(), amplitude.copy(), arcSpeed.copy(), piercing, getScale() / COORDINATE_SCALE);
+        entity.setId(id);
         entity.sprite = new Sprite(game.getTextureManager().getTexture("bullet", entity.getTextureId()));
         entity.sprite.setSize(entity.getScale(), entity.getScale());
         entity.setMoving(true);
@@ -172,7 +177,6 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
 
         @Override
         public BulletEntity read(Json json, JsonValue jsonValue, Class aClass) {
-            String id = jsonValue.getString("id");
             String spritePath = jsonValue.getString("texture", TextureManager.DEFAULT_TEXTURE_ID);
             int lifetime = jsonValue.getInt("lifetime", 0);
             int angleOffset = jsonValue.getInt("angle_offset", 45);
@@ -182,7 +186,7 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
             Provider<Float> arcSpeed = FloatProvider.parse(jsonValue.get("arc_speed"));
             boolean piercing = jsonValue.getBoolean("piercing", false);
             float scale = jsonValue.getFloat("scale", 1f);
-            return new BulletEntity(id, spritePath, lifetime, angleOffset, speed, frequency, amplitude, arcSpeed, piercing, scale);
+            return new BulletEntity(spritePath, lifetime, angleOffset, speed, frequency, amplitude, arcSpeed, piercing, scale);
         }
     }
 }

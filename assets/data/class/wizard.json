@@ -1,5 +1,5 @@
 {
-  "id": "wizard",
+  "sprite_path": "wizard",
   "base_stats": {
     "health": 100,
     "speed": 10,

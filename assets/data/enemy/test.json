@@ -1,5 +1,4 @@
 {
-  "id": "test",
   "texture": "skeleton",
   "controller": {
     "start_phase": "test0",

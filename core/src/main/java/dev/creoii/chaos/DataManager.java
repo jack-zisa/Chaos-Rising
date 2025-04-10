@@ -83,6 +83,7 @@ public class DataManager {
             for (FileHandle file : folderHandle.list("json")) {
                 try {
                     Identifiable obj = parser.parse(file);
+                    obj.setId(file.nameWithoutExtension());
                     obj.onLoad(main);
                     data.get(folder).put(obj.id(), obj);
                 } catch (Exception e) {
@@ -99,6 +100,8 @@ public class DataManager {
 
     public interface Identifiable {
         String id();
+
+        void setId(String id);
 
         default void onLoad(Main main) {}
     }

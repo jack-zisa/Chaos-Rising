@@ -5,6 +5,8 @@ import dev.creoii.chaos.entity.behavior.phase.Phase;
 import dev.creoii.chaos.entity.controller.EnemyController;
 import dev.creoii.chaos.util.function.TriFunction;
 
+import javax.annotation.Nullable;
+
 public class Transition {
     private final TriFunction<EnemyController, Phase, JsonValue, Phase> function;
     private JsonValue data;
@@ -29,7 +31,10 @@ public class Transition {
         Transitions.ALL.put(id, new Transition(function));
     }
 
+    @Nullable
     public static Transition parse(JsonValue jsonValue) {
+        if (jsonValue == null)
+            return null;
         Transition transition = Transitions.ALL.get(jsonValue.getString("id"));
         transition.setData(jsonValue);
         return transition;

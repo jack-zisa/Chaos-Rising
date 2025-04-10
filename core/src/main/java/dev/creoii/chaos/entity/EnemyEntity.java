@@ -21,18 +21,22 @@ import java.util.Map;
 import java.util.UUID;
 
 public class EnemyEntity extends LivingEntity implements DataManager.Identifiable {
-    private final String id;
+    private String id;
     private final EnemyController controller;
 
-    public EnemyEntity(String id, String textureId, float scale, EnemyController controller) {
+    public EnemyEntity(String textureId, float scale, EnemyController controller) {
         super(textureId, scale, new Vector2(1, 1), Group.ENEMY, new Stats(), new Stats());
-        this.id = id;
         this.controller = controller;
     }
 
     @Override
     public String id() {
         return id;
+    }
+
+    @Override
+    public void setId(String id) {
+        this.id = id;
     }
 
     @Override
@@ -64,7 +68,8 @@ public class EnemyEntity extends LivingEntity implements DataManager.Identifiabl
 
     @Override
     public Entity create(Game game, UUID uuid, Vector2 pos) {
-        EnemyEntity entity = new EnemyEntity(id, getTextureId(), getScale() / COORDINATE_SCALE, new EnemyController(controller));
+        EnemyEntity entity = new EnemyEntity(getTextureId(), getScale() / COORDINATE_SCALE, new EnemyController(controller));
+        entity.setId(id);
         entity.sprite = new Sprite(game.getTextureManager().getTexture("enemy", getTextureId()));
         entity.sprite.setSize(getScale(), getScale());
         entity.setMoving(true);
@@ -89,7 +94,6 @@ public class EnemyEntity extends LivingEntity implements DataManager.Identifiabl
 
         @Override
         public EnemyEntity read(Json json, JsonValue jsonValue, Class aClass) {
-            String id = jsonValue.getString("id");
             String spritePath = jsonValue.getString("texture", TextureManager.DEFAULT_TEXTURE_ID);
             float scale = jsonValue.getFloat("scale", 1f);
 
@@ -103,9 +107,9 @@ public class EnemyEntity extends LivingEntity implements DataManager.Identifiabl
                     phases.put(new PhaseKey(phaseValue.name, i), Phase.parse(phaseValue));
                     ++i;
                 }
-                return new EnemyEntity(id, spritePath, scale, new EnemyController(phases, startPhaseKey));
+                return new EnemyEntity(spritePath, scale, new EnemyController(phases, startPhaseKey));
             }
-            return new EnemyEntity(id, spritePath, scale, null);
+            return new EnemyEntity(spritePath, scale, null);
         }
     }
 }

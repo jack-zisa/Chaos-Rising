@@ -1,5 +1,4 @@
 {
-  "id": "test_two",
   "type": "weapon",
   "attack": {
     "bullet_id": "test_sin_acc",

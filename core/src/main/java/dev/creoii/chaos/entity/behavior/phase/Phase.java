@@ -29,7 +29,7 @@ public class Phase {
         for (JsonValue actionJson : actions) {
             parsedActions.add(Action.parse(actionJson));
         }
-        return new Phase(jsonValue.name, jsonValue.getInt("duration"), Transition.parse(jsonValue.get("transition")), parsedActions);
+        return new Phase(jsonValue.name, jsonValue.getInt("duration", 0), Transition.parse(jsonValue.get("transition")), parsedActions);
     }
 
     public String getId() {
@@ -52,6 +52,8 @@ public class Phase {
     }
 
     public boolean shouldTransition(EnemyController controller, int time) {
+        if (transition == null)
+            return false;
         return (time - startTime) >= duration;
     }
 

@@ -20,7 +20,7 @@ public class CharacterEntity extends LivingEntity {
     private Item currentItem;
 
     public CharacterEntity(CharacterClass characterClass) {
-        super(characterClass.spritePath(), 1f, new Vector2(1, 1), Group.CHARACTER, characterClass.baseStats().copy(), characterClass.baseStats().copy());
+        super(characterClass.getSpritePath(), 1f, new Vector2(1, 1), Group.CHARACTER, characterClass.getBaseStats().copy(), characterClass.getBaseStats().copy());
         this.characterClass = characterClass;
         controller = new CharacterController(this);
         currentItem = null;

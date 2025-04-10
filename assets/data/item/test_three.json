@@ -1,5 +1,4 @@
 {
-  "id": "test_three",
   "type": "weapon",
   "attack": {
     "bullet_id": "test_arc",
