@@ -25,12 +25,12 @@ public final class Commands {
                 String stat = args[0];
                 int value = Integer.parseInt(args[1]);
                 switch (stat) {
-                    case "health" -> game.getActiveCharacter().getStats().health = value;
-                    case "speed" -> game.getActiveCharacter().getStats().speed = value;
-                    case "attack_speed" -> game.getActiveCharacter().getStats().attackSpeed = value;
-                    case "defense" -> game.getActiveCharacter().getStats().defense = value;
-                    case "attack" -> game.getActiveCharacter().getStats().attack = value;
-                    case "vitality" -> game.getActiveCharacter().getStats().vitality = value;
+                    case "health" -> game.getActiveCharacter().getStats().health.set(value);
+                    case "speed" -> game.getActiveCharacter().getStats().speed.set(value);
+                    case "attack_speed" -> game.getActiveCharacter().getStats().attackSpeed.set(value);
+                    case "defense" -> game.getActiveCharacter().getStats().defense.set(value);
+                    case "attack" -> game.getActiveCharacter().getStats().attack.set(value);
+                    case "vitality" -> game.getActiveCharacter().getStats().vitality.set(value);
                 }
             }
         });
@@ -88,7 +88,7 @@ public final class Commands {
 
         Command.register("set_item", (game, args) -> {
             if (args.length > 0) {
-                game.getActiveCharacter().setCurrentItem(game.getDataManager().getItem(args[0]));
+                game.getActiveCharacter().equipItem(game.getDataManager().getItem(args[0]));
             }
         });
 

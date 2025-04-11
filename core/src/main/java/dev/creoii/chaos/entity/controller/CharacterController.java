@@ -12,7 +12,7 @@ public class CharacterController extends EntityController<CharacterEntity> {
 
     public CharacterController(CharacterEntity character) {
         super(character);
-        attackCooldown = Math.max(1, 150 / Math.max(1, entity.getStats().attackSpeed));
+        attackCooldown = Math.max(1, 150 / Math.max(1, entity.getStats().attackSpeed.value()));
     }
 
     @Override
@@ -38,12 +38,12 @@ public class CharacterController extends EntityController<CharacterEntity> {
         if (entity instanceof CharacterEntity character) {
             character.setPrevPos(entity.getPos());
         }
-        entity.getPos().add(direction.scl(entity.getStats().speed * Entity.COORDINATE_SCALE * delta));
+        entity.getPos().add(direction.scl(entity.getStats().speed.value() * Entity.COORDINATE_SCALE * delta));
         entity.setMoving(true);
 
         if (Gdx.input.isTouched() && --attackCooldown <= 0 && entity.getCurrentItem() != null && entity.getCurrentItem().getType() == Item.Type.WEAPON) {
             entity.getCurrentItem().getAttack().attack(Attack.Target.MOUSE_POS, entity);
-            attackCooldown = Math.max(1, 150 / Math.max(1, entity.getStats().attackSpeed));
+            attackCooldown = Math.max(1, 150 / Math.max(1, entity.getStats().attackSpeed.value()));
         }
     }
 }

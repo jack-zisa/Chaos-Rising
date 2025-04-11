@@ -19,11 +19,7 @@ public class EnemyController extends EntityController<EnemyEntity> {
     private int time;
 
     public EnemyController(Map<PhaseKey, Phase> phases, String startPhaseKey) {
-        this(null, phases, startPhaseKey);
-    }
-
-    public EnemyController(EnemyEntity entity, Map<PhaseKey, Phase> phases, String startPhaseKey) {
-        super(entity);
+        super(null);
         this.startPhaseKey = startPhaseKey;
         phaseKeys = HashBiMap.create();
         phases.keySet().forEach(key -> phaseKeys.put(key.name(), key.index()));

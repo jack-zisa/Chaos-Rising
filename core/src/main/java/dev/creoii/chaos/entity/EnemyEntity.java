@@ -12,7 +12,7 @@ import dev.creoii.chaos.entity.behavior.phase.PhaseKey;
 import dev.creoii.chaos.entity.controller.EnemyController;
 import dev.creoii.chaos.entity.controller.EntityController;
 import dev.creoii.chaos.texture.TextureManager;
-import dev.creoii.chaos.util.stat.Stats;
+import dev.creoii.chaos.util.stat.StatContainer;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -22,8 +22,8 @@ public class EnemyEntity extends LivingEntity implements DataManager.Identifiabl
     private String id;
     private final EnemyController controller;
 
-    public EnemyEntity(String textureId, float scale, EnemyController controller, Stats stats) {
-        super(textureId, scale, new Vector2(1, 1), Group.ENEMY, stats.copy(), stats.copy());
+    public EnemyEntity(String textureId, float scale, EnemyController controller, StatContainer statContainer) {
+        super(textureId, scale, new Vector2(1, 1), Group.ENEMY, statContainer.copy(), statContainer.copy());
         this.controller = controller;
     }
 
@@ -57,7 +57,7 @@ public class EnemyEntity extends LivingEntity implements DataManager.Identifiabl
     public void tick(int gametime, float delta) {
         super.tick(gametime, delta);
 
-        if (getStats().health <= 0)
+        if (getStats().health.value() <= 0)
             remove();
     }
 
@@ -93,7 +93,7 @@ public class EnemyEntity extends LivingEntity implements DataManager.Identifiabl
         public EnemyEntity read(Json json, JsonValue jsonValue, Class aClass) {
             String spritePath = jsonValue.getString("texture", TextureManager.DEFAULT_TEXTURE_ID);
             float scale = jsonValue.getFloat("scale", 1f);
-            Stats stats = jsonValue.has("stats") ? json.readValue(Stats.class, jsonValue.get("stats")) : new Stats();
+            StatContainer statContainer = jsonValue.has("stats") ? json.readValue(StatContainer.class, jsonValue.get("stats")) : DEFAULT_STAT_CONTAINER.copy();
 
             if (jsonValue.has("controller")) {
                 JsonValue controller = jsonValue.get("controller");
@@ -105,9 +105,9 @@ public class EnemyEntity extends LivingEntity implements DataManager.Identifiabl
                     phases.put(new PhaseKey(phaseValue.name, i), Phase.parse(phaseValue));
                     ++i;
                 }
-                return new EnemyEntity(spritePath, scale, new EnemyController(phases, startPhaseKey), stats);
+                return new EnemyEntity(spritePath, scale, new EnemyController(phases, startPhaseKey), statContainer);
             }
-            return new EnemyEntity(spritePath, scale, null, stats);
+            return new EnemyEntity(spritePath, scale, null, statContainer);
         }
     }
 }

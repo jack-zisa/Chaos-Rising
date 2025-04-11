@@ -8,7 +8,7 @@ import dev.creoii.chaos.entity.BulletEntity;
 import dev.creoii.chaos.entity.EnemyEntity;
 import dev.creoii.chaos.entity.character.CharacterClass;
 import dev.creoii.chaos.item.Item;
-import dev.creoii.chaos.util.stat.Stats;
+import dev.creoii.chaos.util.stat.StatContainer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,7 +23,7 @@ public class DataManager {
         this.main = main;
         json = new Json();
 
-        json.setSerializer(Stats.class, new Stats.Serializer());
+        json.setSerializer(StatContainer.class, new StatContainer.Serializer());
         json.setSerializer(CharacterClass.class, new CharacterClass.Serializer());
         json.setSerializer(Attack.class, new Attack.Serializer());
         json.setSerializer(Item.class, new Item.Serializer());

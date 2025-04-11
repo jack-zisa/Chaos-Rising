@@ -8,6 +8,7 @@ import dev.creoii.chaos.entity.LivingEntity;
 import dev.creoii.chaos.entity.controller.CharacterController;
 import dev.creoii.chaos.entity.controller.EntityController;
 import dev.creoii.chaos.item.Item;
+import dev.creoii.chaos.util.stat.StatContainer;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -27,6 +28,11 @@ public class CharacterEntity extends LivingEntity {
         prevPos = new Vector2();
     }
 
+    @Override
+    public StatContainer getStats() {
+        return super.getStats();
+    }
+
     public CharacterClass getCharacterClass() {
         return characterClass;
     }
@@ -40,8 +46,19 @@ public class CharacterEntity extends LivingEntity {
         return currentItem;
     }
 
-    public void setCurrentItem(@Nullable Item currentItem) {
-        this.currentItem = currentItem;
+    public void equipItem(@Nullable Item item) {
+        unequipItem();
+        if (item != null) {
+            getStats().applyModifier(item.getStatModifier());
+            this.currentItem = item;
+        }
+    }
+
+    public void unequipItem() {
+        if (currentItem != null) {
+            getStats().removeModifier(currentItem.getStatModifier());
+            this.currentItem = null;
+        }
     }
 
     public Vector2 getPrevPos() {

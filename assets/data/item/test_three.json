@@ -5,5 +5,10 @@
     "damage": 5,
     "bullet_count": 3,
     "arc_gap": 120
+  },
+  "stat_modifier": {
+    "stats": {
+      "vitality": 10
+    }
   }
 }

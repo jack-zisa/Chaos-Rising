@@ -5,5 +5,10 @@
     "damage": 5,
     "bullet_count": 2,
     "arc_gap": 20
+  },
+  "stat_modifier": {
+    "stats": {
+      "speed": 10
+    }
   }
 }

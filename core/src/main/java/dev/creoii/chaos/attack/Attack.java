@@ -35,7 +35,7 @@ public record Attack(String bulletId, Provider<Integer> damage, int bulletCount,
             Map<String, Object> customData = new HashMap<>();
             customData.put("direction", direction.cpy().rotateDeg(angle));
             if (entity instanceof LivingEntity livingEntity)
-                customData.put("damage", Math.round(damage.get(entity.getGame()) * .5f + livingEntity.getStats().attack / 50f));
+                customData.put("damage", Math.round(damage.get(entity.getGame()) * .5f + livingEntity.getStats().attack.value() / 50f));
 
             BulletEntity bullet = entity.getGame().getEntityManager().addEntity(entity.getGame().getDataManager().getBullet(bulletId), new Vector2(entity.getPos()), customData);
             bullet.setParentGroup(entity.getGroup());

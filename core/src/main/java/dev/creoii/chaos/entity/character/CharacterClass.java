@@ -3,18 +3,18 @@ package dev.creoii.chaos.entity.character;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import dev.creoii.chaos.DataManager;
-import dev.creoii.chaos.util.stat.Stats;
+import dev.creoii.chaos.util.stat.StatContainer;
 
 public class CharacterClass implements DataManager.Identifiable {
     private String id;
     private final String spritePath;
-    private final Stats baseStats;
-    private final Stats maxStats;
+    private final StatContainer baseStatContainer;
+    private final StatContainer maxStatContainer;
 
-    public CharacterClass(String spritePath, Stats baseStats, Stats maxStats) {
+    public CharacterClass(String spritePath, StatContainer baseStatContainer, StatContainer maxStatContainer) {
         this.spritePath = spritePath;
-        this.baseStats = baseStats;
-        this.maxStats = maxStats;
+        this.baseStatContainer = baseStatContainer;
+        this.maxStatContainer = maxStatContainer;
     }
 
     @Override
@@ -26,12 +26,12 @@ public class CharacterClass implements DataManager.Identifiable {
         return spritePath;
     }
 
-    public Stats getBaseStats() {
-        return baseStats;
+    public StatContainer getBaseStats() {
+        return baseStatContainer;
     }
 
-    public Stats getMaxStats() {
-        return maxStats;
+    public StatContainer getMaxStats() {
+        return maxStatContainer;
     }
 
     @Override
@@ -44,17 +44,17 @@ public class CharacterClass implements DataManager.Identifiable {
         public void write(Json json, CharacterClass characterClass, Class knownType) {
             json.writeObjectStart();
             json.writeValue("sprite_path", characterClass.spritePath.substring(6));
-            json.writeValue("base_stats", characterClass.baseStats);
-            json.writeValue("max_stats", characterClass.maxStats);
+            json.writeValue("base_stats", characterClass.baseStatContainer);
+            json.writeValue("max_stats", characterClass.maxStatContainer);
             json.writeObjectEnd();
         }
 
         @Override
         public CharacterClass read(Json json, JsonValue jsonValue, Class aClass) {
             String spritePath = jsonValue.getString("sprite_path");
-            Stats baseStats = json.readValue(Stats.class, jsonValue.get("base_stats"));
-            Stats maxStats = json.readValue(Stats.class, jsonValue.get("max_stats"));
-            return new CharacterClass(spritePath, baseStats, maxStats);
+            StatContainer baseStatContainer = json.readValue(StatContainer.class, jsonValue.get("base_stats"));
+            StatContainer maxStatContainer = json.readValue(StatContainer.class, jsonValue.get("max_stats"));
+            return new CharacterClass(spritePath, baseStatContainer, maxStatContainer);
         }
     }
 }
