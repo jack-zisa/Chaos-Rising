@@ -56,7 +56,7 @@ public class CharacterEntity extends LivingEntity {
 
     public void unequipItem() {
         if (currentItem != null) {
-            getStats().removeModifier(currentItem.getStatModifier());
+            getStats().removeModifier(currentItem.getStatModifier().uuid());
             this.currentItem = null;
         }
     }

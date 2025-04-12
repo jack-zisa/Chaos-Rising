@@ -1,7 +1,9 @@
 package dev.creoii.chaos.chat.command;
 
 import com.badlogic.gdx.math.Vector2;
+import dev.creoii.chaos.effect.StatusEffects;
 import dev.creoii.chaos.entity.Entity;
+import dev.creoii.chaos.entity.character.CharacterEntity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -70,12 +72,10 @@ public final class Commands {
                 int count = Integer.parseInt(args[5]);
 
                 if (x1 >= x2) {
-                    x1 = Math.min(x1, x2);
-                    x2 = Math.max(x1 + 1, x2 + 1);
+                    x1 = x2;
                 }
                 if (y1 >= y2) {
-                    y1 = Math.min(y1, y2);
-                    y2 = Math.max(y1 + 1, y2 + 1);
+                    y1 = y2;
                 }
 
                 for (int i = 0; i < count; i++) {
@@ -95,6 +95,39 @@ public final class Commands {
         Command.register("set_class", (game, args) -> {
             if (args.length > 0) {
                 game.getActiveCharacter().setCharacterClass(game.getDataManager().getCharacterClass(args[0]));
+            }
+        });
+
+        Command.register("add_effect", (game, args) -> {
+            int argCount = args.length;
+            if (argCount < 1)
+                return;
+
+            String effectType = args[0];
+
+            if (argCount == 1) {
+                game.getActiveCharacter().addStatusEffect(StatusEffects.ALL.get(effectType), 1, 30);
+            } else if (argCount == 3) {
+                int amplifier = Integer.parseInt(args[1]);
+                int duration = Integer.parseInt(args[2]);
+                game.getActiveCharacter().addStatusEffect(StatusEffects.ALL.get(effectType), amplifier, duration);
+            }
+        });
+
+        Command.register("remove_effect", (game, args) -> {
+            if (args.length > 0) {
+                String effectType = args[0];
+                CharacterEntity character = game.getActiveCharacter();
+
+                if ("all".equals(effectType)) {
+                    character.clearStatusEffects();
+                    return;
+                }
+
+                for (int i = character.getStatusEffects().size() - 1; i >= 0; --i) {
+                    if (character.getStatusEffects().get(i).id().equals(effectType))
+                        character.getStatusEffects().remove(i);
+                }
             }
         });
     }

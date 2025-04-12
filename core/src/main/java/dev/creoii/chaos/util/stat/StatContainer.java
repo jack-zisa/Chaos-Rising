@@ -3,8 +3,7 @@ package dev.creoii.chaos.util.stat;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.function.BiConsumer;
 
 public class StatContainer {
@@ -14,8 +13,7 @@ public class StatContainer {
     public final Stat defense;
     public final Stat attack;
     public final Stat vitality;
-
-    public final List<StatModifier> modifiers = new ArrayList<>();
+    public final Map<UUID, StatModifier> modifiers;
 
     public StatContainer() {
         this(0, 0, 0, 0, 0, 0);
@@ -28,16 +26,27 @@ public class StatContainer {
         this.defense = new Stat(defense);
         this.attack = new Stat(attack);
         this.vitality = new Stat(vitality);
+        modifiers = new HashMap<>();
+    }
+
+    public StatContainer withHealth(int health) {
+        this.health.set(health);
+        return this;
+    }
+
+    public StatContainer withVitality(int vitality) {
+        this.vitality.set(vitality);
+        return this;
     }
 
     public void applyModifier(StatModifier modifier) {
-        modifiers.add(modifier);
+        modifiers.put(modifier.uuid(), modifier);
         applyModifierToStats(modifier, true);
     }
 
-    public void removeModifier(StatModifier modifier) {
-        modifiers.remove(modifier);
-        applyModifierToStats(modifier, false);
+    public void removeModifier(UUID uuid) {
+        applyModifierToStats(modifiers.get(uuid), false);
+        modifiers.remove(uuid);
     }
 
     private void applyModifierToStats(StatModifier modifier, boolean apply) {
