@@ -1,5 +1,5 @@
 {
-  "texture": "test2",
+  "texture": "fireball",
   "lifetime": 150,
   "speed": {
     "id": "accelerate",
