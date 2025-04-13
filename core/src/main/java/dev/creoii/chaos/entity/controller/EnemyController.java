@@ -1,93 +1,44 @@
 package dev.creoii.chaos.entity.controller;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 import dev.creoii.chaos.entity.EnemyEntity;
-import dev.creoii.chaos.entity.behavior.phase.Phase;
-import dev.creoii.chaos.entity.behavior.phase.PhaseKey;
-
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Random;
+import dev.creoii.chaos.entity.behavior.Behavior;
 
 public class EnemyController extends EntityController<EnemyEntity> {
-    private final Phase[] phases;
-    private final BiMap<String, Integer> phaseKeys;
-    private final String startPhaseKey;
-    private final Random random;
-    private Phase currentPhase;
+    private final Behavior behavior;
     private int time;
 
-    public EnemyController(Map<PhaseKey, Phase> phases, String startPhaseKey) {
+    public EnemyController(Behavior behavior) {
         super(null);
-        this.startPhaseKey = startPhaseKey;
-        phaseKeys = HashBiMap.create();
-        phases.keySet().forEach(key -> phaseKeys.put(key.name(), key.index()));
-        this.phases = phases.values().toArray(new Phase[0]);
-        random = new Random();
+        this.behavior = behavior;
     }
 
     public EnemyController(EnemyController controller) {
         super(null);
-        this.startPhaseKey = controller.getStartPhaseKey();
-        phaseKeys = controller.phaseKeys;
-        phases = Arrays.copyOf(controller.phases, controller.phases.length);
-        random = new Random();
-    }
-
-    public Phase getPhase(int index) {
-        return phases[index];
-    }
-
-    public Phase getPhase(String id) {
-        return phases[phaseKeys.get(id)];
-    }
-
-    public Phase[] getPhases() {
-        return phases;
-    }
-
-    public String getStartPhaseKey() {
-        return startPhaseKey;
-    }
-
-    public int getIndex(Phase phase) {
-        return phaseKeys.get(phase.getId());
-    }
-
-    public int getPhaseCount() {
-        return phases.length;
+        this.behavior = Behavior.copy(controller.behavior);
     }
 
     public EnemyEntity getEntity() {
         return entity;
     }
 
-    public Phase getCurrentPhase() {
-        return currentPhase;
+    public Behavior getBehavior() {
+        return behavior;
     }
 
-    public Random getRandom() {
-        return random;
+    public int getTime() {
+        return time;
     }
 
     public void start(EnemyEntity entity) {
         this.entity = entity;
         time = entity.getGame().getGametime();
-        currentPhase = getPhase(startPhaseKey);
-        currentPhase.start(this, time);
+        behavior.start(this, entity);
     }
 
     @Override
     public void control(int gametime, float delta) {
         if (entity != null) {
-            currentPhase.update(this, ++time, delta);
-
-            if (currentPhase.shouldTransition(this, time)) {
-                currentPhase.end(this);
-                currentPhase = currentPhase.getNext(this);
-                currentPhase.start(this, time);
-            }
+            behavior.update(this, ++time, delta);
         }
     }
 }

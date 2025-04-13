@@ -40,12 +40,14 @@ public final class Commands {
         Command.register("spawn", (game, args) -> {
             int argCount = args.length;
 
-            if (argCount < 3)
+            if (argCount < 1 || argCount == 2)
                 return;
 
             Entity enemy = game.getDataManager().getEnemy(args[0]);
 
-            if (argCount == 3) {
+            if (argCount == 1) {
+                game.getEntityManager().addEntity(enemy, new Vector2(0, 0));
+            } else if (argCount == 3) {
                 float x = Float.parseFloat(args[1]) * Entity.COORDINATE_SCALE;
                 float y = Float.parseFloat(args[2]) * Entity.COORDINATE_SCALE;
                 game.getEntityManager().addEntity(enemy, new Vector2(x, y));
@@ -88,7 +90,7 @@ public final class Commands {
 
         Command.register("set_item", (game, args) -> {
             if (args.length > 0) {
-                game.getActiveCharacter().equipItem(game.getDataManager().getItem(args[0]));
+                game.getActiveCharacter().equipItem(game.getDataManager().getItem(args[0]).create(game));
             }
         });
 

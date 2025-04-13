@@ -1,6 +1,7 @@
 package dev.creoii.chaos.entity.behavior.transition;
 
 import com.badlogic.gdx.utils.JsonValue;
+import dev.creoii.chaos.entity.behavior.MultiBehavior;
 import dev.creoii.chaos.entity.behavior.phase.Phase;
 import dev.creoii.chaos.entity.controller.EnemyController;
 import dev.creoii.chaos.util.function.TriFunction;
@@ -8,14 +9,14 @@ import dev.creoii.chaos.util.function.TriFunction;
 import javax.annotation.Nullable;
 
 public class Transition {
-    private final TriFunction<EnemyController, Phase, JsonValue, Phase> function;
+    private final TriFunction<MultiBehavior, Phase, JsonValue, Phase> function;
     private JsonValue data;
 
-    public Transition(TriFunction<EnemyController, Phase, JsonValue, Phase> function) {
+    public Transition(TriFunction<MultiBehavior, Phase, JsonValue, Phase> function) {
         this.function = function;
     }
 
-    public TriFunction<EnemyController, Phase, JsonValue, Phase> getFunction() {
+    public TriFunction<MultiBehavior, Phase, JsonValue, Phase> getFunction() {
         return function;
     }
 
@@ -27,7 +28,7 @@ public class Transition {
         this.data = data;
     }
 
-    static void register(String id, TriFunction<EnemyController, Phase, JsonValue, Phase> function) {
+    static void register(String id, TriFunction<MultiBehavior, Phase, JsonValue, Phase> function) {
         Transitions.ALL.put(id, new Transition(function));
     }
 

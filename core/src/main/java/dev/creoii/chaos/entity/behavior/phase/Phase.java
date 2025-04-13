@@ -1,6 +1,7 @@
 package dev.creoii.chaos.entity.behavior.phase;
 
 import com.badlogic.gdx.utils.JsonValue;
+import dev.creoii.chaos.entity.behavior.MultiBehavior;
 import dev.creoii.chaos.entity.behavior.action.Action;
 import dev.creoii.chaos.entity.behavior.transition.Transition;
 import dev.creoii.chaos.entity.controller.EnemyController;
@@ -46,7 +47,7 @@ public class Phase {
     }
 
     public void update(EnemyController controller, int time, float delta) {
-        if (startTime >= 0) {
+        if (startTime >= 0 || transition == null) {
             actions.forEach(action -> action.update(controller, time, delta));
         }
     }
@@ -58,6 +59,6 @@ public class Phase {
     }
 
     public Phase getNext(EnemyController controller) {
-        return transition.getFunction().apply(controller, this, transition.getData());
+        return transition.getFunction().apply((MultiBehavior) controller.getBehavior(), this, transition.getData());
     }
 }

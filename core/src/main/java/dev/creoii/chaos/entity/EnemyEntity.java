@@ -7,15 +7,12 @@ import com.badlogic.gdx.utils.JsonValue;
 import dev.creoii.chaos.DataManager;
 import dev.creoii.chaos.Game;
 import dev.creoii.chaos.Main;
-import dev.creoii.chaos.entity.behavior.phase.Phase;
-import dev.creoii.chaos.entity.behavior.phase.PhaseKey;
+import dev.creoii.chaos.entity.behavior.Behavior;
 import dev.creoii.chaos.entity.controller.EnemyController;
 import dev.creoii.chaos.entity.controller.EntityController;
 import dev.creoii.chaos.texture.TextureManager;
 import dev.creoii.chaos.util.stat.StatContainer;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.UUID;
 
 public class EnemyEntity extends LivingEntity implements DataManager.Identifiable {
@@ -97,15 +94,8 @@ public class EnemyEntity extends LivingEntity implements DataManager.Identifiabl
 
             if (jsonValue.has("controller")) {
                 JsonValue controller = jsonValue.get("controller");
-                String startPhaseKey = controller.getString("start_phase");
-
-                Map<PhaseKey, Phase> phases = new LinkedHashMap<>();
-                int i = 0;
-                for (JsonValue phaseValue : controller.get("phases")) {
-                    phases.put(new PhaseKey(phaseValue.name, i), Phase.parse(phaseValue));
-                    ++i;
-                }
-                return new EnemyEntity(spritePath, scale, new EnemyController(phases, startPhaseKey), statContainer);
+                Behavior behavior = Behavior.parse(controller.get("behavior"));
+                return new EnemyEntity(spritePath, scale, new EnemyController(behavior), statContainer);
             }
             return new EnemyEntity(spritePath, scale, null, statContainer);
         }
