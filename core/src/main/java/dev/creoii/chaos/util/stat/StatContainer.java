@@ -29,13 +29,16 @@ public class StatContainer {
         modifiers = new HashMap<>();
     }
 
-    public StatContainer withHealth(int health) {
+    public void setHealth(int health) {
         this.health.set(health);
-        return this;
+    }
+
+    public void setVitality(int vitality) {
+        this.vitality.set(vitality);
     }
 
     public StatContainer withVitality(int vitality) {
-        this.vitality.set(vitality);
+        setVitality(vitality);
         return this;
     }
 

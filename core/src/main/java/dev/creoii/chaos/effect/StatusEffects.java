@@ -22,5 +22,6 @@ public final class StatusEffects {
             entity.getStats().removeModifier((UUID) statusEffect.getData().get("uuid"));
             System.out.println("end " + statusEffect.id());
         });
+        StatusEffect.register("invulnerable");
     }
 }

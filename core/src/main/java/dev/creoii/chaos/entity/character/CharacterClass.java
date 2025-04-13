@@ -11,8 +11,8 @@ public class CharacterClass implements DataManager.Identifiable {
     private final StatContainer baseStatContainer;
     private final StatContainer maxStatContainer;
 
-    public CharacterClass(String spritePath, StatContainer baseStatContainer, StatContainer maxStatContainer) {
-        this.spritePath = spritePath;
+    public CharacterClass(String textureId, StatContainer baseStatContainer, StatContainer maxStatContainer) {
+        this.spritePath = textureId;
         this.baseStatContainer = baseStatContainer;
         this.maxStatContainer = maxStatContainer;
     }
@@ -22,7 +22,7 @@ public class CharacterClass implements DataManager.Identifiable {
         return id;
     }
 
-    public String getSpritePath() {
+    public String getTextureId() {
         return spritePath;
     }
 

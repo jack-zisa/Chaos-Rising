@@ -21,16 +21,11 @@ public class CharacterEntity extends LivingEntity {
     private Item currentItem;
 
     public CharacterEntity(CharacterClass characterClass) {
-        super(characterClass.getSpritePath(), 1f, new Vector2(1, 1), Group.CHARACTER, characterClass.getBaseStats().copy(), characterClass.getBaseStats().copy());
+        super(characterClass.getTextureId(), 1f, new Vector2(1, 1), Group.CHARACTER, characterClass.getBaseStats().copy(), characterClass.getBaseStats().copy());
         this.characterClass = characterClass;
         controller = new CharacterController(this);
         currentItem = null;
         prevPos = new Vector2();
-    }
-
-    @Override
-    public StatContainer getStats() {
-        return super.getStats();
     }
 
     public CharacterClass getCharacterClass() {
@@ -39,6 +34,17 @@ public class CharacterEntity extends LivingEntity {
 
     public void setCharacterClass(CharacterClass characterClass) {
         this.characterClass = characterClass;
+        sprite = new Sprite(game.getTextureManager().getTexture("class", getTextureId()));
+        sprite.setSize(getScale(), getScale());
+        getStats().setHealth(characterClass.getBaseStats().health.base());
+        getStats().setVitality(characterClass.getBaseStats().vitality.base());
+        getMaxStats().setHealth(characterClass.getBaseStats().health.base());
+        getMaxStats().setVitality(characterClass.getBaseStats().vitality.base());
+    }
+
+    @Override
+    public String getTextureId() {
+        return characterClass.getTextureId();
     }
 
     @Nullable

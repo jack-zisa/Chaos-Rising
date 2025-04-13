@@ -23,8 +23,16 @@ public class StatusEffect implements DataManager.Identifiable {
         this.remover = remover;
     }
 
+    public StatusEffect(String id) {
+        this(id, null, null, null);
+    }
+
     static void register(String id, BiConsumer<LivingEntity, StatusEffect> starter, BiConsumer<LivingEntity, StatusEffect> applier, BiConsumer<LivingEntity, StatusEffect> remover) {
         StatusEffects.ALL.put(id, new StatusEffect(id, starter, applier, remover));
+    }
+
+    static void register(String id) {
+        StatusEffects.ALL.put(id, new StatusEffect(id));
     }
 
     public void init(int amplifier, int duration) {
