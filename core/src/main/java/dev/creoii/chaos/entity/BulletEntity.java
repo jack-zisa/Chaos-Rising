@@ -135,7 +135,8 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
 
     @Override
     public void tick(int gametime, float delta) {
-        super.tick(gametime, delta);
+        if (path.speed((BulletController) controller) > 0)
+            super.tick(gametime, delta);
 
         lifetime--;
 
