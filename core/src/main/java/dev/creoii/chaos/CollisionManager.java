@@ -4,10 +4,13 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import dev.creoii.chaos.entity.Entity;
 
+import java.util.Arrays;
+
 public class CollisionManager {
     private static final int[][] FORWARD_NEIGHBORS = {
             {1, 0}, {1, 1}, {0, 1}, {-1, 1}
     };
+    private static final boolean[][] COLLISION_MATRIX = new boolean[Entity.Group.values().length][Entity.Group.values().length];
     public static final int KEY_OFFSET = 32768;
     private float cellSize = Entity.COORDINATE_SCALE;
     private final Main main;
@@ -16,6 +19,11 @@ public class CollisionManager {
     public CollisionManager(Main main) {
         this.main = main;
         grid = new ObjectMap<>();
+
+        COLLISION_MATRIX[Entity.Group.BULLET.ordinal()][Entity.Group.ENEMY.ordinal()] = true;
+        COLLISION_MATRIX[Entity.Group.BULLET.ordinal()][Entity.Group.CHARACTER.ordinal()] = true;
+        COLLISION_MATRIX[Entity.Group.ENEMY.ordinal()][Entity.Group.BULLET.ordinal()] = true;
+        COLLISION_MATRIX[Entity.Group.CHARACTER.ordinal()][Entity.Group.BULLET.ordinal()] = true;
     }
 
     public float getCellSize() {
@@ -56,7 +64,7 @@ public class CollisionManager {
                 Entity a = entities.get(i);
                 for (int j = i + 1; j < entities.size; ++j) {
                     Entity b = entities.get(j);
-                    if (a.getColliderRect().overlaps(b.getColliderRect())) {
+                    if (COLLISION_MATRIX[a.getGroup().ordinal()][b.getGroup().ordinal()] && a.getColliderRect().overlaps(b.getColliderRect())) {
                         a.collide(b);
                         b.collide(a);
                     }
@@ -75,7 +83,7 @@ public class CollisionManager {
                     Entity a = entities.get(i);
                     for (int j = 0; j < neighbors.size; ++j) {
                         Entity b = neighbors.get(j);
-                        if (a != b && a.getColliderRect().overlaps(b.getColliderRect())) {
+                        if (COLLISION_MATRIX[a.getGroup().ordinal()][b.getGroup().ordinal()] && a != b && a.getColliderRect().overlaps(b.getColliderRect())) {
                             a.collide(b);
                             b.collide(a);
                         }
