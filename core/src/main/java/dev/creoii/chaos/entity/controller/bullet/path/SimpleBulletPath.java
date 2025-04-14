@@ -1,15 +1,14 @@
 package dev.creoii.chaos.entity.controller.bullet.path;
 
 import com.badlogic.gdx.math.Vector2;
-import dev.creoii.chaos.Game;
 import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.entity.controller.bullet.BulletController;
 import dev.creoii.chaos.util.provider.Provider;
 
 public record SimpleBulletPath(Provider<Float> speed, Provider<Float> frequency, Provider<Float> amplitude, Provider<Float> arcSpeed) implements BulletPath {
     @Override
-    public float speed(Game game) {
-        return speed.get(game);
+    public float speed(BulletController controller) {
+        return speed.get(controller.getEntity().getGame());
     }
 
     @Override

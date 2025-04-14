@@ -11,11 +11,7 @@ import dev.creoii.chaos.Main;
 import dev.creoii.chaos.entity.controller.bullet.BulletController;
 import dev.creoii.chaos.entity.controller.EntityController;
 import dev.creoii.chaos.entity.controller.bullet.path.BulletPath;
-import dev.creoii.chaos.entity.controller.bullet.path.EmptyBulletPath;
-import dev.creoii.chaos.entity.controller.bullet.path.SimpleBulletPath;
 import dev.creoii.chaos.texture.TextureManager;
-import dev.creoii.chaos.util.provider.FloatProvider;
-import dev.creoii.chaos.util.provider.Provider;
 
 import java.util.Map;
 import java.util.UUID;
@@ -52,6 +48,10 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
     @Override
     public void setId(String id) {
         this.id = id;
+    }
+
+    public int getLifetime() {
+        return lifetime;
     }
 
     @Override
@@ -168,17 +168,8 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
             int angleOffset = jsonValue.getInt("angle_offset", 45);
             boolean piercing = jsonValue.getBoolean("piercing", false);
             float scale = jsonValue.getFloat("scale", 1f);
-
-            if (jsonValue.has("path")) {
-                JsonValue pathValue = jsonValue.get("path");
-                Provider<Float> speed = FloatProvider.parse(pathValue.get("speed"));
-                Provider<Float> frequency = FloatProvider.parse(pathValue.get("frequency"));
-                Provider<Float> amplitude = FloatProvider.parse(pathValue.get("amplitude"));
-                Provider<Float> arcSpeed = FloatProvider.parse(pathValue.get("arc_speed"));
-                return new BulletEntity(spritePath, lifetime, angleOffset, new SimpleBulletPath(speed, frequency, amplitude, arcSpeed), piercing, scale);
-            } else {
-                return new BulletEntity(spritePath, lifetime, angleOffset, new EmptyBulletPath(), piercing, scale);
-            }
+            BulletPath bulletPath = BulletPath.parse(jsonValue);
+            return new BulletEntity(spritePath, lifetime, angleOffset, bulletPath, piercing, scale);
         }
     }
 }

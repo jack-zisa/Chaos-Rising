@@ -1,0 +1,32 @@
+{
+  "texture": "dark_magic_blade",
+  "lifetime": 200,
+  "path": {
+    "segments": [
+      {
+        "threshold": 200,
+        "path": {
+          "speed": 10
+        }
+      },
+      {
+        "threshold": 150,
+        "path": {
+          "speed": 0
+        }
+      },
+      {
+        "threshold": 100,
+        "path": {
+          "speed": 10
+        }
+      },
+      {
+        "threshold": 50,
+        "path": {
+          "speed": 0
+        }
+      }
+    ]
+  }
+}

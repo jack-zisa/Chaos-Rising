@@ -2,11 +2,13 @@
   "type": "weapon",
   "texture": "test",
   "attack": {
-    "bullet_id": "test",
+    "bullet_id": "test_segment",
     "damage": {
       "id": "random",
       "min": 0,
       "max": 20
-    }
+    },
+    "bullet_count": 3,
+    "arc_gap": 5
   }
 }
