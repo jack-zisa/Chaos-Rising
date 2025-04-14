@@ -1,0 +1,14 @@
+{
+  "type": "weapon",
+  "texture": "test",
+  "attack": {
+    "bullet_id": "test",
+    "damage": 10,
+    "angle_offset": 180
+  },
+  "stat_modifier": {
+    "stats": {
+      "health": 100
+    }
+  }
+}

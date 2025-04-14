@@ -1,0 +1,36 @@
+{
+  "type": "weapon",
+  "texture": "test",
+  "attack": {
+    "attacks": [
+      {
+        "bullet_id": "test",
+        "damage": 10,
+        "pos_offset": [2, 0]
+      },
+      {
+        "bullet_id": "test",
+        "damage": 10,
+        "angle_offset": 90,
+        "pos_offset": [0, 2]
+      },
+      {
+        "bullet_id": "test",
+        "damage": 10,
+        "angle_offset": 180,
+        "pos_offset": [-2, 0]
+      },
+      {
+        "bullet_id": "test",
+        "damage": 10,
+        "angle_offset": 270,
+        "pos_offset": [0, -2]
+      }
+    ]
+  },
+  "stat_modifier": {
+    "stats": {
+      "health": 100
+    }
+  }
+}

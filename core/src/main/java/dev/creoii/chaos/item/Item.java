@@ -67,7 +67,7 @@ public class Item implements DataManager.Identifiable {
         public Item read(Json json, JsonValue jsonValue, Class aClass) {
             Type type = Type.valueOf(jsonValue.getString("type").toUpperCase());
             String textureId = jsonValue.getString("texture", TextureManager.DEFAULT_TEXTURE_ID);
-            Attack attack = json.readValue(Attack.class, jsonValue.get("attack"));
+            Attack attack = Attack.parse(jsonValue.get("attack"));
             StatModifier stats = jsonValue.has("stat_modifier") ? StatModifier.parse(json, jsonValue.get("stat_modifier")) : StatModifier.NONE;
             return new Item(type, textureId, attack, stats);
         }

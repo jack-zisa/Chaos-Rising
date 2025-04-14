@@ -3,7 +3,6 @@ package dev.creoii.chaos;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
-import dev.creoii.chaos.attack.Attack;
 import dev.creoii.chaos.entity.BulletEntity;
 import dev.creoii.chaos.entity.EnemyEntity;
 import dev.creoii.chaos.entity.character.CharacterClass;
@@ -25,7 +24,6 @@ public class DataManager {
 
         json.setSerializer(StatContainer.class, new StatContainer.Serializer());
         json.setSerializer(CharacterClass.class, new CharacterClass.Serializer());
-        json.setSerializer(Attack.class, new Attack.Serializer());
         json.setSerializer(Item.class, new Item.Serializer());
         json.setSerializer(EnemyEntity.class, new EnemyEntity.Serializer());
         json.setSerializer(BulletEntity.class, new BulletEntity.Serializer());
