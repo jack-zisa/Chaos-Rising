@@ -1,10 +1,12 @@
 {
   "texture": "brilliance_blast",
   "lifetime": 100,
-  "speed": 10,
-  "arc_speed": {
-    "id": "accelerate",
-    "value": 0.05,
-    "acceleration": 0
+  "path": {
+    "speed": 10,
+    "arc_speed": {
+      "id": "accelerate",
+      "value": 0.05,
+      "acceleration": 0
+    }
   }
 }

@@ -1,11 +1,13 @@
 {
   "texture": "plague2",
   "lifetime": 150,
-  "speed": 5,
-  "frequency": {
-    "id": "accelerate",
-    "value": 0.1,
-    "acceleration": -0.0075
-  },
-  "amplitude": 5
+  "path": {
+    "speed": 5,
+    "frequency": {
+      "id": "accelerate",
+      "value": 0.1,
+      "acceleration": -0.0075
+    },
+    "amplitude": 5
+  }
 }

@@ -1,7 +1,9 @@
 {
   "texture": "lightning_bolt",
   "lifetime": 150,
-  "speed": 5,
-  "frequency": 0.075,
-  "amplitude": 4
+  "path": {
+    "speed": 5,
+    "frequency": 0.075,
+    "amplitude": 4
+  }
 }

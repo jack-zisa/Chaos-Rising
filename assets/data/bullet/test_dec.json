@@ -1,9 +1,11 @@
 {
   "texture": "fireball",
   "lifetime": 150,
-  "speed": {
-    "id": "accelerate",
-    "value": 12,
-    "acceleration": -0.1
+  "path": {
+    "speed": {
+      "id": "accelerate",
+      "value": 12,
+      "acceleration": -0.1
+    }
   }
 }

@@ -1,6 +1,8 @@
 {
   "texture": "dark_magic",
   "lifetime": 100,
-  "speed": 10,
+  "path": {
+    "speed": 10
+  },
   "scale": 2
 }

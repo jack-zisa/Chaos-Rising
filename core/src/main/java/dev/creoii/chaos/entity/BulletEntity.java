@@ -8,8 +8,11 @@ import com.badlogic.gdx.utils.JsonValue;
 import dev.creoii.chaos.DataManager;
 import dev.creoii.chaos.Game;
 import dev.creoii.chaos.Main;
-import dev.creoii.chaos.entity.controller.BulletController;
+import dev.creoii.chaos.entity.controller.bullet.BulletController;
 import dev.creoii.chaos.entity.controller.EntityController;
+import dev.creoii.chaos.entity.controller.bullet.path.BulletPath;
+import dev.creoii.chaos.entity.controller.bullet.path.EmptyBulletPath;
+import dev.creoii.chaos.entity.controller.bullet.path.SimpleBulletPath;
 import dev.creoii.chaos.texture.TextureManager;
 import dev.creoii.chaos.util.provider.FloatProvider;
 import dev.creoii.chaos.util.provider.Provider;
@@ -21,10 +24,7 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
     private String id;
     private int lifetime;
     private final int angleOffset;
-    private final Provider<Float> speed;
-    private final Provider<Float> frequency;
-    private final Provider<Float> amplitude;
-    private final Provider<Float> arcSpeed;
+    private final BulletPath path;
     private final boolean piercing;
     private final EntityController<BulletEntity> controller;
     private Group parentGroup;
@@ -33,14 +33,11 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
     private int damage;
     private int index;
 
-    public BulletEntity(String textureId, int lifetime, int angleOffset, Provider<Float> speed, Provider<Float> frequency, Provider<Float> amplitude, Provider<Float> arcSpeed, boolean piercing, float scale) {
+    public BulletEntity(String textureId, int lifetime, int angleOffset, BulletPath path, boolean piercing, float scale) {
         super(textureId, scale, new Vector2(1, 1), Group.BULLET);
         this.lifetime = lifetime;
         this.angleOffset = angleOffset;
-        this.speed = speed;
-        this.frequency = frequency;
-        this.amplitude = amplitude;
-        this.arcSpeed = arcSpeed;
+        this.path = path;
         this.piercing = piercing;
         controller = new BulletController(this);
         damage = 0;
@@ -63,20 +60,8 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
             main.getGame().getCollisionManager().setCellSize(getScale());
     }
 
-    public float getSpeed() {
-        return speed.get(game);
-    }
-
-    public float getFrequency() {
-        return frequency.get(game);
-    }
-
-    public float getAmplitude() {
-        return amplitude.get(game);
-    }
-
-    public float getArcSpeed() {
-        return arcSpeed.get(game);
+    public BulletPath getPath() {
+        return path;
     }
 
     public Vector2 getDirection() {
@@ -122,7 +107,7 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
 
     @Override
     public Entity create(Game game, UUID uuid, Vector2 pos) {
-        BulletEntity entity = new BulletEntity(getTextureId(), lifetime, angleOffset, speed.copy(), frequency.copy(), amplitude.copy(), arcSpeed.copy(), piercing, getScale() / COORDINATE_SCALE);
+        BulletEntity entity = new BulletEntity(getTextureId(), lifetime, angleOffset, path.copy(), piercing, getScale() / COORDINATE_SCALE);
         entity.setId(id);
         entity.sprite = new Sprite(game.getTextureManager().getTexture("bullet", entity.getTextureId()));
         entity.sprite.setSize(entity.getScale(), entity.getScale());
@@ -151,6 +136,7 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
     @Override
     public void tick(int gametime, float delta) {
         super.tick(gametime, delta);
+
         lifetime--;
 
         if (lifetime <= 0) {
@@ -166,10 +152,10 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
             json.writeValue("texture", bullet.getTextureId());
             json.writeValue("lifetime", bullet.lifetime);
             json.writeValue("angle_offset", bullet.lifetime);
-            json.writeValue("speed", bullet.speed);
+            /*json.writeValue("speed", bullet.speed);
             json.writeValue("frequency", bullet.frequency);
             json.writeValue("amplitude", bullet.amplitude);
-            json.writeValue("arc_speed", bullet.arcSpeed);
+            json.writeValue("arc_speed", bullet.arcSpeed);*/
             json.writeValue("piercing", bullet.piercing);
             json.writeValue("scale", bullet.getScale());
             json.writeObjectEnd();
@@ -180,13 +166,19 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
             String spritePath = jsonValue.getString("texture", TextureManager.DEFAULT_TEXTURE_ID);
             int lifetime = jsonValue.getInt("lifetime", 0);
             int angleOffset = jsonValue.getInt("angle_offset", 45);
-            Provider<Float> speed = FloatProvider.parse(jsonValue.get("speed"));
-            Provider<Float> frequency = FloatProvider.parse(jsonValue.get("frequency"));
-            Provider<Float> amplitude = FloatProvider.parse(jsonValue.get("amplitude"));
-            Provider<Float> arcSpeed = FloatProvider.parse(jsonValue.get("arc_speed"));
             boolean piercing = jsonValue.getBoolean("piercing", false);
             float scale = jsonValue.getFloat("scale", 1f);
-            return new BulletEntity(spritePath, lifetime, angleOffset, speed, frequency, amplitude, arcSpeed, piercing, scale);
+
+            if (jsonValue.has("path")) {
+                JsonValue pathValue = jsonValue.get("path");
+                Provider<Float> speed = FloatProvider.parse(pathValue.get("speed"));
+                Provider<Float> frequency = FloatProvider.parse(pathValue.get("frequency"));
+                Provider<Float> amplitude = FloatProvider.parse(pathValue.get("amplitude"));
+                Provider<Float> arcSpeed = FloatProvider.parse(pathValue.get("arc_speed"));
+                return new BulletEntity(spritePath, lifetime, angleOffset, new SimpleBulletPath(speed, frequency, amplitude, arcSpeed), piercing, scale);
+            } else {
+                return new BulletEntity(spritePath, lifetime, angleOffset, new EmptyBulletPath(), piercing, scale);
+            }
         }
     }
 }

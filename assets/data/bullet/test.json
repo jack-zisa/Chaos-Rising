@@ -1,5 +1,7 @@
 {
   "texture": "dark_magic_blade",
   "lifetime": 100,
-  "speed": 10
+  "path": {
+    "speed": 10
+  }
 }
