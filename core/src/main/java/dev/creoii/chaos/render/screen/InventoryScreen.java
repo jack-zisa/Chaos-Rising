@@ -1,7 +1,6 @@
 package dev.creoii.chaos.render.screen;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -18,10 +17,9 @@ import dev.creoii.chaos.render.Renderer;
 import javax.annotation.Nullable;
 
 public class InventoryScreen extends Screen {
-    private static final float SLOT_SIZE = 49f;
+    public static final float SLOT_SIZE = 49f;
     private static final float ITEM_SCALE = 42f;
     private final Inventory inventory;
-    private final Sprite slotSprite;
 
     private Slot dragSource;
     private ItemStack dragStack;
@@ -29,8 +27,6 @@ public class InventoryScreen extends Screen {
     public InventoryScreen(Vector2 pos, Inventory inventory) {
         super("Inventory", pos, (inventory.getSlots().length * 48f) + 31f);
         this.inventory = inventory;
-        slotSprite = new Sprite(new Texture("textures/ui/slot.png"));
-        slotSprite.setSize(SLOT_SIZE, SLOT_SIZE);
     }
 
     @Override
@@ -45,10 +41,13 @@ public class InventoryScreen extends Screen {
 
         for (int r = 0; r < inventory.getSlots().length; ++r) {
             for (int c = 0; c < inventory.getSlots()[r].length; ++c) {
-                slotSprite.setPosition(getPos().x + (c * SLOT_SIZE), getPos().y + (r * SLOT_SIZE));
-                slotSprite.draw(batch);
                 Slot slot = inventory.getSlots()[r][c];
-                if (slot != null && slot.hasItem()) {
+                if (slot == null)
+                    continue;
+                Sprite sprite = slot.hasItem() ? Slot.Type.NONE.getSprite() : slot.getType().getSprite();
+                sprite.setPosition(getPos().x + (c * SLOT_SIZE), getPos().y + (r * SLOT_SIZE));
+                sprite.draw(batch);
+                if (slot.hasItem()) {
                     ItemRenderer.renderItem(batch, slot.getStack().getItem(), new Vector2(getPos().x + (c * SLOT_SIZE) + 3, getPos().y + (r * SLOT_SIZE) + 3), ITEM_SCALE);
                 }
             }

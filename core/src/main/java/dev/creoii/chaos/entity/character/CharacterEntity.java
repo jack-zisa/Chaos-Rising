@@ -25,7 +25,7 @@ public class CharacterEntity extends LivingEntity {
         this.characterClass = characterClass;
         controller = new CharacterController(this);
         prevPos = new Vector2();
-        inventory = new Inventory(2, 4);
+        inventory = new Inventory(3, 4);
     }
 
     public CharacterClass getCharacterClass() {

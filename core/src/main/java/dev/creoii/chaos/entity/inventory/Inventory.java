@@ -7,7 +7,13 @@ public class Inventory {
 
     public Inventory(int rows, int cols) {
         slots = new Slot[rows][cols];
-        for (int r = 0; r < slots.length; ++r) {
+
+        slots[slots.length - 1][0] = new Slot(0, 0, Slot.Type.WEAPON);
+        slots[slots.length - 1][1] = new Slot(0, 1, Slot.Type.ABILITY);
+        slots[slots.length - 1][2] = new Slot(0, 2, Slot.Type.ARMOR);
+        slots[slots.length - 1][3] = new Slot(0, 3, Slot.Type.ACCESSORY);
+
+        for (int r = 0; r < slots.length - 1; ++r) {
             for (int c = 0; c < slots[r].length; ++c) {
                 slots[r][c] = new Slot(r, c);
             }
