@@ -1,5 +1,6 @@
 {
   "type": "weapon",
+  "rarity": "legendary",
   "texture": "twilight",
   "attack": {
     "bullet_id": "test",

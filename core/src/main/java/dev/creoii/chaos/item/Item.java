@@ -7,19 +7,22 @@ import dev.creoii.chaos.DataManager;
 import dev.creoii.chaos.Game;
 import dev.creoii.chaos.attack.Attack;
 import dev.creoii.chaos.texture.TextureManager;
+import dev.creoii.chaos.util.Rarity;
 import dev.creoii.chaos.util.stat.StatModifier;
 
 public class Item implements DataManager.Identifiable {
     private String id;
     private final String textureId;
     private final Type type;
+    private final Rarity rarity;
     private final Attack attack;
     private final StatModifier statModifier;
     protected Sprite sprite;
     private final ItemStack defaultStack;
 
-    public Item(Type type, String textureId, Attack attack, StatModifier statModifier) {
+    public Item(Type type, Rarity rarity, String textureId, Attack attack, StatModifier statModifier) {
         this.type = type;
+        this.rarity = rarity;
         this.textureId = textureId;
         this.attack = attack;
         this.statModifier = statModifier;
@@ -27,7 +30,7 @@ public class Item implements DataManager.Identifiable {
     }
 
     public Item create(Game game) {
-        Item item = new Item(type, textureId, attack, statModifier);
+        Item item = new Item(type, rarity, textureId, attack, statModifier);
         item.setId(id);
         item.sprite = new Sprite(game.getTextureManager().getTexture("item", textureId));
         return item;
@@ -45,6 +48,10 @@ public class Item implements DataManager.Identifiable {
 
     public Type getType() {
         return type;
+    }
+
+    public Rarity getRarity() {
+        return rarity;
     }
 
     public Attack getAttack() {
@@ -69,6 +76,7 @@ public class Item implements DataManager.Identifiable {
             json.writeObjectStart();
             json.writeValue("id", item.id);
             json.writeValue("type", item.type.name().toLowerCase());
+            json.writeValue("rarity", item.rarity.name().toLowerCase());
             json.writeValue("attack", item.attack);
             json.writeValue("stats", item.statModifier);
             json.writeObjectEnd();
@@ -77,10 +85,11 @@ public class Item implements DataManager.Identifiable {
         @Override
         public Item read(Json json, JsonValue jsonValue, Class aClass) {
             Type type = Type.valueOf(jsonValue.getString("type").toUpperCase());
+            Rarity rarity = jsonValue.has("rarity") ? Rarity.valueOf(jsonValue.getString("rarity").toUpperCase()) : Rarity.COMMON;
             String textureId = jsonValue.getString("texture", TextureManager.DEFAULT_TEXTURE_ID);
             Attack attack = Attack.parse(jsonValue.get("attack"));
             StatModifier stats = jsonValue.has("stat_modifier") ? StatModifier.parse(json, jsonValue.get("stat_modifier")) : StatModifier.NONE;
-            return new Item(type, textureId, attack, stats);
+            return new Item(type, rarity, textureId, attack, stats);
         }
     }
 

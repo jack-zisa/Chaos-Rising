@@ -1,10 +1,10 @@
 package dev.creoii.chaos;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
+import dev.creoii.chaos.entity.BulletEntity;
 import dev.creoii.chaos.entity.Entity;
-
-import java.util.Arrays;
 
 public class CollisionManager {
     private static final int[][] FORWARD_NEIGHBORS = {
@@ -74,16 +74,18 @@ public class CollisionManager {
             int x = (entry.key >> 16) - KEY_OFFSET;
             int y = (entry.key & 0xffff) - KEY_OFFSET;
 
-            for (int[] neighbor : FORWARD_NEIGHBORS) {
-                Array<Entity> neighbors = grid.get(((x + neighbor[0] + KEY_OFFSET) << 16) | ((y + neighbor[1] + KEY_OFFSET) & 0xffff));
-                if (neighbors == null)
-                    continue;
+            for (Entity a : entities) {
+                int[][] neighborDirs = a instanceof BulletEntity bullet ? getBulletForwardNeighbors(bullet) : FORWARD_NEIGHBORS;
 
-                for (int i = 0; i < entities.size; ++i) {
-                    Entity a = entities.get(i);
-                    for (int j = i + 1; j < neighbors.size; ++j) {
-                        Entity b = neighbors.get(j);
-                        if (COLLISION_MATRIX[a.getGroup().ordinal()][b.getGroup().ordinal()] && a != b && a.getColliderRect().overlaps(b.getColliderRect())) {
+                for (int[] dir : neighborDirs) {
+                    int neighborKey = ((x + dir[0] + KEY_OFFSET) << 16) | ((y + dir[1] + KEY_OFFSET) & 0xffff);
+                    Array<Entity> neighbors = grid.get(neighborKey);
+                    if (neighbors == null) continue;
+
+                    for (Entity b : neighbors) {
+                        if (a == b) continue;
+
+                        if (COLLISION_MATRIX[a.getGroup().ordinal()][b.getGroup().ordinal()] && a.getColliderRect().overlaps(b.getColliderRect())) {
                             a.collide(b);
                             b.collide(a);
                         }
@@ -91,5 +93,26 @@ public class CollisionManager {
                 }
             }
         }
+    }
+
+    private static int[][] getBulletForwardNeighbors(BulletEntity bullet) {
+        Vector2 dir = bullet.getDirection();
+        if (dir.isZero())
+            return new int[0][0];
+
+        dir = dir.cpy().nor();
+
+        int dx = Math.round(dir.x);
+        int dy = Math.round(dir.y);
+
+        Array<int[]> offsets = new Array<>();
+
+        offsets.add(new int[]{dx, dy});
+        if (dx != 0 && dy != 0) {
+            offsets.add(new int[]{dx, 0});
+            offsets.add(new int[]{0, dy});
+        }
+
+        return offsets.toArray(int[].class);
     }
 }

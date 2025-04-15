@@ -36,7 +36,7 @@ public class InventoryScreen extends Screen {
         Slot mouseOverSlot = getMouseOverSlot();
         if (batch == null && shapeRenderer != null) {
             if (mouseOverSlot != null && mouseOverSlot.hasItem()) {
-                ItemRenderer.renderTooltip(null, shapeRenderer, font, mouseOverSlot.getStack().getItem());
+                ItemRenderer.renderTooltip(null, shapeRenderer, mouseOverSlot.getStack().getItem());
             }
             shapeRenderer.setColor(BACKGROUND_OVERLAY);
             shapeRenderer.rect(0, 0, Main.WINDOW_WIDTH, Main.WINDOW_HEIGHT);
@@ -58,7 +58,7 @@ public class InventoryScreen extends Screen {
         }
 
         if (mouseOverSlot != null && mouseOverSlot.hasItem()) {
-            ItemRenderer.renderTooltip(batch, null, font, mouseOverSlot.getStack().getItem());
+            ItemRenderer.renderTooltip(batch, null, mouseOverSlot.getStack().getItem());
         }
 
         if (dragStack != null && dragStack.getItem() != null) {
@@ -88,13 +88,25 @@ public class InventoryScreen extends Screen {
                 } else {
                     if (touched.hasItem()) {
                         if (dragSource.canAccept(touched.getStack().getItem())) {
+                            inventory.onRemoveItemFromSlot(dragSource, dragStack);
                             ItemStack temp = touched.getStack().copy();
+                            inventory.onRemoveItemFromSlot(touched, temp);
                             touched.setStack(dragStack);
+                            inventory.onAddItemToSlot(touched, dragStack);
                             dragSource.setStack(temp);
-                        } else dragSource.setStack(dragStack);
-                    } else touched.setStack(dragStack);
+                            inventory.onAddItemToSlot(dragSource, temp);
+                        } else {
+                            dragSource.setStack(dragStack);
+                        }
+                    } else {
+                        inventory.onRemoveItemFromSlot(dragSource, dragStack);
+                        touched.setStack(dragStack);
+                        inventory.onAddItemToSlot(touched, dragStack);
+                    }
                 }
-            } else dragSource.setStack(dragStack);
+            } else {
+                dragSource.setStack(dragStack);
+            }
             dragStack = null;
         }
 

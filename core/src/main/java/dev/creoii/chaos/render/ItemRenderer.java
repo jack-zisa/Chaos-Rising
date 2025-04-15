@@ -12,6 +12,7 @@ import javax.annotation.Nullable;
 
 public class ItemRenderer {
     private static final float TOOLTIP_OFFSCREEN_PADDING = 4f;
+    private static final BitmapFont FONT = new BitmapFont();
 
     public static void renderItem(SpriteBatch batch, Item item, Vector2 pos, float scale) {
         item.getSprite().setPosition(pos.x, pos.y);
@@ -19,9 +20,12 @@ public class ItemRenderer {
         item.getSprite().draw(batch);
     }
 
-    public static void renderTooltip(@Nullable SpriteBatch batch, @Nullable ShapeRenderer shapeRenderer, BitmapFont font, Item item) {
+    public static void renderTooltip(@Nullable SpriteBatch batch, @Nullable ShapeRenderer shapeRenderer, Item item) {
+        FONT.setColor(item.getRarity().getColor());
+        System.out.println(item.getRarity().name());
+
         String tooltip = item.id();
-        GlyphLayout layout = new GlyphLayout(font, tooltip);
+        GlyphLayout layout = new GlyphLayout(FONT, tooltip);
 
         Vector2 mousePos = new Vector2(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
 
@@ -36,7 +40,13 @@ public class ItemRenderer {
         if (y > Gdx.graphics.getHeight())
             y = Gdx.graphics.getHeight();
 
-        if (batch != null)
-            font.draw(batch, layout, x + TOOLTIP_OFFSCREEN_PADDING, y - TOOLTIP_OFFSCREEN_PADDING);
+        if (batch != null) {
+            FONT.draw(batch, layout, x + TOOLTIP_OFFSCREEN_PADDING, y - TOOLTIP_OFFSCREEN_PADDING);
+        }
+    }
+
+    static {
+        FONT.setUseIntegerPositions(false);
+        FONT.getData().setScale(1.5f);
     }
 }

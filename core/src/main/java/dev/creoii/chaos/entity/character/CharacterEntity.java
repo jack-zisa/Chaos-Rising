@@ -8,6 +8,7 @@ import dev.creoii.chaos.entity.LivingEntity;
 import dev.creoii.chaos.entity.controller.CharacterController;
 import dev.creoii.chaos.entity.controller.EntityController;
 import dev.creoii.chaos.entity.inventory.Inventory;
+import dev.creoii.chaos.entity.inventory.CharacterInventory;
 import dev.creoii.chaos.entity.inventory.Slot;
 import dev.creoii.chaos.item.ItemStack;
 
@@ -25,7 +26,7 @@ public class CharacterEntity extends LivingEntity {
         this.characterClass = characterClass;
         controller = new CharacterController(this);
         prevPos = new Vector2();
-        inventory = new Inventory(3, 4);
+        inventory = new CharacterInventory(this);
     }
 
     public CharacterClass getCharacterClass() {
@@ -80,7 +81,6 @@ public class CharacterEntity extends LivingEntity {
 
     @Override
     public void postSpawn() {
-
     }
 
     @Override

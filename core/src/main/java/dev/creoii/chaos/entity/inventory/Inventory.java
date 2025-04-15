@@ -43,9 +43,22 @@ public class Inventory {
 
         if (firstValid != null) {
             firstValid.setStack(stack);
+            onAddItemToSlot(firstValid, stack);
             return true;
         }
 
         return false;
+    }
+
+    /**
+     * Assumes that the item is already added to the slot
+     */
+    public void onAddItemToSlot(Slot slot, ItemStack stack) {
+    }
+
+    /**
+     * Assumes that the item is still in the slot
+     */
+    public void onRemoveItemFromSlot(Slot slot, ItemStack stack) {
     }
 }

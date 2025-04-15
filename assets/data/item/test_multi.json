@@ -1,5 +1,6 @@
 {
   "type": "weapon",
+  "rarity": "uncommon",
   "texture": "shrieking_ripper",
   "attack": {
     "attacks": [
