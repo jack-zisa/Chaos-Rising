@@ -13,7 +13,11 @@ public record SimpleBulletPath(Provider<Float> speed, Provider<Float> frequency,
 
     @Override
     public void update(BulletController controller, int gametime, float dt) {
-        Vector2 forward = new Vector2(controller.getEntity().getDirection()).scl(speed.get(controller.getEntity().getGame()) * Entity.COORDINATE_SCALE * dt);
+        float speed = this.speed.get(controller.getEntity().getGame());
+        if (speed == 0)
+            return;
+
+        Vector2 forward = new Vector2(controller.getEntity().getDirection()).scl(speed * Entity.COORDINATE_SCALE * dt);
         Vector2 offset = new Vector2(controller.getEntity().getPerpendicular()).scl((float) (Math.cos((gametime - controller.getEntity().getSpawnTime()) * frequency.get(controller.getEntity().getGame())) * amplitude.get(controller.getEntity().getGame())) * controller.getEntity().getIndex());
         controller.getEntity().getPos().add(forward).add(offset);
 

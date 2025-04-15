@@ -2,7 +2,9 @@ package dev.creoii.chaos;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import dev.creoii.chaos.render.InventoryScreen;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,6 +25,8 @@ public class InputManager extends InputAdapter {
         keymap.put("right", Input.Keys.D);
         keymap.put("debug", Input.Keys.F3);
         keymap.put("command", Input.Keys.SLASH);
+        keymap.put("inventory", Input.Keys.E);
+        keymap.put("back", Input.Keys.ESCAPE);
         keyHeld = -1;
         dragging = false;
     }
@@ -59,7 +63,15 @@ public class InputManager extends InputAdapter {
         if (keycode == getKeycode("debug")) {
             main.setDebug(!main.getDebug());
             return true;
+        } else if (keycode == getKeycode("inventory")) {
+            if (main.getRenderer().getCurrentScreen() == null)
+                main.getRenderer().setCurrentScreen(new InventoryScreen(new Vector2(Main.WINDOW_WIDTH - 196, 400), main.getGame().getActiveCharacter().getInventory()));
+            else main.getRenderer().clearCurrentScreen();
         }
+
+        if (keycode == getKeycode("back") && main.getRenderer().getCurrentScreen() != null)
+            main.getRenderer().clearCurrentScreen();
+
         return false;
     }
 

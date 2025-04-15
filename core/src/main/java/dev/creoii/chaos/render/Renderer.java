@@ -4,12 +4,11 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import dev.creoii.chaos.Main;
-import dev.creoii.chaos.entity.inventory.Inventory;
 import dev.creoii.chaos.render.entity.EntityRenderManager;
+import dev.creoii.chaos.render.screen.Screen;
 import dev.creoii.chaos.util.Renderable;
 
 import java.util.ArrayList;
@@ -25,6 +24,7 @@ public class Renderer implements Disposable {
 
     private final List<Renderable> worldRenderables;
     private final List<Renderable> screenRenderables;
+    private Screen currentScreen = null;
 
     public Renderer(Main main) {
         this.main = main;
@@ -43,7 +43,6 @@ public class Renderer implements Disposable {
         worldRenderables = new ArrayList<>();
         worldRenderables.add(new EntityRenderManager(main));
         screenRenderables = new ArrayList<>();
-        screenRenderables.add(new InventoryRenderer(new Vector2(10, 400), main.getGame().getActiveCharacter().getInventory()));
         screenRenderables.add(new HudRenderer());
 
         camera.position.x = main.getGame().getActiveCharacter().getPos().x;
@@ -88,6 +87,28 @@ public class Renderer implements Disposable {
         shapeRenderer.begin();
         screenRenderables.forEach(renderable -> renderable.render(this, null, shapeRenderer, font, debug));
         shapeRenderer.end();
+
+        if (currentScreen != null) {
+            batch.begin();
+            currentScreen.render(this, batch, null, font, debug);
+            batch.end();
+
+            shapeRenderer.begin();
+            currentScreen.render(this, null, shapeRenderer, font, debug);
+            shapeRenderer.end();
+        }
+    }
+
+    public Screen getCurrentScreen() {
+        return currentScreen;
+    }
+
+    public void setCurrentScreen(Screen currentScreen) {
+        this.currentScreen = currentScreen;
+    }
+
+    public void clearCurrentScreen() {
+        currentScreen = null;
     }
 
     @Override

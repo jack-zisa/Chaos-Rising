@@ -9,17 +9,18 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.entity.inventory.Inventory;
 import dev.creoii.chaos.entity.inventory.Slot;
-import dev.creoii.chaos.util.Renderable;
+import dev.creoii.chaos.render.screen.Screen;
 
 import javax.annotation.Nullable;
 
-public class InventoryRenderer implements Renderable {
+public class InventoryScreen extends Screen {
     private static final float SLOT_SIZE = 49f;
     private final Vector2 pos;
     private final Inventory inventory;
     private final Sprite slotSprite;
 
-    public InventoryRenderer(Vector2 pos, Inventory inventory) {
+    public InventoryScreen(Vector2 pos, Inventory inventory) {
+        super("Inventory");
         this.pos = pos;
         this.inventory = inventory;
         slotSprite = new Sprite(new Texture("textures/ui/slot.png"));
