@@ -29,30 +29,29 @@ public class Inventory {
     }
 
     public boolean addItem(ItemStack stack) {
-        Slot firstEmpty = null;
+        Slot firstValid = null;
         for (int i = slots.length - 1; i >= 0; --i) {
             for (Slot slot : slots[i]) {
                 if (!slot.hasItem() && slot.canAccept(stack.getItem())) {
-                    firstEmpty = slot;
+                    firstValid = slot;
                     break;
                 }
             }
-            if (firstEmpty != null)
+            if (firstValid != null)
                 break;
         }
 
-        if (firstEmpty != null) {
-            firstEmpty.setStack(stack);
+        if (firstValid != null) {
+            firstValid.setStack(stack);
             return true;
         }
 
         return false;
     }
 
-    public void swap(int x1, int y1, int x2, int y2) {
-        Slot temp = getSlot(x1, y1).copy();
-        Slot other = getSlot(x2, y2);
-        getSlot(x1, y1).setStack(other.getStack());
-        other.setStack(temp.getStack());
+    public void swap(Slot slot1, Slot slot2) {
+        Slot temp = slot1.copy();
+        slot1.setStack(slot2.getStack());
+        slot2.setStack(temp.getStack());
     }
 }

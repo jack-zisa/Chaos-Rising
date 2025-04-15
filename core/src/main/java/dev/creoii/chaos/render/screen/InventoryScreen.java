@@ -85,7 +85,7 @@ public class InventoryScreen extends Screen {
                 } else {
                     if (touched.hasItem()) {
                         if (dragSource.canAccept(touched.getStack().getItem())) {
-                            inventory.swap(dragSource.getX(), dragSource.getY(), touched.getX(), touched.getY());
+                            inventory.swap(dragSource, touched);
                         } else dragSource.setStack(dragStack);
                     } else touched.setStack(dragStack);
                 }
