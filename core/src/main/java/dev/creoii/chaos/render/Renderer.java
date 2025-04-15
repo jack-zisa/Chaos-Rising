@@ -4,9 +4,11 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import dev.creoii.chaos.Main;
+import dev.creoii.chaos.entity.inventory.Inventory;
 import dev.creoii.chaos.render.entity.EntityRenderManager;
 import dev.creoii.chaos.util.Renderable;
 
@@ -41,6 +43,7 @@ public class Renderer implements Disposable {
         worldRenderables = new ArrayList<>();
         worldRenderables.add(new EntityRenderManager(main));
         screenRenderables = new ArrayList<>();
+        screenRenderables.add(new InventoryRenderer(new Vector2(10, 400), main.getGame().getActiveCharacter().getInventory()));
         screenRenderables.add(new HudRenderer());
 
         camera.position.x = main.getGame().getActiveCharacter().getPos().x;

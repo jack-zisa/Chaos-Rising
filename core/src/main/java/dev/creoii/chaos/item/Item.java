@@ -16,16 +16,19 @@ public class Item implements DataManager.Identifiable {
     private final Attack attack;
     private final StatModifier statModifier;
     protected Sprite sprite;
+    private final ItemStack defaultStack;
 
     public Item(Type type, String textureId, Attack attack, StatModifier statModifier) {
         this.type = type;
         this.textureId = textureId;
         this.attack = attack;
         this.statModifier = statModifier;
+        defaultStack = new ItemStack(this);
     }
 
     public Item create(Game game) {
         Item item = new Item(type, textureId, attack, statModifier);
+        item.setId(id);
         item.sprite = new Sprite(game.getTextureManager().getTexture("item", textureId));
         return item;
     }
@@ -50,6 +53,14 @@ public class Item implements DataManager.Identifiable {
 
     public StatModifier getStatModifier() {
         return statModifier;
+    }
+
+    public Sprite getSprite() {
+        return sprite;
+    }
+
+    public ItemStack getDefaultStack() {
+        return defaultStack;
     }
 
     public static class Serializer implements Json.Serializer<Item> {

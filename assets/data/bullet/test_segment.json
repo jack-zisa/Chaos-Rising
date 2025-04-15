@@ -1,5 +1,5 @@
 {
-  "texture": "dark_magic_blade",
+  "texture": "fireball_blast",
   "lifetime": 200,
   "path": {
     "segments": [
@@ -28,5 +28,6 @@
         }
       }
     ]
-  }
+  },
+  "angle_offset": 90
 }

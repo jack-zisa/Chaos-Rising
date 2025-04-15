@@ -7,8 +7,10 @@ import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.entity.LivingEntity;
 import dev.creoii.chaos.entity.controller.CharacterController;
 import dev.creoii.chaos.entity.controller.EntityController;
+import dev.creoii.chaos.entity.inventory.Inventory;
+import dev.creoii.chaos.entity.inventory.Slot;
 import dev.creoii.chaos.item.Item;
-import dev.creoii.chaos.util.stat.StatContainer;
+import dev.creoii.chaos.item.ItemStack;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -17,15 +19,14 @@ public class CharacterEntity extends LivingEntity {
     private CharacterClass characterClass;
     private final EntityController<CharacterEntity> controller;
     private final Vector2 prevPos;
-    @Nullable
-    private Item currentItem;
+    private final Inventory inventory;
 
     public CharacterEntity(CharacterClass characterClass) {
         super(characterClass.getTextureId(), 1f, new Vector2(1, 1), Group.CHARACTER, characterClass.getBaseStats().copy(), characterClass.getBaseStats().copy());
         this.characterClass = characterClass;
         controller = new CharacterController(this);
-        currentItem = null;
         prevPos = new Vector2();
+        inventory = new Inventory(2, 4);
     }
 
     public CharacterClass getCharacterClass() {
@@ -48,22 +49,25 @@ public class CharacterEntity extends LivingEntity {
     }
 
     @Nullable
-    public Item getCurrentItem() {
-        return currentItem;
+    public ItemStack getCurrentStack() {
+        Slot slot = inventory.getInventory()[0][0];
+        if (slot.getStack() == null)
+            return null;
+        return slot.getStack();
     }
 
-    public void equipItem(@Nullable Item item) {
+    public void equipItem(ItemStack stack) {
         unequipItem();
-        if (item != null) {
-            getStats().applyModifier(item.getStatModifier());
-            this.currentItem = item;
+        if (stack != null && stack.getItem() != null) {
+            getStats().applyModifier(stack.getItem().getStatModifier());
+            inventory.getInventory()[0][0].setStack(stack);
         }
     }
 
     public void unequipItem() {
-        if (currentItem != null) {
-            getStats().removeModifier(currentItem.getStatModifier().uuid());
-            this.currentItem = null;
+        if (getCurrentStack() != null && getCurrentStack().getItem() != null) {
+            getStats().removeModifier(getCurrentStack().getItem().getStatModifier().uuid());
+            inventory.getInventory()[0][0].setStack(ItemStack.EMPTY);
         }
     }
 
@@ -77,6 +81,10 @@ public class CharacterEntity extends LivingEntity {
 
     public Vector2 getPrevCenterPos() {
         return new Vector2(getPrevPos()).add(COORDINATE_SCALE / 2f, COORDINATE_SCALE / 2f);
+    }
+
+    public Inventory getInventory() {
+        return inventory;
     }
 
     @Override

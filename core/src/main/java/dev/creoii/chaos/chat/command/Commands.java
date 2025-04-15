@@ -90,7 +90,7 @@ public final class Commands {
 
         Command.register("set_item", (game, args) -> {
             if (args.length > 0) {
-                game.getActiveCharacter().equipItem(game.getDataManager().getItem(args[0]).create(game));
+                game.getActiveCharacter().equipItem(game.getDataManager().getItem(args[0]).create(game).getDefaultStack());
             }
         });
 
