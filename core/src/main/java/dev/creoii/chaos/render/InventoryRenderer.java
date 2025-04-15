@@ -45,8 +45,7 @@ public class InventoryRenderer implements Renderable {
     }
 
     public static boolean isMouseOverSlot(Vector2 pos) {
-        float mouseX = Gdx.input.getX();
         float mouseY = Gdx.graphics.getHeight() - Gdx.input.getY();
-        return mouseX >= pos.x && mouseX <= pos.x + SLOT_SIZE && mouseY >= pos.y && mouseY <= pos.y + SLOT_SIZE;
+        return Gdx.input.getX() >= pos.x && Gdx.input.getX() <= pos.x + SLOT_SIZE && mouseY >= pos.y && mouseY <= pos.y + SLOT_SIZE;
     }
 }

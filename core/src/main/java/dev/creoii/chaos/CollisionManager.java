@@ -81,7 +81,7 @@ public class CollisionManager {
 
                 for (int i = 0; i < entities.size; ++i) {
                     Entity a = entities.get(i);
-                    for (int j = 0; j < neighbors.size; ++j) {
+                    for (int j = i + 1; j < neighbors.size; ++j) {
                         Entity b = neighbors.get(j);
                         if (COLLISION_MATRIX[a.getGroup().ordinal()][b.getGroup().ordinal()] && a != b && a.getColliderRect().overlaps(b.getColliderRect())) {
                             a.collide(b);
