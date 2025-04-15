@@ -25,6 +25,7 @@ public abstract class Entity implements Positionable, Tickable {
     protected Game game;
     protected Vector2 pos;
     protected Vector2 centerPos;
+    protected Rectangle colliderRect;
     protected UUID uuid;
     protected Sprite sprite;
 
@@ -68,8 +69,10 @@ public abstract class Entity implements Positionable, Tickable {
     }
 
     public Rectangle getColliderRect() {
-        if (pos == null || collider == null) return null;
-        return new Rectangle(pos.x, pos.y, collider.x * getScale(), collider.y * getScale());
+        if (pos == null)
+            return null;
+        colliderRect.setPosition(pos);
+        return colliderRect;
     }
 
     public Group getGroup() {
@@ -113,6 +116,10 @@ public abstract class Entity implements Positionable, Tickable {
         entity.uuid = uuid;
         entity.pos = pos;
         entity.centerPos = new Vector2();
+        entity.colliderRect = new Rectangle();
+        entity.colliderRect.setPosition(pos);
+        entity.colliderRect.setWidth(collider.x * getScale());
+        entity.colliderRect.setHeight(collider.y * getScale());
         entity.getCenterPos();
         entity.spawnTime = game.getGametime();
         entity.postSpawn();
