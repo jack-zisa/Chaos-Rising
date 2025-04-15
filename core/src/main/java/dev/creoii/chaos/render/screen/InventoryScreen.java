@@ -20,7 +20,7 @@ public class InventoryScreen extends Screen {
     private final Sprite slotSprite;
 
     public InventoryScreen(Vector2 pos, Inventory inventory) {
-        super("Inventory", pos);
+        super("Inventory", pos, (inventory.getInventory().length * 48f) + 31f);
         this.inventory = inventory;
         slotSprite = new Sprite(new Texture("textures/ui/slot.png"));
         slotSprite.setSize(SLOT_SIZE, SLOT_SIZE);
@@ -39,9 +39,14 @@ public class InventoryScreen extends Screen {
                 slotSprite.draw(batch);
                 Slot slot = inventory.getInventory()[r][c];
                 if (slot != null && slot.getStack() != null && slot.getStack().getItem() != null) {
-                    ItemRenderer.renderItem(renderer.getMain(), batch, font, slot.getStack().getItem(), new Vector2(getPos().x + 3, getPos().y + 3), 42f, getMouseOverSlot() != null);
+                    ItemRenderer.renderItem(batch, slot.getStack().getItem(), new Vector2(getPos().x + 3, getPos().y + 3), 42f);
                 }
             }
+        }
+
+        Slot mouseOverSlot = getMouseOverSlot();
+        if (mouseOverSlot != null && mouseOverSlot.getStack() != null && mouseOverSlot.getStack().getItem() != null) {
+            ItemRenderer.renderTooltip(batch, font, mouseOverSlot.getStack().getItem());
         }
     }
 

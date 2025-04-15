@@ -12,14 +12,12 @@ import javax.annotation.Nullable;
 public abstract class Screen implements Renderable {
     private final String title;
     private final Vector2 pos;
+    private final float titleOffsetY;
 
-    public Screen(String title, Vector2 pos) {
+    public Screen(String title, Vector2 pos, float titleOffsetY) {
         this.title = title;
         this.pos = pos;
-    }
-
-    public String getTitle() {
-        return title;
+        this.titleOffsetY = titleOffsetY;
     }
 
     public Vector2 getPos() {
@@ -29,6 +27,6 @@ public abstract class Screen implements Renderable {
     public void render(Renderer renderer, @Nullable SpriteBatch batch, @Nullable ShapeRenderer shapeRenderer, BitmapFont font, boolean debug) {
         if (batch == null)
             return;
-        font.draw(batch, title, pos.x, pos.y);
+        font.draw(batch, title, pos.x, pos.y + titleOffsetY);
     }
 }
