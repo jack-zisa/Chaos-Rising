@@ -1,6 +1,6 @@
 {
   "type": "weapon",
-  "texture": "test",
+  "texture": "malice",
   "attack": {
     "bullet_id": "test",
     "damage": 10

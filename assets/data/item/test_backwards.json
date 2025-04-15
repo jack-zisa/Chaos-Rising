@@ -1,6 +1,6 @@
 {
   "type": "weapon",
-  "texture": "test",
+  "texture": "twilight",
   "attack": {
     "bullet_id": "test",
     "damage": 10,

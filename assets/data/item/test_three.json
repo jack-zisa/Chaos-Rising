@@ -1,6 +1,6 @@
 {
   "type": "weapon",
-  "texture": "test",
+  "texture": "brilliance",
   "attack": {
     "bullet_id": "test_arc",
     "damage": 5,

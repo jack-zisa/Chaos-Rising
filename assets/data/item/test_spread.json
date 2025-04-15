@@ -1,6 +1,6 @@
 {
   "type": "weapon",
-  "texture": "test",
+  "texture": "occult",
   "attack": {
     "bullet_id": "test_sin",
     "damage": 4,

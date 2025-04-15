@@ -1,6 +1,6 @@
 {
   "type": "weapon",
-  "texture": "test",
+  "texture": "shrieking_ripper",
   "attack": {
     "attacks": [
       {
