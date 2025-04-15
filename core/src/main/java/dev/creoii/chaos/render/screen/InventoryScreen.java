@@ -7,8 +7,10 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import dev.creoii.chaos.InputManager;
 import dev.creoii.chaos.entity.inventory.Inventory;
 import dev.creoii.chaos.entity.inventory.Slot;
+import dev.creoii.chaos.item.ItemStack;
 import dev.creoii.chaos.render.ItemRenderer;
 import dev.creoii.chaos.render.Renderer;
 
@@ -16,8 +18,12 @@ import javax.annotation.Nullable;
 
 public class InventoryScreen extends Screen {
     private static final float SLOT_SIZE = 49f;
+    private static final float ITEM_SCALE = 42f;
     private final Inventory inventory;
     private final Sprite slotSprite;
+
+    private Slot dragSource;
+    private ItemStack dragStack;
 
     public InventoryScreen(Vector2 pos, Inventory inventory) {
         super("Inventory", pos, (inventory.getSlots().length * 48f) + 31f);
@@ -39,7 +45,7 @@ public class InventoryScreen extends Screen {
                 slotSprite.draw(batch);
                 Slot slot = inventory.getSlots()[r][c];
                 if (slot != null && slot.hasItem()) {
-                    ItemRenderer.renderItem(batch, slot.getStack().getItem(), new Vector2(getPos().x + (c * SLOT_SIZE) + 3, getPos().y + (r * SLOT_SIZE) + 3), 42f);
+                    ItemRenderer.renderItem(batch, slot.getStack().getItem(), new Vector2(getPos().x + (c * SLOT_SIZE) + 3, getPos().y + (r * SLOT_SIZE) + 3), ITEM_SCALE);
                 }
             }
         }
@@ -48,8 +54,44 @@ public class InventoryScreen extends Screen {
         if (mouseOverSlot != null && mouseOverSlot.hasItem()) {
             ItemRenderer.renderTooltip(batch, font, mouseOverSlot.getStack().getItem());
         }
+
+        if (dragStack != null && dragStack.getItem() != null) {
+            Vector2 mousePos = new Vector2(Gdx.input.getX() - (ITEM_SCALE / 2f), Gdx.graphics.getHeight() - Gdx.input.getY() - (ITEM_SCALE / 2f));
+            ItemRenderer.renderItem(batch, dragStack.getItem(), mousePos, ITEM_SCALE);
+        }
     }
 
+    @Override
+    public boolean touchDown(InputManager manager, int screenX, int screenY, int pointer, int button) {
+        Slot touched = getMouseOverSlot();
+        if (touched != null && touched.hasItem() && Gdx.input.isTouched()) {
+            dragSource = touched;
+            dragStack = touched.getStack();
+            touched.setStack(null);
+        }
+        return super.touchDown(manager, screenX, screenY, pointer, button);
+    }
+
+    @Override
+    public boolean touchUp(InputManager manager, int screenX, int screenY, int pointer, int button) {
+        if (dragStack != null) {
+            Slot touched = getMouseOverSlot();
+            if (touched != null) {
+                if (touched.hasItem()) {
+                    dragSource.setStack(dragStack);
+                    inventory.swap(dragSource.getX(), dragSource.getY(), touched.getX(), touched.getY());
+                } else {
+                    touched.setStack(dragStack);
+                }
+            } else {
+                dragSource.setStack(dragStack);
+            }
+            dragStack = null;
+        }
+        return super.touchUp(manager, screenX, screenY, pointer, button);
+    }
+
+    @Nullable
     public Slot getMouseOverSlot() {
         float mouseY = Gdx.graphics.getHeight() - Gdx.input.getY();
 

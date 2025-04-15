@@ -5,13 +5,17 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import dev.creoii.chaos.render.screen.InventoryScreen;
+import dev.creoii.chaos.util.Inputtable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class InputManager extends InputAdapter {
     private final Main main;
     private final Map<String, Integer> keymap;
+    private final List<Inputtable> inputs;
     private final Vector3 mousePos = new Vector3();
     private int keyHeld;
     private boolean dragging;
@@ -27,6 +31,7 @@ public class InputManager extends InputAdapter {
         keymap.put("command", Input.Keys.SLASH);
         keymap.put("inventory", Input.Keys.E);
         keymap.put("back", Input.Keys.ESCAPE);
+        inputs = new ArrayList<>();
         keyHeld = -1;
         dragging = false;
     }
@@ -47,8 +52,24 @@ public class InputManager extends InputAdapter {
         return dragging;
     }
 
+    public void setDragging(boolean dragging) {
+        this.dragging = dragging;
+    }
+
     public int getKeycode(String key) {
         return keymap.getOrDefault(key, -1);
+    }
+
+    public List<Inputtable> getInputs() {
+        return inputs;
+    }
+
+    public void addInput(Inputtable inputtable) {
+        inputs.add(inputtable);
+    }
+
+    public void removeInput(Inputtable inputtable) {
+        inputs.remove(inputtable);
     }
 
     public Vector3 getMousePos() {
@@ -70,23 +91,30 @@ public class InputManager extends InputAdapter {
         } else if (keycode == getKeycode("inventory")) {
             if (main.getRenderer().getCurrentScreen() == null)
                 main.getRenderer().setCurrentScreen(new InventoryScreen(new Vector2(Main.WINDOW_WIDTH - 196, 400), main.getGame().getActiveCharacter().getInventory()));
-            else main.getRenderer().clearCurrentScreen();
+            else
+                main.getRenderer().clearCurrentScreen();
+            return true;
         }
 
-        if (main.getRenderer().getCurrentScreen() != null) {
-            main.getRenderer().getCurrentScreen().control(this, keycode);
+        for (Inputtable input : inputs) {
+            input.keyDown(this, keycode);
         }
 
         return false;
     }
 
-    public boolean keyHeld(int keycode) {
-        return false;
+    public void keyHeld(int keycode) {
+        for (Inputtable input : inputs) {
+            input.keyHeld(this, keycode);
+        }
     }
 
     @Override
     public boolean keyUp(int keycode) {
         keyHeld = -1;
+        for (Inputtable input : inputs) {
+            input.keyUp(this, keycode);
+        }
         return super.keyUp(keycode);
     }
 
@@ -96,14 +124,19 @@ public class InputManager extends InputAdapter {
             return false;
         main.getRenderer().getCamera().unproject(mousePos.set(screenX, screenY, 0));
         dragging = true;
+        for (Inputtable input : inputs) {
+            input.touchDown(this, screenX, screenY, pointer, button);
+        }
         return true;
     }
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        if (!dragging)
-            return false;
+        dragging = true;
         main.getRenderer().getCamera().unproject(mousePos.set(screenX, screenY, 0));
+        for (Inputtable input : inputs) {
+            input.touchDragged(this, screenX, screenY, pointer);
+        }
         return super.touchDragged(screenX, screenY, pointer);
     }
 
@@ -113,12 +146,18 @@ public class InputManager extends InputAdapter {
             return false;
         main.getRenderer().getCamera().unproject(mousePos.set(screenX, screenY, 0));
         dragging = false;
+        for (Inputtable input : inputs) {
+            input.touchUp(this, screenX, screenY, pointer, button);
+        }
         return super.touchUp(screenX, screenY, pointer, button);
     }
 
     @Override
     public boolean touchCancelled(int screenX, int screenY, int pointer, int button) {
         dragging = false;
+        for (Inputtable input : inputs) {
+            input.touchCancelled(this, screenX, screenY, pointer, button);
+        }
         return super.touchCancelled(screenX, screenY, pointer, button);
     }
 }

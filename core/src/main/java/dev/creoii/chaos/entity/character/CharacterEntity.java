@@ -49,25 +49,10 @@ public class CharacterEntity extends LivingEntity {
 
     @Nullable
     public ItemStack getCurrentStack() {
-        Slot slot = inventory.getSlots()[0][0];
+        Slot slot = inventory.getSlots()[inventory.getSlots().length - 1][0];
         if (slot.getStack() == null)
             return null;
         return slot.getStack();
-    }
-
-    public void equipItem(ItemStack stack) {
-        unequipItem();
-        if (stack != null && stack.getItem() != null) {
-            getStats().applyModifier(stack.getItem().getStatModifier());
-            inventory.getSlots()[0][0].setStack(stack);
-        }
-    }
-
-    public void unequipItem() {
-        if (getCurrentStack() != null && getCurrentStack().getItem() != null) {
-            getStats().removeModifier(getCurrentStack().getItem().getStatModifier().uuid());
-            inventory.getSlots()[0][0].setStack(ItemStack.EMPTY);
-        }
     }
 
     public Vector2 getPrevPos() {

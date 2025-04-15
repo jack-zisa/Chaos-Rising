@@ -105,9 +105,11 @@ public class Renderer implements Disposable {
 
     public void setCurrentScreen(Screen currentScreen) {
         this.currentScreen = currentScreen;
+        this.currentScreen.open(main);
     }
 
     public void clearCurrentScreen() {
+        currentScreen.close(main);
         currentScreen = null;
     }
 
