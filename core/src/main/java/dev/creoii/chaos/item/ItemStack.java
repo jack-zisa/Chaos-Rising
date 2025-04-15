@@ -34,20 +34,7 @@ public class ItemStack {
         this.count = count;
     }
 
-    public boolean canStackWith(ItemStack other) {
-        return other != null && other.item == this.item;
-    }
-
-    public void add(ItemStack other) {
-        if (canStackWith(other)) {
-            this.count += other.count;
-        }
-    }
-
-    public void decrease(int amount) {
-        this.count -= amount;
-        if (count <= 0) {
-            // remove stack
-        }
+    public ItemStack copy() {
+        return new ItemStack(item, count);
     }
 }

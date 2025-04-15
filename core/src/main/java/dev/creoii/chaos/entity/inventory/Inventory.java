@@ -2,30 +2,31 @@ package dev.creoii.chaos.entity.inventory;
 
 import dev.creoii.chaos.item.ItemStack;
 
-import java.util.Arrays;
-
 public class Inventory {
-    private final Slot[][] inventory;
+    private final Slot[][] slots;
 
     public Inventory(int rows, int cols) {
-        inventory = new Slot[rows][cols];
-        for (Slot[] slotRow : inventory) {
-            Arrays.fill(slotRow, new Slot());
+        slots = new Slot[rows][cols];
+        for (int r = 0; r < slots.length; ++r) {
+            for (int c = 0; c < slots[r].length; ++c) {
+                slots[r][c] = new Slot();
+            }
         }
     }
 
-    public Slot[][] getInventory() {
-        return inventory;
+    public Slot[][] getSlots() {
+        return slots;
+    }
+
+    public Slot getSlot(int ri, int ci) {
+        return slots[ri][ci];
     }
 
     public boolean addItem(ItemStack stack) {
         Slot firstEmpty = null;
-        for (Slot[] slotRow : inventory) {
+        for (Slot[] slotRow : slots) {
             for (Slot slot : slotRow) {
-                if (slot != null && slot.getStack().canStackWith(stack)) {
-                    slot.getStack().add(stack);
-                    return true;
-                } else if (firstEmpty == null) {
+                if (firstEmpty == null && !slot.hasItem()) {
                     firstEmpty = slot;
                 }
             }

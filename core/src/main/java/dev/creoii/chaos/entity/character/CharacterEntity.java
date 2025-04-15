@@ -9,7 +9,6 @@ import dev.creoii.chaos.entity.controller.CharacterController;
 import dev.creoii.chaos.entity.controller.EntityController;
 import dev.creoii.chaos.entity.inventory.Inventory;
 import dev.creoii.chaos.entity.inventory.Slot;
-import dev.creoii.chaos.item.Item;
 import dev.creoii.chaos.item.ItemStack;
 
 import javax.annotation.Nullable;
@@ -50,7 +49,7 @@ public class CharacterEntity extends LivingEntity {
 
     @Nullable
     public ItemStack getCurrentStack() {
-        Slot slot = inventory.getInventory()[0][0];
+        Slot slot = inventory.getSlots()[0][0];
         if (slot.getStack() == null)
             return null;
         return slot.getStack();
@@ -60,14 +59,14 @@ public class CharacterEntity extends LivingEntity {
         unequipItem();
         if (stack != null && stack.getItem() != null) {
             getStats().applyModifier(stack.getItem().getStatModifier());
-            inventory.getInventory()[0][0].setStack(stack);
+            inventory.getSlots()[0][0].setStack(stack);
         }
     }
 
     public void unequipItem() {
         if (getCurrentStack() != null && getCurrentStack().getItem() != null) {
             getStats().removeModifier(getCurrentStack().getItem().getStatModifier().uuid());
-            inventory.getInventory()[0][0].setStack(ItemStack.EMPTY);
+            inventory.getSlots()[0][0].setStack(ItemStack.EMPTY);
         }
     }
 

@@ -12,4 +12,8 @@ public class Slot {
     public void setStack(ItemStack stack) {
         this.stack = stack;
     }
+
+    public boolean hasItem() {
+        return stack != null && stack.getItem() != null;
+    }
 }

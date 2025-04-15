@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import dev.creoii.chaos.InputManager;
 import dev.creoii.chaos.render.Renderer;
 import dev.creoii.chaos.util.Renderable;
 
@@ -28,5 +29,10 @@ public abstract class Screen implements Renderable {
         if (batch == null)
             return;
         font.draw(batch, title, pos.x, pos.y + titleOffsetY);
+    }
+
+    public void control(InputManager inputManager, int keycode) {
+        if (keycode == inputManager.getKeycode("back"))
+            inputManager.getMain().getRenderer().clearCurrentScreen();
     }
 }

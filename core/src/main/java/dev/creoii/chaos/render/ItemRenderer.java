@@ -8,6 +8,8 @@ import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.item.Item;
 
 public class ItemRenderer {
+    private static final float TOOLTIP_OFFSCREEN_PADDING = 4f;
+
     public static void renderItem(SpriteBatch batch, Item item, Vector2 pos, float scale) {
         item.getSprite().setPosition(pos.x, pos.y);
         item.getSprite().setSize(scale, scale);
@@ -20,8 +22,17 @@ public class ItemRenderer {
 
         Vector2 mousePos = new Vector2(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
 
-        float padding = 4f;
+        float tooltipWidth = layout.width + 2 * TOOLTIP_OFFSCREEN_PADDING;
+        float tooltipHeight = layout.height + 2 * TOOLTIP_OFFSCREEN_PADDING;
 
-        font.draw(batch, tooltip, mousePos.x + padding, mousePos.y + layout.height + padding);
+        float x = mousePos.x + TOOLTIP_OFFSCREEN_PADDING;
+        float y = mousePos.y + tooltipHeight;
+
+        if (x + tooltipWidth > Gdx.graphics.getWidth())
+            x = Gdx.graphics.getWidth() - tooltipWidth;
+        if (y > Gdx.graphics.getHeight())
+            y = Gdx.graphics.getHeight();
+
+        font.draw(batch, layout, x + TOOLTIP_OFFSCREEN_PADDING, y - TOOLTIP_OFFSCREEN_PADDING);
     }
 }

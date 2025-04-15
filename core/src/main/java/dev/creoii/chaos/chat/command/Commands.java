@@ -88,9 +88,9 @@ public final class Commands {
             }
         });
 
-        Command.register("set_item", (game, args) -> {
+        Command.register("give", (game, args) -> {
             if (args.length > 0) {
-                game.getActiveCharacter().equipItem(game.getDataManager().getItem(args[0]).create(game).getDefaultStack());
+                game.getActiveCharacter().getInventory().addItem(game.getDataManager().getItem(args[0]).create(game).getDefaultStack().copy());
             }
         });
 

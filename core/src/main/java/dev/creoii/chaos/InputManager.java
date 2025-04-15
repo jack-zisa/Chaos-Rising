@@ -31,6 +31,10 @@ public class InputManager extends InputAdapter {
         dragging = false;
     }
 
+    public Main getMain() {
+        return main;
+    }
+
     public boolean isKeyHeld() {
         return keyHeld >= 0;
     }
@@ -69,8 +73,9 @@ public class InputManager extends InputAdapter {
             else main.getRenderer().clearCurrentScreen();
         }
 
-        if (keycode == getKeycode("back") && main.getRenderer().getCurrentScreen() != null)
-            main.getRenderer().clearCurrentScreen();
+        if (main.getRenderer().getCurrentScreen() != null) {
+            main.getRenderer().getCurrentScreen().control(this, keycode);
+        }
 
         return false;
     }
@@ -87,7 +92,8 @@ public class InputManager extends InputAdapter {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        if (button != Input.Buttons.LEFT || pointer > 0) return false;
+        if (button != Input.Buttons.LEFT || pointer > 0)
+            return false;
         main.getRenderer().getCamera().unproject(mousePos.set(screenX, screenY, 0));
         dragging = true;
         return true;
@@ -95,14 +101,16 @@ public class InputManager extends InputAdapter {
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        if (!dragging) return false;
+        if (!dragging)
+            return false;
         main.getRenderer().getCamera().unproject(mousePos.set(screenX, screenY, 0));
         return super.touchDragged(screenX, screenY, pointer);
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        if (button != Input.Buttons.LEFT || pointer > 0) return false;
+        if (button != Input.Buttons.LEFT || pointer > 0)
+            return false;
         main.getRenderer().getCamera().unproject(mousePos.set(screenX, screenY, 0));
         dragging = false;
         return super.touchUp(screenX, screenY, pointer, button);

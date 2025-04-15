@@ -20,7 +20,7 @@ public class InventoryScreen extends Screen {
     private final Sprite slotSprite;
 
     public InventoryScreen(Vector2 pos, Inventory inventory) {
-        super("Inventory", pos, (inventory.getInventory().length * 48f) + 31f);
+        super("Inventory", pos, (inventory.getSlots().length * 48f) + 31f);
         this.inventory = inventory;
         slotSprite = new Sprite(new Texture("textures/ui/slot.png"));
         slotSprite.setSize(SLOT_SIZE, SLOT_SIZE);
@@ -33,19 +33,19 @@ public class InventoryScreen extends Screen {
         if (batch == null)
             return;
 
-        for (int r = 0; r < inventory.getInventory().length; ++r) {
-            for (int c = 0; c < inventory.getInventory()[r].length; ++c) {
+        for (int r = 0; r < inventory.getSlots().length; ++r) {
+            for (int c = 0; c < inventory.getSlots()[r].length; ++c) {
                 slotSprite.setPosition(getPos().x + (c * SLOT_SIZE), getPos().y + (r * SLOT_SIZE));
                 slotSprite.draw(batch);
-                Slot slot = inventory.getInventory()[r][c];
-                if (slot != null && slot.getStack() != null && slot.getStack().getItem() != null) {
-                    ItemRenderer.renderItem(batch, slot.getStack().getItem(), new Vector2(getPos().x + 3, getPos().y + 3), 42f);
+                Slot slot = inventory.getSlots()[r][c];
+                if (slot != null && slot.hasItem()) {
+                    ItemRenderer.renderItem(batch, slot.getStack().getItem(), new Vector2(getPos().x + (c * SLOT_SIZE) + 3, getPos().y + (r * SLOT_SIZE) + 3), 42f);
                 }
             }
         }
 
         Slot mouseOverSlot = getMouseOverSlot();
-        if (mouseOverSlot != null && mouseOverSlot.getStack() != null && mouseOverSlot.getStack().getItem() != null) {
+        if (mouseOverSlot != null && mouseOverSlot.hasItem()) {
             ItemRenderer.renderTooltip(batch, font, mouseOverSlot.getStack().getItem());
         }
     }
@@ -53,13 +53,13 @@ public class InventoryScreen extends Screen {
     public Slot getMouseOverSlot() {
         float mouseY = Gdx.graphics.getHeight() - Gdx.input.getY();
 
-        for (int r = 0; r < inventory.getInventory().length; ++r) {
-            for (int c = 0; c < inventory.getInventory()[r].length; ++c) {
+        for (int r = 0; r < inventory.getSlots().length; ++r) {
+            for (int c = 0; c < inventory.getSlots()[r].length; ++c) {
                 float slotX = getPos().x + (c * SLOT_SIZE);
                 float slotY = getPos().y + (r * SLOT_SIZE);
 
                 if (Gdx.input.getX() >= slotX && Gdx.input.getX() <= slotX + SLOT_SIZE && mouseY >= slotY && mouseY <= slotY + SLOT_SIZE) {
-                    return inventory.getInventory()[r][c];
+                    return inventory.getSlots()[r][c];
                 }
             }
         }
