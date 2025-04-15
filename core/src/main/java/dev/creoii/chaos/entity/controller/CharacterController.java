@@ -17,7 +17,7 @@ public class CharacterController extends EntityController<CharacterEntity> {
 
     @Override
     public void control(int gametime, float delta) {
-        if (getEntity().getGame().getCommandManager().isActive())
+        if (getEntity().getGame().getCommandManager().isActive() || getEntity().getGame().getMain().getRenderer().getCurrentScreen() != null)
             return;
 
         float dx = 0f;

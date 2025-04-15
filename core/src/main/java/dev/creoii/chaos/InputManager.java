@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class InputManager extends InputAdapter {
     private final Main main;
@@ -82,6 +83,12 @@ public class InputManager extends InputAdapter {
         }
     }
 
+    private void forEach(Consumer<Inputtable> consumer) {
+        for (int i = inputs.size() - 1; i >= 0; --i) {
+            consumer.accept(inputs.get(i));
+        }
+    }
+
     @Override
     public boolean keyDown(int keycode) {
         keyHeld = keycode;
@@ -96,25 +103,19 @@ public class InputManager extends InputAdapter {
             return true;
         }
 
-        for (Inputtable input : inputs) {
-            input.keyDown(this, keycode);
-        }
+        forEach(inputtable -> inputtable.keyDown(this, keycode));
 
         return false;
     }
 
     public void keyHeld(int keycode) {
-        for (Inputtable input : inputs) {
-            input.keyHeld(this, keycode);
-        }
+        forEach(inputtable -> inputtable.keyHeld(this, keycode));
     }
 
     @Override
     public boolean keyUp(int keycode) {
         keyHeld = -1;
-        for (Inputtable input : inputs) {
-            input.keyUp(this, keycode);
-        }
+        forEach(inputtable -> inputtable.keyUp(this, keycode));
         return super.keyUp(keycode);
     }
 
@@ -124,9 +125,7 @@ public class InputManager extends InputAdapter {
             return false;
         main.getRenderer().getCamera().unproject(mousePos.set(screenX, screenY, 0));
         dragging = true;
-        for (Inputtable input : inputs) {
-            input.touchDown(this, screenX, screenY, pointer, button);
-        }
+        forEach(inputtable -> inputtable.touchDown(this, screenX, screenY, pointer, button));
         return true;
     }
 
@@ -134,9 +133,7 @@ public class InputManager extends InputAdapter {
     public boolean touchDragged(int screenX, int screenY, int pointer) {
         dragging = true;
         main.getRenderer().getCamera().unproject(mousePos.set(screenX, screenY, 0));
-        for (Inputtable input : inputs) {
-            input.touchDragged(this, screenX, screenY, pointer);
-        }
+        forEach(inputtable -> inputtable.touchDragged(this, screenX, screenY, pointer));
         return super.touchDragged(screenX, screenY, pointer);
     }
 
@@ -146,18 +143,14 @@ public class InputManager extends InputAdapter {
             return false;
         main.getRenderer().getCamera().unproject(mousePos.set(screenX, screenY, 0));
         dragging = false;
-        for (Inputtable input : inputs) {
-            input.touchUp(this, screenX, screenY, pointer, button);
-        }
+        forEach(inputtable -> inputtable.touchUp(this, screenX, screenY, pointer, button));
         return super.touchUp(screenX, screenY, pointer, button);
     }
 
     @Override
     public boolean touchCancelled(int screenX, int screenY, int pointer, int button) {
         dragging = false;
-        for (Inputtable input : inputs) {
-            input.touchCancelled(this, screenX, screenY, pointer, button);
-        }
+        forEach(inputtable -> inputtable.touchCancelled(this, screenX, screenY, pointer, button));
         return super.touchCancelled(screenX, screenY, pointer, button);
     }
 }
