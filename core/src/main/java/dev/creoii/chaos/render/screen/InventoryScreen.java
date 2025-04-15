@@ -33,7 +33,11 @@ public class InventoryScreen extends Screen {
     public void render(Renderer renderer, @Nullable SpriteBatch batch, @Nullable ShapeRenderer shapeRenderer, BitmapFont font, boolean debug) {
         super.render(renderer, batch, shapeRenderer, font, debug);
 
+        Slot mouseOverSlot = getMouseOverSlot();
         if (batch == null && shapeRenderer != null) {
+            if (mouseOverSlot != null && mouseOverSlot.hasItem()) {
+                ItemRenderer.renderTooltip(null, shapeRenderer, font, mouseOverSlot.getStack().getItem());
+            }
             shapeRenderer.setColor(BACKGROUND_OVERLAY);
             shapeRenderer.rect(0, 0, Main.WINDOW_WIDTH, Main.WINDOW_HEIGHT);
             return;
@@ -53,9 +57,8 @@ public class InventoryScreen extends Screen {
             }
         }
 
-        Slot mouseOverSlot = getMouseOverSlot();
         if (mouseOverSlot != null && mouseOverSlot.hasItem()) {
-            ItemRenderer.renderTooltip(batch, font, mouseOverSlot.getStack().getItem());
+            ItemRenderer.renderTooltip(batch, null, font, mouseOverSlot.getStack().getItem());
         }
 
         if (dragStack != null && dragStack.getItem() != null) {
@@ -85,7 +88,9 @@ public class InventoryScreen extends Screen {
                 } else {
                     if (touched.hasItem()) {
                         if (dragSource.canAccept(touched.getStack().getItem())) {
-                            inventory.swap(dragSource, touched);
+                            ItemStack temp = touched.getStack().copy();
+                            touched.setStack(dragStack);
+                            dragSource.setStack(temp);
                         } else dragSource.setStack(dragStack);
                     } else touched.setStack(dragStack);
                 }

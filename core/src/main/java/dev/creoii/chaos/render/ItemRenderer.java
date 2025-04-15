@@ -4,8 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.item.Item;
+
+import javax.annotation.Nullable;
 
 public class ItemRenderer {
     private static final float TOOLTIP_OFFSCREEN_PADDING = 4f;
@@ -16,7 +19,7 @@ public class ItemRenderer {
         item.getSprite().draw(batch);
     }
 
-    public static void renderTooltip(SpriteBatch batch, BitmapFont font, Item item) {
+    public static void renderTooltip(@Nullable SpriteBatch batch, @Nullable ShapeRenderer shapeRenderer, BitmapFont font, Item item) {
         String tooltip = item.id();
         GlyphLayout layout = new GlyphLayout(font, tooltip);
 
@@ -33,6 +36,7 @@ public class ItemRenderer {
         if (y > Gdx.graphics.getHeight())
             y = Gdx.graphics.getHeight();
 
-        font.draw(batch, layout, x + TOOLTIP_OFFSCREEN_PADDING, y - TOOLTIP_OFFSCREEN_PADDING);
+        if (batch != null)
+            font.draw(batch, layout, x + TOOLTIP_OFFSCREEN_PADDING, y - TOOLTIP_OFFSCREEN_PADDING);
     }
 }

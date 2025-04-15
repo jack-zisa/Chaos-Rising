@@ -48,10 +48,4 @@ public class Inventory {
 
         return false;
     }
-
-    public void swap(Slot slot1, Slot slot2) {
-        Slot temp = slot1.copy();
-        slot1.setStack(slot2.getStack());
-        slot2.setStack(temp.getStack());
-    }
 }
