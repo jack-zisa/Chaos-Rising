@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.InputManager;
+import dev.creoii.chaos.Main;
 import dev.creoii.chaos.entity.inventory.Inventory;
 import dev.creoii.chaos.entity.inventory.Slot;
 import dev.creoii.chaos.item.ItemStack;
@@ -36,8 +37,11 @@ public class InventoryScreen extends Screen {
     public void render(Renderer renderer, @Nullable SpriteBatch batch, @Nullable ShapeRenderer shapeRenderer, BitmapFont font, boolean debug) {
         super.render(renderer, batch, shapeRenderer, font, debug);
 
-        if (batch == null)
+        if (batch == null && shapeRenderer != null) {
+            shapeRenderer.setColor(BACKGROUND_OVERLAY);
+            shapeRenderer.rect(0, 0, Main.WINDOW_WIDTH, Main.WINDOW_HEIGHT);
             return;
+        }
 
         for (int r = 0; r < inventory.getSlots().length; ++r) {
             for (int c = 0; c < inventory.getSlots()[r].length; ++c) {
@@ -80,12 +84,8 @@ public class InventoryScreen extends Screen {
                 if (touched.hasItem()) {
                     dragSource.setStack(dragStack);
                     inventory.swap(dragSource.getX(), dragSource.getY(), touched.getX(), touched.getY());
-                } else {
-                    touched.setStack(dragStack);
-                }
-            } else {
-                dragSource.setStack(dragStack);
-            }
+                } else touched.setStack(dragStack);
+            } else dragSource.setStack(dragStack);
             dragStack = null;
         }
         return super.touchUp(manager, screenX, screenY, pointer, button);

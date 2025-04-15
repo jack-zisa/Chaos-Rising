@@ -79,6 +79,7 @@ public class Renderer implements Disposable {
 
         viewport.apply();
         batch.setProjectionMatrix(viewport.getCamera().combined);
+        shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
 
         batch.begin();
         screenRenderables.forEach(renderable -> renderable.render(this, batch, null, font, debug));

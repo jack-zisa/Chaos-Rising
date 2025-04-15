@@ -17,7 +17,7 @@ public class CharacterController extends EntityController<CharacterEntity> {
 
     @Override
     public void control(int gametime, float delta) {
-        if (getEntity().getGame().getCommandManager().isActive() || getEntity().getGame().getMain().getRenderer().getCurrentScreen() != null)
+        if (getEntity().getGame().getCommandManager().isActive())
             return;
 
         float dx = 0f;
@@ -41,7 +41,7 @@ public class CharacterController extends EntityController<CharacterEntity> {
         entity.getPos().add(direction.scl(entity.getStats().speed.value() * Entity.COORDINATE_SCALE * delta));
         entity.setMoving(true);
 
-        if (Gdx.input.isTouched() && --attackCooldown <= 0 && entity.getCurrentStack() != null && entity.getCurrentStack().getItem() != null && entity.getCurrentStack().getItem().getType() == Item.Type.WEAPON) {
+        if (getEntity().getGame().getMain().getRenderer().getCurrentScreen() == null && Gdx.input.isTouched() && --attackCooldown <= 0 && entity.getCurrentStack() != null && entity.getCurrentStack().getItem() != null && entity.getCurrentStack().getItem().getType() == Item.Type.WEAPON) {
             entity.getCurrentStack().getItem().getAttack().attack(Attack.Target.MOUSE_POS, entity);
             attackCooldown = Math.max(1, 150 / Math.max(1, entity.getStats().attackSpeed.value()));
         }
