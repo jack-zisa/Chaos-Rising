@@ -85,6 +85,9 @@ public class Item implements DataManager.Identifiable {
     }
 
     public enum Type {
-        WEAPON
+        WEAPON,
+        ABILITY,
+        ARMOR,
+        ACCESSORY
     }
 }

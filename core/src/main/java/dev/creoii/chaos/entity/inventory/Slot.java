@@ -2,8 +2,11 @@ package dev.creoii.chaos.entity.inventory;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import dev.creoii.chaos.item.Item;
 import dev.creoii.chaos.item.ItemStack;
 import dev.creoii.chaos.render.screen.InventoryScreen;
+
+import java.util.function.Predicate;
 
 public class Slot {
     private final int x;
@@ -45,6 +48,10 @@ public class Slot {
         return stack != null && stack.getItem() != null;
     }
 
+    public boolean canAccept(Item item) {
+        return type.itemPredicate.test(item);
+    }
+
     public Slot copy() {
         Slot slot = new Slot(x, y);
         slot.setStack(stack);
@@ -52,21 +59,27 @@ public class Slot {
     }
 
     public enum Type {
-        NONE("textures/ui/slot.png"),
-        WEAPON("textures/ui/weapon_slot.png"),
-        ABILITY("textures/ui/ability_slot.png"),
-        ARMOR("textures/ui/armor_slot.png"),
-        ACCESSORY("textures/ui/accessory_slot.png");
+        NONE("textures/ui/slot.png", item -> true),
+        WEAPON("textures/ui/weapon_slot.png", item -> item.getType() == Item.Type.WEAPON),
+        ABILITY("textures/ui/ability_slot.png", item -> item.getType() == Item.Type.ABILITY),
+        ARMOR("textures/ui/armor_slot.png", item -> item.getType() == Item.Type.ARMOR),
+        ACCESSORY("textures/ui/accessory_slot.png", item -> item.getType() == Item.Type.ACCESSORY);
 
         private final Sprite sprite;
+        private final Predicate<Item> itemPredicate;
 
-        Type(String textureId) {
+        Type(String textureId, Predicate<Item> itemPredicate) {
+            this.itemPredicate = itemPredicate;
             sprite = new Sprite(new Texture(textureId));
             sprite.setSize(InventoryScreen.SLOT_SIZE, InventoryScreen.SLOT_SIZE);
         }
 
         public Sprite getSprite() {
             return sprite;
+        }
+
+        public Predicate<Item> getItemPredicate() {
+            return itemPredicate;
         }
     }
 }

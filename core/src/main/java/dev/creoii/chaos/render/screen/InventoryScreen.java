@@ -80,13 +80,19 @@ public class InventoryScreen extends Screen {
         if (dragStack != null) {
             Slot touched = getMouseOverSlot();
             if (touched != null) {
-                if (touched.hasItem()) {
+                if (!touched.canAccept(dragStack.getItem())) {
                     dragSource.setStack(dragStack);
-                    inventory.swap(dragSource.getX(), dragSource.getY(), touched.getX(), touched.getY());
-                } else touched.setStack(dragStack);
+                } else {
+                    if (touched.hasItem()) {
+                        if (dragSource.canAccept(touched.getStack().getItem())) {
+                            inventory.swap(dragSource.getX(), dragSource.getY(), touched.getX(), touched.getY());
+                        } else dragSource.setStack(dragStack);
+                    } else touched.setStack(dragStack);
+                }
             } else dragSource.setStack(dragStack);
             dragStack = null;
         }
+
         return super.touchUp(manager, screenX, screenY, pointer, button);
     }
 

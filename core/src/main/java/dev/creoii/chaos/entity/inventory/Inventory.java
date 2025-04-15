@@ -32,10 +32,13 @@ public class Inventory {
         Slot firstEmpty = null;
         for (int i = slots.length - 1; i >= 0; --i) {
             for (Slot slot : slots[i]) {
-                if (firstEmpty == null && !slot.hasItem()) {
+                if (!slot.hasItem() && slot.canAccept(stack.getItem())) {
                     firstEmpty = slot;
+                    break;
                 }
             }
+            if (firstEmpty != null)
+                break;
         }
 
         if (firstEmpty != null) {
