@@ -1,5 +1,6 @@
 package dev.creoii.chaos.util;
 
+import dev.creoii.chaos.Game;
 import dev.creoii.chaos.entity.inventory.Inventory;
 import dev.creoii.chaos.entity.inventory.Slot;
 import dev.creoii.chaos.item.ItemStack;
@@ -13,8 +14,8 @@ import java.util.Random;
 public final class LootUtils {
     private static final Random RANDOM = new Random();
 
-    public static void insertIntoInventory(Inventory inventory, LootTable lootTable, int rolls) {
-        List<ItemStack> loot = lootTable.roll(rolls);
+    public static void insertIntoInventory(Game game, Inventory inventory, LootTable lootTable, int rolls) {
+        List<ItemStack> loot = lootTable.roll(game, rolls);
         List<Slot> availableSlots = new ArrayList<>();
 
         for (Slot[] row : inventory.getSlots()) {

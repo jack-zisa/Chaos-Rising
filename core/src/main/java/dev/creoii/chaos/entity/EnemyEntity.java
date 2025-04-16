@@ -10,18 +10,24 @@ import dev.creoii.chaos.Main;
 import dev.creoii.chaos.entity.behavior.Behavior;
 import dev.creoii.chaos.entity.controller.EnemyController;
 import dev.creoii.chaos.entity.controller.EntityController;
+import dev.creoii.chaos.loot.LootTable;
 import dev.creoii.chaos.texture.TextureManager;
+import dev.creoii.chaos.util.LootUtils;
 import dev.creoii.chaos.util.stat.StatContainer;
 
+import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class EnemyEntity extends LivingEntity implements DataManager.Identifiable {
     private String id;
     private final EnemyController controller;
+    @Nullable
+    private final LootTable lootTable;
 
-    public EnemyEntity(String textureId, float scale, EnemyController controller, StatContainer statContainer) {
+    public EnemyEntity(String textureId, float scale, EnemyController controller, @Nullable LootTable lootTable, StatContainer statContainer) {
         super(textureId, scale, new Vector2(1, 1), Group.ENEMY, statContainer.copy(), statContainer.copy());
         this.controller = controller;
+        this.lootTable = lootTable;
     }
 
     @Override
@@ -32,6 +38,11 @@ public class EnemyEntity extends LivingEntity implements DataManager.Identifiabl
     @Override
     public void setId(String id) {
         this.id = id;
+    }
+
+    @Nullable
+    public LootTable getLootTable() {
+        return lootTable;
     }
 
     @Override
@@ -57,6 +68,18 @@ public class EnemyEntity extends LivingEntity implements DataManager.Identifiabl
     }
 
     @Override
+    public void onDeath() {
+        if (lootTable != null) {
+            int rolls = Entity.RANDOM.nextInt(4);
+            if (rolls == 0)
+                return;
+            LootDropEntity lootDropEntity = new LootDropEntity("bag", 1f);
+            game.getEntityManager().addEntity(lootDropEntity, pos.cpy());
+            LootUtils.insertIntoInventory(getGame(), lootDropEntity.getInventory(), lootTable, rolls);
+        }
+    }
+
+    @Override
     public void tick(int gametime, float delta) {
         super.tick(gametime, delta);
 
@@ -66,7 +89,7 @@ public class EnemyEntity extends LivingEntity implements DataManager.Identifiabl
 
     @Override
     public Entity create(Game game, UUID uuid, Vector2 pos) {
-        EnemyEntity entity = new EnemyEntity(getTextureId(), getScale() / COORDINATE_SCALE, controller == null ? null : new EnemyController(controller), getMaxStats().copy());
+        EnemyEntity entity = new EnemyEntity(getTextureId(), getScale() / COORDINATE_SCALE, controller == null ? null : new EnemyController(controller), lootTable, getMaxStats().copy());
         entity.setId(id);
         entity.sprite = new Sprite(game.getTextureManager().getTexture("enemy", getTextureId()));
         entity.sprite.setSize(getScale(), getScale());
@@ -97,13 +120,13 @@ public class EnemyEntity extends LivingEntity implements DataManager.Identifiabl
             String spritePath = jsonValue.getString("texture", TextureManager.DEFAULT_TEXTURE_ID);
             float scale = jsonValue.getFloat("scale", 1f);
             StatContainer statContainer = jsonValue.has("stats") ? json.readValue(StatContainer.class, jsonValue.get("stats")) : DEFAULT_STAT_CONTAINER.copy();
-
+            LootTable lootTable = jsonValue.has("loot_table") ? LootTable.parse(jsonValue.get("loot_table")) : null;
             if (jsonValue.has("controller")) {
                 JsonValue controller = jsonValue.get("controller");
                 Behavior behavior = Behavior.parse(controller.get("behavior"));
-                return new EnemyEntity(spritePath, scale, new EnemyController(behavior), statContainer);
+                return new EnemyEntity(spritePath, scale, new EnemyController(behavior), lootTable, statContainer);
             }
-            return new EnemyEntity(spritePath, scale, null, statContainer);
+            return new EnemyEntity(spritePath, scale, null, lootTable, statContainer);
         }
     }
 }

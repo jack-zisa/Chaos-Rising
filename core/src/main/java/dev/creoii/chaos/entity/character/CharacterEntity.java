@@ -91,6 +91,11 @@ public class CharacterEntity extends LivingEntity {
     }
 
     @Override
+    public void onDeath() {
+
+    }
+
+    @Override
     public EntityController<CharacterEntity> getController() {
         return controller;
     }

@@ -12,6 +12,7 @@ import java.util.*;
 
 public abstract class Entity implements Positionable, Tickable {
     public static final float COORDINATE_SCALE = 32f;
+    protected static final Random RANDOM = new Random();
     // template (non-active) fields
     private final float scale;
     private final String textureId;

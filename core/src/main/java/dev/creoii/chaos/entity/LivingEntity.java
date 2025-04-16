@@ -20,6 +20,8 @@ public abstract class LivingEntity extends Entity {
         statusEffects = new ArrayList<>();
     }
 
+    public abstract void onDeath();
+
     public StatContainer getStats() {
         return statContainer;
     }
@@ -37,6 +39,16 @@ public abstract class LivingEntity extends Entity {
             return;
         amount = Math.clamp(amount - statContainer.defense.value(), 0, amount);
         statContainer.health.set(Math.max(0, statContainer.health.value() - Math.max(0, amount - statContainer.defense.value())));
+
+        if (statContainer.health.value() <= 0) {
+            remove();
+        }
+    }
+
+    @Override
+    public void remove() {
+        onDeath();
+        super.remove();
     }
 
     public void heal(int amount) {
