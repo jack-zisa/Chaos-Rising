@@ -1,9 +1,12 @@
 package dev.creoii.chaos.render;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import dev.creoii.chaos.Main;
@@ -15,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Renderer implements Disposable {
+    private static final float CAMERA_LOOK_OFFSET = 10f;
     private final Main main;
     private final OrthographicCamera camera;
     private final FitViewport viewport;
@@ -63,9 +67,17 @@ public class Renderer implements Disposable {
     }
 
     public void render(boolean debug) {
-        camera.position.x += (main.getGame().getActiveCharacter().getPos().x - camera.position.x) * .2f;
-        camera.position.y += (main.getGame().getActiveCharacter().getPos().y - camera.position.y) * .2f;
+        Vector2 playerPos = main.getGame().getActiveCharacter().getPos();
+        Vector3 mousePos = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+
+        Vector2 direction = new Vector2(mousePos.x - playerPos.x, mousePos.y - playerPos.y);
+        if (direction.len2() > 1e-4f)
+            direction.nor().scl(CAMERA_LOOK_OFFSET);
+
+        camera.position.x += ((playerPos.x + direction.x) - camera.position.x) * 0.2f;
+        camera.position.y += ((playerPos.y + direction.y) - camera.position.y) * 0.2f;
         camera.update();
+
         shapeRenderer.setProjectionMatrix(camera.combined);
         batch.setProjectionMatrix(camera.combined);
 
