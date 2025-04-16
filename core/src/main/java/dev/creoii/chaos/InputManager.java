@@ -97,7 +97,7 @@ public class InputManager extends InputAdapter {
             return true;
         } else if (keycode == getKeycode("inventory")) {
             if (main.getRenderer().getCurrentScreen() == null)
-                main.getRenderer().setCurrentScreen(new InventoryScreen(new Vector2(Main.WINDOW_WIDTH - 196, 400), main.getGame().getActiveCharacter().getInventory()));
+                main.getRenderer().setCurrentScreen(new InventoryScreen(getMain(), new Vector2(Main.WINDOW_WIDTH - 196, 400), main.getGame().getActiveCharacter().getInventory()));
             else
                 main.getRenderer().clearCurrentScreen();
             return true;

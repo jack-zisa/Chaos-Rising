@@ -6,6 +6,8 @@ import com.badlogic.gdx.utils.ObjectMap;
 import dev.creoii.chaos.entity.BulletEntity;
 import dev.creoii.chaos.entity.Entity;
 
+import java.util.*;
+
 public class CollisionManager {
     private static final int[][] FORWARD_NEIGHBORS = {
             {1, 0}, {1, 1}, {0, 1}, {-1, 1}
@@ -59,6 +61,8 @@ public class CollisionManager {
             entities.add(entity);
         }
 
+        Map<UUID, Set<UUID>> collisions = new HashMap<>();
+
         for (ObjectMap.Entry<Integer, Array<Entity>> entry : grid.entries()) {
             Array<Entity> entities = entry.value;
 
@@ -67,8 +71,11 @@ public class CollisionManager {
                 for (int j = i + 1; j < entities.size; ++j) {
                     Entity b = entities.get(j);
                     if (COLLISION_MATRIX[a.getGroup().ordinal()][b.getGroup().ordinal()] && a.getColliderRect().overlaps(b.getColliderRect())) {
-                        a.collide(b);
-                        b.collide(a);
+                        collisions.computeIfAbsent(a.getUuid(), k -> new HashSet<>()).add(b.getUuid());
+                        collisions.computeIfAbsent(b.getUuid(), k -> new HashSet<>()).add(a.getUuid());
+
+                        a.setCollidingWith(b.getUuid());
+                        b.setCollidingWith(a.getUuid());
                     }
                 }
             }
@@ -88,10 +95,24 @@ public class CollisionManager {
                         if (a == b) continue;
 
                         if (COLLISION_MATRIX[a.getGroup().ordinal()][b.getGroup().ordinal()] && a.getColliderRect().overlaps(b.getColliderRect())) {
-                            a.collide(b);
-                            b.collide(a);
+                            collisions.computeIfAbsent(a.getUuid(), k -> new HashSet<>()).add(b.getUuid());
+                            collisions.computeIfAbsent(b.getUuid(), k -> new HashSet<>()).add(a.getUuid());
+
+                            a.setCollidingWith(b.getUuid());
+                            b.setCollidingWith(a.getUuid());
                         }
                     }
+                }
+            }
+        }
+
+        for (Entity entity : main.getGame().getEntityManager().getActiveEntities().values()) {
+            Set<UUID> currentlyColliding = collisions.getOrDefault(entity.getUuid(), Collections.emptySet());
+
+            Set<UUID> previousColliding = new HashSet<>(entity.getCollidingWith());
+            for (UUID uuid : previousColliding) {
+                if (!currentlyColliding.contains(uuid)) {
+                    entity.removeCollidingWith(uuid);
                 }
             }
         }

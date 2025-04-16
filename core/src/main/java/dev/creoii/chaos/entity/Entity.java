@@ -8,8 +8,7 @@ import dev.creoii.chaos.entity.controller.EntityController;
 import dev.creoii.chaos.util.Positionable;
 import dev.creoii.chaos.util.Tickable;
 
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public abstract class Entity implements Positionable, Tickable {
     public static final float COORDINATE_SCALE = 32f;
@@ -26,6 +25,7 @@ public abstract class Entity implements Positionable, Tickable {
     protected Vector2 pos;
     protected Vector2 centerPos;
     protected Rectangle colliderRect;
+    protected Set<UUID> collidingWith;
     protected UUID uuid;
     protected Sprite sprite;
 
@@ -42,7 +42,9 @@ public abstract class Entity implements Positionable, Tickable {
 
     public abstract EntityController<?> getController();
 
-    public abstract void collide(Entity other);
+    public abstract void collisionEnter(Entity other);
+
+    public abstract void collisionExit(Entity other);
 
     public abstract void postSpawn();
 
@@ -106,6 +108,24 @@ public abstract class Entity implements Positionable, Tickable {
         return centerPos;
     }
 
+    public Set<UUID> getCollidingWith() {
+        return collidingWith;
+    }
+
+    public boolean isCollidingWith(UUID uuid) {
+        return collidingWith.contains(uuid);
+    }
+
+    public void setCollidingWith(UUID uuid) {
+        if (collidingWith.add(uuid))
+            collisionEnter(game.getEntityManager().getEntity(uuid));
+    }
+
+    public void removeCollidingWith(UUID uuid) {
+        if (collidingWith.remove(uuid))
+            collisionExit(game.getEntityManager().getEntity(uuid));
+    }
+
     public UUID getUuid() {
         return uuid;
     }
@@ -121,6 +141,7 @@ public abstract class Entity implements Positionable, Tickable {
         entity.colliderRect.setWidth(collider.x * getScale());
         entity.colliderRect.setHeight(collider.y * getScale());
         entity.getCenterPos();
+        entity.collidingWith = new HashSet<>();
         entity.spawnTime = game.getGametime();
         entity.postSpawn();
         return entity;

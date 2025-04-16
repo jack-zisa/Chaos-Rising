@@ -92,13 +92,18 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
     }
 
     @Override
-    public void collide(Entity other) {
+    public void collisionEnter(Entity other) {
         if (other instanceof LivingEntity && other.getGroup() != parentGroup) {
             ((LivingEntity) other).damage(damage);
             if (!piercing) {
                 remove();
             }
         }
+    }
+
+    @Override
+    public void collisionExit(Entity other) {
+
     }
 
     @Override

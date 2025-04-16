@@ -41,7 +41,13 @@ public class EnemyEntity extends LivingEntity implements DataManager.Identifiabl
     }
 
     @Override
-    public void collide(Entity other) {
+    public void collisionEnter(Entity other) {
+
+    }
+
+    @Override
+    public void collisionExit(Entity other) {
+
     }
 
     @Override

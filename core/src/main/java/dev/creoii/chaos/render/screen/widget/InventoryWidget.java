@@ -23,23 +23,23 @@ public class InventoryWidget extends Widget {
     public static final float SLOT_SIZE = 49f;
     private static final float ITEM_SCALE = 42f;
     private final Inventory inventory;
-    private final Predicate<Main> renderPredicate;
+    private final Predicate<Main> activePredicate;
 
     private Slot dragSource;
     private ItemStack dragStack;
 
-    public InventoryWidget(Screen parent, Vector2 pos, Inventory inventory, Predicate<Main> renderPredicate) {
+    public InventoryWidget(Screen parent, Vector2 pos, Inventory inventory, Predicate<Main> activePredicate) {
         super(parent, pos);
         this.inventory = inventory;
-        this.renderPredicate = renderPredicate;
+        this.activePredicate = activePredicate;
     }
 
     public InventoryWidget(Screen parent, Vector2 pos, Inventory inventory) {
         this(parent, pos, inventory, main -> true);
     }
 
-    public Inventory getInventory() {
-        return inventory;
+    public Predicate<Main> getActivePredicate() {
+        return activePredicate;
     }
 
     public Slot getSlotAt(float x, float y) {
@@ -58,7 +58,7 @@ public class InventoryWidget extends Widget {
 
     @Override
     public void render(Renderer renderer, @Nullable SpriteBatch batch, @Nullable ShapeRenderer shapeRenderer, BitmapFont font, boolean debug) {
-        if (!renderPredicate.test(renderer.getMain()))
+        if (!activePredicate.test(renderer.getMain()))
             return;
 
         if (getParent() instanceof InventoryScreen inventoryScreen) {
@@ -97,6 +97,8 @@ public class InventoryWidget extends Widget {
 
     @Override
     public boolean touchDown(InputManager manager, int screenX, int screenY, int pointer, int button) {
+        if (!activePredicate.test(manager.getMain()))
+            return false;
         if (getParent() instanceof InventoryScreen inventoryScreen) {
             Slot touched = inventoryScreen.getMouseOverSlot();
             if (touched != null && touched.hasItem() && Gdx.input.isTouched()) {
@@ -110,6 +112,8 @@ public class InventoryWidget extends Widget {
 
     @Override
     public boolean touchUp(InputManager manager, int screenX, int screenY, int pointer, int button) {
+        if (!activePredicate.test(manager.getMain()))
+            return false;
         if (dragStack != null && getParent() instanceof InventoryScreen inventoryScreen) {
             Slot touched = inventoryScreen.getMouseOverSlot();
             if (touched != null) {

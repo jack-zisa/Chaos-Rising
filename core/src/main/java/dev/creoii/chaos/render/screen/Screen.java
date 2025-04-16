@@ -20,15 +20,21 @@ import java.util.Map;
 public abstract class Screen implements Renderable, Inputtable {
     private static final NinePatch SCREEN_BACKGROUND = new NinePatch(new Texture("textures/ui/screen_background.png"), 4, 4, 4, 4);
     private final Map<String, Widget> widgets;
+    private final Main main;
     private final String title;
     private final Vector2 pos;
     private final float titleOffsetY;
 
-    public Screen(String title, Vector2 pos, float titleOffsetY) {
+    public Screen(Main main, String title, Vector2 pos, float titleOffsetY) {
+        this.main = main;
         this.title = title;
         this.pos = pos;
         this.titleOffsetY = titleOffsetY;
         widgets = new HashMap<>();
+    }
+
+    public Main getMain() {
+        return main;
     }
 
     public Vector2 getPos() {

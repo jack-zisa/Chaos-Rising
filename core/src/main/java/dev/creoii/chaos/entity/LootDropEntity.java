@@ -26,7 +26,13 @@ public class LootDropEntity extends Entity {
     }
 
     @Override
-    public void collide(Entity other) {
+    public void collisionEnter(Entity other) {
+
+    }
+
+    @Override
+    public void collisionExit(Entity other) {
+
     }
 
     @Override

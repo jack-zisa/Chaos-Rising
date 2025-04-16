@@ -21,7 +21,7 @@ public class CharacterEntity extends LivingEntity {
     private final EntityController<CharacterEntity> controller;
     private final Vector2 prevPos;
     private final Inventory inventory;
-    private LootDropEntity lootDrop;
+    private UUID lootUuid;
 
     public CharacterEntity(CharacterClass characterClass) {
         super(characterClass.getTextureId(), 1f, new Vector2(1, 1), Group.CHARACTER, characterClass.getBaseStats().copy(), characterClass.getBaseStats().copy());
@@ -29,7 +29,7 @@ public class CharacterEntity extends LivingEntity {
         controller = new CharacterController(this);
         prevPos = new Vector2();
         inventory = new CharacterInventory(this);
-        lootDrop = null;
+        lootUuid = null;
     }
 
     public CharacterClass getCharacterClass() {
@@ -75,9 +75,8 @@ public class CharacterEntity extends LivingEntity {
         return inventory;
     }
 
-    @Nullable
-    public LootDropEntity getLootDrop() {
-        return lootDrop;
+    public UUID getLootUuid() {
+        return lootUuid;
     }
 
     @Override
@@ -97,11 +96,14 @@ public class CharacterEntity extends LivingEntity {
     }
 
     @Override
-    public void collide(Entity other) {
-        if (other instanceof LootDropEntity lootDropEntity) {
-            if (lootDrop == null) {
-                lootDrop = lootDropEntity;
-            }
-        }
+    public void collisionEnter(Entity other) {
+        if (lootUuid == null && other instanceof LootDropEntity lootDropEntity)
+            lootUuid = lootDropEntity.getUuid();
+    }
+
+    @Override
+    public void collisionExit(Entity other) {
+        if (other.getUuid().equals(lootUuid))
+            lootUuid = null;
     }
 }
