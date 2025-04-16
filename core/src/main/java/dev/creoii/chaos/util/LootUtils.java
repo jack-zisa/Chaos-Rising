@@ -1,0 +1,37 @@
+package dev.creoii.chaos.util;
+
+import dev.creoii.chaos.entity.inventory.Inventory;
+import dev.creoii.chaos.entity.inventory.Slot;
+import dev.creoii.chaos.item.ItemStack;
+import dev.creoii.chaos.loot.LootTable;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
+
+public final class LootUtils {
+    private static final Random RANDOM = new Random();
+
+    public static void insertIntoInventory(Inventory inventory, LootTable lootTable, int rolls) {
+        List<ItemStack> loot = lootTable.roll(rolls);
+        List<Slot> availableSlots = new ArrayList<>();
+
+        for (Slot[] row : inventory.getSlots()) {
+            for (Slot slot : row) {
+                if (!slot.hasItem()) {
+                    availableSlots.add(slot);
+                }
+            }
+        }
+
+        Collections.shuffle(availableSlots, RANDOM);
+
+        for (ItemStack stack : loot) {
+            if (availableSlots.isEmpty())
+                break;
+            Slot slot = availableSlots.removeFirst();
+            slot.setStack(stack);
+        }
+    }
+}
