@@ -3,7 +3,9 @@ package dev.creoii.chaos.chat.command;
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.effect.StatusEffects;
 import dev.creoii.chaos.entity.Entity;
+import dev.creoii.chaos.entity.character.CharacterClass;
 import dev.creoii.chaos.entity.character.CharacterEntity;
+import dev.creoii.chaos.item.Item;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,6 +46,9 @@ public final class Commands {
                 return;
 
             Entity enemy = game.getDataManager().getEnemy(args[0]);
+
+            if (enemy == null)
+                return;
 
             if (argCount == 1) {
                 game.getEntityManager().addEntity(enemy, new Vector2(0, 0));
@@ -92,14 +97,19 @@ public final class Commands {
             if (args.length > 0) {
                 int count = args.length > 1 ? Integer.valueOf(args[1]) : 1;
                 for (int i = 0; i < count; ++i) {
-                    game.getActiveCharacter().getInventory().addItem(game.getDataManager().getItem(args[0]).create(game).getDefaultStack().copy());
+                    Item item = game.getDataManager().getItem(args[0]);
+                    if (item == null)
+                        continue;
+                    game.getActiveCharacter().getInventory().addItem(item.create(game).getDefaultStack().copy());
                 }
             }
         });
 
         Command.register("set_class", (game, args) -> {
             if (args.length > 0) {
-                game.getActiveCharacter().setCharacterClass(game.getDataManager().getCharacterClass(args[0]));
+                CharacterClass characterClass = game.getDataManager().getCharacterClass(args[0]);
+                if (characterClass != null)
+                    game.getActiveCharacter().setCharacterClass(characterClass);
             }
         });
 

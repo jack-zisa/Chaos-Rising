@@ -9,11 +9,15 @@ import dev.creoii.chaos.entity.inventory.Inventory;
 import java.util.UUID;
 
 public class LootDropEntity extends Entity {
-    private final Inventory inventory;
+    private Inventory inventory;
 
     public LootDropEntity(String textureId, float scale) {
         super(textureId, scale, new Vector2(1, 1), Group.OTHER);
-        inventory = new Inventory(2, 4);
+    }
+
+    public LootDropEntity(String textureId, float scale, Inventory inventory) {
+        super(textureId, scale, new Vector2(1, 1), Group.OTHER);
+        this.inventory = inventory;
     }
 
     public Inventory getInventory() {
@@ -22,7 +26,7 @@ public class LootDropEntity extends Entity {
 
     @Override
     public Entity create(Game game, UUID uuid, Vector2 pos) {
-        LootDropEntity entity = new LootDropEntity(getTextureId(), 1f);
+        LootDropEntity entity = new LootDropEntity(getTextureId(), 1f, new Inventory(2, 4));
         entity.sprite = new Sprite(game.getTextureManager().getTexture("loot", getTextureId()));
         entity.sprite.setSize(getScale(), getScale());
         return entity;
@@ -32,7 +36,7 @@ public class LootDropEntity extends Entity {
     public void tick(int gametime, float delta) {
         super.tick(gametime, delta);
 
-        if (gametime - getSpawnTime() >= 3600)
+        if (gametime - getSpawnTime() >= 2400)
             remove();
     }
 

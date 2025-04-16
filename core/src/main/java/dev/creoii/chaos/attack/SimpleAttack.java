@@ -22,9 +22,12 @@ public record SimpleAttack(String bulletId, Provider<Integer> damage, int bullet
             if (entity instanceof LivingEntity livingEntity)
                 customData.put("damage", Math.round(damage.get(entity.getGame()) * .5f + livingEntity.getStats().attack.value() / 50f));
 
-            BulletEntity bullet = entity.getGame().getEntityManager().addEntity(entity.getGame().getDataManager().getBullet(bulletId), new Vector2(entity.getPos()).add(posOffset), customData);
-            bullet.setParentGroup(entity.getGroup());
-            bullet.setIndex(i % 2 == 0 ? 1 : -1);
+            BulletEntity bulletTemplate = entity.getGame().getDataManager().getBullet(bulletId);
+            if (bulletTemplate != null) {
+                BulletEntity bullet = entity.getGame().getEntityManager().addEntity(bulletTemplate, new Vector2(entity.getPos()).add(posOffset), customData);
+                bullet.setParentGroup(entity.getGroup());
+                bullet.setIndex(i % 2 == 0 ? 1 : -1);
+            }
         }
     }
 }

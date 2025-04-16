@@ -9,6 +9,7 @@ import dev.creoii.chaos.entity.character.CharacterClass;
 import dev.creoii.chaos.item.Item;
 import dev.creoii.chaos.util.stat.StatContainer;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,20 +41,24 @@ public class DataManager {
         }
     }
 
+    @Nullable
     public CharacterClass getCharacterClass(String id) {
-        return (CharacterClass) data.get("class").get(id);
+        return (CharacterClass) data.get("class").getOrDefault(id, null);
     }
 
+    @Nullable
     public EnemyEntity getEnemy(String id) {
-        return (EnemyEntity) data.get("enemy").get(id);
+        return (EnemyEntity) data.get("enemy").getOrDefault(id, null);
     }
 
+    @Nullable
     public BulletEntity getBullet(String id) {
-        return (BulletEntity) data.get("bullet").get(id);
+        return (BulletEntity) data.get("bullet").getOrDefault(id, null);
     }
 
+    @Nullable
     public Item getItem(String id) {
-        return (Item) data.get("item").get(id);
+        return (Item) data.get("item").getOrDefault(id, null);
     }
 
     public void load() {

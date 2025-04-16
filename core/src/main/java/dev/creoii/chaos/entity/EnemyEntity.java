@@ -73,8 +73,7 @@ public class EnemyEntity extends LivingEntity implements DataManager.Identifiabl
             int rolls = Entity.RANDOM.nextInt(4);
             if (rolls == 0)
                 return;
-            LootDropEntity lootDropEntity = new LootDropEntity("bag", 1f);
-            game.getEntityManager().addEntity(lootDropEntity, pos.cpy());
+            LootDropEntity lootDropEntity = game.getEntityManager().addEntity(new LootDropEntity("bag", 1f), pos.cpy());
             LootUtils.insertIntoInventory(getGame(), lootDropEntity.getInventory(), lootTable, rolls);
         }
     }

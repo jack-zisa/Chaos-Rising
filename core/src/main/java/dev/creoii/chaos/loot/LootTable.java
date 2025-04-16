@@ -23,14 +23,14 @@ public class LootTable {
     }
 
     public List<ItemStack> roll(Game game, int rolls) {
-        List<ItemStack> result = new ArrayList<>();
+        List<ItemStack> stacks = new ArrayList<>();
         for (int i = 0; i < rolls; i++) {
             LootEntry entry = getWeightedRandomEntry();
             if (entry != null) {
-                result.add(entry.roll(game));
+                stacks.add(entry.roll(game));
             }
         }
-        return result;
+        return stacks;
     }
 
     private LootEntry getWeightedRandomEntry() {

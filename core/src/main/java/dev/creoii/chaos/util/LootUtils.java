@@ -18,19 +18,20 @@ public final class LootUtils {
         List<ItemStack> loot = lootTable.roll(game, rolls);
         List<Slot> availableSlots = new ArrayList<>();
 
-        for (Slot[] row : inventory.getSlots()) {
-            for (Slot slot : row) {
+        for (Slot[] slotRow : inventory.getSlots()) {
+            for (Slot slot : slotRow) {
                 if (!slot.hasItem()) {
                     availableSlots.add(slot);
                 }
             }
         }
 
+        if (availableSlots.isEmpty())
+            return;
+
         Collections.shuffle(availableSlots, RANDOM);
 
         for (ItemStack stack : loot) {
-            if (availableSlots.isEmpty())
-                break;
             Slot slot = availableSlots.removeFirst();
             slot.setStack(stack);
         }

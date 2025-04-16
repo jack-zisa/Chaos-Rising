@@ -8,6 +8,8 @@ import dev.creoii.chaos.item.ItemStack;
 public record LootEntry(String item, int weight, int minCount, int maxCount) {
     public ItemStack roll(Game game) {
         Item item = game.getDataManager().getItem(item());
+        if (item == null)
+            return ItemStack.EMPTY;
         return new ItemStack(item.create(game), minCount + (int) (Math.random() * (maxCount - minCount + 1)));
     }
 
