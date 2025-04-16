@@ -43,6 +43,14 @@ public abstract class Screen implements Renderable, Inputtable {
         widgets.remove(key);
     }
 
+    public Widget getWidget(String key) {
+        return widgets.get(key);
+    }
+
+    public Map<String, Widget> getWidgets() {
+        return widgets;
+    }
+
     public void open(Main main) {
         main.getGame().getInputManager().addInput(this);
     }

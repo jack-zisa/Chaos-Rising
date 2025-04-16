@@ -9,27 +9,27 @@ import dev.creoii.chaos.render.screen.widget.InventoryWidget;
 import java.util.function.Predicate;
 
 public class Slot {
-    private final int x;
-    private final int y;
+    private final int r;
+    private final int c;
     private Type type;
     private ItemStack stack;
 
-    public Slot(int x, int y, Type type) {
-        this.x = x;
-        this.y = y;
+    public Slot(int r, int c, Type type) {
+        this.r = r;
+        this.c = c;
         this.type = type;
     }
 
-    public Slot(int x, int y) {
-        this(x, y, Type.NONE);
+    public Slot(int r, int c) {
+        this(r, c, Type.NONE);
     }
 
-    public int getX() {
-        return x;
+    public int getR() {
+        return r;
     }
 
-    public int getY() {
-        return y;
+    public int getC() {
+        return c;
     }
 
     public Type getType() {
@@ -57,7 +57,7 @@ public class Slot {
     }
 
     public Slot copy() {
-        Slot slot = new Slot(x, y);
+        Slot slot = new Slot(r, c);
         slot.setStack(stack);
         return slot;
     }

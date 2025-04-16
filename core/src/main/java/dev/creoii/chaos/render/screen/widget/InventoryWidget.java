@@ -13,6 +13,8 @@ import dev.creoii.chaos.entity.inventory.Slot;
 import dev.creoii.chaos.item.ItemStack;
 import dev.creoii.chaos.render.ItemRenderer;
 import dev.creoii.chaos.render.Renderer;
+import dev.creoii.chaos.render.screen.InventoryScreen;
+import dev.creoii.chaos.render.screen.Screen;
 
 import javax.annotation.Nullable;
 import java.util.function.Predicate;
@@ -26,14 +28,32 @@ public class InventoryWidget extends Widget {
     private Slot dragSource;
     private ItemStack dragStack;
 
-    public InventoryWidget(Vector2 pos, Inventory inventory, Predicate<Main> renderPredicate) {
-        super(pos);
+    public InventoryWidget(Screen parent, Vector2 pos, Inventory inventory, Predicate<Main> renderPredicate) {
+        super(parent, pos);
         this.inventory = inventory;
         this.renderPredicate = renderPredicate;
     }
 
-    public InventoryWidget(Vector2 pos, Inventory inventory) {
-        this(pos, inventory, main -> true);
+    public InventoryWidget(Screen parent, Vector2 pos, Inventory inventory) {
+        this(parent, pos, inventory, main -> true);
+    }
+
+    public Inventory getInventory() {
+        return inventory;
+    }
+
+    public Slot getSlotAt(float x, float y) {
+        for (int r = 0; r < inventory.getSlots().length; ++r) {
+            for (int c = 0; c < inventory.getSlots()[r].length; ++c) {
+                float slotX = getPos().x + (c * SLOT_SIZE);
+                float slotY = getPos().y + (r * SLOT_SIZE);
+                if (x >= slotX && x <= slotX + SLOT_SIZE &&
+                    y >= slotY && y <= slotY + SLOT_SIZE) {
+                    return inventory.getSlots()[r][c];
+                }
+            }
+        }
+        return null;
     }
 
     @Override
@@ -41,53 +61,57 @@ public class InventoryWidget extends Widget {
         if (!renderPredicate.test(renderer.getMain()))
             return;
 
-        Slot mouseOverSlot = getMouseOverSlot();
-        if (batch == null && shapeRenderer != null) {
-            if (mouseOverSlot != null && mouseOverSlot.hasItem()) {
-                ItemRenderer.renderTooltip(null, shapeRenderer, mouseOverSlot.getStack().getItem());
+        if (getParent() instanceof InventoryScreen inventoryScreen) {
+            Slot mouseOverSlot = inventoryScreen.getMouseOverSlot();
+            if (batch == null && shapeRenderer != null) {
+                if (mouseOverSlot != null && mouseOverSlot.hasItem()) {
+                    ItemRenderer.renderTooltip(null, shapeRenderer, mouseOverSlot.getStack().getItem());
+                }
+                return;
             }
-            return;
-        }
 
-        for (int r = 0; r < inventory.getSlots().length; ++r) {
-            for (int c = 0; c < inventory.getSlots()[r].length; ++c) {
-                Slot slot = inventory.getSlots()[r][c];
-                if (slot == null)
-                    continue;
-                Sprite sprite = slot.hasItem() ? Slot.Type.NONE.getSprite() : slot.getType().getSprite();
-                sprite.setPosition(getPos().x + (c * SLOT_SIZE), getPos().y + (r * SLOT_SIZE));
-                sprite.draw(batch);
-                if (slot.hasItem()) {
-                    ItemRenderer.renderItem(batch, slot.getStack().getItem(), new Vector2(getPos().x + (c * SLOT_SIZE) + 3, getPos().y + (r * SLOT_SIZE) + 3), ITEM_SCALE);
+            for (int r = 0; r < inventory.getSlots().length; ++r) {
+                for (int c = 0; c < inventory.getSlots()[r].length; ++c) {
+                    Slot slot = inventory.getSlots()[r][c];
+                    if (slot == null)
+                        continue;
+                    Sprite sprite = slot.hasItem() ? Slot.Type.NONE.getSprite() : slot.getType().getSprite();
+                    sprite.setPosition(getPos().x + (c * SLOT_SIZE), getPos().y + (r * SLOT_SIZE));
+                    sprite.draw(batch);
+                    if (slot.hasItem()) {
+                        ItemRenderer.renderItem(batch, slot.getStack().getItem(), new Vector2(getPos().x + (c * SLOT_SIZE) + 3, getPos().y + (r * SLOT_SIZE) + 3), ITEM_SCALE);
+                    }
                 }
             }
-        }
 
-        if (mouseOverSlot != null && mouseOverSlot.hasItem()) {
-            ItemRenderer.renderTooltip(batch, null, mouseOverSlot.getStack().getItem());
-        }
+            if (mouseOverSlot != null && mouseOverSlot.hasItem()) {
+                ItemRenderer.renderTooltip(batch, null, mouseOverSlot.getStack().getItem());
+            }
 
-        if (dragStack != null && dragStack.getItem() != null) {
-            Vector2 mousePos = new Vector2(Gdx.input.getX() - (ITEM_SCALE / 2f), Gdx.graphics.getHeight() - Gdx.input.getY() - (ITEM_SCALE / 2f));
-            ItemRenderer.renderItem(batch, dragStack.getItem(), mousePos, ITEM_SCALE);
+            if (dragStack != null && dragStack.getItem() != null) {
+                Vector2 mousePos = new Vector2(Gdx.input.getX() - (ITEM_SCALE / 2f), Gdx.graphics.getHeight() - Gdx.input.getY() - (ITEM_SCALE / 2f));
+                ItemRenderer.renderItem(batch, dragStack.getItem(), mousePos, ITEM_SCALE);
+            }
         }
     }
 
     @Override
     public boolean touchDown(InputManager manager, int screenX, int screenY, int pointer, int button) {
-        Slot touched = getMouseOverSlot();
-        if (touched != null && touched.hasItem() && Gdx.input.isTouched()) {
-            dragSource = touched;
-            dragStack = touched.getStack();
-            touched.setStack(null);
+        if (getParent() instanceof InventoryScreen inventoryScreen) {
+            Slot touched = inventoryScreen.getMouseOverSlot();
+            if (touched != null && touched.hasItem() && Gdx.input.isTouched()) {
+                dragSource = touched;
+                dragStack = touched.getStack();
+                touched.setStack(null);
+            }
         }
         return super.touchDown(manager, screenX, screenY, pointer, button);
     }
 
     @Override
     public boolean touchUp(InputManager manager, int screenX, int screenY, int pointer, int button) {
-        if (dragStack != null) {
-            Slot touched = getMouseOverSlot();
+        if (dragStack != null && getParent() instanceof InventoryScreen inventoryScreen) {
+            Slot touched = inventoryScreen.getMouseOverSlot();
             if (touched != null) {
                 if (!touched.canAccept(dragStack.getItem())) {
                     dragSource.setStack(dragStack);
@@ -117,22 +141,5 @@ public class InventoryWidget extends Widget {
         }
 
         return super.touchUp(manager, screenX, screenY, pointer, button);
-    }
-
-    @Nullable
-    public Slot getMouseOverSlot() {
-        float mouseY = Gdx.graphics.getHeight() - Gdx.input.getY();
-
-        for (int r = 0; r < inventory.getSlots().length; ++r) {
-            for (int c = 0; c < inventory.getSlots()[r].length; ++c) {
-                float slotX = getPos().x + (c * SLOT_SIZE);
-                float slotY = getPos().y + (r * SLOT_SIZE);
-
-                if (Gdx.input.getX() >= slotX && Gdx.input.getX() <= slotX + SLOT_SIZE && mouseY >= slotY && mouseY <= slotY + SLOT_SIZE) {
-                    return inventory.getSlots()[r][c];
-                }
-            }
-        }
-        return null;
     }
 }
