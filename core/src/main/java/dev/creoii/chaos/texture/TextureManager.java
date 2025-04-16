@@ -9,7 +9,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 import dev.creoii.chaos.DataManager;
 
 public class TextureManager implements Disposable {
-    private static final String[] ATLAS_IDS = new String[]{"class", "enemy", "bullet", "item"};
+    private static final String[] ATLAS_IDS = new String[]{"class", "enemy", "bullet", "item", "loot"};
     public static final String DEFAULT_TEXTURE_ID = "textures/missing.png";
     protected static final Texture DEFAULT_TEXTURE = new Texture(DEFAULT_TEXTURE_ID);
     protected static final TextureRegion DEFAULT_TEXTURE_REGION = new TextureRegion(DEFAULT_TEXTURE);

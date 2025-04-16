@@ -22,7 +22,6 @@ public class ItemRenderer {
 
     public static void renderTooltip(@Nullable SpriteBatch batch, @Nullable ShapeRenderer shapeRenderer, Item item) {
         FONT.setColor(item.getRarity().getColor());
-        System.out.println(item.getRarity().name());
 
         String tooltip = item.id();
         GlyphLayout layout = new GlyphLayout(FONT, tooltip);

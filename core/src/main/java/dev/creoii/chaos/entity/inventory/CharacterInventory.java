@@ -8,6 +8,10 @@ public class CharacterInventory extends Inventory {
 
     public CharacterInventory(CharacterEntity character) {
         super(3, 4);
+        slots[slots.length - 1][0].setType(Slot.Type.WEAPON);
+        slots[slots.length - 1][1].setType(Slot.Type.ABILITY);
+        slots[slots.length - 1][2].setType(Slot.Type.ARMOR);
+        slots[slots.length - 1][3].setType(Slot.Type.ACCESSORY);
         this.character = character;
     }
 

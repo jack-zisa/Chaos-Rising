@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.Game;
 import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.entity.LivingEntity;
+import dev.creoii.chaos.entity.LootDropEntity;
 import dev.creoii.chaos.entity.controller.CharacterController;
 import dev.creoii.chaos.entity.controller.EntityController;
 import dev.creoii.chaos.entity.inventory.Inventory;
@@ -20,6 +21,7 @@ public class CharacterEntity extends LivingEntity {
     private final EntityController<CharacterEntity> controller;
     private final Vector2 prevPos;
     private final Inventory inventory;
+    private LootDropEntity lootDrop;
 
     public CharacterEntity(CharacterClass characterClass) {
         super(characterClass.getTextureId(), 1f, new Vector2(1, 1), Group.CHARACTER, characterClass.getBaseStats().copy(), characterClass.getBaseStats().copy());
@@ -27,6 +29,7 @@ public class CharacterEntity extends LivingEntity {
         controller = new CharacterController(this);
         prevPos = new Vector2();
         inventory = new CharacterInventory(this);
+        lootDrop = null;
     }
 
     public CharacterClass getCharacterClass() {
@@ -72,6 +75,11 @@ public class CharacterEntity extends LivingEntity {
         return inventory;
     }
 
+    @Nullable
+    public LootDropEntity getLootDrop() {
+        return lootDrop;
+    }
+
     @Override
     public Entity create(Game game, UUID uuid, Vector2 pos) {
         sprite = new Sprite(game.getTextureManager().getTexture("class", getTextureId()));
@@ -90,5 +98,10 @@ public class CharacterEntity extends LivingEntity {
 
     @Override
     public void collide(Entity other) {
+        if (other instanceof LootDropEntity lootDropEntity) {
+            if (lootDrop == null) {
+                lootDrop = lootDropEntity;
+            }
+        }
     }
 }

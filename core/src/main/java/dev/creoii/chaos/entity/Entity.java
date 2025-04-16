@@ -141,6 +141,7 @@ public abstract class Entity implements Positionable, Tickable {
     public enum Group {
         CHARACTER,
         ENEMY,
-        BULLET
+        BULLET,
+        OTHER
     }
 }

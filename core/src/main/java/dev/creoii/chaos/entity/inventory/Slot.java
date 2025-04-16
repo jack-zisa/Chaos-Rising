@@ -4,14 +4,14 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import dev.creoii.chaos.item.Item;
 import dev.creoii.chaos.item.ItemStack;
-import dev.creoii.chaos.render.screen.InventoryScreen;
+import dev.creoii.chaos.render.screen.widget.InventoryWidget;
 
 import java.util.function.Predicate;
 
 public class Slot {
     private final int x;
     private final int y;
-    private final Type type;
+    private Type type;
     private ItemStack stack;
 
     public Slot(int x, int y, Type type) {
@@ -34,6 +34,10 @@ public class Slot {
 
     public Type getType() {
         return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
     }
 
     public ItemStack getStack() {
@@ -71,7 +75,7 @@ public class Slot {
         Type(String textureId, Predicate<Item> itemPredicate) {
             this.itemPredicate = itemPredicate;
             sprite = new Sprite(new Texture(textureId));
-            sprite.setSize(InventoryScreen.SLOT_SIZE, InventoryScreen.SLOT_SIZE);
+            sprite.setSize(InventoryWidget.SLOT_SIZE, InventoryWidget.SLOT_SIZE);
         }
 
         public Sprite getSprite() {

@@ -90,7 +90,10 @@ public final class Commands {
 
         Command.register("give", (game, args) -> {
             if (args.length > 0) {
-                game.getActiveCharacter().getInventory().addItem(game.getDataManager().getItem(args[0]).create(game).getDefaultStack().copy());
+                int count = args.length > 1 ? Integer.valueOf(args[1]) : 1;
+                for (int i = 0; i < count; ++i) {
+                    game.getActiveCharacter().getInventory().addItem(game.getDataManager().getItem(args[0]).create(game).getDefaultStack().copy());
+                }
             }
         });
 

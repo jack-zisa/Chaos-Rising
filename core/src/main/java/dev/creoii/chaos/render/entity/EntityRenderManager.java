@@ -15,6 +15,7 @@ import dev.creoii.chaos.Main;
 import dev.creoii.chaos.entity.BulletEntity;
 import dev.creoii.chaos.entity.EnemyEntity;
 import dev.creoii.chaos.entity.Entity;
+import dev.creoii.chaos.entity.LootDropEntity;
 import dev.creoii.chaos.entity.character.CharacterEntity;
 import dev.creoii.chaos.render.Renderer;
 import dev.creoii.chaos.util.Renderable;
@@ -32,6 +33,7 @@ public class EntityRenderManager implements Renderable {
 
         EntityRenderers.register(CharacterEntity.class, SimpleEntityRenderer::new);
         EntityRenderers.register(BulletEntity.class, SimpleEntityRenderer::new);
+        EntityRenderers.register(LootDropEntity.class, SimpleEntityRenderer::new);
         EntityRenderers.register(EnemyEntity.class, EnemyEntityRenderer::new);
     }
 
