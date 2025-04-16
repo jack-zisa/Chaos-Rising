@@ -38,18 +38,22 @@ public class InventoryWidget extends Widget {
         this(parent, pos, inventory, main -> true);
     }
 
-    public Predicate<Main> getActivePredicate() {
-        return activePredicate;
+    public boolean isActive(Main main) {
+        return getInventory() != null && activePredicate.test(main);
+    }
+
+    public Inventory getInventory() {
+        return inventory;
     }
 
     public Slot getSlotAt(float x, float y) {
-        for (int r = 0; r < inventory.getSlots().length; ++r) {
-            for (int c = 0; c < inventory.getSlots()[r].length; ++c) {
+        for (int r = 0; r < getInventory().getSlots().length; ++r) {
+            for (int c = 0; c < getInventory().getSlots()[r].length; ++c) {
                 float slotX = getPos().x + (c * SLOT_SIZE);
                 float slotY = getPos().y + (r * SLOT_SIZE);
                 if (x >= slotX && x <= slotX + SLOT_SIZE &&
                     y >= slotY && y <= slotY + SLOT_SIZE) {
-                    return inventory.getSlots()[r][c];
+                    return getInventory().getSlots()[r][c];
                 }
             }
         }
@@ -58,7 +62,7 @@ public class InventoryWidget extends Widget {
 
     @Override
     public void render(Renderer renderer, @Nullable SpriteBatch batch, @Nullable ShapeRenderer shapeRenderer, BitmapFont font, boolean debug) {
-        if (!activePredicate.test(renderer.getMain()))
+        if (!isActive(renderer.getMain()))
             return;
 
         if (getParent() instanceof InventoryScreen inventoryScreen) {
@@ -70,9 +74,9 @@ public class InventoryWidget extends Widget {
                 return;
             }
 
-            for (int r = 0; r < inventory.getSlots().length; ++r) {
-                for (int c = 0; c < inventory.getSlots()[r].length; ++c) {
-                    Slot slot = inventory.getSlots()[r][c];
+            for (int r = 0; r < getInventory().getSlots().length; ++r) {
+                for (int c = 0; c < getInventory().getSlots()[r].length; ++c) {
+                    Slot slot = getInventory().getSlots()[r][c];
                     if (slot == null)
                         continue;
                     Sprite sprite = slot.hasItem() ? Slot.Type.NONE.getSprite() : slot.getType().getSprite();
@@ -97,7 +101,7 @@ public class InventoryWidget extends Widget {
 
     @Override
     public boolean touchDown(InputManager manager, int screenX, int screenY, int pointer, int button) {
-        if (!activePredicate.test(manager.getMain()))
+        if (!isActive(manager.getMain()))
             return false;
         if (getParent() instanceof InventoryScreen inventoryScreen) {
             Slot touched = inventoryScreen.getMouseOverSlot();
@@ -112,7 +116,7 @@ public class InventoryWidget extends Widget {
 
     @Override
     public boolean touchUp(InputManager manager, int screenX, int screenY, int pointer, int button) {
-        if (!activePredicate.test(manager.getMain()))
+        if (!isActive(manager.getMain()))
             return false;
         if (dragStack != null && getParent() instanceof InventoryScreen inventoryScreen) {
             Slot touched = inventoryScreen.getMouseOverSlot();
@@ -122,20 +126,20 @@ public class InventoryWidget extends Widget {
                 } else {
                     if (touched.hasItem()) {
                         if (dragSource.canAccept(touched.getStack().getItem())) {
-                            inventory.onRemoveItemFromSlot(dragSource, dragStack);
+                            getInventory().onRemoveItemFromSlot(dragSource, dragStack);
                             ItemStack temp = touched.getStack().copy();
-                            inventory.onRemoveItemFromSlot(touched, temp);
+                            getInventory().onRemoveItemFromSlot(touched, temp);
                             touched.setStack(dragStack);
-                            inventory.onAddItemToSlot(touched, dragStack);
+                            getInventory().onAddItemToSlot(touched, dragStack);
                             dragSource.setStack(temp);
-                            inventory.onAddItemToSlot(dragSource, temp);
+                            getInventory().onAddItemToSlot(dragSource, temp);
                         } else {
                             dragSource.setStack(dragStack);
                         }
                     } else {
-                        inventory.onRemoveItemFromSlot(dragSource, dragStack);
+                        getInventory().onRemoveItemFromSlot(dragSource, dragStack);
                         touched.setStack(dragStack);
-                        inventory.onAddItemToSlot(touched, dragStack);
+                        getInventory().onAddItemToSlot(touched, dragStack);
                     }
                 }
             } else {
