@@ -38,7 +38,7 @@ public class CommandManager extends InputAdapter {
     }
 
     public void update(int gametime) {
-        if (Gdx.input.isKeyPressed(main.getGame().getInputManager().getKeycode("command"))) {
+        if (Gdx.input.isKeyPressed(main.getGame().getOptionsManager().COMMAND_KEY.intValue())) {
             active = true;
         }
     }

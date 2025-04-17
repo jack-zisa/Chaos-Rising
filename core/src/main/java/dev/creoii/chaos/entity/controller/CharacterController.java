@@ -24,13 +24,13 @@ public class CharacterController extends EntityController<CharacterEntity> {
         float dx = 0f;
         float dy = 0f;
 
-        if (Gdx.input.isKeyPressed(entity.getGame().getInputManager().getKeycode("left")))
+        if (Gdx.input.isKeyPressed(entity.getGame().getOptionsManager().LEFT_KEY.intValue()))
             dx -= 1;
-        if (Gdx.input.isKeyPressed(entity.getGame().getInputManager().getKeycode("right")))
+        if (Gdx.input.isKeyPressed(entity.getGame().getOptionsManager().RIGHT_KEY.intValue()))
             dx += 1;
-        if (Gdx.input.isKeyPressed(entity.getGame().getInputManager().getKeycode("up")))
+        if (Gdx.input.isKeyPressed(entity.getGame().getOptionsManager().FORWARDS_KEY.intValue()))
             dy += 1;
-        if (Gdx.input.isKeyPressed(entity.getGame().getInputManager().getKeycode("down")))
+        if (Gdx.input.isKeyPressed(entity.getGame().getOptionsManager().BACKWARDS_KEY.intValue()))
             dy -= 1;
 
         if (dx == 0 && dy == 0) {

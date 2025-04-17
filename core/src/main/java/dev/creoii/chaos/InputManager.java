@@ -8,14 +8,11 @@ import dev.creoii.chaos.render.screen.InventoryScreen;
 import dev.creoii.chaos.util.Inputtable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
 
 public class InputManager extends InputAdapter {
     private final Main main;
-    private final Map<String, Integer> keymap;
     private final List<Inputtable> inputs;
     private final Vector3 mousePos = new Vector3();
     private int keyHeld;
@@ -23,15 +20,6 @@ public class InputManager extends InputAdapter {
 
     public InputManager(Main main) {
         this.main = main;
-        this.keymap = new HashMap<>();
-        keymap.put("up", Input.Keys.W);
-        keymap.put("down", Input.Keys.S);
-        keymap.put("left", Input.Keys.A);
-        keymap.put("right", Input.Keys.D);
-        keymap.put("debug", Input.Keys.F3);
-        keymap.put("command", Input.Keys.SLASH);
-        keymap.put("inventory", Input.Keys.E);
-        keymap.put("back", Input.Keys.ESCAPE);
         inputs = new ArrayList<>();
         keyHeld = -1;
         dragging = false;
@@ -55,10 +43,6 @@ public class InputManager extends InputAdapter {
 
     public void setDragging(boolean dragging) {
         this.dragging = dragging;
-    }
-
-    public int getKeycode(String key) {
-        return keymap.getOrDefault(key, -1);
     }
 
     public List<Inputtable> getInputs() {
@@ -92,12 +76,12 @@ public class InputManager extends InputAdapter {
     @Override
     public boolean keyDown(int keycode) {
         keyHeld = keycode;
-        if (keycode == getKeycode("debug")) {
+        if (keycode == main.getGame().getOptionsManager().DEBUG_KEY.intValue()) {
             main.setDebug(!main.getDebug());
             return true;
-        } else if (keycode == getKeycode("inventory")) {
+        } else if (keycode == main.getGame().getOptionsManager().INVENTORY_KEY.intValue()) {
             if (main.getRenderer().getCurrentScreen() == null)
-                main.getRenderer().setCurrentScreen(new InventoryScreen(getMain(), new Vector2(Main.WINDOW_WIDTH - 196, 400), main.getGame().getActiveCharacter().getInventory()));
+                main.getRenderer().setCurrentScreen(new InventoryScreen(main, new Vector2(Main.WINDOW_WIDTH - 196, 400), main.getGame().getActiveCharacter().getInventory()));
             else
                 main.getRenderer().clearCurrentScreen();
             return true;

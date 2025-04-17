@@ -76,7 +76,7 @@ public abstract class Screen implements Renderable, Inputtable {
 
     @Override
     public boolean keyDown(InputManager manager, int keycode) {
-        if (keycode == manager.getKeycode("back")) {
+        if (keycode == main.getGame().getOptionsManager().BACK_KEY.intValue()) {
             manager.getMain().getRenderer().clearCurrentScreen();
         }
         widgets.forEach((key, widget) -> widget.keyDown(manager, keycode));

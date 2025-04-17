@@ -10,6 +10,7 @@ import dev.creoii.chaos.texture.TextureManager;
 
 public class Game implements Disposable {
     private final Main main;
+    private final OptionsManager optionsManager;
     private final TextureManager textureManager;
     private final DataManager dataManager;
     private final TickManager tickManager;
@@ -23,6 +24,7 @@ public class Game implements Disposable {
 
     public Game(Main main) {
         this.main = main;
+        this.optionsManager = new OptionsManager();
         this.textureManager = new TextureManager();
         this.dataManager = new DataManager(main);
         this.tickManager = new TickManager(main);
@@ -52,6 +54,10 @@ public class Game implements Disposable {
 
     public Main getMain() {
         return main;
+    }
+
+    public OptionsManager getOptionsManager() {
+        return optionsManager;
     }
 
     public TextureManager getTextureManager() {
