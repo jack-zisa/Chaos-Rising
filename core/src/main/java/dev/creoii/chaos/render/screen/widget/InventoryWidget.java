@@ -31,7 +31,7 @@ public class InventoryWidget extends Widget {
     protected ItemStack dragStack;
 
     public InventoryWidget(Screen parent, Vector2 pos, Inventory inventory, Predicate<Main> activePredicate) {
-        super(parent, pos);
+        super(parent, pos, inventory.getSlots()[0].length * SLOT_SIZE, inventory.getSlots().length * SLOT_SIZE);
         this.inventory = inventory;
         this.activePredicate = activePredicate;
     }
@@ -53,8 +53,7 @@ public class InventoryWidget extends Widget {
             for (int c = 0; c < getInventory().getSlots()[r].length; ++c) {
                 float slotX = getPos().x + (c * SLOT_SIZE);
                 float slotY = getPos().y + (r * SLOT_SIZE);
-                if (x >= slotX && x <= slotX + SLOT_SIZE &&
-                    y >= slotY && y <= slotY + SLOT_SIZE) {
+                if (x >= slotX && x <= slotX + SLOT_SIZE && y >= slotY && y <= slotY + SLOT_SIZE) {
                     return getInventory().getSlots()[r][c];
                 }
             }
@@ -103,20 +102,13 @@ public class InventoryWidget extends Widget {
     public boolean touchDown(InputManager manager, int screenX, int screenY, int pointer, int button) {
         if (!isActive(manager.getMain()))
             return false;
-        if (getParent() instanceof InventoryScreen inventoryScreen) {
+        if (getParent() instanceof InventoryScreen inventoryScreen && isMouseOver()) {
             Slot touched = inventoryScreen.getMouseOverSlot();
             if (touched != null && touched.hasItem() && Gdx.input.isTouched()) {
-                ItemStack stack = touched.getStack();
-                if (stack == null || stack.getItem() == null)
-                    return false;
-
-                if (stack.clickInSlot(manager, touched)) {
-                    return true;
+                if (!touched.getStack().clickInSlot(manager, touched)) {
+                    dragSource = touched;
+                    dragStack = touched.takeStack();
                 }
-
-                dragSource = touched;
-                dragStack = stack;
-                touched.setStack(null);
                 return true;
             }
         }
@@ -138,12 +130,12 @@ public class InventoryWidget extends Widget {
                     if (touched.hasItem()) {
                         if (dragSource.canAccept(touched.getStack().getItem())) {
                             getInventory().onRemoveItemFromSlot(dragSource, dragStack);
-                            ItemStack temp = touched.getStack().copy();
-                            main.onRemoveItemFromSlot(touched, temp);
+                            main.onRemoveItemFromSlot(touched, touched.getStack());
+                            ItemStack takeTouched = touched.takeStack();
                             touched.setStack(dragStack.copy());
                             getInventory().onAddItemToSlot(touched, touched.getStack());
-                            dragSource.setStack(temp);
-                            main.onAddItemToSlot(dragSource, temp);
+                            dragSource.setStack(takeTouched);
+                            main.onAddItemToSlot(dragSource, takeTouched);
                         } else dragSource.setStack(dragStack.copy());
                     } else {
                         getInventory().onRemoveItemFromSlot(dragSource, dragStack);
@@ -159,8 +151,9 @@ public class InventoryWidget extends Widget {
                     }
                 }
             } else {
-                game.getActiveCharacter().dropItem(dragStack.copy(), false);
-                main.onRemoveItemFromSlot(dragSource, dragStack);
+                ItemStack dragCopy = dragStack.copy();
+                game.getActiveCharacter().dropItem(dragCopy);
+                main.onRemoveItemFromSlot(dragSource, dragCopy);
             }
             dragStack = null;
         }

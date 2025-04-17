@@ -48,6 +48,12 @@ public class Slot {
         this.stack = stack;
     }
 
+    public ItemStack takeStack() {
+        ItemStack temp = stack.copy();
+        setStack(null);
+        return temp;
+    }
+
     public boolean hasItem() {
         return stack != null && stack.getItem() != null;
     }

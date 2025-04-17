@@ -73,15 +73,20 @@ public class CharacterEntity extends LivingEntity {
         lootUuid = null;
     }
 
+    public void dropItem(ItemStack stack) {
+        dropItem(stack, false);
+    }
+
     public void dropItem(ItemStack stack, boolean forceDrop) {
         if (lootUuid == null || forceDrop) {
             Inventory inventory = new Inventory(2, 4);
             inventory.addItem(stack);
             LootDropEntity lootDropEntity = new LootDropEntity("bag", 1f, true, inventory);
             game.getEntityManager().addEntity(lootDropEntity, pos.cpy());
+            lootUuid = lootDropEntity.getUuid();
         } else {
             LootDropEntity lootDropEntity = (LootDropEntity) game.getEntityManager().getEntity(lootUuid);
-            if (!lootDropEntity.getInventory().addItem(stack))
+            if (lootDropEntity == null || !lootDropEntity.getInventory().addItem(stack))
                 dropItem(stack, true);
         }
     }

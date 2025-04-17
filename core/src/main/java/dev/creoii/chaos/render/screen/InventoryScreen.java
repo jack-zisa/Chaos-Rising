@@ -31,7 +31,8 @@ public class InventoryScreen extends Screen {
                 if (!inventoryWidget.isActive(getMain()))
                     continue;
                 Slot slot = inventoryWidget.getSlotAt(mouseX, mouseY);
-                if (slot != null) return slot;
+                if (slot != null)
+                    return slot;
             }
         }
         return null;

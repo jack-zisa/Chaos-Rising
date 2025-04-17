@@ -1,6 +1,9 @@
 package dev.creoii.chaos.render.screen.widget;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
+import dev.creoii.chaos.Game;
 import dev.creoii.chaos.InputManager;
 import dev.creoii.chaos.Main;
 import dev.creoii.chaos.entity.Entity;
@@ -15,19 +18,18 @@ import java.util.function.Predicate;
 
 public class LootInventoryWidget extends InventoryWidget {
     public LootInventoryWidget(Screen parent, Vector2 pos, Predicate<Main> activePredicate) {
-        super(parent, pos, null, activePredicate);
+        super(parent, pos, new Inventory(2, 4), activePredicate);
     }
 
     @Override
     public Inventory getInventory() {
-        if (getParent() instanceof InventoryScreen inventoryScreen) {
-            UUID lootUuid = inventoryScreen.getMain().getGame().getActiveCharacter().getLootUuid();
-            if (lootUuid == null)
-                return null;
-            Entity entity = inventoryScreen.getMain().getGame().getEntityManager().getEntity(lootUuid);
-            if (entity instanceof LootDropEntity loot) {
-                return loot.getInventory();
-            }
+        Game game = getParent().getMain().getGame();
+        UUID lootUuid = game.getActiveCharacter().getLootUuid();
+        if (lootUuid == null)
+            return null;
+        Entity entity = game.getEntityManager().getEntity(lootUuid);
+        if (entity instanceof LootDropEntity loot) {
+            return loot.getInventory();
         }
         return null;
     }
@@ -39,29 +41,28 @@ public class LootInventoryWidget extends InventoryWidget {
         if (getParent() instanceof InventoryScreen inventoryScreen) {
             Slot touched = inventoryScreen.getMouseOverSlot();
             if (touched != null && touched.hasItem()) {
-                dragSource = touched;
-                dragStack = touched.getStack();
-                touched.setStack(null);
+                if (!touched.getStack().clickInSlot(manager, touched)) {
+                    if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
+                        Game game = manager.getMain().getGame();
+                        Inventory main = ((InventoryWidget) inventoryScreen.getWidget("main_inventory")).getInventory();
+
+                        getInventory().onRemoveItemFromSlot(touched, touched.getStack());
+                        main.addItem(touched.takeStack());
+
+                        if (getInventory().isEmpty()) {
+                            LootDropEntity lootDropEntity = (LootDropEntity) game.getEntityManager().getEntity(game.getActiveCharacter().getLootUuid());
+                            if (lootDropEntity != null) {
+                                game.getEntityManager().removeEntity(lootDropEntity);
+                            }
+                        }
+                        return true;
+                    }
+                    dragSource = touched;
+                    dragStack = touched.takeStack();
+                }
                 return true;
             }
         }
         return false;
-    }
-
-    @Override
-    public boolean touchUp(InputManager manager, int screenX, int screenY, int pointer, int button) {
-        if (!isActive(manager.getMain()))
-            return false;
-        if (getParent() instanceof InventoryScreen inventoryScreen) {
-            UUID lootUuid = inventoryScreen.getMain().getGame().getActiveCharacter().getLootUuid();
-            if (lootUuid != null) {
-                Entity entity = inventoryScreen.getMain().getGame().getEntityManager().getEntity(lootUuid);
-                if (entity instanceof LootDropEntity lootDropEntity && lootDropEntity.getInventory().isEmpty()) {
-                    inventoryScreen.getMain().getGame().getEntityManager().removeEntity(lootUuid);
-                    inventoryScreen.getMain().getGame().getActiveCharacter().clearLootUuid();
-                }
-            }
-        }
-        return super.touchUp(manager, screenX, screenY, pointer, button);
     }
 }
