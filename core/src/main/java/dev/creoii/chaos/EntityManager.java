@@ -35,9 +35,13 @@ public class EntityManager {
     }
 
     public boolean removeEntity(Entity entity) {
-        if (entities.containsKey(entity.getUuid())) {
-            main.getGame().getTickManager().removeTickable(entity);
-            entities.remove(entity.getUuid());
+        return removeEntity(entity.getUuid());
+    }
+
+    public boolean removeEntity(UUID uuid) {
+        if (entities.containsKey(uuid)) {
+            main.getGame().getTickManager().removeTickable(entities.get(uuid));
+            entities.remove(uuid);
             return true;
         }
         return false;

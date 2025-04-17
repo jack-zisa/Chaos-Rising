@@ -9,14 +9,16 @@ import dev.creoii.chaos.entity.inventory.Inventory;
 import java.util.UUID;
 
 public class LootDropEntity extends Entity {
-    private Inventory inventory;
+    private final boolean removeWhenEmpty;
+    private final Inventory inventory;
 
-    public LootDropEntity(String textureId, float scale) {
-        super(textureId, scale, new Vector2(1, 1), Group.OTHER);
+    public LootDropEntity(String textureId, float scale, boolean removeWhenEmpty) {
+        this(textureId, scale, removeWhenEmpty, null);
     }
 
-    public LootDropEntity(String textureId, float scale, Inventory inventory) {
+    public LootDropEntity(String textureId, float scale, boolean removeWhenEmpty, Inventory inventory) {
         super(textureId, scale, new Vector2(1, 1), Group.OTHER);
+        this.removeWhenEmpty = removeWhenEmpty;
         this.inventory = inventory;
     }
 
@@ -24,9 +26,13 @@ public class LootDropEntity extends Entity {
         return inventory;
     }
 
+    public boolean shouldRemoveWhenEmpty() {
+        return removeWhenEmpty;
+    }
+
     @Override
     public Entity create(Game game, UUID uuid, Vector2 pos) {
-        LootDropEntity entity = new LootDropEntity(getTextureId(), 1f, new Inventory(2, 4));
+        LootDropEntity entity = new LootDropEntity(getTextureId(), 1f, removeWhenEmpty, inventory == null ? new Inventory(2, 4) : inventory);
         entity.sprite = new Sprite(game.getTextureManager().getTexture("loot", getTextureId()));
         entity.sprite.setSize(getScale(), getScale());
         return entity;
@@ -57,5 +63,11 @@ public class LootDropEntity extends Entity {
 
     @Override
     public void postSpawn() {
+    }
+
+    @Override
+    public void remove() {
+        super.remove();
+        game.getActiveCharacter().clearLootUuid();
     }
 }

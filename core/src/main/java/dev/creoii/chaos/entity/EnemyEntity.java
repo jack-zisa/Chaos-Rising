@@ -73,7 +73,7 @@ public class EnemyEntity extends LivingEntity implements DataManager.Identifiabl
             int rolls = Entity.RANDOM.nextInt(4);
             if (rolls == 0)
                 return;
-            LootDropEntity lootDropEntity = game.getEntityManager().addEntity(new LootDropEntity("bag", 1f), pos.cpy());
+            LootDropEntity lootDropEntity = game.getEntityManager().addEntity(new LootDropEntity("bag", 1f, true), pos.cpy());
             LootUtils.insertIntoInventory(getGame(), lootDropEntity.getInventory(), lootTable, rolls);
         }
     }
@@ -89,10 +89,10 @@ public class EnemyEntity extends LivingEntity implements DataManager.Identifiabl
     @Override
     public Entity create(Game game, UUID uuid, Vector2 pos) {
         EnemyEntity entity = new EnemyEntity(getTextureId(), getScale() / COORDINATE_SCALE, controller == null ? null : new EnemyController(controller), lootTable, getMaxStats().copy());
-        entity.setId(id);
+        entity.setMoving(true);
         entity.sprite = new Sprite(game.getTextureManager().getTexture("enemy", getTextureId()));
         entity.sprite.setSize(getScale(), getScale());
-        entity.setMoving(true);
+        entity.setId(id);
         return entity;
     }
 

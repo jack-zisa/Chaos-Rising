@@ -1,6 +1,6 @@
 {
   "type": "weapon",
-  "texture": "vulcans_eruption",
+  "texture": "inferno",
   "attack": {
     "bullet_id": "test_dec",
     "damage": 2,

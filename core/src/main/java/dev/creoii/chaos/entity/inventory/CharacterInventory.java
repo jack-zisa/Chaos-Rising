@@ -32,4 +32,20 @@ public class CharacterInventory extends Inventory {
             character.getStats().removeModifier(stack.getItem().getStatModifier().uuid());
         }
     }
+
+    public Slot getWeaponSlot() {
+        return slots[slots.length - 1][0];
+    }
+
+    public Slot getAbilitySlot() {
+        return slots[slots.length - 1][1];
+    }
+
+    public Slot getArmorSlot() {
+        return slots[slots.length - 1][2];
+    }
+
+    public Slot getAccessorySlot() {
+        return slots[slots.length - 1][3];
+    }
 }

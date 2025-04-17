@@ -1,5 +1,8 @@
 package dev.creoii.chaos.item;
 
+import dev.creoii.chaos.InputManager;
+import dev.creoii.chaos.entity.inventory.Slot;
+
 import javax.annotation.Nullable;
 
 public class ItemStack {
@@ -36,5 +39,14 @@ public class ItemStack {
 
     public ItemStack copy() {
         return new ItemStack(item, count);
+    }
+
+    /**
+     * @return false to allow dragging, true to disable dragging
+     */
+    public boolean clickInSlot(InputManager manager, Slot slot) {
+        if (item == null)
+            return false;
+        return item.clickInSlot(manager, slot, this);
     }
 }

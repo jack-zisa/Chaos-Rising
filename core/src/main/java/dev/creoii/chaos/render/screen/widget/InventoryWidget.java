@@ -6,8 +6,10 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import dev.creoii.chaos.Game;
 import dev.creoii.chaos.InputManager;
 import dev.creoii.chaos.Main;
+import dev.creoii.chaos.entity.LootDropEntity;
 import dev.creoii.chaos.entity.inventory.Inventory;
 import dev.creoii.chaos.entity.inventory.Slot;
 import dev.creoii.chaos.item.ItemStack;
@@ -25,8 +27,8 @@ public class InventoryWidget extends Widget {
     private final Inventory inventory;
     private final Predicate<Main> activePredicate;
 
-    private Slot dragSource;
-    private ItemStack dragStack;
+    protected Slot dragSource;
+    protected ItemStack dragStack;
 
     public InventoryWidget(Screen parent, Vector2 pos, Inventory inventory, Predicate<Main> activePredicate) {
         super(parent, pos);
@@ -77,8 +79,6 @@ public class InventoryWidget extends Widget {
             for (int r = 0; r < getInventory().getSlots().length; ++r) {
                 for (int c = 0; c < getInventory().getSlots()[r].length; ++c) {
                     Slot slot = getInventory().getSlots()[r][c];
-                    if (slot == null)
-                        continue;
                     Sprite sprite = slot.hasItem() ? Slot.Type.NONE.getSprite() : slot.getType().getSprite();
                     sprite.setPosition(getPos().x + (c * SLOT_SIZE), getPos().y + (r * SLOT_SIZE));
                     sprite.draw(batch);
@@ -106,9 +106,18 @@ public class InventoryWidget extends Widget {
         if (getParent() instanceof InventoryScreen inventoryScreen) {
             Slot touched = inventoryScreen.getMouseOverSlot();
             if (touched != null && touched.hasItem() && Gdx.input.isTouched()) {
+                ItemStack stack = touched.getStack();
+                if (stack == null || stack.getItem() == null)
+                    return false;
+
+                if (stack.clickInSlot(manager, touched)) {
+                    return true;
+                }
+
                 dragSource = touched;
-                dragStack = touched.getStack();
+                dragStack = stack;
                 touched.setStack(null);
+                return true;
             }
         }
         return super.touchDown(manager, screenX, screenY, pointer, button);
@@ -119,31 +128,39 @@ public class InventoryWidget extends Widget {
         if (!isActive(manager.getMain()))
             return false;
         if (dragStack != null && getParent() instanceof InventoryScreen inventoryScreen) {
+            Game game = manager.getMain().getGame();
+            Inventory main = ((InventoryWidget) inventoryScreen.getWidget("main_inventory")).inventory;
             Slot touched = inventoryScreen.getMouseOverSlot();
             if (touched != null) {
                 if (!touched.canAccept(dragStack.getItem())) {
-                    dragSource.setStack(dragStack);
+                    dragSource.setStack(dragStack.copy());
                 } else {
                     if (touched.hasItem()) {
                         if (dragSource.canAccept(touched.getStack().getItem())) {
                             getInventory().onRemoveItemFromSlot(dragSource, dragStack);
                             ItemStack temp = touched.getStack().copy();
-                            getInventory().onRemoveItemFromSlot(touched, temp);
-                            touched.setStack(dragStack);
-                            getInventory().onAddItemToSlot(touched, dragStack);
+                            main.onRemoveItemFromSlot(touched, temp);
+                            touched.setStack(dragStack.copy());
+                            getInventory().onAddItemToSlot(touched, touched.getStack());
                             dragSource.setStack(temp);
-                            getInventory().onAddItemToSlot(dragSource, temp);
-                        } else {
-                            dragSource.setStack(dragStack);
-                        }
+                            main.onAddItemToSlot(dragSource, temp);
+                        } else dragSource.setStack(dragStack.copy());
                     } else {
                         getInventory().onRemoveItemFromSlot(dragSource, dragStack);
-                        touched.setStack(dragStack);
-                        getInventory().onAddItemToSlot(touched, dragStack);
+                        touched.setStack(dragStack.copy());
+                        main.onAddItemToSlot(touched, touched.getStack());
+
+                        if (getInventory().isEmpty()) {
+                            LootDropEntity lootDropEntity = (LootDropEntity) game.getEntityManager().getEntity(game.getActiveCharacter().getLootUuid());
+                            if (lootDropEntity != null) {
+                                game.getEntityManager().removeEntity(lootDropEntity);
+                            }
+                        }
                     }
                 }
             } else {
-                dragSource.setStack(dragStack);
+                game.getActiveCharacter().dropItem(dragStack.copy(), false);
+                main.onRemoveItemFromSlot(dragSource, dragStack);
             }
             dragStack = null;
         }

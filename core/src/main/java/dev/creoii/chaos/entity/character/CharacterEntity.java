@@ -8,19 +8,17 @@ import dev.creoii.chaos.entity.LivingEntity;
 import dev.creoii.chaos.entity.LootDropEntity;
 import dev.creoii.chaos.entity.controller.CharacterController;
 import dev.creoii.chaos.entity.controller.EntityController;
-import dev.creoii.chaos.entity.inventory.Inventory;
 import dev.creoii.chaos.entity.inventory.CharacterInventory;
-import dev.creoii.chaos.entity.inventory.Slot;
+import dev.creoii.chaos.entity.inventory.Inventory;
 import dev.creoii.chaos.item.ItemStack;
 
-import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class CharacterEntity extends LivingEntity {
     private CharacterClass characterClass;
     private final EntityController<CharacterEntity> controller;
     private final Vector2 prevPos;
-    private final Inventory inventory;
+    private final CharacterInventory inventory;
     private UUID lootUuid;
 
     public CharacterEntity(CharacterClass characterClass) {
@@ -51,14 +49,6 @@ public class CharacterEntity extends LivingEntity {
         return characterClass.getTextureId();
     }
 
-    @Nullable
-    public ItemStack getCurrentStack() {
-        Slot slot = inventory.getSlots()[inventory.getSlots().length - 1][0];
-        if (slot.getStack() == null)
-            return null;
-        return slot.getStack();
-    }
-
     public Vector2 getPrevPos() {
         return prevPos;
     }
@@ -71,12 +61,29 @@ public class CharacterEntity extends LivingEntity {
         return new Vector2(getPrevPos()).add(COORDINATE_SCALE / 2f, COORDINATE_SCALE / 2f);
     }
 
-    public Inventory getInventory() {
+    public CharacterInventory getInventory() {
         return inventory;
     }
 
     public UUID getLootUuid() {
         return lootUuid;
+    }
+
+    public void clearLootUuid() {
+        lootUuid = null;
+    }
+
+    public void dropItem(ItemStack stack, boolean forceDrop) {
+        if (lootUuid == null || forceDrop) {
+            Inventory inventory = new Inventory(2, 4);
+            inventory.addItem(stack);
+            LootDropEntity lootDropEntity = new LootDropEntity("bag", 1f, true, inventory);
+            game.getEntityManager().addEntity(lootDropEntity, pos.cpy());
+        } else {
+            LootDropEntity lootDropEntity = (LootDropEntity) game.getEntityManager().getEntity(lootUuid);
+            if (!lootDropEntity.getInventory().addItem(stack))
+                dropItem(stack, true);
+        }
     }
 
     @Override
@@ -102,8 +109,10 @@ public class CharacterEntity extends LivingEntity {
 
     @Override
     public void collisionEnter(Entity other) {
-        if (lootUuid == null && other instanceof LootDropEntity lootDropEntity)
-            lootUuid = lootDropEntity.getUuid();
+        if (other instanceof LootDropEntity lootDropEntity) {
+            if (lootUuid == null)
+                lootUuid = lootDropEntity.getUuid();
+        }
     }
 
     @Override
@@ -111,6 +120,6 @@ public class CharacterEntity extends LivingEntity {
         if (other == null)
             return;
         if (other.getUuid().equals(lootUuid))
-            lootUuid = null;
+            clearLootUuid();
     }
 }

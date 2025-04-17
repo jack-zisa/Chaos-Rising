@@ -95,12 +95,12 @@ public final class Commands {
 
         Command.register("give", (game, args) -> {
             if (args.length > 0) {
-                int count = args.length > 1 ? Integer.valueOf(args[1]) : 1;
+                int count = args.length > 1 ? Integer.parseInt(args[1]) : 1;
                 for (int i = 0; i < count; ++i) {
                     Item item = game.getDataManager().getItem(args[0]);
                     if (item == null)
                         continue;
-                    game.getActiveCharacter().getInventory().addItem(item.create(game).getDefaultStack().copy());
+                    game.getActiveCharacter().getInventory().addItem(item.getDefaultStack().copy());
                 }
             }
         });

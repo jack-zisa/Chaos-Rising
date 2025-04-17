@@ -10,7 +10,7 @@ public record LootEntry(String item, int weight, int minCount, int maxCount) {
         Item item = game.getDataManager().getItem(item());
         if (item == null)
             return ItemStack.EMPTY;
-        return new ItemStack(item.create(game), minCount + (int) (Math.random() * (maxCount - minCount + 1)));
+        return new ItemStack(item, minCount + (int) (Math.random() * (maxCount - minCount + 1)));
     }
 
     public static LootEntry parse(JsonValue jsonValue) {

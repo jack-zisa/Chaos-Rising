@@ -1,0 +1,10 @@
+{
+  "type": "armor",
+  "texture": "incinerator_on",
+  "stat_modifier": {
+    "stats": {
+      "health": 100,
+      "defense": 10
+    }
+  }
+}

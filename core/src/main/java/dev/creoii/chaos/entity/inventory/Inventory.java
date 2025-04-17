@@ -2,6 +2,8 @@ package dev.creoii.chaos.entity.inventory;
 
 import dev.creoii.chaos.item.ItemStack;
 
+import java.util.Arrays;
+
 public class Inventory {
     protected final Slot[][] slots;
 
@@ -21,6 +23,10 @@ public class Inventory {
 
     public Slot getSlot(int ri, int ci) {
         return slots[ri][ci];
+    }
+
+    public boolean isEmpty() {
+        return Arrays.stream(slots).allMatch(slotRow -> Arrays.stream(slotRow).noneMatch(Slot::hasItem));
     }
 
     public boolean addItem(ItemStack stack) {

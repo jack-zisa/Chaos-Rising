@@ -4,36 +4,29 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import dev.creoii.chaos.DataManager;
-import dev.creoii.chaos.Game;
+import dev.creoii.chaos.InputManager;
+import dev.creoii.chaos.Main;
 import dev.creoii.chaos.attack.Attack;
+import dev.creoii.chaos.entity.inventory.Slot;
 import dev.creoii.chaos.texture.TextureManager;
 import dev.creoii.chaos.util.Rarity;
 import dev.creoii.chaos.util.stat.StatModifier;
 
 public class Item implements DataManager.Identifiable {
-    private String id;
-    private final String textureId;
-    private final Type type;
-    private final Rarity rarity;
-    private final Attack attack;
-    private final StatModifier statModifier;
+    protected String id;
+    protected final String textureId;
+    protected final Type type;
+    protected final Rarity rarity;
+    protected final StatModifier statModifier;
     protected Sprite sprite;
-    private final ItemStack defaultStack;
+    protected final ItemStack defaultStack;
 
-    public Item(Type type, Rarity rarity, String textureId, Attack attack, StatModifier statModifier) {
+    public Item(Type type, Rarity rarity, String textureId, StatModifier statModifier) {
         this.type = type;
         this.rarity = rarity;
         this.textureId = textureId;
-        this.attack = attack;
         this.statModifier = statModifier;
         defaultStack = new ItemStack(this);
-    }
-
-    public Item create(Game game) {
-        Item item = new Item(type, rarity, textureId, attack, statModifier);
-        item.setId(id);
-        item.sprite = new Sprite(game.getTextureManager().getTexture("item", textureId));
-        return item;
     }
 
     @Override
@@ -46,16 +39,17 @@ public class Item implements DataManager.Identifiable {
         this.id = id;
     }
 
+    @Override
+    public void onLoad(Main main) {
+        sprite = new Sprite(main.getGame().getTextureManager().getTexture("item", textureId));
+    }
+
     public Type getType() {
         return type;
     }
 
     public Rarity getRarity() {
         return rarity;
-    }
-
-    public Attack getAttack() {
-        return attack;
     }
 
     public StatModifier getStatModifier() {
@@ -70,6 +64,10 @@ public class Item implements DataManager.Identifiable {
         return defaultStack;
     }
 
+    public boolean clickInSlot(InputManager manager, Slot slot, ItemStack stack) {
+        return false;
+    }
+
     public static class Serializer implements Json.Serializer<Item> {
         @Override
         public void write(Json json, Item item, Class knownType) {
@@ -77,7 +75,6 @@ public class Item implements DataManager.Identifiable {
             json.writeValue("id", item.id);
             json.writeValue("type", item.type.name().toLowerCase());
             json.writeValue("rarity", item.rarity.name().toLowerCase());
-            json.writeValue("attack", item.attack);
             json.writeValue("stats", item.statModifier);
             json.writeObjectEnd();
         }
@@ -87,9 +84,17 @@ public class Item implements DataManager.Identifiable {
             Type type = Type.valueOf(jsonValue.getString("type").toUpperCase());
             Rarity rarity = jsonValue.has("rarity") ? Rarity.valueOf(jsonValue.getString("rarity").toUpperCase()) : Rarity.COMMON;
             String textureId = jsonValue.getString("texture", TextureManager.DEFAULT_TEXTURE_ID);
-            Attack attack = Attack.parse(jsonValue.get("attack"));
+            // replace NONE with null
             StatModifier stats = jsonValue.has("stat_modifier") ? StatModifier.parse(json, jsonValue.get("stat_modifier")) : StatModifier.NONE;
-            return new Item(type, rarity, textureId, attack, stats);
+
+            if (type == Type.WEAPON) {
+                Attack attack = Attack.parse(jsonValue.get("attack"));
+                return new WeaponItem(rarity, textureId, attack, stats);
+            } else if (type == Type.CONSUMABLE) {
+                return new ConsumableItem(rarity, textureId);
+            }
+
+            return new Item(type, rarity, textureId, stats);
         }
     }
 
@@ -97,6 +102,7 @@ public class Item implements DataManager.Identifiable {
         WEAPON,
         ABILITY,
         ARMOR,
-        ACCESSORY
+        ACCESSORY,
+        CONSUMABLE
     }
 }
