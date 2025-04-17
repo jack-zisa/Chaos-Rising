@@ -1,5 +1,15 @@
 {
   "type": "consumable",
   "rarity": "legendary",
-  "texture": "vulcans_eruption"
+  "texture": "vulcans_eruption",
+  "stat_bonus": {
+    "health": 50
+  },
+  "status_effects": [
+    {
+      "id": "invulnerable",
+      "amplifier": 1,
+      "duration": 1200
+    }
+  ]
 }

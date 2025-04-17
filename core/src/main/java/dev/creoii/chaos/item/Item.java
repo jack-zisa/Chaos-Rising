@@ -7,25 +7,29 @@ import dev.creoii.chaos.DataManager;
 import dev.creoii.chaos.InputManager;
 import dev.creoii.chaos.Main;
 import dev.creoii.chaos.attack.Attack;
+import dev.creoii.chaos.effect.StatusEffect;
+import dev.creoii.chaos.effect.StatusEffects;
 import dev.creoii.chaos.entity.inventory.Slot;
 import dev.creoii.chaos.texture.TextureManager;
 import dev.creoii.chaos.util.Rarity;
+import dev.creoii.chaos.util.stat.StatContainer;
 import dev.creoii.chaos.util.stat.StatModifier;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Item implements DataManager.Identifiable {
     protected String id;
     protected final String textureId;
     protected final Type type;
     protected final Rarity rarity;
-    protected final StatModifier statModifier;
     protected Sprite sprite;
     protected final ItemStack defaultStack;
 
-    public Item(Type type, Rarity rarity, String textureId, StatModifier statModifier) {
+    public Item(Type type, Rarity rarity, String textureId) {
         this.type = type;
         this.rarity = rarity;
         this.textureId = textureId;
-        this.statModifier = statModifier;
         defaultStack = new ItemStack(this);
     }
 
@@ -52,10 +56,6 @@ public class Item implements DataManager.Identifiable {
         return rarity;
     }
 
-    public StatModifier getStatModifier() {
-        return statModifier;
-    }
-
     public Sprite getSprite() {
         return sprite;
     }
@@ -75,7 +75,6 @@ public class Item implements DataManager.Identifiable {
             json.writeValue("id", item.id);
             json.writeValue("type", item.type.name().toLowerCase());
             json.writeValue("rarity", item.rarity.name().toLowerCase());
-            json.writeValue("stats", item.statModifier);
             json.writeObjectEnd();
         }
 
@@ -91,10 +90,19 @@ public class Item implements DataManager.Identifiable {
                 Attack attack = Attack.parse(jsonValue.get("attack"));
                 return new WeaponItem(rarity, textureId, attack, stats);
             } else if (type == Type.CONSUMABLE) {
-                return new ConsumableItem(rarity, textureId);
+                StatContainer statContainer = jsonValue.has("stat_bonus") ? json.readValue(StatContainer.class, jsonValue.get("stat_bonus")) : null;
+                List<StatusEffect> statusEffects = new ArrayList<>();
+                if (jsonValue.has("status_effects")) {
+                    jsonValue.get("status_effects").forEach(effectValue -> {
+                        StatusEffect statusEffect = StatusEffects.ALL.get(effectValue.getString("id"));
+                        statusEffect.init(effectValue.getInt("amplifier", 0), effectValue.getInt("duration", 0));
+                        statusEffects.add(statusEffect);
+                    });
+                }
+                return new ConsumableItem(rarity, textureId, statContainer, statusEffects);
             }
 
-            return new Item(type, rarity, textureId, stats);
+            return new Item(type, rarity, textureId);
         }
     }
 

@@ -4,7 +4,7 @@ import dev.creoii.chaos.attack.Attack;
 import dev.creoii.chaos.util.Rarity;
 import dev.creoii.chaos.util.stat.StatModifier;
 
-public class WeaponItem extends Item {
+public class WeaponItem extends EquipmentItem {
     private final Attack attack;
 
     public WeaponItem(Rarity rarity, String textureId, Attack attack, StatModifier statModifier) {

@@ -1,6 +1,7 @@
 package dev.creoii.chaos.entity.inventory;
 
 import dev.creoii.chaos.entity.character.CharacterEntity;
+import dev.creoii.chaos.item.EquipmentItem;
 import dev.creoii.chaos.item.ItemStack;
 
 public class CharacterInventory extends Inventory {
@@ -21,15 +22,15 @@ public class CharacterInventory extends Inventory {
 
     @Override
     public void onAddItemToSlot(Slot slot, ItemStack stack) {
-        if (slot.getType() != Slot.Type.NONE && slot.getType().getItemPredicate().test(stack.getItem())) {
-            character.getStats().applyModifier(stack.getItem().getStatModifier());
+        if (slot.getType() != Slot.Type.NONE && slot.getType().getItemPredicate().test(stack.getItem()) && stack.getItem() instanceof EquipmentItem equipmentItem) {
+            character.getStats().applyModifier(equipmentItem.getStatModifier());
         }
     }
 
     @Override
     public void onRemoveItemFromSlot(Slot slot, ItemStack stack) {
-        if (slot.getType() != Slot.Type.NONE && slot.getType().getItemPredicate().test(stack.getItem())) {
-            character.getStats().removeModifier(stack.getItem().getStatModifier().uuid());
+        if (slot.getType() != Slot.Type.NONE && slot.getType().getItemPredicate().test(stack.getItem()) && stack.getItem() instanceof EquipmentItem equipmentItem) {
+            character.getStats().removeModifier(equipmentItem.getStatModifier().uuid());
         }
     }
 
