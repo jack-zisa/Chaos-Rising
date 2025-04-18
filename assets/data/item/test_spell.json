@@ -1,0 +1,16 @@
+{
+  "type": "ability",
+  "texture": "inferno",
+  "attack": {
+    "bullet_id": "test_dec",
+    "damage": 2,
+    "bullet_count": 18,
+    "arc_gap": 20
+  },
+  "stat_modifier": {
+    "stats": {
+      "vitality": 8
+    }
+  },
+  "cooldown": 20
+}
