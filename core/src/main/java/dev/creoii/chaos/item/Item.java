@@ -68,6 +68,10 @@ public class Item implements DataManager.Identifiable {
         return false;
     }
 
+    public String getTooltip() {
+        return id + "\n";
+    }
+
     public static class Serializer implements Json.Serializer<Item> {
         @Override
         public void write(Json json, Item item, Class knownType) {

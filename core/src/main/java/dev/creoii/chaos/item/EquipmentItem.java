@@ -14,4 +14,8 @@ public class EquipmentItem extends Item {
     public StatModifier getStatModifier() {
         return statModifier;
     }
+
+    public String getTooltip() {
+        return id + "\n" + type.name().toLowerCase() + "\n" + statModifier.getTooltip();
+    }
 }

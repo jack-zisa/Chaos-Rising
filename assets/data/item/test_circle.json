@@ -4,8 +4,8 @@
   "attack": {
     "bullet_id": "test_dec",
     "damage": 2,
-    "bullet_count": 10,
-    "arc_gap": 36
+    "bullet_count": 12,
+    "arc_gap": 30
   },
   "stat_modifier": {
     "stats": {

@@ -39,8 +39,16 @@ public class CharacterEntity extends LivingEntity {
         sprite = new Sprite(game.getTextureManager().getTexture("class", getTextureId()));
         sprite.setSize(getScale(), getScale());
         getStats().setHealth(characterClass.getBaseStats().health.base());
+        getStats().setSpeed(characterClass.getBaseStats().speed.base());
+        getStats().setAttackSpeed(characterClass.getBaseStats().attackSpeed.base());
+        getStats().setDefense(characterClass.getBaseStats().defense.base());
+        getStats().setAttack(characterClass.getBaseStats().attack.base());
         getStats().setVitality(characterClass.getBaseStats().vitality.base());
         getMaxStats().setHealth(characterClass.getBaseStats().health.base());
+        getMaxStats().setSpeed(characterClass.getBaseStats().speed.base());
+        getMaxStats().setAttackSpeed(characterClass.getBaseStats().attackSpeed.base());
+        getMaxStats().setDefense(characterClass.getBaseStats().defense.base());
+        getMaxStats().setAttack(characterClass.getBaseStats().attack.base());
         getMaxStats().setVitality(characterClass.getBaseStats().vitality.base());
     }
 

@@ -23,7 +23,7 @@ public class ItemRenderer {
     public static void renderTooltip(@Nullable SpriteBatch batch, @Nullable ShapeRenderer shapeRenderer, Item item) {
         FONT.setColor(item.getRarity().getColor());
 
-        String tooltip = item.id();
+        String tooltip = item.getTooltip();
         GlyphLayout layout = new GlyphLayout(FONT, tooltip);
 
         Vector2 mousePos = new Vector2(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());

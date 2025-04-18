@@ -33,13 +33,24 @@ public class StatContainer {
         this.health.set(health);
     }
 
-    public void setVitality(int vitality) {
-        this.vitality.set(vitality);
+    public void setSpeed(int speed) {
+        this.speed.set(speed);
     }
 
-    public StatContainer withVitality(int vitality) {
-        setVitality(vitality);
-        return this;
+    public void setAttackSpeed(int attackSpeed) {
+        this.attackSpeed.set(attackSpeed);
+    }
+
+    public void setDefense(int defense) {
+        this.defense.set(defense);
+    }
+
+    public void setAttack(int attack) {
+        this.attack.set(attack);
+    }
+
+    public void setVitality(int vitality) {
+        this.vitality.set(vitality);
     }
 
     public void applyModifier(StatModifier modifier) {
