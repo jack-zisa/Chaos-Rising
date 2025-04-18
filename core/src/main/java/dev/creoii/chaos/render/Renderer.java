@@ -62,6 +62,10 @@ public class Renderer implements Disposable {
         return camera;
     }
 
+    public FitViewport getViewport() {
+        return viewport;
+    }
+
     public void resize(int width, int height) {
         viewport.update(width, height, true);
     }

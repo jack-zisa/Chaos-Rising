@@ -80,9 +80,9 @@ public class InputManager extends InputAdapter {
             main.setDebug(!main.getDebug());
             return true;
         } else if (keycode == main.getGame().getOptionsManager().INVENTORY_KEY.intValue()) {
-            if (main.getRenderer().getCurrentScreen() == null)
-                main.getRenderer().setCurrentScreen(new InventoryScreen(main, new Vector2(Main.WINDOW_WIDTH - 196, 400), main.getGame().getActiveCharacter().getInventory()));
-            else
+            if (main.getRenderer().getCurrentScreen() == null) {
+                main.getRenderer().setCurrentScreen(new InventoryScreen(main, new Vector2(1084, 400), main.getGame().getActiveCharacter().getInventory()));
+            } else
                 main.getRenderer().clearCurrentScreen();
             return true;
         }

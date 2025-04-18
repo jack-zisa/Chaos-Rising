@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import dev.creoii.chaos.chat.command.CommandManager;
 import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.entity.character.CharacterEntity;
@@ -31,14 +32,16 @@ public class HudRenderer implements Renderable {
 
                 String[] lines = new String[]{Gdx.graphics.getFramesPerSecond() + " FPS", posText, statsText};
 
-                float baseY = Gdx.graphics.getHeight() - TEXT_PADDING;
+                Viewport viewport = renderer.getViewport();
+
+                float baseY = viewport.getWorldHeight() - TEXT_PADDING;
                 float x;
                 float y;
 
                 for (int i = 0; i < lines.length; i++) {
                     String text = lines[i];
                     DEBUG_LAYOUT.setText(font, text);
-                    x = Gdx.graphics.getWidth() - DEBUG_LAYOUT.width - TEXT_PADDING;
+                    x = viewport.getWorldWidth() - DEBUG_LAYOUT.width - TEXT_PADDING;
                     y = baseY - (i * 25);
                     font.draw(batch, DEBUG_LAYOUT, x, y);
                 }
