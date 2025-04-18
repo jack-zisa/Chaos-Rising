@@ -83,11 +83,11 @@ public class Item implements DataManager.Identifiable {
             Type type = Type.valueOf(jsonValue.getString("type").toUpperCase());
             Rarity rarity = jsonValue.has("rarity") ? Rarity.valueOf(jsonValue.getString("rarity").toUpperCase()) : Rarity.COMMON;
             String textureId = jsonValue.getString("texture", TextureManager.DEFAULT_TEXTURE_ID);
-            // replace NONE with null
-            StatModifier stats = jsonValue.has("stat_modifier") ? StatModifier.parse(json, jsonValue.get("stat_modifier")) : StatModifier.NONE;
 
             if (type == Type.WEAPON) {
                 Attack attack = Attack.parse(jsonValue.get("attack"));
+                // replace NONE with null
+                StatModifier stats = jsonValue.has("stat_modifier") ? StatModifier.parse(json, jsonValue.get("stat_modifier")) : StatModifier.NONE;
                 return new WeaponItem(rarity, textureId, attack, stats);
             } else if (type == Type.CONSUMABLE) {
                 StatContainer statContainer = jsonValue.has("stat_bonus") ? json.readValue(StatContainer.class, jsonValue.get("stat_bonus")) : null;
@@ -100,6 +100,9 @@ public class Item implements DataManager.Identifiable {
                     });
                 }
                 return new ConsumableItem(rarity, textureId, statContainer, statusEffects);
+            } else if (type == Type.ARMOR || type == Type.ACCESSORY) {
+                StatModifier stats = jsonValue.has("stat_modifier") ? StatModifier.parse(json, jsonValue.get("stat_modifier")) : StatModifier.NONE;
+                return new EquipmentItem(type, rarity, textureId, stats);
             }
 
             return new Item(type, rarity, textureId);

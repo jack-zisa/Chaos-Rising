@@ -17,6 +17,7 @@ public record StatModifier(UUID uuid, Type type, StatContainer statContainer) {
     public enum Type {
         NONE,
         ADD,
+        MULTIPLY,
         SET
     }
 }

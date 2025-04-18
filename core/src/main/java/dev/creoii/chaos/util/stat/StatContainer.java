@@ -58,8 +58,8 @@ public class StatContainer {
 
         BiConsumer<Stat, Integer> modify = (stat, amount) -> {
             if (apply)
-                stat.addModifier(amount, type);
-            else stat.removeModifier(amount, type);
+                stat.addModifier(modifier.uuid(), amount, type);
+            else stat.removeModifier(modifier.uuid());
         };
 
         modify.accept(health, container.health.base());

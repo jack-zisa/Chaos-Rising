@@ -2,6 +2,7 @@ package dev.creoii.chaos.util.stat;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class Stat {
     private int base;
@@ -19,12 +20,12 @@ public class Stat {
         this.base = value;
     }
 
-    public void addModifier(int amount, StatModifier.Type type) {
-        modifiers.add(new ModifierEntry(amount, type));
+    public void addModifier(UUID uuid, int amount, StatModifier.Type type) {
+        modifiers.add(new ModifierEntry(uuid, amount, type));
     }
 
-    public void removeModifier(int amount, StatModifier.Type type) {
-        modifiers.removeIf(m -> m.amount == amount && m.type == type);
+    public void removeModifier(UUID uuid) {
+        modifiers.removeIf(modifier -> modifier.uuid == uuid);
     }
 
     public int value() {
@@ -33,6 +34,7 @@ public class Stat {
             switch (mod.type) {
                 case ADD -> result += mod.amount;
                 case SET -> result = mod.amount;
+                case MULTIPLY -> result *= mod.amount;
             }
         }
         return result;
@@ -43,5 +45,5 @@ public class Stat {
         return String.valueOf(value());
     }
 
-    private record ModifierEntry(int amount, StatModifier.Type type) {}
+    private record ModifierEntry(UUID uuid, int amount, StatModifier.Type type) {}
 }
