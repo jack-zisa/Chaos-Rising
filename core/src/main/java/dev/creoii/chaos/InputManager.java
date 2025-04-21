@@ -1,5 +1,6 @@
 package dev.creoii.chaos;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.math.Vector2;
@@ -75,6 +76,8 @@ public class InputManager extends InputAdapter {
 
     @Override
     public boolean keyDown(int keycode) {
+        main.getRenderer().getCamera().unproject(mousePos.set(Gdx.input.getX(), Gdx.input.getY(), 0));
+
         keyHeld = keycode;
         if (keycode == main.getGame().getOptionsManager().DEBUG_KEY.intValue()) {
             main.setDebug(!main.getDebug());
@@ -93,11 +96,15 @@ public class InputManager extends InputAdapter {
     }
 
     public void keyHeld(int keycode) {
+        main.getRenderer().getCamera().unproject(mousePos.set(Gdx.input.getX(), Gdx.input.getY(), 0));
+
         forEach(inputtable -> inputtable.keyHeld(this, keycode));
     }
 
     @Override
     public boolean keyUp(int keycode) {
+        main.getRenderer().getCamera().unproject(mousePos.set(Gdx.input.getX(), Gdx.input.getY(), 0));
+
         keyHeld = -1;
         forEach(inputtable -> inputtable.keyUp(this, keycode));
         return super.keyUp(keycode);

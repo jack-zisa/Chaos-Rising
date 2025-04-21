@@ -1,33 +1,36 @@
 package dev.creoii.chaos.attack;
 
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.JsonValue;
 import dev.creoii.chaos.entity.Entity;
-import dev.creoii.chaos.entity.character.CharacterEntity;
-import dev.creoii.chaos.util.provider.IntProvider;
-import dev.creoii.chaos.util.provider.Provider;
+import dev.creoii.chaos.util.provider.floatprovider.FloatProvider;
+import dev.creoii.chaos.util.provider.intprovider.IntProvider;
+import dev.creoii.chaos.util.provider.vecprovider.SourceVecProvider;
+import dev.creoii.chaos.util.provider.vecprovider.VecProvider;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.function.BiFunction;
 
 public interface Attack {
-    void attack(Target target, Entity entity);
+    void attack(VecProvider targetPos, VecProvider sourcePos, Entity sourceEntity);
+
+    default void attack(VecProvider targetPos, Entity sourceEntity) {
+        attack(targetPos, new SourceVecProvider(), sourceEntity);
+    }
 
     static Attack parse(JsonValue jsonValue) {
         if (jsonValue.has("attacks")) {
-            JsonValue segmentsList = jsonValue.get("attacks");
+            JsonValue segments = jsonValue.get("attacks");
             Set<Attack> attacks = new HashSet<>();
-            segmentsList.forEach(jsonValue1 -> attacks.add(parse(jsonValue1)));
+            segments.forEach(jsonValue1 -> attacks.add(parse(jsonValue1)));
             return new MultiAttack(attacks);
         } else {
             String bulletId = jsonValue.getString("bullet_id");
-            Provider<Integer> damage = IntProvider.parse(jsonValue.get("damage"), 0);
+            IntProvider damage = IntProvider.parse(jsonValue.get("damage"));
             int bulletCount = jsonValue.getInt("bullet_count", 1);
             int arcGap = jsonValue.getInt("arc_gap", 0);
             float predictability = jsonValue.getFloat("predictability", 0f);
-            float angleOffset = jsonValue.getFloat("angle_offset", 0f);
+            FloatProvider angleOffset = FloatProvider.parse(jsonValue.get("angle_offset"), 0f);
 
             Vector2 posOffsetVec;
             if (jsonValue.has("pos_offset")) {
@@ -36,33 +39,18 @@ public interface Attack {
             } else {
                 posOffsetVec = Vector2.Zero;
             }
-            return new SimpleAttack(bulletId, damage, bulletCount, arcGap, predictability, angleOffset, posOffsetVec);
-        }
-    }
 
-    enum Target {
-        MOUSE_POS((attack, entity) -> {
-            Vector3 mousePos = entity.getGame().getInputManager().getMousePos();
-            return new Vector2(mousePos.x, mousePos.y).sub(entity.getCenterPos()).nor();
-        }),
-        PLAYER((attack, entity) -> {
-            CharacterEntity character = entity.getGame().getActiveCharacter();
+            VecProvider target = null;
+            if (jsonValue.has("target")) {
+                target = VecProvider.parse(jsonValue.get("target"));
+            }
 
-            Vector2 pos = character.getCenterPos();
-            Vector2 velocity = pos.cpy().sub(character.getPrevCenterPos());
+            VecProvider source = null;
+            if (jsonValue.has("source")) {
+                source = VecProvider.parse(jsonValue.get("source"));
+            }
 
-            Vector2 predicted = pos.cpy().add(velocity.scl(attack.predictability()));
-            return predicted.sub(entity.getCenterPos()).nor();
-        });
-
-        private final BiFunction<SimpleAttack, Entity, Vector2> direction;
-
-        Target(BiFunction<SimpleAttack, Entity, Vector2> direction) {
-            this.direction = direction;
-        }
-
-        public Vector2 getDirection(SimpleAttack attack, Entity source) {
-            return direction.apply(attack, source);
+            return new SimpleAttack(bulletId, damage, bulletCount, arcGap, predictability, angleOffset, posOffsetVec, source, target);
         }
     }
 }

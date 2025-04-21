@@ -1,12 +1,14 @@
 {
   "texture": "brilliance_blast",
-  "lifetime": 100,
+  "lifetime": 150,
   "path": {
     "speed": 10,
     "arc_speed": {
-      "id": "accelerate",
-      "value": 0.05,
-      "acceleration": 0
+      "type": "curve",
+      "start": 0.05,
+      "end": 0,
+      "duration": 150,
+      "curve": "ease_in"
     }
   }
 }

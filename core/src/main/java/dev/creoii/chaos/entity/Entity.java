@@ -104,7 +104,7 @@ public abstract class Entity implements Positionable, Tickable {
     }
 
     public Vector2 getCenterPos() {
-        centerPos.set(getPos()).add(COORDINATE_SCALE / 2f, COORDINATE_SCALE / 2f);
+        centerPos.set(getPos()).add(COORDINATE_SCALE / 4f, COORDINATE_SCALE / 4f);
         sprite.setCenter(centerPos.x, centerPos.y);
         return centerPos;
     }

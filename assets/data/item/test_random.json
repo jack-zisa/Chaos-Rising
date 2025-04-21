@@ -4,7 +4,7 @@
   "attack": {
     "bullet_id": "test_segment",
     "damage": {
-      "id": "random",
+      "type": "random",
       "min": 0,
       "max": 20
     },

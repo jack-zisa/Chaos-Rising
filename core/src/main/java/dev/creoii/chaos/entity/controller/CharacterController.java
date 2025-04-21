@@ -2,12 +2,12 @@ package dev.creoii.chaos.entity.controller;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
-import dev.creoii.chaos.attack.Attack;
 import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.entity.character.CharacterEntity;
 import dev.creoii.chaos.entity.inventory.Slot;
 import dev.creoii.chaos.item.AbilityItem;
 import dev.creoii.chaos.item.WeaponItem;
+import dev.creoii.chaos.util.provider.vecprovider.*;
 
 public class CharacterController extends EntityController<CharacterEntity> {
     private int weaponCooldown;
@@ -40,27 +40,26 @@ public class CharacterController extends EntityController<CharacterEntity> {
             entity.setMoving(false);
         }
 
-        if (Gdx.input.isTouched()) {
-            Vector2 direction = new Vector2(dx, dy).nor();
+        Vector2 direction = new Vector2(dx, dy).nor();
 
-            if (entity instanceof CharacterEntity character)
-                character.setPrevPos(entity.getPos());
+        if (entity instanceof CharacterEntity character)
+            character.setPrevPos(entity.getPos());
 
-            entity.getPos().add(direction.scl(entity.getStats().speed.value() * Entity.COORDINATE_SCALE * delta));
-            entity.setMoving(true);
+        entity.getPos().add(direction.scl(entity.getStats().speed.value() * Entity.COORDINATE_SCALE * delta));
+        entity.setMoving(true);
 
-            if (Gdx.input.isTouched() && --weaponCooldown <= 0) {
-                Slot weaponSlot = entity.getInventory().getWeaponSlot();
-                if (weaponSlot.hasItem() && weaponSlot.getStack().getItem() instanceof WeaponItem weaponItem) {
-                    weaponItem.getAttack().attack(Attack.Target.MOUSE_POS, entity);
-                    weaponCooldown = Math.max(1, 150 / Math.max(1, entity.getStats().attackSpeed.value()));
-                }
+        if (Gdx.input.isTouched() && --weaponCooldown <= 0) {
+            Slot weaponSlot = entity.getInventory().getWeaponSlot();
+            if (weaponSlot.hasItem() && weaponSlot.getStack().getItem() instanceof WeaponItem weaponItem) {
+                weaponItem.getAttack().attack(new MousePosVecProvider(), new SourceVecProvider(), getEntity());
+                weaponCooldown = Math.max(1, 150 / Math.max(1, entity.getStats().attackSpeed.value()));
             }
-        } else if (Gdx.input.isKeyPressed(entity.getGame().getOptionsManager().ABILITY_KEY.intValue())) {
+        }
+        if (Gdx.input.isKeyPressed(entity.getGame().getOptionsManager().ABILITY_KEY.intValue())) {
             if (--abilityCooldown <= 0) {
                 Slot abilitySlot = entity.getInventory().getAbilitySlot();
                 if (abilitySlot.hasItem() && abilitySlot.getStack().getItem() instanceof AbilityItem abilityItem) {
-                    abilityItem.getAttack().attack(abilityItem.getTarget(), getEntity());
+                    abilityItem.getAttack().attack(new MousePosVecProvider(), new SourceVecProvider(), getEntity());
                     abilityCooldown = abilityItem.getCooldown();
                 }
             }

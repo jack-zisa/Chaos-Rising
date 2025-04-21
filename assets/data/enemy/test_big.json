@@ -19,9 +19,26 @@
               "bullet_id": "test_big",
               "damage": 20,
               "bullet_count": 6,
-              "arc_gap": 60
+              "arc_gap": 60,
+              "angle_offset": {
+                "type": "cycle",
+                "value": {
+                  "type": "binary",
+                  "a": {
+                    "type": "time"
+                  },
+                  "b": 0.33334,
+                  "operation": "mul"
+                },
+                "max": 360
+              },
+              "target": {
+                "type": "constant",
+                "x": 0,
+                "y": 0
+              }
             },
-            "cooldown": 100
+            "cooldown": 10
           }
         ]
       }

@@ -107,7 +107,7 @@ public class Item implements DataManager.Identifiable {
             } else if (type == Type.ABILITY) {
                 StatModifier stats = jsonValue.has("stat_modifier") ? StatModifier.parse(json, jsonValue.get("stat_modifier")) : StatModifier.NONE;
                 Attack attack = Attack.parse(jsonValue.get("attack"));
-                return new AbilityItem(rarity, textureId, stats, attack, Attack.Target.valueOf(jsonValue.getString("target", Attack.Target.MOUSE_POS.name()).toUpperCase()), jsonValue.getInt("cooldown", 0));
+                return new AbilityItem(rarity, textureId, stats, attack, jsonValue.getInt("cooldown", 0));
             } else if (type == Type.ARMOR || type == Type.ACCESSORY) {
                 StatModifier stats = jsonValue.has("stat_modifier") ? StatModifier.parse(json, jsonValue.get("stat_modifier")) : StatModifier.NONE;
                 return new EquipmentItem(type, rarity, textureId, stats);
