@@ -5,7 +5,15 @@
     "bullet_id": "test_dec",
     "damage": 2,
     "bullet_count": 18,
-    "arc_gap": 20
+    "arc_gap": 20,
+    "source": {
+      "type": "mouse_pos"
+    },
+    "target": {
+      "type": "constant",
+      "x": 0,
+      "y": 0
+    }
   },
   "stat_modifier": {
     "stats": {

@@ -45,7 +45,7 @@ public class CharacterController extends EntityController<CharacterEntity> {
         if (entity instanceof CharacterEntity character)
             character.setPrevPos(entity.getPos());
 
-        entity.getPos().add(direction.scl(entity.getStats().speed.value() * Entity.COORDINATE_SCALE * delta));
+        entity.getPos().add(direction.scl(entity.getStats().speed.value() * (Entity.COORDINATE_SCALE / 2f) * delta));
         entity.setMoving(true);
 
         if (Gdx.input.isTouched() && --weaponCooldown <= 0) {
