@@ -2,7 +2,7 @@
   "type": "weapon",
   "texture": "malice",
   "attack": {
-    "bullet_id": "test",
+    "bullet_id": "test_sin",
     "damage": 10
   },
   "stat_modifier": {

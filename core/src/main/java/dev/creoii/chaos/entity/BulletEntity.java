@@ -23,7 +23,7 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
     private final BulletPath path;
     private final boolean piercing;
     private final EntityController<BulletEntity> controller;
-    private Group parentGroup;
+    private Entity parent;
     private Vector2 direction;
     private Vector2 perpendicular;
     private int damage;
@@ -80,8 +80,12 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
         this.index = index;
     }
 
-    public void setParentGroup(Group parentGroup) {
-        this.parentGroup = parentGroup;
+    public void setParent(Entity parent) {
+        this.parent = parent;
+    }
+
+    public Entity getParent() {
+        return parent;
     }
 
     @Override
@@ -93,7 +97,7 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
 
     @Override
     public void collisionEnter(Entity other) {
-        if (other instanceof LivingEntity && other.getGroup() != parentGroup) {
+        if (other instanceof LivingEntity && other.getGroup() != parent.getGroup()) {
             ((LivingEntity) other).damage(damage);
             if (!piercing) {
                 remove();

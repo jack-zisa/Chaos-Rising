@@ -3,12 +3,81 @@
   "lifetime": 150,
   "path": {
     "speed": 5,
-    "frequency": {
-      "type": "curve",
-      "start": 0.1,
-      "end": -1.22500,
-      "duration": 150
-    },
-    "amplitude": 5
+    "offset": {
+      "type": "binary",
+      "a": {
+        "type": "binary",
+        "a": {
+          "type": "binary",
+          "a": {
+            "type": "trig",
+            "function": "cos",
+            "value": {
+              "type": "binary",
+              "a": {
+                "type": "constant",
+                "x": {
+                  "type": "binary",
+                  "operation": "sub",
+                  "a": {
+                    "type": "time"
+                  },
+                  "b": {
+                    "type": "spawn_time"
+                  }
+                },
+                "y": {
+                  "type": "binary",
+                  "operation": "sub",
+                  "a": {
+                    "type": "time"
+                  },
+                  "b": {
+                    "type": "spawn_time"
+                  }
+                }
+              },
+              "b": {
+                "type": "constant",
+                "x": {
+                  "type": "curve",
+                  "start": 0.1,
+                  "end": -1.225,
+                  "duration": 150
+                },
+                "y": {
+                  "type": "curve",
+                  "start": 0.1,
+                  "end": -1.225,
+                  "duration": 150
+                }
+              },
+              "operation": "mul"
+            }
+          },
+          "b": {
+            "type": "perpendicular",
+            "value": {
+              "type": "direction",
+              "from": { "type": "source_pos" },
+              "to": { "type": "target_pos" }
+            }
+          },
+          "operation": "mul"
+        },
+        "b": {
+          "type": "constant",
+          "x": {
+            "type": "bullet_index"
+          },
+          "y": {
+            "type": "bullet_index"
+          }
+        },
+        "operation": "mul"
+      },
+      "b": [-1, -1],
+      "operation": "mul"
+    }
   }
 }

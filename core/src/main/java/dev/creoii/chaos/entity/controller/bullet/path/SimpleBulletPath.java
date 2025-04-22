@@ -5,8 +5,9 @@ import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.entity.controller.bullet.BulletController;
 import dev.creoii.chaos.util.provider.Provider;
 import dev.creoii.chaos.util.provider.floatprovider.FloatProvider;
+import dev.creoii.chaos.util.provider.vecprovider.VecProvider;
 
-public record SimpleBulletPath(FloatProvider speed, FloatProvider frequency, FloatProvider amplitude, FloatProvider arcSpeed) implements BulletPath {
+public record SimpleBulletPath(FloatProvider speed, VecProvider offset, FloatProvider arcSpeed) implements BulletPath {
     @Override
     public float speed(BulletController controller) {
         return speed.get(Provider.Context.of(controller.getEntity(), controller.getEntity().getGame().getGametime()));
@@ -20,8 +21,7 @@ public record SimpleBulletPath(FloatProvider speed, FloatProvider frequency, Flo
             return;
 
         Vector2 forward = new Vector2(controller.getEntity().getDirection()).scl(speed * Entity.COORDINATE_SCALE * dt);
-        Vector2 offset = new Vector2(controller.getEntity().getPerpendicular()).scl((float) (Math.cos((gametime - controller.getEntity().getSpawnTime()) * frequency.init(gametime).get(context)) * amplitude.init(gametime).get(context)) * controller.getEntity().getIndex());
-        controller.getEntity().getPos().add(forward).add(offset);
+        controller.getEntity().getPos().add(forward).add(offset.get(context));
 
         float angle = (float) (Math.atan2(controller.getEntity().getDirection().y, controller.getEntity().getDirection().x) + arcSpeed.init(gametime).get(context));
         controller.getEntity().getDirection().set((float) Math.cos(angle), (float) Math.sin(angle));
@@ -29,6 +29,6 @@ public record SimpleBulletPath(FloatProvider speed, FloatProvider frequency, Flo
 
     @Override
     public BulletPath copy() {
-        return new SimpleBulletPath(speed.copy(), frequency.copy(), amplitude.copy(), arcSpeed.copy());
+        return new SimpleBulletPath(speed.copy(), offset.copy(), arcSpeed.copy());
     }
 }

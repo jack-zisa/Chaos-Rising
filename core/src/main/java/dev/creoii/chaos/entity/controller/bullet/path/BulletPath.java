@@ -1,8 +1,11 @@
 package dev.creoii.chaos.entity.controller.bullet.path;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.JsonValue;
 import dev.creoii.chaos.entity.controller.bullet.BulletController;
 import dev.creoii.chaos.util.provider.floatprovider.FloatProvider;
+import dev.creoii.chaos.util.provider.vecprovider.ConstantVecProvider;
+import dev.creoii.chaos.util.provider.vecprovider.VecProvider;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,10 +22,9 @@ public interface BulletPath {
             JsonValue pathValue = jsonValue.get("path");
             if (pathValue.has("speed") || pathValue.has("frequency") || pathValue.has("amplitude") || pathValue.has("arc_speed")) {
                 FloatProvider speed = FloatProvider.parse(pathValue.get("speed"), 0f).copy();
-                FloatProvider frequency = FloatProvider.parse(pathValue.get("frequency"), 0f).copy();
-                FloatProvider amplitude = FloatProvider.parse(pathValue.get("amplitude"), 0f).copy();
+                VecProvider offset = pathValue.has("offset") ? VecProvider.parse(pathValue.get("offset")) : new ConstantVecProvider(Vector2.Zero);
                 FloatProvider arcSpeed = FloatProvider.parse(pathValue.get("arc_speed"), 0f).copy();
-                return new SimpleBulletPath(speed, frequency, amplitude, arcSpeed);
+                return new SimpleBulletPath(speed, offset, arcSpeed);
             } else if (pathValue.has("segments")) {
                 JsonValue segmentsList = pathValue.get("segments");
                 Map<Integer, BulletPath> segments = new HashMap<>();

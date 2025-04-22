@@ -12,7 +12,7 @@ import dev.creoii.chaos.util.provider.vecprovider.VecProvider;
 import java.util.HashMap;
 import java.util.Map;
 
-public record SimpleAttack(String bulletId, IntProvider damage, int bulletCount, int arcGap, float predictability, FloatProvider angleOffset, Vector2 posOffset, VecProvider source, VecProvider target) implements Attack {
+public record SimpleAttack(String bulletId, IntProvider damage, int bulletCount, int arcGap, float predictability, FloatProvider angleOffset, VecProvider source, VecProvider target) implements Attack {
     public void attack(VecProvider targetPos, VecProvider sourcePos, Entity sourceEntity) {
         Provider.Context context = Provider.Context.of(sourceEntity, sourceEntity.getGame().getGametime());
         Vector2 pos = source != null ? source.get(context) : sourcePos.get(context);
@@ -29,8 +29,8 @@ public record SimpleAttack(String bulletId, IntProvider damage, int bulletCount,
 
             BulletEntity bulletTemplate = sourceEntity.getGame().getDataManager().getBullet(bulletId);
             if (bulletTemplate != null) {
-                BulletEntity bullet = sourceEntity.getGame().getEntityManager().addEntity(bulletTemplate, pos.cpy().add(posOffset), customData);
-                bullet.setParentGroup(sourceEntity.getGroup());
+                BulletEntity bullet = sourceEntity.getGame().getEntityManager().addEntity(bulletTemplate, pos.cpy(), customData);
+                bullet.setParent(sourceEntity);
                 bullet.setIndex(i % 2 == 0 ? 1 : -1);
             }
         }

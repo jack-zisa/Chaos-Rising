@@ -5,27 +5,148 @@
   "attack": {
     "attacks": [
       {
-        "bullet_id": "test",
+        "bullet_id": "test_sin",
         "damage": 10,
-        "pos_offset": [2, 0]
+        "source": {
+          "type": "relative_to",
+          "parent": {
+            "type": "source_pos"
+          },
+          "offset": {
+            "type": "rotated_offset",
+            "from": {
+              "type": "source_pos"
+            },
+            "to": {
+              "type": "mouse_pos"
+            },
+            "offset": [0, -100]
+          }
+        },
+        "target": {
+          "type": "relative_to",
+          "parent": {
+            "type": "mouse_pos"
+          },
+          "offset": {
+            "type": "rotated_offset",
+            "from": {
+              "type": "source_pos"
+            },
+            "to": {
+              "type": "mouse_pos"
+            },
+            "offset": [0, -100]
+          }
+        }
       },
       {
-        "bullet_id": "test",
+        "bullet_id": "test_sin",
         "damage": 10,
-        "angle_offset": 90,
-        "pos_offset": [0, 2]
+        "source": {
+          "type": "relative_to",
+          "parent": {
+            "type": "source_pos"
+          },
+          "offset": {
+            "type": "rotated_offset",
+            "from": {
+              "type": "source_pos"
+            },
+            "to": {
+              "type": "mouse_pos"
+            },
+            "offset": [0, 100]
+          }
+        },
+        "target": {
+          "type": "relative_to",
+          "parent": {
+            "type": "mouse_pos"
+          },
+          "offset": {
+            "type": "rotated_offset",
+            "from": {
+              "type": "source_pos"
+            },
+            "to": {
+              "type": "mouse_pos"
+            },
+            "offset": [0, 100]
+          }
+        }
       },
       {
-        "bullet_id": "test",
+        "bullet_id": "test_sin",
         "damage": 10,
-        "angle_offset": 180,
-        "pos_offset": [-2, 0]
+        "source": {
+          "type": "relative_to",
+          "parent": {
+            "type": "source_pos"
+          },
+          "offset": {
+            "type": "rotated_offset",
+            "from": {
+              "type": "source_pos"
+            },
+            "to": {
+              "type": "mouse_pos"
+            },
+            "offset": [-100, 0]
+          }
+        },
+        "target": {
+          "type": "relative_to",
+          "parent": {
+            "type": "mouse_pos"
+          },
+          "offset": {
+            "type": "rotated_offset",
+            "from": {
+              "type": "source_pos"
+            },
+            "to": {
+              "type": "mouse_pos"
+            },
+            "offset": [-100, 0]
+          }
+        }
       },
       {
-        "bullet_id": "test",
+        "bullet_id": "test_sin",
         "damage": 10,
-        "angle_offset": 270,
-        "pos_offset": [0, -2]
+        "source": {
+          "type": "relative_to",
+          "parent": {
+            "type": "source_pos"
+          },
+          "offset": {
+            "type": "rotated_offset",
+            "from": {
+              "type": "source_pos"
+            },
+            "to": {
+              "type": "mouse_pos"
+            },
+            "offset": [100, 0]
+          }
+        },
+        "target": {
+          "type": "relative_to",
+          "parent": {
+            "type": "mouse_pos"
+          },
+          "offset": {
+            "type": "rotated_offset",
+            "from": {
+              "type": "source_pos"
+            },
+            "to": {
+              "type": "mouse_pos"
+            },
+            "offset": [100, 0]
+          }
+        }
       }
     ]
   },

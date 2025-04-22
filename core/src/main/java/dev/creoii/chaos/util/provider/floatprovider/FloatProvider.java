@@ -44,11 +44,13 @@ public interface FloatProvider extends Provider<Float> {
                 FloatProvider max = FloatProvider.parse(jsonValue.get("max"));
                 yield new CycleFloatProvider(value, max);
             }
+            case "bullet_index" -> new BulletIndexFloatProvider();
             case "random" -> {
                 FloatProvider min = FloatProvider.parse(jsonValue.get("min"));
                 FloatProvider max = FloatProvider.parse(jsonValue.get("max"));
                 yield new RandomFloatProvider(min, max);
             }
+            case "spawn_time" -> new SpawnTimeFloatProvider();
             case "time" -> new TimeFloatProvider();
             case "trig" -> {
                 TrigFloatProvider.Function function = TrigFloatProvider.Function.valueOf(jsonValue.getString("function", "SIN").toUpperCase());

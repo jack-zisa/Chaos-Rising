@@ -1,6 +1,5 @@
 package dev.creoii.chaos.attack;
 
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.JsonValue;
 import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.util.provider.floatprovider.FloatProvider;
@@ -32,14 +31,6 @@ public interface Attack {
             float predictability = jsonValue.getFloat("predictability", 0f);
             FloatProvider angleOffset = FloatProvider.parse(jsonValue.get("angle_offset"), 0f);
 
-            Vector2 posOffsetVec;
-            if (jsonValue.has("pos_offset")) {
-                JsonValue posOffsetValue = jsonValue.get("pos_offset");
-                posOffsetVec = new Vector2(posOffsetValue.get(0).asInt(), posOffsetValue.get(1).asInt()).scl(Entity.COORDINATE_SCALE);
-            } else {
-                posOffsetVec = Vector2.Zero;
-            }
-
             VecProvider target = null;
             if (jsonValue.has("target")) {
                 target = VecProvider.parse(jsonValue.get("target"));
@@ -50,7 +41,7 @@ public interface Attack {
                 source = VecProvider.parse(jsonValue.get("source"));
             }
 
-            return new SimpleAttack(bulletId, damage, bulletCount, arcGap, predictability, angleOffset, posOffsetVec, source, target);
+            return new SimpleAttack(bulletId, damage, bulletCount, arcGap, predictability, angleOffset, source, target);
         }
     }
 }
