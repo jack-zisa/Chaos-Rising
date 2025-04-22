@@ -29,12 +29,16 @@ public interface VecProvider extends Provider<Vector2> {
                 yield new ConstantVecProvider(x, y);
             }
             case "mouse_pos" -> new MousePosVecProvider();
-            case "source_pos" -> new SourceVecProvider();
-            case "target_pos" -> new TargetPosVecProvider();
             case "normalized" -> {
                 VecProvider value = VecProvider.parse(jsonValue.get("value"));
                 yield new NormalizedVecProvider(value);
             }
+            case "perpendicular" -> {
+                VecProvider value = VecProvider.parse(jsonValue.get("value"));
+                yield new PerpendicularVecProvider(value);
+            }
+            case "source_pos" -> new SourceVecProvider();
+            case "target_pos" -> new TargetPosVecProvider();
             default -> throw new IllegalStateException("Unexpected VecProvider value: " + type);
         };
     }

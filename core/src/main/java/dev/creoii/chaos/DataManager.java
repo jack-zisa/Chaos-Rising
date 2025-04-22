@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
 import dev.creoii.chaos.entity.BulletEntity;
+import dev.creoii.chaos.entity.GroupBulletEntity;
+import dev.creoii.chaos.entity.SingleBulletEntity;
 import dev.creoii.chaos.entity.EnemyEntity;
 import dev.creoii.chaos.entity.character.CharacterClass;
 import dev.creoii.chaos.item.Item;
@@ -27,7 +29,9 @@ public class DataManager {
         json.setSerializer(CharacterClass.class, new CharacterClass.Serializer());
         json.setSerializer(Item.class, new Item.Serializer());
         json.setSerializer(EnemyEntity.class, new EnemyEntity.Serializer());
-        json.setSerializer(BulletEntity.class, new BulletEntity.Serializer());
+        json.setSerializer(BulletEntity.class, new BulletEntity.Serializer<>());
+        json.setSerializer(SingleBulletEntity.class, new BulletEntity.Serializer<>());
+        json.setSerializer(GroupBulletEntity.class, new BulletEntity.Serializer<>());
 
         schema = new HashMap<>();
         schema.put("class", fileHandle -> json.fromJson(CharacterClass.class, fileHandle));

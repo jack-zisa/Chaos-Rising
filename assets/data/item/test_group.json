@@ -1,0 +1,13 @@
+{
+  "type": "weapon",
+  "texture": "malice",
+  "attack": {
+    "bullet_id": "test_group",
+    "damage": 10
+  },
+  "stat_modifier": {
+    "stats": {
+      "health": 100
+    }
+  }
+}

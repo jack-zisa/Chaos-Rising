@@ -1,0 +1,31 @@
+{
+  "bullets": [
+    {
+      "bullet": {
+        "texture": "dark_magic_blade",
+        "lifetime": 100,
+        "piercing": true
+      },
+      "offset": {
+        "type": "constant",
+        "x": 1,
+        "y": -1
+      }
+    },
+    {
+      "bullet": {
+        "texture": "dark_magic_blade",
+        "lifetime": 100,
+        "piercing": true
+      },
+      "offset": {
+        "type": "constant",
+        "x": -1,
+        "y": 1
+      }
+    }
+  ],
+  "path": {
+    "speed": 10
+  }
+}

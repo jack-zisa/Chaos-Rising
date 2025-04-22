@@ -2,6 +2,7 @@ package dev.creoii.chaos.attack;
 
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.entity.BulletEntity;
+import dev.creoii.chaos.entity.SingleBulletEntity;
 import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.entity.LivingEntity;
 import dev.creoii.chaos.util.provider.Provider;
@@ -30,8 +31,10 @@ public record SimpleAttack(String bulletId, IntProvider damage, int bulletCount,
             BulletEntity bulletTemplate = sourceEntity.getGame().getDataManager().getBullet(bulletId);
             if (bulletTemplate != null) {
                 BulletEntity bullet = sourceEntity.getGame().getEntityManager().addEntity(bulletTemplate, pos.cpy().add(posOffset), customData);
-                bullet.setParentGroup(sourceEntity.getGroup());
-                bullet.setIndex(i % 2 == 0 ? 1 : -1);
+                if (bullet instanceof SingleBulletEntity singleBulletEntity) {
+                    singleBulletEntity.setSourceGroup(sourceEntity.getGroup());
+                    singleBulletEntity.setIndex(i % 2 == 0 ? 1 : -1);
+                }
             }
         }
     }

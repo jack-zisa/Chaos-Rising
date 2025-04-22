@@ -1,5 +1,6 @@
 package dev.creoii.chaos.entity.controller.bullet.path;
 
+import dev.creoii.chaos.entity.SingleBulletEntity;
 import dev.creoii.chaos.entity.controller.bullet.BulletController;
 
 import java.util.*;
@@ -12,14 +13,15 @@ public record SegmentedBulletPath(TreeMap<Integer, BulletPath> segments) impleme
 
     @Override
     public float speed(BulletController controller) {
-        int lifetime = controller.getEntity().getLifetime();
+        int lifetime = controller.getEntity() instanceof SingleBulletEntity singleBulletEntity ? singleBulletEntity.getLifetime(): 0;
         Map.Entry<Integer, BulletPath> entry = segments.floorEntry(lifetime);
         return entry != null ? entry.getValue().speed(controller) : 0f;
     }
 
     @Override
     public void update(BulletController controller, int gametime, float dt) {
-        BulletPath path = segments.floorEntry(controller.getEntity().getLifetime()).getValue();
+        int lifetime = controller.getEntity() instanceof SingleBulletEntity singleBulletEntity ? singleBulletEntity.getLifetime(): 0;
+        BulletPath path = segments.floorEntry(lifetime).getValue();
 
         if (path != null) {
             path.update(controller, gametime, dt);

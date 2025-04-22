@@ -8,6 +8,7 @@ import dev.creoii.chaos.entity.controller.EntityController;
 import dev.creoii.chaos.util.Positionable;
 import dev.creoii.chaos.util.Tickable;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 public abstract class Entity implements Positionable, Tickable {
@@ -39,7 +40,7 @@ public abstract class Entity implements Positionable, Tickable {
         spawnTime = -1;
     }
 
-    public abstract Entity create(Game game, UUID uuid, Vector2 pos);
+    public abstract Entity create(Game game, UUID uuid, Vector2 pos, Map<String, Object> customData);
 
     public abstract EntityController<?> getController();
 
@@ -71,6 +72,7 @@ public abstract class Entity implements Positionable, Tickable {
         return sprite;
     }
 
+    @Nullable
     public Rectangle getColliderRect() {
         if (pos == null)
             return null;
@@ -132,7 +134,7 @@ public abstract class Entity implements Positionable, Tickable {
     }
 
     public Entity spawn(Game game, UUID uuid, Vector2 pos, Map<String, Object> customData) {
-        Entity entity = create(game, uuid, pos);
+        Entity entity = create(game, uuid, pos, customData);
         entity.game = game;
         entity.uuid = uuid;
         entity.pos = pos;
@@ -164,6 +166,7 @@ public abstract class Entity implements Positionable, Tickable {
         CHARACTER,
         ENEMY,
         BULLET,
-        OTHER
+        OTHER,
+        GROUP
     }
 }

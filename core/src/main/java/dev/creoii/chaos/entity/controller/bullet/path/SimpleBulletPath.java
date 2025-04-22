@@ -2,6 +2,7 @@ package dev.creoii.chaos.entity.controller.bullet.path;
 
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.entity.Entity;
+import dev.creoii.chaos.entity.SingleBulletEntity;
 import dev.creoii.chaos.entity.controller.bullet.BulletController;
 import dev.creoii.chaos.util.provider.Provider;
 import dev.creoii.chaos.util.provider.floatprovider.FloatProvider;
@@ -20,7 +21,8 @@ public record SimpleBulletPath(FloatProvider speed, FloatProvider frequency, Flo
             return;
 
         Vector2 forward = new Vector2(controller.getEntity().getDirection()).scl(speed * Entity.COORDINATE_SCALE * dt);
-        Vector2 offset = new Vector2(controller.getEntity().getPerpendicular()).scl((float) (Math.cos((gametime - controller.getEntity().getSpawnTime()) * frequency.init(gametime).get(context)) * amplitude.init(gametime).get(context)) * controller.getEntity().getIndex());
+        int index = controller.getEntity() instanceof SingleBulletEntity singleBulletEntity ? singleBulletEntity.getIndex() : 1;
+        Vector2 offset = new Vector2(controller.getEntity().getPerpendicular()).scl((float) (Math.cos((gametime - controller.getEntity().getSpawnTime()) * frequency.init(gametime).get(context)) * amplitude.init(gametime).get(context)) * index);
         controller.getEntity().getPos().add(forward).add(offset);
 
         float angle = (float) (Math.atan2(controller.getEntity().getDirection().y, controller.getEntity().getDirection().x) + arcSpeed.init(gametime).get(context));

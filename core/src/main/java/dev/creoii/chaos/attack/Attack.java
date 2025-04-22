@@ -36,9 +36,7 @@ public interface Attack {
             if (jsonValue.has("pos_offset")) {
                 JsonValue posOffsetValue = jsonValue.get("pos_offset");
                 posOffsetVec = new Vector2(posOffsetValue.get(0).asInt(), posOffsetValue.get(1).asInt()).scl(Entity.COORDINATE_SCALE);
-            } else {
-                posOffsetVec = Vector2.Zero;
-            }
+            } else posOffsetVec = Vector2.Zero.cpy();
 
             VecProvider target = null;
             if (jsonValue.has("target")) {

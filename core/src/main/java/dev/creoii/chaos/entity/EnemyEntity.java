@@ -16,6 +16,7 @@ import dev.creoii.chaos.util.LootUtils;
 import dev.creoii.chaos.util.stat.StatContainer;
 
 import javax.annotation.Nullable;
+import java.util.Map;
 import java.util.UUID;
 
 public class EnemyEntity extends LivingEntity implements DataManager.Identifiable {
@@ -87,7 +88,7 @@ public class EnemyEntity extends LivingEntity implements DataManager.Identifiabl
     }
 
     @Override
-    public Entity create(Game game, UUID uuid, Vector2 pos) {
+    public Entity create(Game game, UUID uuid, Vector2 pos, Map<String, Object> customData) {
         EnemyEntity entity = new EnemyEntity(getTextureId(), getScale() / COORDINATE_SCALE, controller == null ? null : new EnemyController(controller), lootTable, getMaxStats().copy());
         entity.setMoving(true);
         entity.sprite = new Sprite(game.getTextureManager().getTexture("enemy", getTextureId()));

@@ -3,7 +3,7 @@ package dev.creoii.chaos;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
-import dev.creoii.chaos.entity.BulletEntity;
+import dev.creoii.chaos.entity.SingleBulletEntity;
 import dev.creoii.chaos.entity.Entity;
 
 import java.util.*;
@@ -84,7 +84,7 @@ public class CollisionManager {
             int y = (entry.key & 0xffff) - KEY_OFFSET;
 
             for (Entity a : entities) {
-                int[][] neighborDirs = a instanceof BulletEntity bullet ? getBulletForwardNeighbors(bullet) : FORWARD_NEIGHBORS;
+                int[][] neighborDirs = a instanceof SingleBulletEntity bullet ? getBulletForwardNeighbors(bullet) : FORWARD_NEIGHBORS;
 
                 for (int[] dir : neighborDirs) {
                     int neighborKey = ((x + dir[0] + KEY_OFFSET) << 16) | ((y + dir[1] + KEY_OFFSET) & 0xffff);
@@ -118,7 +118,7 @@ public class CollisionManager {
         }
     }
 
-    private static int[][] getBulletForwardNeighbors(BulletEntity bullet) {
+    private static int[][] getBulletForwardNeighbors(SingleBulletEntity bullet) {
         Vector2 dir = bullet.getDirection();
         if (dir.isZero())
             return new int[0][0];

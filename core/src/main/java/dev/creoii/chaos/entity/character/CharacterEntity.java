@@ -12,6 +12,7 @@ import dev.creoii.chaos.entity.inventory.CharacterInventory;
 import dev.creoii.chaos.entity.inventory.Inventory;
 import dev.creoii.chaos.item.ItemStack;
 
+import java.util.Map;
 import java.util.UUID;
 
 public class CharacterEntity extends LivingEntity {
@@ -100,7 +101,7 @@ public class CharacterEntity extends LivingEntity {
     }
 
     @Override
-    public Entity create(Game game, UUID uuid, Vector2 pos) {
+    public Entity create(Game game, UUID uuid, Vector2 pos, Map<String, Object> customData) {
         sprite = new Sprite(game.getTextureManager().getTexture("class", getTextureId()));
         sprite.setSize(getScale(), getScale());
         return this;

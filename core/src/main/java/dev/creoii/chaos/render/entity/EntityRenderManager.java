@@ -12,10 +12,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;
 import dev.creoii.chaos.CollisionManager;
 import dev.creoii.chaos.Main;
-import dev.creoii.chaos.entity.BulletEntity;
-import dev.creoii.chaos.entity.EnemyEntity;
-import dev.creoii.chaos.entity.Entity;
-import dev.creoii.chaos.entity.LootDropEntity;
+import dev.creoii.chaos.entity.*;
 import dev.creoii.chaos.entity.character.CharacterEntity;
 import dev.creoii.chaos.render.Renderer;
 import dev.creoii.chaos.util.Renderable;
@@ -32,7 +29,8 @@ public class EntityRenderManager implements Renderable {
         renderedPositions = new ObjectSet<>();
 
         EntityRenderers.register(CharacterEntity.class, SimpleEntityRenderer::new);
-        EntityRenderers.register(BulletEntity.class, SimpleEntityRenderer::new);
+        EntityRenderers.register(SingleBulletEntity.class, SimpleEntityRenderer::new);
+        EntityRenderers.registerInvisible(GroupBulletEntity.class);
         EntityRenderers.register(LootDropEntity.class, SimpleEntityRenderer::new);
         EntityRenderers.register(EnemyEntity.class, EnemyEntityRenderer::new);
     }
@@ -52,6 +50,9 @@ public class EntityRenderManager implements Renderable {
         renderedPositions.clear();
 
         for (Entity entity : renderer.getMain().getGame().getEntityManager().getActiveEntities().values()) {
+            if (isInvisible(entity))
+                continue;
+
             if (entity == renderer.getMain().getGame().getActiveCharacter() || isEntityInView(renderer.getCamera(), entity)) {
                 Vector2 posKey = new Vector2(entity.getPos()).scl(.5f); // adjust .5 for precision (1 = exact, .25 = loose)
 
@@ -70,5 +71,9 @@ public class EntityRenderManager implements Renderable {
         float camX = camera.position.x - camera.viewportWidth / 2;
         float camY = camera.position.y - camera.viewportHeight / 2;
         return new Rectangle(camX, camY, camera.viewportWidth, camera.viewportHeight).overlaps(entity.getColliderRect());
+    }
+
+    public static boolean isInvisible(Entity entity) {
+        return EntityRenderers.INVISIBLES.contains(entity.getClass());
     }
 }

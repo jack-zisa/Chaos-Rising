@@ -1,43 +1,33 @@
 package dev.creoii.chaos.entity;
 
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import dev.creoii.chaos.DataManager;
-import dev.creoii.chaos.Game;
 import dev.creoii.chaos.Main;
-import dev.creoii.chaos.entity.controller.bullet.BulletController;
 import dev.creoii.chaos.entity.controller.EntityController;
+import dev.creoii.chaos.entity.controller.bullet.BulletController;
 import dev.creoii.chaos.entity.controller.bullet.path.BulletPath;
 import dev.creoii.chaos.texture.TextureManager;
 
-import java.util.Map;
-import java.util.UUID;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
-public class BulletEntity extends Entity implements DataManager.Identifiable {
+public abstract class BulletEntity extends Entity implements DataManager.Identifiable {
     private String id;
-    private int lifetime;
-    private final int angleOffset;
-    private final BulletPath path;
-    private final boolean piercing;
+    protected final BulletPath path;
     private final EntityController<BulletEntity> controller;
-    private Group parentGroup;
-    private Vector2 direction;
-    private Vector2 perpendicular;
-    private int damage;
-    private int index;
+    protected Vector2 direction;
+    protected Vector2 perpendicular;
+    @Nullable
+    private GroupBulletEntity bulletGroup;
 
-    public BulletEntity(String textureId, int lifetime, int angleOffset, BulletPath path, boolean piercing, float scale) {
-        super(textureId, scale, new Vector2(1, 1), Group.BULLET);
-        this.lifetime = lifetime;
-        this.angleOffset = angleOffset;
+    public BulletEntity(String textureId, BulletPath path, float scale, Group group) {
+        super(textureId, scale, new Vector2(1, 1), group);
         this.path = path;
-        this.piercing = piercing;
         controller = new BulletController(this);
-        damage = 0;
-        index = -1;
     }
 
     @Override
@@ -50,14 +40,20 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
         this.id = id;
     }
 
-    public int getLifetime() {
-        return lifetime;
-    }
 
     @Override
     public void onLoad(Main main) {
         if (main.getGame().getCollisionManager().getCellSize() < getScale())
             main.getGame().getCollisionManager().setCellSize(getScale());
+    }
+
+    @Override
+    public Vector2 getPos() {
+        if (bulletGroup != null) {
+            System.out.println(pos + " | " + bulletGroup.getPos());
+            return pos.add(bulletGroup.getPos());
+        }
+        return pos;
     }
 
     public BulletPath getPath() {
@@ -72,16 +68,13 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
         return perpendicular;
     }
 
-    public int getIndex() {
-        return index;
+    @Nullable
+    public GroupBulletEntity getBulletGroup() {
+        return bulletGroup;
     }
 
-    public void setIndex(int index) {
-        this.index = index;
-    }
-
-    public void setParentGroup(Group parentGroup) {
-        this.parentGroup = parentGroup;
+    public void setBulletGroup(@Nullable GroupBulletEntity bulletGroup) {
+        this.bulletGroup = bulletGroup;
     }
 
     @Override
@@ -93,12 +86,6 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
 
     @Override
     public void collisionEnter(Entity other) {
-        if (other instanceof LivingEntity && other.getGroup() != parentGroup) {
-            ((LivingEntity) other).damage(damage);
-            if (!piercing) {
-                remove();
-            }
-        }
     }
 
     @Override
@@ -112,70 +99,53 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
     }
 
     @Override
-    public Entity create(Game game, UUID uuid, Vector2 pos) {
-        BulletEntity entity = new BulletEntity(getTextureId(), lifetime, angleOffset, path.copy(), piercing, getScale() / COORDINATE_SCALE);
-        entity.setId(id);
-        entity.sprite = new Sprite(game.getTextureManager().getTexture("bullet", entity.getTextureId()));
-        entity.sprite.setSize(entity.getScale(), entity.getScale());
-        entity.setMoving(true);
-        return entity;
-    }
-
-    @Override
-    public Entity spawn(Game game, UUID uuid, Vector2 pos, Map<String, Object> customData) {
-        Entity entity = super.spawn(game, uuid, pos, customData);
-        if (entity instanceof BulletEntity bullet) {
-            bullet.direction = (Vector2) customData.get("direction");
-            bullet.perpendicular = new Vector2(-bullet.direction.y, bullet.direction.x).nor();
-            bullet.sprite.setOriginCenter();
-            bullet.sprite.setRotation(bullet.direction.angleDeg() - bullet.angleOffset);
-            bullet.damage = (int) customData.getOrDefault("damage", 0);
-        }
-        return entity;
-    }
-
-    @Override
     public EntityController<?> getController() {
         return controller;
     }
 
-    @Override
-    public void tick(int gametime, float delta) {
-        super.tick(gametime, delta);
-
-        lifetime--;
-
-        if (lifetime <= 0) {
-            remove();
-        }
-    }
-
-    public static class Serializer implements Json.Serializer<BulletEntity> {
+    public static class Serializer<T extends BulletEntity> implements Json.Serializer<T> {
         @Override
-        public void write(Json json, BulletEntity bullet, Class knownType) {
+        public void write(Json json, T bullet, Class knownType) {
             json.writeObjectStart();
             json.writeValue("id", bullet.id());
             json.writeValue("texture", bullet.getTextureId());
-            json.writeValue("lifetime", bullet.lifetime);
-            json.writeValue("angle_offset", bullet.lifetime);
-            /*json.writeValue("speed", bullet.speed);
-            json.writeValue("frequency", bullet.frequency);
-            json.writeValue("amplitude", bullet.amplitude);
-            json.writeValue("arc_speed", bullet.arcSpeed);*/
-            json.writeValue("piercing", bullet.piercing);
             json.writeValue("scale", bullet.getScale());
             json.writeObjectEnd();
         }
 
         @Override
-        public BulletEntity read(Json json, JsonValue jsonValue, Class aClass) {
-            String spritePath = jsonValue.getString("texture", TextureManager.DEFAULT_TEXTURE_ID);
-            int lifetime = jsonValue.getInt("lifetime", 0);
-            int angleOffset = jsonValue.getInt("angle_offset", 45);
-            boolean piercing = jsonValue.getBoolean("piercing", false);
-            float scale = jsonValue.getFloat("scale", 1f);
-            BulletPath bulletPath = BulletPath.parse(jsonValue);
-            return new BulletEntity(spritePath, lifetime, angleOffset, bulletPath, piercing, scale);
+        @SuppressWarnings("unchecked")
+        public T read(Json json, JsonValue jsonValue, Class aClass) {
+            if (jsonValue.has("texture")) {
+                String spritePath = jsonValue.getString("texture", TextureManager.DEFAULT_TEXTURE_ID);
+                int lifetime = jsonValue.getInt("lifetime", 0);
+                int angleOffset = jsonValue.getInt("angle_offset", 45);
+                boolean piercing = jsonValue.getBoolean("piercing", false);
+                float scale = jsonValue.getFloat("scale", 1f);
+                BulletPath bulletPath = BulletPath.parse(jsonValue);
+                return (T) new SingleBulletEntity(spritePath, lifetime, angleOffset, bulletPath, piercing, scale);
+            } else if (jsonValue.has("bullets")) {
+                List<GroupBulletEntity.Entry> bullets = new ArrayList<>();
+                JsonValue bulletsValue = jsonValue.get("bullets");
+                bulletsValue.forEach(bulletValue -> {
+                    BulletEntity bulletEntity = json.readValue(BulletEntity.class, bulletValue.get("bullet"));
+                    Vector2 offset = Vector2.Zero.cpy();
+
+                    if (bulletValue.has("offset")) {
+                        JsonValue offsetValue = bulletValue.get("offset");
+                        if (offsetValue.isArray()) {
+                            offset = new Vector2(offsetValue.getFloat(0), offsetValue.getFloat(1));
+                        } else if (offsetValue.isObject()) {
+                            offset = new Vector2(offsetValue.getFloat("x"), offsetValue.getFloat("y"));
+                        }
+                    }
+
+                    bullets.add(new GroupBulletEntity.Entry(bulletEntity, offset));
+                });
+                BulletPath bulletPath = BulletPath.parse(jsonValue);
+                return (T) new GroupBulletEntity(bullets, bulletPath);
+            }
+            return null;
         }
     }
 }

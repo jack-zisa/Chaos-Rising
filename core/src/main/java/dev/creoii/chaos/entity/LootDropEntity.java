@@ -6,6 +6,7 @@ import dev.creoii.chaos.Game;
 import dev.creoii.chaos.entity.controller.EntityController;
 import dev.creoii.chaos.entity.inventory.Inventory;
 
+import java.util.Map;
 import java.util.UUID;
 
 public class LootDropEntity extends Entity {
@@ -31,7 +32,7 @@ public class LootDropEntity extends Entity {
     }
 
     @Override
-    public Entity create(Game game, UUID uuid, Vector2 pos) {
+    public Entity create(Game game, UUID uuid, Vector2 pos, Map<String, Object> customData) {
         LootDropEntity entity = new LootDropEntity(getTextureId(), 1f, removeWhenEmpty, inventory == null ? new Inventory(2, 4) : inventory);
         entity.sprite = new Sprite(game.getTextureManager().getTexture("loot", getTextureId()));
         entity.sprite.setSize(getScale(), getScale());
