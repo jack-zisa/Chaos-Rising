@@ -6,10 +6,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.badlogic.gdx.utils.ObjectSet;
 import dev.creoii.chaos.CollisionManager;
 import dev.creoii.chaos.Main;
 import dev.creoii.chaos.entity.BulletEntity;
@@ -25,12 +23,9 @@ import javax.annotation.Nullable;
 public class EntityRenderManager implements Renderable {
     private static final float RENDER_DISTANCE = 17578.125f * Entity.COORDINATE_SCALE; // sqrt(17578.125 * 32) = 750 units
     private final Main main;
-    private final ObjectSet<Vector2> renderedPositions;
 
     public EntityRenderManager(Main main) {
         this.main = main;
-        renderedPositions = new ObjectSet<>();
-
         EntityRenderers.register(CharacterEntity.class, SimpleEntityRenderer::new);
         EntityRenderers.register(BulletEntity.class, SimpleEntityRenderer::new);
         EntityRenderers.register(LootDropEntity.class, SimpleEntityRenderer::new);
@@ -49,17 +44,17 @@ public class EntityRenderManager implements Renderable {
             }
         }
 
-        renderedPositions.clear();
-
+        Array<Entity> visibleEntities = new Array<>();
         for (Entity entity : renderer.getMain().getGame().getEntityManager().getActiveEntities().values()) {
             if (entity == renderer.getMain().getGame().getActiveCharacter() || isEntityInView(renderer.getCamera(), entity)) {
-                Vector2 posKey = new Vector2(entity.getPos()).scl(.5f); // adjust .5 for precision (1 = exact, .25 = loose)
-
-                if (!renderedPositions.contains(posKey)) {
-                    EntityRenderers.getRenderer(entity).render(entity, renderer, batch, shapeRenderer, font, debug);
-                    renderedPositions.add(posKey);
-                }
+                visibleEntities.add(entity);
             }
+        }
+
+        visibleEntities.sort((a, b) -> Float.compare(b.getPos().y, a.getPos().y));
+
+        for (Entity entity : visibleEntities) {
+            EntityRenderers.getRenderer(entity).render(entity, renderer, batch, shapeRenderer, font, debug);
         }
     }
 
