@@ -10,6 +10,7 @@
   "stat_modifier": {
     "stats": {
       "speed": 5
-    }
+    },
+    "type": "max"
   }
 }

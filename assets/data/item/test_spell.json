@@ -18,7 +18,8 @@
   "stat_modifier": {
     "stats": {
       "vitality": 8
-    }
+    },
+    "type": "max"
   },
   "cooldown": 20
 }

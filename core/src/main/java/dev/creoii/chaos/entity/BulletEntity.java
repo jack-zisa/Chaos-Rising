@@ -25,7 +25,6 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
     private final EntityController<BulletEntity> controller;
     private Entity parent;
     private Vector2 direction;
-    private Vector2 perpendicular;
     private int damage;
     private int index;
 
@@ -66,10 +65,6 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
 
     public Vector2 getDirection() {
         return direction;
-    }
-
-    public Vector2 getPerpendicular() {
-        return perpendicular;
     }
 
     public int getIndex() {
@@ -130,7 +125,6 @@ public class BulletEntity extends Entity implements DataManager.Identifiable {
         Entity entity = super.spawn(game, uuid, pos, customData);
         if (entity instanceof BulletEntity bullet) {
             bullet.direction = (Vector2) customData.get("direction");
-            bullet.perpendicular = new Vector2(-bullet.direction.y, bullet.direction.x).nor();
             bullet.sprite.setOriginCenter();
             bullet.sprite.setRotation(bullet.direction.angleDeg() - bullet.angleOffset);
             bullet.damage = (int) customData.getOrDefault("damage", 0);

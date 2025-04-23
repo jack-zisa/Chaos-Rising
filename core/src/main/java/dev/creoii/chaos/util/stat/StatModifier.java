@@ -8,17 +8,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public record StatModifier(UUID uuid, Type type, StatContainer statContainer) {
-    public static final StatModifier NONE = new StatModifier(UUID.nameUUIDFromBytes("none".getBytes()), Type.NONE, new StatContainer());
+public record StatModifier(UUID uuid, Operation operation, Type type, StatContainer statContainer) {
+    public static final StatModifier NONE = new StatModifier(UUID.nameUUIDFromBytes("none".getBytes()), Operation.NONE, Type.ALL, new StatContainer());
 
     public static StatModifier parse(Json json, JsonValue jsonValue) {
-        Type type = jsonValue.has("type") ? Type.valueOf(jsonValue.getString("type").toUpperCase()) : Type.ADD;
+        Operation operation = jsonValue.has("operation") ? Operation.valueOf(jsonValue.getString("operation").toUpperCase()) : Operation.ADD;
+        Type type = jsonValue.has("type") ? Type.valueOf(jsonValue.getString("type").toUpperCase()) : Type.ALL;
         StatContainer statContainer = json.readValue(StatContainer.class, jsonValue.get("stats"));
-        return new StatModifier(UUID.randomUUID(), type, statContainer);
+        return new StatModifier(UUID.randomUUID(), operation, type, statContainer);
     }
 
     public String getTooltip() {
-        String prefix = type.prefix;
+        String prefix = operation.prefix;
         List<String> lines = new ArrayList<>();
         if (statContainer.health.value() > 0)
             lines.add(prefix + statContainer.health.value() + " Health");
@@ -38,6 +39,12 @@ public record StatModifier(UUID uuid, Type type, StatContainer statContainer) {
     }
 
     public enum Type {
+        BASE,
+        MAX,
+        ALL
+    }
+
+    public enum Operation {
         NONE(""),
         ADD("+"),
         MULTIPLY("x"),
@@ -45,7 +52,7 @@ public record StatModifier(UUID uuid, Type type, StatContainer statContainer) {
 
         private final String prefix;
 
-        Type(String prefix) {
+        Operation(String prefix) {
             this.prefix = prefix;
         }
 

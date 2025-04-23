@@ -19,6 +19,7 @@ import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class EnemyEntity extends LivingEntity implements DataManager.Identifiable {
+    public static final StatContainer DEFAULT_STAT_CONTAINER = new StatContainer(10, 1, 1, 0, 1, 1);
     private String id;
     private final EnemyController controller;
     @Nullable

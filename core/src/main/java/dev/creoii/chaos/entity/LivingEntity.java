@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class LivingEntity extends Entity {
-    public static final StatContainer DEFAULT_STAT_CONTAINER = new StatContainer(10, 1, 1, 0, 1, 1);
     private final StatContainer statContainer;
     private final StatContainer maxStatContainer;
     private final List<StatusEffect> statusEffects;
@@ -37,8 +36,8 @@ public abstract class LivingEntity extends Entity {
     public void damage(int amount) {
         if (statContainer.health.value() <= 0 || hasStatusEffect("invulnerable"))
             return;
-        amount = Math.clamp(amount - statContainer.defense.value(), 0, amount);
-        statContainer.health.set(Math.max(0, statContainer.health.value() - Math.max(0, amount - statContainer.defense.value())));
+        amount = Math.max(0, amount - statContainer.defense.value());
+        statContainer.health.set(Math.max(0, statContainer.health.value() - amount));
 
         if (statContainer.health.value() <= 0) {
             remove();
@@ -95,7 +94,7 @@ public abstract class LivingEntity extends Entity {
             }
         }
 
-        if (statContainer.health != maxStatContainer.health && gametime % 40 == 0)
+        if (statContainer.health.value() <= maxStatContainer.health.value() && gametime % 40 == 0)
             heal(Math.round(1f + .2f * statContainer.vitality.value()));
     }
 }

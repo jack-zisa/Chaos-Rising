@@ -23,14 +23,32 @@ public class CharacterInventory extends Inventory {
     @Override
     public void onAddItemToSlot(Slot slot, ItemStack stack) {
         if (slot.getType() != Slot.Type.NONE && slot.getType().getItemPredicate().test(stack.getItem()) && stack.getItem() instanceof EquipmentItem equipmentItem) {
-            character.getStats().applyModifier(equipmentItem.getStatModifier());
+            switch (equipmentItem.getStatModifier().type()) {
+                case BASE -> character.getStats().applyModifier(equipmentItem.getStatModifier());
+                case MAX -> character.getMaxStats().applyModifier(equipmentItem.getStatModifier());
+                case ALL -> {
+                    character.getStats().applyModifier(equipmentItem.getStatModifier());
+                    character.getMaxStats().applyModifier(equipmentItem.getStatModifier());
+                }
+            }
         }
     }
 
     @Override
     public void onRemoveItemFromSlot(Slot slot, ItemStack stack) {
         if (slot.getType() != Slot.Type.NONE && slot.getType().getItemPredicate().test(stack.getItem()) && stack.getItem() instanceof EquipmentItem equipmentItem) {
-            character.getStats().removeModifier(equipmentItem.getStatModifier().uuid());
+            switch (equipmentItem.getStatModifier().type()) {
+                case BASE -> character.getStats().removeModifier(equipmentItem.getStatModifier().uuid());
+                case MAX -> {
+                    character.getMaxStats().removeModifier(equipmentItem.getStatModifier().uuid());
+                    character.getStats().set(character.getMaxStats());
+                }
+                case ALL -> {
+                    character.getStats().removeModifier(equipmentItem.getStatModifier().uuid());
+                    character.getMaxStats().removeModifier(equipmentItem.getStatModifier().uuid());
+                    character.getStats().set(character.getMaxStats());
+                }
+            }
         }
     }
 

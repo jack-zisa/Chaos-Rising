@@ -11,6 +11,7 @@
   "stat_modifier": {
     "stats": {
       "vitality": 10
-    }
+    },
+    "type": "max"
   }
 }

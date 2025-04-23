@@ -53,6 +53,15 @@ public class StatContainer {
         this.vitality.set(vitality);
     }
 
+    public void set(StatContainer other) {
+        setHealth(other.health.base());
+        setSpeed(other.speed.base());
+        setAttackSpeed(other.attackSpeed.base());
+        setDefense(other.defense.base());
+        setAttack(other.attack.base());
+        setVitality(other.vitality.base());
+    }
+
     public void applyModifier(StatModifier modifier) {
         modifiers.put(modifier.uuid(), modifier);
         applyModifierToStats(modifier, true);
@@ -65,7 +74,7 @@ public class StatContainer {
 
     private void applyModifierToStats(StatModifier modifier, boolean apply) {
         StatContainer container = modifier.statContainer();
-        StatModifier.Type type = modifier.type();
+        StatModifier.Operation type = modifier.operation();
 
         BiConsumer<Stat, Integer> modify = (stat, amount) -> {
             if (apply)

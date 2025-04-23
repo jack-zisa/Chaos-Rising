@@ -20,7 +20,7 @@ public class Stat {
         this.base = value;
     }
 
-    public void addModifier(UUID uuid, int amount, StatModifier.Type type) {
+    public void addModifier(UUID uuid, int amount, StatModifier.Operation type) {
         modifiers.add(new ModifierEntry(uuid, amount, type));
     }
 
@@ -31,7 +31,7 @@ public class Stat {
     public int value() {
         int result = base;
         for (ModifierEntry mod : modifiers) {
-            switch (mod.type) {
+            switch (mod.operation) {
                 case ADD -> result += mod.amount;
                 case SET -> result = mod.amount;
                 case MULTIPLY -> result *= mod.amount;
@@ -45,5 +45,5 @@ public class Stat {
         return String.valueOf(value());
     }
 
-    private record ModifierEntry(UUID uuid, int amount, StatModifier.Type type) {}
+    private record ModifierEntry(UUID uuid, int amount, StatModifier.Operation operation) {}
 }

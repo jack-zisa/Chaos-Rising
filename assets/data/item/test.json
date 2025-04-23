@@ -8,6 +8,7 @@
   "stat_modifier": {
     "stats": {
       "health": 100
-    }
+    },
+    "type": "max"
   }
 }

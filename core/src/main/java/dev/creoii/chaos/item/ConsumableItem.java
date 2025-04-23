@@ -41,8 +41,13 @@ public class ConsumableItem extends Item {
     public void consume(InputManager manager, Slot slot, ItemStack stack) {
         CharacterEntity character = manager.getMain().getGame().getActiveCharacter();
         if (getStatContainer() != null) {
-            StatContainer characterStats = character.getStats();
-            characterStats.setHealth(Math.min(character.getMaxStats().health.value(), characterStats.health.base() + statContainer.health.base()));
+            StatContainer stats = character.getStats();
+            stats.setHealth(Math.min(character.getMaxStats().health.value(), stats.health.value() + statContainer.health.base()));
+            stats.setSpeed(Math.min(character.getMaxStats().speed.value(), stats.speed.value() + statContainer.speed.base()));
+            stats.setAttackSpeed(Math.min(character.getMaxStats().attackSpeed.value(), stats.attackSpeed.value() + statContainer.attackSpeed.base()));
+            stats.setDefense(Math.min(character.getMaxStats().defense.value(), stats.defense.value() + statContainer.defense.base()));
+            stats.setAttack(Math.min(character.getMaxStats().attack.value(), stats.attack.value() + statContainer.attack.base()));
+            stats.setVitality(Math.min(character.getMaxStats().vitality.value(), stats.vitality.value() + statContainer.vitality.base()));
         }
         if (!getStatusEffects().isEmpty()) {
             statusEffects.forEach(statusEffect -> character.addStatusEffect(statusEffect, statusEffect.getAmplifier(), statusEffect.getDuration()));

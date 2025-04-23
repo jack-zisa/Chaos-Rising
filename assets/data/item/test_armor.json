@@ -5,6 +5,7 @@
     "stats": {
       "health": 100,
       "defense": 10
-    }
+    },
+    "type": "max"
   }
 }
