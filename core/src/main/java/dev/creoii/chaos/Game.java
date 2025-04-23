@@ -25,7 +25,7 @@ public class Game implements Disposable {
     public Game(Main main) {
         this.main = main;
         this.optionsManager = new OptionsManager();
-        this.textureManager = new TextureManager();
+        this.textureManager = new TextureManager(main);
         this.dataManager = new DataManager(main);
         this.tickManager = new TickManager(main);
         this.collisionManager = new CollisionManager(main);

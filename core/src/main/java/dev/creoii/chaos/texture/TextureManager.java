@@ -7,15 +7,19 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ObjectMap;
 import dev.creoii.chaos.DataManager;
+import dev.creoii.chaos.Main;
+import dev.creoii.chaos.effect.StatusEffects;
 
 public class TextureManager implements Disposable {
-    private static final String[] ATLAS_IDS = new String[]{"class", "enemy", "bullet", "item", "loot"};
+    private static final String[] ATLAS_IDS = new String[]{"class", "enemy", "bullet", "item", "loot", "effect"};
     public static final String DEFAULT_TEXTURE_ID = "textures/missing.png";
     protected static final Texture DEFAULT_TEXTURE = new Texture(DEFAULT_TEXTURE_ID);
     protected static final TextureRegion DEFAULT_TEXTURE_REGION = new TextureRegion(DEFAULT_TEXTURE);
+    private final Main main;
     private final ObjectMap<String, DynamicTextureAtlas> atlases;
 
-    public TextureManager() {
+    public TextureManager(Main main) {
+        this.main = main;
         atlases = new ObjectMap<>();
         for (String atlasId : ATLAS_IDS) {
             atlases.put(atlasId, new DynamicTextureAtlas());
@@ -52,6 +56,8 @@ public class TextureManager implements Disposable {
                 }
             }
         }
+
+        StatusEffects.loadTextures(main.getGame());
     }
 
     @Override

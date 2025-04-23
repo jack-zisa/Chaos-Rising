@@ -113,8 +113,9 @@ public class CharacterEntity extends LivingEntity {
     @Override
     public void collisionEnter(Entity other) {
         if (other instanceof LootDropEntity lootDropEntity) {
-            if (lootUuid == null)
+            if (lootUuid == null) {
                 lootUuid = lootDropEntity.getUuid();
+            }
         }
     }
 
@@ -122,7 +123,9 @@ public class CharacterEntity extends LivingEntity {
     public void collisionExit(Entity other) {
         if (other == null)
             return;
-        if (other.getUuid().equals(lootUuid))
+
+        if (other.getUuid().equals(lootUuid)) {
             clearLootUuid();
+        }
     }
 }

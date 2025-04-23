@@ -1,6 +1,7 @@
 package dev.creoii.chaos.chat.command;
 
 import com.badlogic.gdx.math.Vector2;
+import dev.creoii.chaos.effect.StatusEffect;
 import dev.creoii.chaos.effect.StatusEffects;
 import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.entity.character.CharacterClass;
@@ -139,11 +140,17 @@ public final class Commands {
             String effectType = args[0];
 
             if (argCount == 1) {
-                game.getActiveCharacter().addStatusEffect(StatusEffects.ALL.get(effectType), 1, 30);
+                StatusEffect statusEffect = StatusEffects.ALL.get(effectType);
+                if (statusEffect == null)
+                    return;
+                game.getActiveCharacter().addStatusEffect(statusEffect, 1, 30);
             } else if (argCount == 3) {
+                StatusEffect statusEffect = StatusEffects.ALL.get(effectType);
+                if (statusEffect == null)
+                    return;
                 int amplifier = Integer.parseInt(args[1]);
                 int duration = Integer.parseInt(args[2]);
-                game.getActiveCharacter().addStatusEffect(StatusEffects.ALL.get(effectType), amplifier, duration);
+                game.getActiveCharacter().addStatusEffect(statusEffect, amplifier, duration);
             }
         });
 

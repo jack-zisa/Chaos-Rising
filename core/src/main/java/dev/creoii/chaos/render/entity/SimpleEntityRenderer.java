@@ -2,10 +2,14 @@ package dev.creoii.chaos.render.entity;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import dev.creoii.chaos.effect.StatusEffect;
+import dev.creoii.chaos.effect.StatusEffects;
 import dev.creoii.chaos.entity.Entity;
+import dev.creoii.chaos.entity.LivingEntity;
 import dev.creoii.chaos.render.Renderer;
 
 import javax.annotation.Nullable;
@@ -19,6 +23,25 @@ public class SimpleEntityRenderer<T extends Entity> extends EntityRenderer<T> {
         if (batch != null) {
             entity.getSprite().setPosition(entity.getPos().x, entity.getPos().y);
             entity.getSprite().draw(batch);
+
+            if (entity instanceof LivingEntity livingEntity) {
+                float baseX = entity.getPos().x + (entity.getScale() / 2f) - 16f;
+                float baseY = entity.getPos().y + entity.getScale();
+
+                for (int i = 0; i < livingEntity.getStatusEffects().size(); ++i) {
+                    StatusEffect statusEffect = livingEntity.getStatusEffects().get(i);
+                    Sprite sprite = StatusEffects.EFFECT_TEXTURES.get(statusEffect.id());
+
+                    int column = i % 4;
+                    int row = i / 4;
+
+                    float x = baseX + (column * 8f);
+                    float y = baseY + (row * 8f) + 4;
+
+                    sprite.setPosition(x, y);
+                    sprite.draw(batch);
+                }
+            }
         }
 
         if (debug && shapeRenderer != null) {
