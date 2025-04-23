@@ -29,12 +29,30 @@ public final class Commands {
                 String stat = args[0];
                 int value = Integer.parseInt(args[1]);
                 switch (stat) {
-                    case "health" -> game.getActiveCharacter().getStats().health.set(value);
-                    case "speed" -> game.getActiveCharacter().getStats().speed.set(value);
-                    case "attack_speed" -> game.getActiveCharacter().getStats().attackSpeed.set(value);
-                    case "defense" -> game.getActiveCharacter().getStats().defense.set(value);
-                    case "attack" -> game.getActiveCharacter().getStats().attack.set(value);
-                    case "vitality" -> game.getActiveCharacter().getStats().vitality.set(value);
+                    case "health" -> {
+                        game.getActiveCharacter().getStats().health.set(value);
+                        game.getActiveCharacter().getMaxStats().health.set(value);
+                    }
+                    case "speed" -> {
+                        game.getActiveCharacter().getStats().speed.set(value);
+                        game.getActiveCharacter().getMaxStats().speed.set(value);
+                    }
+                    case "attack_speed" -> {
+                        game.getActiveCharacter().getStats().attackSpeed.set(value);
+                        game.getActiveCharacter().getMaxStats().attackSpeed.set(value);
+                    }
+                    case "defense" -> {
+                        game.getActiveCharacter().getStats().defense.set(value);
+                        game.getActiveCharacter().getMaxStats().defense.set(value);
+                    }
+                    case "attack" -> {
+                        game.getActiveCharacter().getStats().attack.set(value);
+                        game.getActiveCharacter().getMaxStats().attack.set(value);
+                    }
+                    case "vitality" -> {
+                        game.getActiveCharacter().getStats().vitality.set(value);
+                        game.getActiveCharacter().getMaxStats().vitality.set(value);
+                    }
                 }
             }
         });
