@@ -7,22 +7,23 @@ import dev.creoii.chaos.effect.StatusEffect;
 import dev.creoii.chaos.entity.character.CharacterEntity;
 import dev.creoii.chaos.entity.inventory.Slot;
 import dev.creoii.chaos.util.Rarity;
+import dev.creoii.chaos.util.stat.ModifierEntry;
 import dev.creoii.chaos.util.stat.StatContainer;
 
 import java.util.List;
 
 public class ConsumableItem extends Item {
-    private final StatContainer statContainer;
+    private final List<ModifierEntry> statBonus;
     private final List<StatusEffect> statusEffects;
 
-    public ConsumableItem(Rarity rarity, String textureId, StatContainer statContainer, List<StatusEffect> statusEffects) {
+    public ConsumableItem(Rarity rarity, String textureId, List<ModifierEntry> statBonus, List<StatusEffect> statusEffects) {
         super(Type.CONSUMABLE, rarity, textureId);
-        this.statContainer = statContainer;
+        this.statBonus = statBonus;
         this.statusEffects = statusEffects;
     }
 
-    public StatContainer getStatContainer() {
-        return statContainer;
+    public List<ModifierEntry> getStatBonus() {
+        return statBonus;
     }
 
     public List<StatusEffect> getStatusEffects() {
@@ -40,14 +41,18 @@ public class ConsumableItem extends Item {
 
     public void consume(InputManager manager, Slot slot, ItemStack stack) {
         CharacterEntity character = manager.getMain().getGame().getActiveCharacter();
-        if (getStatContainer() != null) {
+        if (getStatBonus() != null) {
             StatContainer stats = character.getStats();
-            stats.setHealth(Math.min(character.getMaxStats().health.value(), stats.health.value() + statContainer.health.base()));
-            stats.setSpeed(Math.min(character.getMaxStats().speed.value(), stats.speed.value() + statContainer.speed.base()));
-            stats.setAttackSpeed(Math.min(character.getMaxStats().attackSpeed.value(), stats.attackSpeed.value() + statContainer.attackSpeed.base()));
-            stats.setDefense(Math.min(character.getMaxStats().defense.value(), stats.defense.value() + statContainer.defense.base()));
-            stats.setAttack(Math.min(character.getMaxStats().attack.value(), stats.attack.value() + statContainer.attack.base()));
-            stats.setVitality(Math.min(character.getMaxStats().vitality.value(), stats.vitality.value() + statContainer.vitality.base()));
+            getStatBonus().forEach(modifierEntry -> {
+                switch (modifierEntry.type()) {
+                    case HEALTH -> stats.setHealth(Math.min(character.getMaxStats().health.value(), stats.health.value() + modifierEntry.amount()));
+                    case SPEED -> stats.setSpeed(Math.min(character.getMaxStats().speed.value(), stats.speed.value() + modifierEntry.amount()));
+                    case ATTACK_SPEED -> stats.setAttackSpeed(Math.min(character.getMaxStats().attackSpeed.value(), stats.attackSpeed.value() + modifierEntry.amount()));
+                    case DEFENSE -> stats.setDefense(Math.min(character.getMaxStats().defense.value(), stats.defense.value() + modifierEntry.amount()));
+                    case ATTACK -> stats.setAttack(Math.min(character.getMaxStats().attack.value(), stats.attack.value() + modifierEntry.amount()));
+                    case VITALITY -> stats.setVitality(Math.min(character.getMaxStats().vitality.value(), stats.vitality.value() + modifierEntry.amount()));
+                }
+            });
         }
         if (!getStatusEffects().isEmpty()) {
             statusEffects.forEach(statusEffect -> character.addStatusEffect(statusEffect, statusEffect.getAmplifier(), statusEffect.getDuration()));

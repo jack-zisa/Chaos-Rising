@@ -2,13 +2,15 @@ package dev.creoii.chaos.item;
 
 import dev.creoii.chaos.attack.Attack;
 import dev.creoii.chaos.util.Rarity;
-import dev.creoii.chaos.util.stat.StatModifier;
+import dev.creoii.chaos.util.stat.ModifierEntry;
+
+import java.util.List;
 
 public class WeaponItem extends EquipmentItem {
     private final Attack attack;
 
-    public WeaponItem(Rarity rarity, String textureId, Attack attack, StatModifier statModifier) {
-        super(Type.WEAPON, rarity, textureId, statModifier);
+    public WeaponItem(Rarity rarity, String textureId, Attack attack, List<ModifierEntry> statBonus) {
+        super(Type.WEAPON, rarity, textureId, statBonus);
         this.attack = attack;
     }
 

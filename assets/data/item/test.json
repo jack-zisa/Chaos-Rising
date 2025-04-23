@@ -5,10 +5,17 @@
     "bullet_id": "test_sin",
     "damage": 10
   },
-  "stat_modifier": {
-    "stats": {
-      "health": 100
+  "stat_bonus": [
+    {
+      "type": "health",
+      "amount": 100,
+      "modifier": "max"
     },
-    "type": "max"
-  }
+    {
+      "type": "defense",
+      "amount": -5,
+      "operation": "add",
+      "modifier": "max"
+    }
+  ]
 }

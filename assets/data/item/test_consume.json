@@ -2,9 +2,12 @@
   "type": "consumable",
   "rarity": "legendary",
   "texture": "vulcans_eruption",
-  "stat_bonus": {
-    "health": 50
-  },
+  "stat_bonus": [
+    {
+      "type": "health",
+      "amount": 50
+    }
+  ],
   "status_effects": [
     {
       "id": "invulnerable",

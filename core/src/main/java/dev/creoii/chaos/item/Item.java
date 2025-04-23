@@ -12,8 +12,7 @@ import dev.creoii.chaos.effect.StatusEffects;
 import dev.creoii.chaos.entity.inventory.Slot;
 import dev.creoii.chaos.texture.TextureManager;
 import dev.creoii.chaos.util.Rarity;
-import dev.creoii.chaos.util.stat.StatContainer;
-import dev.creoii.chaos.util.stat.StatModifier;
+import dev.creoii.chaos.util.stat.ModifierEntry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,11 +89,20 @@ public class Item implements DataManager.Identifiable {
 
             if (type == Type.WEAPON) {
                 Attack attack = Attack.parse(jsonValue.get("attack"));
-                // replace NONE with null
-                StatModifier stats = jsonValue.has("stat_modifier") ? StatModifier.parse(json, jsonValue.get("stat_modifier")) : StatModifier.NONE;
-                return new WeaponItem(rarity, textureId, attack, stats);
+                List<ModifierEntry> statBonus = new ArrayList<>();
+                if (jsonValue.has("stat_bonus")) {
+                    jsonValue.get("stat_bonus").forEach(modifierValue -> {
+                        statBonus.add(ModifierEntry.parse(modifierValue));
+                    });
+                }
+                return new WeaponItem(rarity, textureId, attack, statBonus);
             } else if (type == Type.CONSUMABLE) {
-                StatContainer statContainer = jsonValue.has("stat_bonus") ? json.readValue(StatContainer.class, jsonValue.get("stat_bonus")) : null;
+                List<ModifierEntry> statBonus = new ArrayList<>();
+                if (jsonValue.has("stat_bonus")) {
+                    jsonValue.get("stat_bonus").forEach(modifierValue -> {
+                        statBonus.add(ModifierEntry.parse(modifierValue));
+                    });
+                }
                 List<StatusEffect> statusEffects = new ArrayList<>();
                 if (jsonValue.has("status_effects")) {
                     jsonValue.get("status_effects").forEach(effectValue -> {
@@ -103,14 +111,24 @@ public class Item implements DataManager.Identifiable {
                         statusEffects.add(statusEffect);
                     });
                 }
-                return new ConsumableItem(rarity, textureId, statContainer, statusEffects);
+                return new ConsumableItem(rarity, textureId, statBonus, statusEffects);
             } else if (type == Type.ABILITY) {
-                StatModifier stats = jsonValue.has("stat_modifier") ? StatModifier.parse(json, jsonValue.get("stat_modifier")) : StatModifier.NONE;
+                List<ModifierEntry> statBonus = new ArrayList<>();
+                if (jsonValue.has("stat_bonus")) {
+                    jsonValue.get("stat_bonus").forEach(modifierValue -> {
+                        statBonus.add(ModifierEntry.parse(modifierValue));
+                    });
+                }
                 Attack attack = Attack.parse(jsonValue.get("attack"));
-                return new AbilityItem(rarity, textureId, stats, attack, jsonValue.getInt("cooldown", 0));
+                return new AbilityItem(rarity, textureId, statBonus, attack, jsonValue.getInt("cooldown", 0));
             } else if (type == Type.ARMOR || type == Type.ACCESSORY) {
-                StatModifier stats = jsonValue.has("stat_modifier") ? StatModifier.parse(json, jsonValue.get("stat_modifier")) : StatModifier.NONE;
-                return new EquipmentItem(type, rarity, textureId, stats);
+                List<ModifierEntry> statBonus = new ArrayList<>();
+                if (jsonValue.has("stat_bonus")) {
+                    jsonValue.get("stat_bonus").forEach(modifierValue -> {
+                        statBonus.add(ModifierEntry.parse(modifierValue));
+                    });
+                }
+                return new EquipmentItem(type, rarity, textureId, statBonus);
             }
             return new Item(type, rarity, textureId);
         }

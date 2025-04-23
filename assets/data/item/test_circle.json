@@ -7,10 +7,11 @@
     "bullet_count": 12,
     "arc_gap": 30
   },
-  "stat_modifier": {
-    "stats": {
-      "speed": -8
-    },
-    "type": "max"
-  }
+  "stat_bonus": [
+    {
+      "type": "speed",
+      "amount": -8,
+      "modifier": "max"
+    }
+  ]
 }

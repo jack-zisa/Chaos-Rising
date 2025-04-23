@@ -2,9 +2,9 @@ package dev.creoii.chaos.util.stat;
 
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.StringBuilder;
 
 import java.util.*;
-import java.util.function.BiConsumer;
 
 public class StatContainer {
     public final Stat health;
@@ -13,20 +13,18 @@ public class StatContainer {
     public final Stat defense;
     public final Stat attack;
     public final Stat vitality;
-    public final Map<UUID, StatModifier> modifiers;
-
-    public StatContainer() {
-        this(0, 0, 0, 0, 0, 0);
-    }
 
     public StatContainer(int health, int speed, int attackSpeed, int defense, int attack, int vitality) {
-        this.health = new Stat(health);
-        this.speed = new Stat(speed);
-        this.attackSpeed = new Stat(attackSpeed);
-        this.defense = new Stat(defense);
-        this.attack = new Stat(attack);
-        this.vitality = new Stat(vitality);
-        modifiers = new HashMap<>();
+        this(new Stat(Stat.Type.HEALTH, health), new Stat(Stat.Type.SPEED, speed), new Stat(Stat.Type.ATTACK_SPEED, attackSpeed), new Stat(Stat.Type.DEFENSE, defense), new Stat(Stat.Type.ATTACK, attack), new Stat(Stat.Type.VITALITY, vitality));
+    }
+
+    public StatContainer(Stat health, Stat speed, Stat attackSpeed, Stat defense, Stat attack, Stat vitality) {
+        this.health = health;
+        this.speed = speed;
+        this.attackSpeed = attackSpeed;
+        this.defense = defense;
+        this.attack = attack;
+        this.vitality = vitality;
     }
 
     public void setHealth(int health) {
@@ -62,39 +60,23 @@ public class StatContainer {
         setVitality(other.vitality.base());
     }
 
-    public void applyModifier(StatModifier modifier) {
-        modifiers.put(modifier.uuid(), modifier);
-        applyModifierToStats(modifier, true);
-    }
-
-    public void removeModifier(UUID uuid) {
-        applyModifierToStats(modifiers.get(uuid), false);
-        modifiers.remove(uuid);
-    }
-
-    private void applyModifierToStats(StatModifier modifier, boolean apply) {
-        StatContainer container = modifier.statContainer();
-        StatModifier.Operation type = modifier.operation();
-
-        BiConsumer<Stat, Integer> modify = (stat, amount) -> {
-            if (apply)
-                stat.addModifier(modifier.uuid(), amount, type);
-            else stat.removeModifier(modifier.uuid());
-        };
-
-        modify.accept(health, container.health.base());
-        modify.accept(speed, container.speed.base());
-        modify.accept(attackSpeed, container.attackSpeed.base());
-        modify.accept(defense, container.defense.base());
-        modify.accept(attack, container.attack.base());
-        modify.accept(vitality, container.vitality.base());
-    }
-
     public StatContainer copy() {
         return new StatContainer(
             health.base(), speed.base(), attackSpeed.base(),
             defense.base(), attack.base(), vitality.base()
         );
+    }
+
+    public static String getTooltip(List<ModifierEntry> modifierEntries) {
+        List<String> lines = new ArrayList<>();
+
+        for (ModifierEntry modifierEntry : modifierEntries) {
+            StringBuilder builder = new StringBuilder();
+            builder.append(modifierEntry.operation().getPrefix()).append(modifierEntry.amount()).append(" ").append(modifierEntry.type().name().toLowerCase());
+            lines.add(builder.toString());
+        }
+
+        return String.join("\n", lines);
     }
 
     public String toDebugString(StatContainer maxStatContainer) {
@@ -121,12 +103,13 @@ public class StatContainer {
 
         @Override
         public StatContainer read(Json json, JsonValue jsonValue, Class aClass) {
-            return new StatContainer(jsonValue.getInt("health", 0),
-                jsonValue.getInt("speed", 0),
-                jsonValue.getInt("attack_speed", 0),
-                jsonValue.getInt("defense", 0),
-                jsonValue.getInt("attack", 0),
-                jsonValue.getInt("vitality", 0)
+            return new StatContainer(
+                new Stat(Stat.Type.HEALTH, jsonValue.getInt("health", 0)),
+                new Stat(Stat.Type.SPEED, jsonValue.getInt("speed", 0)),
+                new Stat(Stat.Type.ATTACK_SPEED, jsonValue.getInt("attack_speed", 0)),
+                new Stat(Stat.Type.DEFENSE, jsonValue.getInt("defense", 0)),
+                new Stat(Stat.Type.ATTACK, jsonValue.getInt("attack", 0)),
+                new Stat(Stat.Type.VITALITY, jsonValue.getInt("vitality", 0))
             );
         }
     }

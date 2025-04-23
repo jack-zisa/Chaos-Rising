@@ -15,11 +15,12 @@
       "y": 0
     }
   },
-  "stat_modifier": {
-    "stats": {
-      "vitality": 8
-    },
-    "type": "max"
-  },
+  "stat_bonus": [
+    {
+      "type": "vitality",
+      "amount": 8,
+      "modifier": "max"
+    }
+  ],
   "cooldown": 20
 }

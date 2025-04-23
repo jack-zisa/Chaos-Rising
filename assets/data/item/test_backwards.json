@@ -7,10 +7,11 @@
     "damage": 10,
     "angle_offset": 180
   },
-  "stat_modifier": {
-    "stats": {
-      "health": 100
-    },
-    "type": "max"
-  }
+  "stat_bonus": [
+    {
+      "type": "health",
+      "amount": 100,
+      "modifier": "max"
+    }
+  ]
 }

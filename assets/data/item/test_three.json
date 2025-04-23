@@ -8,10 +8,11 @@
     "bullet_count": 3,
     "arc_gap": 120
   },
-  "stat_modifier": {
-    "stats": {
-      "vitality": 10
-    },
-    "type": "max"
-  }
+  "stat_bonus": [
+    {
+      "type": "vitality",
+      "amount": 10,
+      "modifier": "max"
+    }
+  ]
 }
