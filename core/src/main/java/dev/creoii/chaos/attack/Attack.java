@@ -2,8 +2,7 @@ package dev.creoii.chaos.attack;
 
 import com.badlogic.gdx.utils.JsonValue;
 import dev.creoii.chaos.entity.Entity;
-import dev.creoii.chaos.util.provider.floatprovider.FloatProvider;
-import dev.creoii.chaos.util.provider.intprovider.IntProvider;
+import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
 import dev.creoii.chaos.util.provider.vecprovider.SourceVecProvider;
 import dev.creoii.chaos.util.provider.vecprovider.VecProvider;
 
@@ -25,11 +24,11 @@ public interface Attack {
             return new MultiAttack(attacks);
         } else {
             String bulletId = jsonValue.getString("bullet_id");
-            IntProvider damage = IntProvider.parse(jsonValue.get("damage"));
+            NumberProvider damage = NumberProvider.parse(jsonValue.get("damage"));
             int bulletCount = jsonValue.getInt("bullet_count", 1);
             int arcGap = jsonValue.getInt("arc_gap", 0);
             float predictability = jsonValue.getFloat("predictability", 0f);
-            FloatProvider angleOffset = FloatProvider.parse(jsonValue.get("angle_offset"), 0f);
+            NumberProvider angleOffset = NumberProvider.parse(jsonValue.get("angle_offset"), 0f);
 
             VecProvider target = null;
             if (jsonValue.has("target")) {

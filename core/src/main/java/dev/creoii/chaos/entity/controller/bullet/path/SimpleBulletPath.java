@@ -4,10 +4,10 @@ import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.entity.controller.bullet.BulletController;
 import dev.creoii.chaos.util.provider.Provider;
-import dev.creoii.chaos.util.provider.floatprovider.FloatProvider;
+import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
 import dev.creoii.chaos.util.provider.vecprovider.VecProvider;
 
-public record SimpleBulletPath(FloatProvider speed, VecProvider offset, FloatProvider arcSpeed) implements BulletPath {
+public record SimpleBulletPath(NumberProvider speed, VecProvider offset, NumberProvider arcSpeed) implements BulletPath {
     @Override
     public float speed(BulletController controller) {
         return speed.get(Provider.Context.of(controller.getEntity(), controller.getEntity().getGame().getGametime()));

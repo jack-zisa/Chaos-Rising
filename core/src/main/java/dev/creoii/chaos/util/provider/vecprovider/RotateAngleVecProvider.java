@@ -1,13 +1,13 @@
 package dev.creoii.chaos.util.provider.vecprovider;
 
 import com.badlogic.gdx.math.Vector2;
-import dev.creoii.chaos.util.provider.floatprovider.FloatProvider;
+import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
 
 public class RotateAngleVecProvider implements VecProvider {
     private final VecProvider direction;
-    private final FloatProvider angle;
+    private final NumberProvider angle;
 
-    public RotateAngleVecProvider(VecProvider direction, FloatProvider angle) {
+    public RotateAngleVecProvider(VecProvider direction, NumberProvider angle) {
         this.direction = direction;
         this.angle = angle;
     }

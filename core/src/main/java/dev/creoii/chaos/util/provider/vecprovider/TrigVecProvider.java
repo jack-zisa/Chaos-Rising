@@ -1,14 +1,13 @@
 package dev.creoii.chaos.util.provider.vecprovider;
 
 import com.badlogic.gdx.math.Vector2;
+import dev.creoii.chaos.util.provider.TrigFunction;
 
 public class TrigVecProvider implements VecProvider {
-    public enum Function { SIN, COS, TAN }
-
-    private final Function function;
+    private final TrigFunction function;
     private final VecProvider value;
 
-    public TrigVecProvider(Function function, VecProvider value) {
+    public TrigVecProvider(TrigFunction function, VecProvider value) {
         this.function = function;
         this.value = value;
     }

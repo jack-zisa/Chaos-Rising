@@ -2,17 +2,19 @@ package dev.creoii.chaos.util.provider.vecprovider;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.JsonValue;
+import dev.creoii.chaos.util.provider.Operation;
 import dev.creoii.chaos.util.provider.Provider;
-import dev.creoii.chaos.util.provider.floatprovider.ConstantFloatProvider;
-import dev.creoii.chaos.util.provider.floatprovider.FloatProvider;
+import dev.creoii.chaos.util.provider.TrigFunction;
+import dev.creoii.chaos.util.provider.numberprovider.ConstantNumberProvider;
+import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
 
 public interface VecProvider extends Provider<Vector2> {
     VecProvider copy();
 
     static VecProvider parse(JsonValue jsonValue) {
         if (jsonValue.isArray()) {
-            FloatProvider a = new ConstantFloatProvider(jsonValue.getFloat(0));
-            FloatProvider b = new ConstantFloatProvider(jsonValue.getFloat(1));
+            NumberProvider a = new ConstantNumberProvider(jsonValue.getFloat(0));
+            NumberProvider b = new ConstantNumberProvider(jsonValue.getFloat(1));
             return new ConstantVecProvider(a, b);
         }
         String type = jsonValue.getString("type");
@@ -20,12 +22,12 @@ public interface VecProvider extends Provider<Vector2> {
             case "binary" -> {
                 VecProvider a = VecProvider.parse(jsonValue.get("a"));
                 VecProvider b = VecProvider.parse(jsonValue.get("b"));
-                BinaryVecProvider.Operation operation = BinaryVecProvider.Operation.valueOf(jsonValue.getString("operation", "ADD").toUpperCase());
+                Operation operation = Operation.valueOf(jsonValue.getString("operation", "ADD").toUpperCase());
                 yield new BinaryVecProvider(a, b, operation);
             }
             case "constant" -> {
-                FloatProvider x = FloatProvider.parse(jsonValue.get("x"));
-                FloatProvider y = FloatProvider.parse(jsonValue.get("y"));
+                NumberProvider x = NumberProvider.parse(jsonValue.get("x"));
+                NumberProvider y = NumberProvider.parse(jsonValue.get("y"));
                 yield new ConstantVecProvider(x, y);
             }
             case "direction" -> {
@@ -50,7 +52,7 @@ public interface VecProvider extends Provider<Vector2> {
             }
             case "rotate_angle" -> {
                 VecProvider direction = VecProvider.parse(jsonValue.get("direction"));
-                FloatProvider angle = FloatProvider.parse(jsonValue.get("angle"));
+                NumberProvider angle = NumberProvider.parse(jsonValue.get("angle"));
                 yield new RotateAngleVecProvider(direction, angle);
             }
             case "rotated_offset" -> {
@@ -62,7 +64,7 @@ public interface VecProvider extends Provider<Vector2> {
             case "source_pos" -> new SourceVecProvider();
             case "target_pos" -> new TargetPosVecProvider();
             case "trig" -> {
-                TrigVecProvider.Function function = TrigVecProvider.Function.valueOf(jsonValue.getString("function", "SIN").toUpperCase());
+                TrigFunction function = TrigFunction.valueOf(jsonValue.getString("function", "SIN").toUpperCase());
                 VecProvider value = VecProvider.parse(jsonValue.get("value"));
                 yield new TrigVecProvider(function, value);
             }

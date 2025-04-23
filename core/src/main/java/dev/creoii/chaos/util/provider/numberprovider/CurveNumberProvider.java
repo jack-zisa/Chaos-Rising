@@ -1,16 +1,16 @@
-package dev.creoii.chaos.util.provider.floatprovider;
+package dev.creoii.chaos.util.provider.numberprovider;
 
-public class CurveFloatProvider implements FloatProvider {
-    private final FloatProvider start;
-    private final FloatProvider end;
-    private final FloatProvider duration;
+public class CurveNumberProvider implements NumberProvider {
+    private final NumberProvider start;
+    private final NumberProvider end;
+    private final NumberProvider duration;
     private final CurveType type;
     private Float value = null;
     private float progress;
 
     @Override
-    public CurveFloatProvider copy() {
-        return new CurveFloatProvider(start.copy(), end.copy(), duration.copy(), type);
+    public CurveNumberProvider copy() {
+        return new CurveNumberProvider(start.copy(), end.copy(), duration.copy(), type);
     }
 
     public enum CurveType {
@@ -20,14 +20,14 @@ public class CurveFloatProvider implements FloatProvider {
         EASE_OUT
     }
 
-    public CurveFloatProvider(FloatProvider start, FloatProvider end, FloatProvider duration, CurveType type) {
+    public CurveNumberProvider(NumberProvider start, NumberProvider end, NumberProvider duration, CurveType type) {
         this.start = start;
         this.end = end;
         this.duration = duration;
         this.type = type;
     }
 
-    public CurveFloatProvider init(int startTime) {
+    public CurveNumberProvider init(int startTime) {
         start.init(startTime);
         end.init(startTime);
         duration.init(startTime);

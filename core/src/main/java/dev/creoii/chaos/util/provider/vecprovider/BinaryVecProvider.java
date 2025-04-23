@@ -1,10 +1,9 @@
 package dev.creoii.chaos.util.provider.vecprovider;
 
 import com.badlogic.gdx.math.Vector2;
+import dev.creoii.chaos.util.provider.Operation;
 
 public class BinaryVecProvider implements VecProvider {
-    public enum Operation { ADD, SUB, MUL, DIV }
-
     private final VecProvider a, b;
     private final Operation op;
 

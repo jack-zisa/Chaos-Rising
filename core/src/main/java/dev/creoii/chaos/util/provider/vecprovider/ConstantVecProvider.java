@@ -1,20 +1,20 @@
 package dev.creoii.chaos.util.provider.vecprovider;
 
 import com.badlogic.gdx.math.Vector2;
-import dev.creoii.chaos.util.provider.floatprovider.ConstantFloatProvider;
-import dev.creoii.chaos.util.provider.floatprovider.FloatProvider;
+import dev.creoii.chaos.util.provider.numberprovider.ConstantNumberProvider;
+import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
 
 public class ConstantVecProvider implements VecProvider {
-    private final FloatProvider x, y;
+    private final NumberProvider x, y;
 
-    public ConstantVecProvider(FloatProvider x, FloatProvider y) {
+    public ConstantVecProvider(NumberProvider x, NumberProvider y) {
         this.x = x;
         this.y = y;
     }
 
     public ConstantVecProvider(Vector2 vector2) {
-        this.x = new ConstantFloatProvider(vector2.x);
-        this.y = new ConstantFloatProvider(vector2.y);
+        this.x = new ConstantNumberProvider(vector2.x);
+        this.y = new ConstantNumberProvider(vector2.y);
     }
 
     @Override

@@ -1,12 +1,12 @@
-package dev.creoii.chaos.util.provider.floatprovider;
+package dev.creoii.chaos.util.provider.numberprovider;
 
-public class BinaryFloatProvider implements FloatProvider {
-    public enum Operation { ADD, SUB, MUL, DIV }
+import dev.creoii.chaos.util.provider.Operation;
 
-    private final FloatProvider a, b;
+public class BinaryNumberProvider implements NumberProvider {
+    private final NumberProvider a, b;
     private final Operation op;
 
-    public BinaryFloatProvider(FloatProvider a, FloatProvider b, Operation op) {
+    public BinaryNumberProvider(NumberProvider a, NumberProvider b, Operation op) {
         this.a = a;
         this.b = b;
         this.op = op;
@@ -24,12 +24,12 @@ public class BinaryFloatProvider implements FloatProvider {
     }
 
     @Override
-    public BinaryFloatProvider copy() {
-        return new BinaryFloatProvider(a.copy(), b.copy(), op);
+    public BinaryNumberProvider copy() {
+        return new BinaryNumberProvider(a.copy(), b.copy(), op);
     }
 
     @Override
-    public BinaryFloatProvider init(int startTime) {
+    public BinaryNumberProvider init(int startTime) {
         a.init(startTime);
         b.init(startTime);
         return this;
