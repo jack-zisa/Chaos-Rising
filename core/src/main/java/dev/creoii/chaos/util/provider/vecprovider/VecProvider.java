@@ -4,10 +4,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.JsonValue;
 import dev.creoii.chaos.util.provider.Operation;
 import dev.creoii.chaos.util.provider.Provider;
-import dev.creoii.chaos.util.provider.TrigFunction;
+import dev.creoii.chaos.util.provider.UnaryOperation;
 import dev.creoii.chaos.util.provider.booleanprovider.BooleanProvider;
 import dev.creoii.chaos.util.provider.numberprovider.ConstantNumberProvider;
 import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
+import dev.creoii.chaos.util.provider.numberprovider.UnaryNumberProvider;
 
 public interface VecProvider extends Provider<Vector2> {
     VecProvider copy();
@@ -103,22 +104,34 @@ public interface VecProvider extends Provider<Vector2> {
             }
             case "source_pos" -> new SourceVecProvider();
             case "target_pos" -> new TargetPosVecProvider();
-            case "trig" -> {
-                TrigFunction function = TrigFunction.valueOf(jsonValue.getString("function", "SIN").toUpperCase());
+            case "unary" -> {
+                UnaryOperation function = UnaryOperation.valueOf(jsonValue.getString("function", "SIN").toUpperCase());
                 VecProvider value = VecProvider.parse(jsonValue.get("value"));
-                yield new TrigVecProvider(function, value);
+                yield new UnaryVecProvider(function, value);
             }
             case "sin" -> {
                 VecProvider value = VecProvider.parse(jsonValue.get("value"));
-                yield new TrigVecProvider(TrigFunction.SIN, value);
+                yield new UnaryVecProvider(UnaryOperation.SIN, value);
             }
             case "cos", "cosine" -> {
                 VecProvider value = VecProvider.parse(jsonValue.get("value"));
-                yield new TrigVecProvider(TrigFunction.COS, value);
+                yield new UnaryVecProvider(UnaryOperation.COS, value);
             }
             case "tan", "tangent" -> {
                 VecProvider value = VecProvider.parse(jsonValue.get("value"));
-                yield new TrigVecProvider(TrigFunction.TAN, value);
+                yield new UnaryVecProvider(UnaryOperation.TAN, value);
+            }
+            case "sqrt" -> {
+                VecProvider value = VecProvider.parse(jsonValue.get("value"));
+                yield new UnaryVecProvider(UnaryOperation.SQRT, value);
+            }
+            case "cbrt" -> {
+                VecProvider value = VecProvider.parse(jsonValue.get("value"));
+                yield new UnaryVecProvider(UnaryOperation.CBRT, value);
+            }
+            case "abs" -> {
+                VecProvider value = VecProvider.parse(jsonValue.get("value"));
+                yield new UnaryVecProvider(UnaryOperation.ABS, value);
             }
             default -> throw new IllegalStateException("Unexpected VecProvider value: " + type);
         };

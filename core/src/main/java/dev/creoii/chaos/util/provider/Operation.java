@@ -5,5 +5,6 @@ public enum Operation {
     SUB,
     MUL,
     DIV,
-    MOD
+    MOD,
+    POW
 }

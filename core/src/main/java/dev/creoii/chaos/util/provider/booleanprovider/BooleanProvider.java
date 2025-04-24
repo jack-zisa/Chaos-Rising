@@ -24,6 +24,12 @@ public interface BooleanProvider extends Provider<Boolean> {
         }
         String type = jsonValue.getString("type");
         return switch (type) {
+            case "between" -> {
+                NumberProvider value = NumberProvider.parse(jsonValue.get("value"));
+                NumberProvider min = NumberProvider.parse(jsonValue.get("min"));
+                NumberProvider max = NumberProvider.parse(jsonValue.get("max"));
+                yield new BetweenBooleanProvider(value, min, max);
+            }
             case "binary" -> {
                 BooleanProvider a = BooleanProvider.parse(jsonValue.get("a"));
                 BooleanProvider b = BooleanProvider.parse(jsonValue.get("b"));

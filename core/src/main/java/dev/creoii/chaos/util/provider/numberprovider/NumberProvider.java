@@ -3,7 +3,7 @@ package dev.creoii.chaos.util.provider.numberprovider;
 import com.badlogic.gdx.utils.JsonValue;
 import dev.creoii.chaos.util.provider.Operation;
 import dev.creoii.chaos.util.provider.Provider;
-import dev.creoii.chaos.util.provider.TrigFunction;
+import dev.creoii.chaos.util.provider.UnaryOperation;
 import dev.creoii.chaos.util.provider.booleanprovider.BooleanProvider;
 import dev.creoii.chaos.util.provider.vecprovider.VecProvider;
 import dev.creoii.chaos.util.stat.Stat;
@@ -67,6 +67,11 @@ public interface NumberProvider extends Provider<Float> {
                 NumberProvider b = NumberProvider.parse(jsonValue.get("b"));
                 yield new BinaryNumberProvider(a, b, Operation.MOD);
             }
+            case "pow", "power" -> {
+                NumberProvider a = NumberProvider.parse(jsonValue.get("a"));
+                NumberProvider b = NumberProvider.parse(jsonValue.get("b"));
+                yield new BinaryNumberProvider(a, b, Operation.POW);
+            }
             case "clamp" -> {
                 NumberProvider value = NumberProvider.parse(jsonValue.get("value"));
                 NumberProvider min = jsonValue.has("min") ? NumberProvider.parse(jsonValue.get("min")) : null;
@@ -125,22 +130,34 @@ public interface NumberProvider extends Provider<Float> {
                 yield new StatNumberProvider(statType);
             }
             case "time" -> new TimeNumberProvider();
-            case "trig" -> {
-                TrigFunction function = TrigFunction.valueOf(jsonValue.getString("function", "SIN").toUpperCase());
+            case "unary" -> {
+                UnaryOperation function = UnaryOperation.valueOf(jsonValue.getString("function", "SIN").toUpperCase());
                 NumberProvider value = NumberProvider.parse(jsonValue.get("value"));
-                yield new TrigNumberProvider(function, value);
+                yield new UnaryNumberProvider(function, value);
             }
             case "sin" -> {
                 NumberProvider value = NumberProvider.parse(jsonValue.get("value"));
-                yield new TrigNumberProvider(TrigFunction.SIN, value);
+                yield new UnaryNumberProvider(UnaryOperation.SIN, value);
             }
             case "cos", "cosine" -> {
                 NumberProvider value = NumberProvider.parse(jsonValue.get("value"));
-                yield new TrigNumberProvider(TrigFunction.COS, value);
+                yield new UnaryNumberProvider(UnaryOperation.COS, value);
             }
             case "tan", "tangent" -> {
                 NumberProvider value = NumberProvider.parse(jsonValue.get("value"));
-                yield new TrigNumberProvider(TrigFunction.TAN, value);
+                yield new UnaryNumberProvider(UnaryOperation.TAN, value);
+            }
+            case "sqrt" -> {
+                NumberProvider value = NumberProvider.parse(jsonValue.get("value"));
+                yield new UnaryNumberProvider(UnaryOperation.SQRT, value);
+            }
+            case "cbrt" -> {
+                NumberProvider value = NumberProvider.parse(jsonValue.get("value"));
+                yield new UnaryNumberProvider(UnaryOperation.CBRT, value);
+            }
+            case "abs" -> {
+                NumberProvider value = NumberProvider.parse(jsonValue.get("value"));
+                yield new UnaryNumberProvider(UnaryOperation.ABS, value);
             }
             default -> throw new IllegalStateException("Unexpected FloatProvider value: " + type);
         };

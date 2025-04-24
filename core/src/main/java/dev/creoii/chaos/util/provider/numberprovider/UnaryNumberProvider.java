@@ -1,12 +1,12 @@
 package dev.creoii.chaos.util.provider.numberprovider;
 
-import dev.creoii.chaos.util.provider.TrigFunction;
+import dev.creoii.chaos.util.provider.UnaryOperation;
 
-public class TrigNumberProvider implements NumberProvider {
-    private final TrigFunction function;
+public class UnaryNumberProvider implements NumberProvider {
+    private final UnaryOperation function;
     private final NumberProvider value;
 
-    public TrigNumberProvider(TrigFunction function, NumberProvider value) {
+    public UnaryNumberProvider(UnaryOperation function, NumberProvider value) {
         this.function = function;
         this.value = value;
     }
@@ -18,16 +18,19 @@ public class TrigNumberProvider implements NumberProvider {
             case SIN -> (float) Math.sin(v);
             case COS -> (float) Math.cos(v);
             case TAN -> (float) Math.tan(v);
+            case SQRT -> (float) Math.sqrt(v);
+            case CBRT -> (float) Math.cbrt(v);
+            case ABS -> Math.abs(v);
         };
     }
 
     @Override
-    public TrigNumberProvider copy() {
-        return new TrigNumberProvider(function, value.copy());
+    public UnaryNumberProvider copy() {
+        return new UnaryNumberProvider(function, value.copy());
     }
 
     @Override
-    public TrigNumberProvider init(int startTime) {
+    public UnaryNumberProvider init(int startTime) {
         value.init(startTime);
         return this;
     }

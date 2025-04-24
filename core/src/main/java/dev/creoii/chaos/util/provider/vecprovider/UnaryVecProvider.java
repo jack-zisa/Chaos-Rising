@@ -1,13 +1,13 @@
 package dev.creoii.chaos.util.provider.vecprovider;
 
 import com.badlogic.gdx.math.Vector2;
-import dev.creoii.chaos.util.provider.TrigFunction;
+import dev.creoii.chaos.util.provider.UnaryOperation;
 
-public class TrigVecProvider implements VecProvider {
-    private final TrigFunction function;
+public class UnaryVecProvider implements VecProvider {
+    private final UnaryOperation function;
     private final VecProvider value;
 
-    public TrigVecProvider(TrigFunction function, VecProvider value) {
+    public UnaryVecProvider(UnaryOperation function, VecProvider value) {
         this.function = function;
         this.value = value;
     }
@@ -19,11 +19,14 @@ public class TrigVecProvider implements VecProvider {
             case SIN -> new Vector2((float) Math.sin(v.x), (float) Math.sin(v.y));
             case COS -> new Vector2((float) Math.cos(v.x), (float) Math.cos(v.y));
             case TAN -> new Vector2((float) Math.tan(v.x), (float) Math.tan(v.y));
+            case SQRT -> new Vector2((float) Math.sqrt(v.x), (float) Math.sqrt(v.y));
+            case CBRT -> new Vector2((float) Math.cbrt(v.x), (float) Math.cbrt(v.y));
+            case ABS -> new Vector2(Math.abs(v.x), Math.abs(v.y));
         };
     }
 
     @Override
-    public TrigVecProvider copy() {
-        return new TrigVecProvider(function, value.copy());
+    public UnaryVecProvider copy() {
+        return new UnaryVecProvider(function, value.copy());
     }
 }

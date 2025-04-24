@@ -21,6 +21,7 @@ public class BinaryNumberProvider implements NumberProvider {
             case MUL -> av * bv;
             case DIV -> av / bv;
             case MOD -> av % bv;
+            case POW -> (float) Math.pow(av, bv);
         };
     }
 
