@@ -24,7 +24,7 @@ public class LootTable {
 
     public List<ItemStack> roll(Game game, int rolls) {
         List<ItemStack> stacks = new ArrayList<>();
-        for (int i = 0; i < rolls; i++) {
+        for (int i = 0; i < rolls; ++i) {
             LootEntry entry = getWeightedRandomEntry();
             if (entry != null) {
                 stacks.add(entry.roll(game));

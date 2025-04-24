@@ -14,7 +14,7 @@ import java.util.Random;
 public final class LootUtils {
     private static final Random RANDOM = new Random();
 
-    public static void insertIntoInventory(Game game, Inventory inventory, LootTable lootTable, int rolls) {
+    public static void fillInventory(Game game, Inventory inventory, LootTable lootTable, int rolls) {
         List<ItemStack> loot = lootTable.roll(game, rolls);
         List<Slot> availableSlots = new ArrayList<>();
 
