@@ -7,11 +7,17 @@ import dev.creoii.chaos.entity.inventory.Inventory;
 import dev.creoii.chaos.util.LootUtils;
 
 public class EnemyEntity extends LivingEntity {
+    private final Vector2 spawnPos;
     private final EnemyController controller;
 
-    public EnemyEntity(EnemyEntityType type) {
+    public EnemyEntity(Vector2 spawnPos, EnemyEntityType type) {
         super(type, new Vector2(1, 1), Group.ENEMY, type.statContainer().copy(), type.statContainer().copy());
+        this.spawnPos = spawnPos;
         this.controller = new EnemyController(type.behavior());
+    }
+
+    public Vector2 getSpawnPos() {
+        return spawnPos;
     }
 
     @Override

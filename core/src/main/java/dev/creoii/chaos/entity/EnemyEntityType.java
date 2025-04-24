@@ -31,7 +31,7 @@ public record EnemyEntityType(String id, float scale, @Nullable String textureId
     }
 
     public EnemyEntity create(Game game, Vector2 pos, Map<String, Object> customData) {
-        EnemyEntity enemy = new EnemyEntity(this);
+        EnemyEntity enemy = new EnemyEntity(pos.cpy(), this);
         enemy.game = game;
         enemy.uuid = UUID.randomUUID();
         enemy.pos = pos;

@@ -88,6 +88,8 @@ public interface NumberProvider extends Provider<Float> {
                 float value = jsonValue.getFloat("value");
                 yield new ConstantNumberProvider(value);
             }
+            case "zero" -> new ConstantNumberProvider(0f);
+            case "one" -> new ConstantNumberProvider(1f);
             case "curve" -> {
                 NumberProvider start = NumberProvider.parse(jsonValue.get("start"));
                 NumberProvider end = NumberProvider.parse(jsonValue.get("end"));

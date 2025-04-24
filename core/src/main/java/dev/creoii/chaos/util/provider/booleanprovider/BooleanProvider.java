@@ -55,6 +55,8 @@ public interface BooleanProvider extends Provider<Boolean> {
                 boolean value = jsonValue.getBoolean("value");
                 yield new ConstantBooleanProvider(value);
             }
+            case "true" -> new ConstantBooleanProvider(true);
+            case "false" -> new ConstantBooleanProvider(false);
             case "has_effect" -> {
                 String effectId = jsonValue.getString("effect");
                 yield new HasEffectBooleanProvider(effectId);

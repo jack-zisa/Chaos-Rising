@@ -8,7 +8,6 @@ import dev.creoii.chaos.util.provider.UnaryOperation;
 import dev.creoii.chaos.util.provider.booleanprovider.BooleanProvider;
 import dev.creoii.chaos.util.provider.numberprovider.ConstantNumberProvider;
 import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
-import dev.creoii.chaos.util.provider.numberprovider.UnaryNumberProvider;
 
 public interface VecProvider extends Provider<Vector2> {
     VecProvider copy();
@@ -19,6 +18,12 @@ public interface VecProvider extends Provider<Vector2> {
             NumberProvider b = new ConstantNumberProvider(jsonValue.getFloat(1));
             return new ConstantVecProvider(a, b);
         }
+        /**
+         * TODO:
+         * TargetToSource
+         * SourceToTarget
+         * BulletIndex (corresponding to num provider)
+         */
         String type = jsonValue.getString("type");
         return switch (type) {
             case "binary" -> {
@@ -71,6 +76,8 @@ public interface VecProvider extends Provider<Vector2> {
                 NumberProvider y = jsonValue.has("y") ? NumberProvider.parse(jsonValue.get("y")) : null;
                 yield new ConstantVecProvider(x, y);
             }
+            case "zero" -> new ConstantVecProvider(new Vector2(0f, 0f));
+            case "one" -> new ConstantVecProvider(new Vector2(1f, 1f));
             case "direction" -> {
                 VecProvider from = VecProvider.parse(jsonValue.get("from"));
                 VecProvider to = VecProvider.parse(jsonValue.get("to"));
@@ -103,6 +110,7 @@ public interface VecProvider extends Provider<Vector2> {
                 yield new RotatedOffsetVecProvider(from, to, offset);
             }
             case "source_pos" -> new SourceVecProvider();
+            case "spawn_pos" -> new SpawnPosVecProvider();
             case "target_pos" -> new TargetPosVecProvider();
             case "unary" -> {
                 UnaryOperation function = UnaryOperation.valueOf(jsonValue.getString("function", "SIN").toUpperCase());
