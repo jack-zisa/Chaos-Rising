@@ -36,32 +36,25 @@ public class CharacterController extends EntityController<CharacterEntity> {
         if (Gdx.input.isKeyPressed(entity.getGame().getOptionsManager().BACKWARDS_KEY.intValue()))
             dy -= 1;
 
-        if (dx == 0 && dy == 0) {
-            entity.setMoving(false);
-        }
-
         Vector2 direction = new Vector2(dx, dy).nor();
 
         if (entity instanceof CharacterEntity character)
             character.setPrevPos(entity.getPos());
 
         entity.getPos().add(direction.scl(entity.getStats().speed.value() * (Entity.COORDINATE_SCALE / 2f) * delta));
-        entity.setMoving(true);
 
-        if (Gdx.input.isTouched() && --weaponCooldown <= 0) {
+        if (--weaponCooldown <= 0 && Gdx.input.isTouched()) {
             Slot weaponSlot = entity.getInventory().getWeaponSlot();
             if (weaponSlot.hasItem() && weaponSlot.getStack().getItem() instanceof WeaponItem weaponItem) {
                 weaponItem.getAttack().attack(new MousePosVecProvider(), new SourceVecProvider(), getEntity());
                 weaponCooldown = Math.max(1, 150 / Math.max(1, entity.getStats().attackSpeed.value()));
             }
         }
-        if (Gdx.input.isKeyPressed(entity.getGame().getOptionsManager().ABILITY_KEY.intValue())) {
-            if (--abilityCooldown <= 0) {
-                Slot abilitySlot = entity.getInventory().getAbilitySlot();
-                if (abilitySlot.hasItem() && abilitySlot.getStack().getItem() instanceof AbilityItem abilityItem) {
-                    abilityItem.getAttack().attack(new MousePosVecProvider(), new SourceVecProvider(), getEntity());
-                    abilityCooldown = abilityItem.getCooldown();
-                }
+        if (--abilityCooldown <= 0 && Gdx.input.isKeyPressed(entity.getGame().getOptionsManager().ABILITY_KEY.intValue())) {
+            Slot abilitySlot = entity.getInventory().getAbilitySlot();
+            if (abilitySlot.hasItem() && abilitySlot.getStack().getItem() instanceof AbilityItem abilityItem) {
+                abilityItem.getAttack().attack(new MousePosVecProvider(), new SourceVecProvider(), getEntity());
+                abilityCooldown = abilityItem.getCooldown();
             }
         }
     }

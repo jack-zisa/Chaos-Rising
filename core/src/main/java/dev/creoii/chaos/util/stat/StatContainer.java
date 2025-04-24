@@ -1,6 +1,5 @@
 package dev.creoii.chaos.util.stat;
 
-import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.StringBuilder;
 
@@ -88,29 +87,14 @@ public class StatContainer {
             + ",V:" + vitality + "/" + maxStatContainer.vitality;
     }
 
-    public static class Serializer implements Json.Serializer<StatContainer> {
-        @Override
-        public void write(Json json, StatContainer statContainer, Class knownType) {
-            json.writeObjectStart();
-            json.writeValue("health", statContainer.health);
-            json.writeValue("speed", statContainer.speed);
-            json.writeValue("attack_speed", statContainer.attackSpeed);
-            json.writeValue("defense", statContainer.defense);
-            json.writeValue("attack", statContainer.attack);
-            json.writeValue("vitality", statContainer.vitality);
-            json.writeObjectEnd();
-        }
-
-        @Override
-        public StatContainer read(Json json, JsonValue jsonValue, Class aClass) {
-            return new StatContainer(
-                new Stat(Stat.Type.HEALTH, jsonValue.getInt("health", 0)),
-                new Stat(Stat.Type.SPEED, jsonValue.getInt("speed", 0)),
-                new Stat(Stat.Type.ATTACK_SPEED, jsonValue.getInt("attack_speed", 0)),
-                new Stat(Stat.Type.DEFENSE, jsonValue.getInt("defense", 0)),
-                new Stat(Stat.Type.ATTACK, jsonValue.getInt("attack", 0)),
-                new Stat(Stat.Type.VITALITY, jsonValue.getInt("vitality", 0))
-            );
-        }
+    public static StatContainer parse(JsonValue jsonValue) {
+        return new StatContainer(
+            new Stat(Stat.Type.HEALTH, jsonValue.getInt("health", 0)),
+            new Stat(Stat.Type.SPEED, jsonValue.getInt("speed", 0)),
+            new Stat(Stat.Type.ATTACK_SPEED, jsonValue.getInt("attack_speed", 0)),
+            new Stat(Stat.Type.DEFENSE, jsonValue.getInt("defense", 0)),
+            new Stat(Stat.Type.ATTACK, jsonValue.getInt("attack", 0)),
+            new Stat(Stat.Type.VITALITY, jsonValue.getInt("vitality", 0))
+        );
     }
 }

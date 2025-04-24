@@ -1,5 +1,5 @@
 {
-  "sprite_path": "wizard",
+  "texture": "wizard",
   "base_stats": {
     "health": 100,
     "speed": 10,

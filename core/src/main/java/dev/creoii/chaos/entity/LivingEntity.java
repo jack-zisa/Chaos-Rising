@@ -12,8 +12,8 @@ public abstract class LivingEntity extends Entity {
     private final StatContainer maxStatContainer;
     private final List<StatusEffect> statusEffects;
 
-    public LivingEntity(String textureId, float scale, Vector2 collider, Group group, StatContainer statContainer, StatContainer maxStatContainer) {
-        super(textureId, scale, collider, group);
+    public LivingEntity(EntityType<? extends LivingEntity> type, Vector2 collider, Group group, StatContainer statContainer, StatContainer maxStatContainer) {
+        super(type, collider, group);
         this.statContainer = statContainer;
         this.maxStatContainer = maxStatContainer;
         statusEffects = new ArrayList<>();

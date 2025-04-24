@@ -2,7 +2,7 @@ package dev.creoii.chaos.entity.character;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
-import dev.creoii.chaos.Game;
+import dev.creoii.chaos.entity.CharacterEntityType;
 import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.entity.LivingEntity;
 import dev.creoii.chaos.entity.LootDropEntity;
@@ -15,36 +15,25 @@ import dev.creoii.chaos.item.ItemStack;
 import java.util.UUID;
 
 public class CharacterEntity extends LivingEntity {
-    private CharacterClass characterClass;
     private final EntityController<CharacterEntity> controller;
     private final Vector2 prevPos;
     private final CharacterInventory inventory;
     private UUID lootUuid;
 
-    public CharacterEntity(CharacterClass characterClass) {
-        super(characterClass.getTextureId(), 1f, new Vector2(1, 1), Group.CHARACTER, characterClass.getBaseStats().copy(), characterClass.getBaseStats().copy());
-        this.characterClass = characterClass;
+    public CharacterEntity(CharacterEntityType characterEntityType) {
+        super(characterEntityType, new Vector2(1, 1), Group.CHARACTER, characterEntityType.characterClass().get().baseStatContainer().copy(), characterEntityType.characterClass().get().baseStatContainer().copy());
         controller = new CharacterController(this);
         prevPos = new Vector2();
         inventory = new CharacterInventory(this);
         lootUuid = null;
     }
 
-    public CharacterClass getCharacterClass() {
-        return characterClass;
-    }
-
     public void setCharacterClass(CharacterClass characterClass) {
-        this.characterClass = characterClass;
+        ((CharacterEntityType) type).characterClass().set(characterClass);
         sprite = new Sprite(game.getTextureManager().getTexture("class", getTextureId()));
         sprite.setSize(getScale(), getScale());
-        getStats().set(characterClass.getBaseStats());
-        getMaxStats().set(characterClass.getBaseStats());
-    }
-
-    @Override
-    public String getTextureId() {
-        return characterClass.getTextureId();
+        getStats().set(characterClass.baseStatContainer());
+        getMaxStats().set(characterClass.baseStatContainer());
     }
 
     public Vector2 getPrevPos() {
@@ -77,23 +66,16 @@ public class CharacterEntity extends LivingEntity {
 
     public void dropItem(ItemStack stack, boolean forceDrop) {
         if (lootUuid == null || forceDrop) {
+            LootDropEntity lootDropEntity = game.getEntityManager().addEntity(game.getDataManager().getLootDrop("bag"), pos.cpy());
             Inventory inventory = new Inventory(2, 4);
             inventory.addItem(stack);
-            LootDropEntity lootDropEntity = new LootDropEntity("bag", 1f, true, inventory);
-            game.getEntityManager().addEntity(lootDropEntity, pos.cpy());
+            lootDropEntity.setInventory(inventory);
             lootUuid = lootDropEntity.getUuid();
         } else {
             LootDropEntity lootDropEntity = (LootDropEntity) game.getEntityManager().getEntity(lootUuid);
             if (lootDropEntity == null || !lootDropEntity.getInventory().addItem(stack))
                 dropItem(stack, true);
         }
-    }
-
-    @Override
-    public Entity create(Game game, UUID uuid, Vector2 pos) {
-        sprite = new Sprite(game.getTextureManager().getTexture("class", getTextureId()));
-        sprite.setSize(getScale(), getScale());
-        return this;
     }
 
     @Override

@@ -13,15 +13,10 @@ import java.util.*;
 public abstract class Entity implements Positionable, Tickable {
     public static final float COORDINATE_SCALE = 32f;
     protected static final Random RANDOM = new Random();
-    // template (non-active) fields
-    private final float scale;
-    private final String textureId;
+    protected final EntityType<?> type;
     private final Vector2 collider;
     private final Group group;
-    private boolean moving;
-    private long spawnTime;
-
-    // active fields
+    protected long spawnTime;
     protected Game game;
     protected Vector2 pos;
     protected Vector2 centerPos;
@@ -30,16 +25,12 @@ public abstract class Entity implements Positionable, Tickable {
     protected UUID uuid;
     protected Sprite sprite;
 
-    public Entity(String textureId, float scale, Vector2 collider, Group group) {
-        this.scale = scale;
-        this.textureId = textureId;
+    public Entity(EntityType<?> type, Vector2 collider, Group group) {
+        this.type = type;
         this.collider = collider;
         this.group = group;
-        moving = false;
         spawnTime = -1;
     }
-
-    public abstract Entity create(Game game, UUID uuid, Vector2 pos);
 
     public abstract EntityController<?> getController();
 
@@ -55,12 +46,16 @@ public abstract class Entity implements Positionable, Tickable {
         }
     }
 
+    public EntityType<?> getType() {
+        return type;
+    }
+
     public float getScale() {
-        return scale * COORDINATE_SCALE;
+        return type.scale() * COORDINATE_SCALE;
     }
 
     public String getTextureId() {
-        return textureId;
+        return type.textureId();
     }
 
     public Vector2 getCollider() {
@@ -80,14 +75,6 @@ public abstract class Entity implements Positionable, Tickable {
 
     public Group getGroup() {
         return group;
-    }
-
-    public boolean isMoving() {
-        return moving;
-    }
-
-    public void setMoving(boolean moving) {
-        this.moving = moving;
     }
 
     public long getSpawnTime() {
@@ -129,23 +116,6 @@ public abstract class Entity implements Positionable, Tickable {
 
     public UUID getUuid() {
         return uuid;
-    }
-
-    public Entity spawn(Game game, UUID uuid, Vector2 pos, Map<String, Object> customData) {
-        Entity entity = create(game, uuid, pos);
-        entity.game = game;
-        entity.uuid = uuid;
-        entity.pos = pos;
-        entity.centerPos = new Vector2();
-        entity.colliderRect = new Rectangle();
-        entity.colliderRect.setPosition(pos);
-        entity.colliderRect.setWidth(collider.x * getScale());
-        entity.colliderRect.setHeight(collider.y * getScale());
-        entity.getCenterPos();
-        entity.collidingWith = new HashSet<>();
-        entity.spawnTime = game.getGametime();
-        entity.postSpawn();
-        return entity;
     }
 
     public void remove() {

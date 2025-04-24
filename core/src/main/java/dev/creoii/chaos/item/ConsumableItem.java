@@ -16,8 +16,8 @@ public class ConsumableItem extends Item {
     private final List<ModifierEntry> statBonus;
     private final List<StatusEffect> statusEffects;
 
-    public ConsumableItem(Rarity rarity, String textureId, List<ModifierEntry> statBonus, List<StatusEffect> statusEffects) {
-        super(Type.CONSUMABLE, rarity, textureId);
+    public ConsumableItem(String id, Rarity rarity, String textureId, List<ModifierEntry> statBonus, List<StatusEffect> statusEffects) {
+        super(id, Type.CONSUMABLE, rarity, textureId);
         this.statBonus = statBonus;
         this.statusEffects = statusEffects;
     }

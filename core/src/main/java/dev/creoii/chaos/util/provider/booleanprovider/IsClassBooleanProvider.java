@@ -1,5 +1,6 @@
 package dev.creoii.chaos.util.provider.booleanprovider;
 
+import dev.creoii.chaos.entity.CharacterEntityType;
 import dev.creoii.chaos.entity.character.CharacterEntity;
 
 public class IsClassBooleanProvider implements BooleanProvider {
@@ -12,7 +13,7 @@ public class IsClassBooleanProvider implements BooleanProvider {
     @Override
     public Boolean get(Context context) {
         if (context.sourceEntity() instanceof CharacterEntity character) {
-            return character.getCharacterClass().id().equals(classId);
+            return ((CharacterEntityType) character.getType()).characterClass().get().id().equals(classId);
         }
         return false;
     }

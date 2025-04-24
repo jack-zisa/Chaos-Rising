@@ -10,8 +10,8 @@ import java.util.List;
 public class EquipmentItem extends Item {
     protected final List<ModifierEntry> statBonus;
 
-    public EquipmentItem(Type type, Rarity rarity, String textureId, List<ModifierEntry> statBonus) {
-        super(type, rarity, textureId);
+    public EquipmentItem(String id, Type type, Rarity rarity, String textureId, List<ModifierEntry> statBonus) {
+        super(id, type, rarity, textureId);
         this.statBonus = statBonus;
     }
 

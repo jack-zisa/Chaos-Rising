@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.effect.StatusEffect;
 import dev.creoii.chaos.effect.StatusEffects;
 import dev.creoii.chaos.entity.Entity;
+import dev.creoii.chaos.entity.EntityType;
 import dev.creoii.chaos.entity.character.CharacterClass;
 import dev.creoii.chaos.entity.character.CharacterEntity;
 import dev.creoii.chaos.item.Item;
@@ -64,7 +65,7 @@ public final class Commands {
             if (argCount < 1 || argCount == 2)
                 return;
 
-            Entity enemy = game.getDataManager().getEnemy(args[0]);
+            EntityType<?> enemy = game.getDataManager().getEnemy(args[0]);
 
             if (enemy == null)
                 return;

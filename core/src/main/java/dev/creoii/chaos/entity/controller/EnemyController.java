@@ -12,11 +12,6 @@ public class EnemyController extends EntityController<EnemyEntity> {
         this.behavior = behavior;
     }
 
-    public EnemyController(EnemyController controller) {
-        super(null);
-        this.behavior = Behavior.copy(controller.behavior);
-    }
-
     public EnemyEntity getEntity() {
         return entity;
     }
@@ -30,6 +25,8 @@ public class EnemyController extends EntityController<EnemyEntity> {
     }
 
     public void start(EnemyEntity entity) {
+        if (behavior == null)
+            return;
         this.entity = entity;
         time = entity.getGame().getGametime();
         behavior.start(this, entity);
@@ -37,7 +34,7 @@ public class EnemyController extends EntityController<EnemyEntity> {
 
     @Override
     public void control(int gametime, float delta) {
-        if (entity != null) {
+        if (entity != null && behavior != null) {
             behavior.update(this, ++time, delta);
         }
     }

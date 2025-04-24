@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 
 public class StatusEffect implements DataManager.Identifiable {
-    private String id;
+    private final String id;
     private final BiConsumer<LivingEntity, StatusEffect> starter;
     private final BiConsumer<LivingEntity, StatusEffect> applier;
     private final BiConsumer<LivingEntity, StatusEffect> remover;
@@ -44,11 +44,6 @@ public class StatusEffect implements DataManager.Identifiable {
     @Override
     public String id() {
         return id;
-    }
-
-    @Override
-    public void setId(String id) {
-        this.id = id;
     }
 
     public BiConsumer<LivingEntity, StatusEffect> getStarter() {

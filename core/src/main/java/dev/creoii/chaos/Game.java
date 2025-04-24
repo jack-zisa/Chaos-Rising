@@ -5,8 +5,10 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
 import dev.creoii.chaos.chat.command.CommandManager;
+import dev.creoii.chaos.entity.CharacterEntityType;
 import dev.creoii.chaos.entity.character.CharacterEntity;
 import dev.creoii.chaos.texture.TextureManager;
+import dev.creoii.chaos.util.Mutable;
 
 public class Game implements Disposable {
     private final Main main;
@@ -40,7 +42,7 @@ public class Game implements Disposable {
         textureManager.load();
         dataManager.load();
 
-        activeCharacter = entityManager.addEntity(new CharacterEntity(dataManager.getCharacterClass("wizard")), new Vector2(0, 0));
+        activeCharacter = entityManager.addEntity(new CharacterEntityType(new Mutable<>(dataManager.getCharacterClass("wizard"))), new Vector2(0, 0));
     }
 
     public void run(float delta) {

@@ -20,7 +20,7 @@ public class SimpleEntityRenderer<T extends Entity> extends EntityRenderer<T> {
     }
 
     public void render(T entity, Renderer renderer, @Nullable SpriteBatch batch, @Nullable ShapeRenderer shapeRenderer, BitmapFont font, boolean debug) {
-        if (batch != null) {
+        if (batch != null && entity.getSprite() != null) {
             entity.getSprite().setPosition(entity.getPos().x, entity.getPos().y);
             entity.getSprite().draw(batch);
 
