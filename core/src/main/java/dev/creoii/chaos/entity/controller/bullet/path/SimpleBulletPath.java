@@ -10,13 +10,13 @@ import dev.creoii.chaos.util.provider.vecprovider.VecProvider;
 public record SimpleBulletPath(NumberProvider speed, VecProvider offset, NumberProvider arcSpeed) implements BulletPath {
     @Override
     public float speed(BulletController controller) {
-        return speed.get(Provider.Context.of(controller.getEntity(), controller.getEntity().getGame().getGametime()));
+        return speed.init(controller.getEntity().getGame().getGametime()).get(Provider.Context.of(controller.getEntity(), controller.getEntity().getGame().getGametime()));
     }
 
     @Override
     public void update(BulletController controller, int gametime, float dt) {
         Provider.Context context = Provider.Context.of(controller.getEntity(), controller.getEntity().getGame().getGametime());
-        float speed = this.speed.get(context);
+        float speed = this.speed.init(gametime).get(context);
         if (speed == 0)
             return;
 

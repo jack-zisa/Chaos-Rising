@@ -1,7 +1,10 @@
 package dev.creoii.chaos.util.provider.booleanprovider;
 
 import com.badlogic.gdx.utils.JsonValue;
+import dev.creoii.chaos.util.provider.BinaryOperation;
+import dev.creoii.chaos.util.provider.Comparison;
 import dev.creoii.chaos.util.provider.Provider;
+import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
 
 public interface BooleanProvider extends Provider<Boolean> {
     BooleanProvider copy();
@@ -21,10 +24,35 @@ public interface BooleanProvider extends Provider<Boolean> {
         }
         String type = jsonValue.getString("type");
         return switch (type) {
+            case "binary" -> {
+                BooleanProvider a = BooleanProvider.parse(jsonValue.get("a"));
+                BooleanProvider b = BooleanProvider.parse(jsonValue.get("b"));
+                BinaryOperation operation = BinaryOperation.valueOf(jsonValue.getString("operation", "AND").toUpperCase());
+                yield new BinaryBooleanProvider(a, b, operation);
+            }
             case "constant" -> {
                 boolean value = jsonValue.getBoolean("value");
                 yield new ConstantBooleanProvider(value);
             }
+            case "has_effect" -> {
+                String effectId = jsonValue.getString("effect");
+                yield new HasEffectBooleanProvider(effectId);
+            }
+            case "is_class" -> {
+                String classId = jsonValue.getString("class");
+                yield new HasEffectBooleanProvider(classId);
+            }
+            case "not", "invert" -> {
+                BooleanProvider value = BooleanProvider.parse(jsonValue.get("value"));
+                yield new NotBooleanProvider(value);
+            }
+            case "number_comparison" -> {
+                NumberProvider a = NumberProvider.parse(jsonValue.get("a"));
+                NumberProvider b = NumberProvider.parse(jsonValue.get("b"));
+                Comparison comparison = Comparison.valueOf(jsonValue.getString("comparison", "E").toUpperCase());
+                yield new NumberComparisonBooleanProvider(a, b, comparison);
+            }
+            case "rand", "random" -> new RandomBooleanProvider();
             default -> throw new IllegalStateException("Unexpected FloatProvider value: " + type);
         };
     }

@@ -25,9 +25,42 @@ public interface VecProvider extends Provider<Vector2> {
                 Operation operation = Operation.valueOf(jsonValue.getString("operation", "ADD").toUpperCase());
                 yield new BinaryVecProvider(a, b, operation);
             }
+            case "add", "addition" -> {
+                VecProvider a = VecProvider.parse(jsonValue.get("a"));
+                VecProvider b = VecProvider.parse(jsonValue.get("b"));
+                yield new BinaryVecProvider(a, b, Operation.ADD);
+            }
+            case "sub", "subtract", "subtraction" -> {
+                VecProvider a = VecProvider.parse(jsonValue.get("a"));
+                VecProvider b = VecProvider.parse(jsonValue.get("b"));
+                yield new BinaryVecProvider(a, b, Operation.SUB);
+            }
+            case "mul", "multiply", "multiplication" -> {
+                VecProvider a = VecProvider.parse(jsonValue.get("a"));
+                VecProvider b = VecProvider.parse(jsonValue.get("b"));
+                yield new BinaryVecProvider(a, b, Operation.MUL);
+            }
+            case "div", "divide", "division" -> {
+                VecProvider a = VecProvider.parse(jsonValue.get("a"));
+                VecProvider b = VecProvider.parse(jsonValue.get("b"));
+                yield new BinaryVecProvider(a, b, Operation.DIV);
+            }
+            case "mod", "modulo" -> {
+                VecProvider a = VecProvider.parse(jsonValue.get("a"));
+                VecProvider b = VecProvider.parse(jsonValue.get("b"));
+                yield new BinaryVecProvider(a, b, Operation.MOD);
+            }
+            case "clamp" -> {
+                VecProvider vec = parse(jsonValue.get("vec"));
+                NumberProvider minX = jsonValue.has("min_x") ? NumberProvider.parse(jsonValue.get("min_x")) : null;
+                NumberProvider minY = jsonValue.has("min_y") ? NumberProvider.parse(jsonValue.get("min_y")) : null;
+                NumberProvider maxX = jsonValue.has("max_x") ? NumberProvider.parse(jsonValue.get("max_x")) : null;
+                NumberProvider maxY = jsonValue.has("max_y") ? NumberProvider.parse(jsonValue.get("max_y")) : null;
+                yield new ClampVecProvider(vec, minX, minY, maxX, maxY);
+            }
             case "constant" -> {
                 NumberProvider x = NumberProvider.parse(jsonValue.get("x"));
-                NumberProvider y = NumberProvider.parse(jsonValue.get("y"));
+                NumberProvider y = jsonValue.has("y") ? NumberProvider.parse(jsonValue.get("y")) : null;
                 yield new ConstantVecProvider(x, y);
             }
             case "direction" -> {
@@ -67,6 +100,18 @@ public interface VecProvider extends Provider<Vector2> {
                 TrigFunction function = TrigFunction.valueOf(jsonValue.getString("function", "SIN").toUpperCase());
                 VecProvider value = VecProvider.parse(jsonValue.get("value"));
                 yield new TrigVecProvider(function, value);
+            }
+            case "sin" -> {
+                VecProvider value = VecProvider.parse(jsonValue.get("value"));
+                yield new TrigVecProvider(TrigFunction.SIN, value);
+            }
+            case "cos", "cosine" -> {
+                VecProvider value = VecProvider.parse(jsonValue.get("value"));
+                yield new TrigVecProvider(TrigFunction.COS, value);
+            }
+            case "tan", "tangent" -> {
+                VecProvider value = VecProvider.parse(jsonValue.get("value"));
+                yield new TrigVecProvider(TrigFunction.TAN, value);
             }
             default -> throw new IllegalStateException("Unexpected VecProvider value: " + type);
         };

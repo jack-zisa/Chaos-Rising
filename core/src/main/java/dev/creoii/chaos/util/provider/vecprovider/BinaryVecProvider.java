@@ -25,6 +25,11 @@ public class BinaryVecProvider implements VecProvider {
                 float y = av.y / bv.y;
                 yield new Vector2(x, y);
             }
+            case MOD -> {
+                float x = av.x % bv.x;
+                float y = av.y % bv.y;
+                yield new Vector2(x, y);
+            }
         };
     }
 

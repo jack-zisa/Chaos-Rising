@@ -4,21 +4,19 @@
   "path": {
     "speed": 5,
     "offset": {
-      "type": "binary",
+      "type": "mul",
       "a": {
-        "type": "binary",
+        "type": "mul",
         "a": {
-          "type": "binary",
+          "type": "mul",
           "a": {
-            "type": "trig",
-            "function": "cos",
+            "type": "cos",
             "value": {
               "type": "binary",
               "a": {
                 "type": "constant",
                 "x": {
-                  "type": "binary",
-                  "operation": "sub",
+                  "type": "sub",
                   "a": {
                     "type": "time"
                   },
@@ -27,8 +25,7 @@
                   }
                 },
                 "y": {
-                  "type": "binary",
-                  "operation": "sub",
+                  "type": "sub",
                   "a": {
                     "type": "time"
                   },
@@ -59,11 +56,14 @@
             "type": "perpendicular",
             "value": {
               "type": "direction",
-              "from": { "type": "source_pos" },
-              "to": { "type": "target_pos" }
+              "from": {
+                "type": "source_pos"
+              },
+              "to": {
+                "type": "target_pos"
+              }
             }
-          },
-          "operation": "mul"
+          }
         },
         "b": {
           "type": "constant",
@@ -73,11 +73,9 @@
           "y": {
             "type": "bullet_index"
           }
-        },
-        "operation": "mul"
+        }
       },
-      "b": [-1, -1],
-      "operation": "mul"
+      "b": [-1, -1]
     }
   }
 }

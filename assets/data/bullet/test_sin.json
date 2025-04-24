@@ -4,9 +4,9 @@
   "path": {
     "speed": 5,
     "offset": {
-      "type": "binary",
+      "type": "mul",
       "a": {
-        "type": "binary",
+        "type": "mul",
         "a": {
           "type": "perpendicular",
           "value": {
@@ -20,17 +20,15 @@
           }
         },
         "b": {
-          "type": "binary",
+          "type": "mul",
           "a": {
-            "type": "trig",
-            "function": "cos",
+            "type": "cos",
             "value": {
-              "type": "binary",
+              "type": "mul",
               "a": {
                 "type": "constant",
                 "x": {
-                  "type": "binary",
-                  "operation": "sub",
+                  "type": "sub",
                   "a": {
                     "type": "time"
                   },
@@ -39,8 +37,7 @@
                   }
                 },
                 "y": {
-                  "type": "binary",
-                  "operation": "sub",
+                  "type": "sub",
                   "a": {
                     "type": "time"
                   },
@@ -53,18 +50,15 @@
                 "type": "constant",
                 "x": 0.075,
                 "y": 0.075
-              },
-              "operation": "mul"
+              }
             }
           },
           "b": {
             "type": "constant",
             "x": 4,
             "y": 4
-          },
-          "operation": "mul"
-        },
-        "operation": "mul"
+          }
+        }
       },
       "b": {
         "type": "constant",
@@ -74,8 +68,7 @@
         "y": {
           "type": "bullet_index"
         }
-      },
-      "operation": "mul"
+      }
     }
   }
 }

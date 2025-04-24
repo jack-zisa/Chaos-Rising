@@ -20,6 +20,7 @@ public class BinaryNumberProvider implements NumberProvider {
             case SUB -> av - bv;
             case MUL -> av * bv;
             case DIV -> av / bv;
+            case MOD -> av % bv;
         };
     }
 
