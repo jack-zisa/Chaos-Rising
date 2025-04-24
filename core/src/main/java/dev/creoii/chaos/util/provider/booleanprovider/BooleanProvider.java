@@ -30,6 +30,21 @@ public interface BooleanProvider extends Provider<Boolean> {
                 BinaryOperation operation = BinaryOperation.valueOf(jsonValue.getString("operation", "AND").toUpperCase());
                 yield new BinaryBooleanProvider(a, b, operation);
             }
+            case "and" -> {
+                BooleanProvider a = BooleanProvider.parse(jsonValue.get("a"));
+                BooleanProvider b = BooleanProvider.parse(jsonValue.get("b"));
+                yield new BinaryBooleanProvider(a, b, BinaryOperation.AND);
+            }
+            case "or" -> {
+                BooleanProvider a = BooleanProvider.parse(jsonValue.get("a"));
+                BooleanProvider b = BooleanProvider.parse(jsonValue.get("b"));
+                yield new BinaryBooleanProvider(a, b, BinaryOperation.OR);
+            }
+            case "xor" -> {
+                BooleanProvider a = BooleanProvider.parse(jsonValue.get("a"));
+                BooleanProvider b = BooleanProvider.parse(jsonValue.get("b"));
+                yield new BinaryBooleanProvider(a, b, BinaryOperation.XOR);
+            }
             case "constant" -> {
                 boolean value = jsonValue.getBoolean("value");
                 yield new ConstantBooleanProvider(value);
@@ -40,7 +55,7 @@ public interface BooleanProvider extends Provider<Boolean> {
             }
             case "is_class" -> {
                 String classId = jsonValue.getString("class");
-                yield new HasEffectBooleanProvider(classId);
+                yield new IsClassBooleanProvider(classId);
             }
             case "not", "invert" -> {
                 BooleanProvider value = BooleanProvider.parse(jsonValue.get("value"));

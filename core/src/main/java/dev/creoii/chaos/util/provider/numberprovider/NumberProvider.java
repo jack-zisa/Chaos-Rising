@@ -4,6 +4,7 @@ import com.badlogic.gdx.utils.JsonValue;
 import dev.creoii.chaos.util.provider.Operation;
 import dev.creoii.chaos.util.provider.Provider;
 import dev.creoii.chaos.util.provider.TrigFunction;
+import dev.creoii.chaos.util.provider.booleanprovider.BooleanProvider;
 import dev.creoii.chaos.util.provider.vecprovider.VecProvider;
 import dev.creoii.chaos.util.stat.Stat;
 
@@ -65,6 +66,18 @@ public interface NumberProvider extends Provider<Float> {
                 NumberProvider a = NumberProvider.parse(jsonValue.get("a"));
                 NumberProvider b = NumberProvider.parse(jsonValue.get("b"));
                 yield new BinaryNumberProvider(a, b, Operation.MOD);
+            }
+            case "clamp" -> {
+                NumberProvider value = NumberProvider.parse(jsonValue.get("value"));
+                NumberProvider min = jsonValue.has("min") ? NumberProvider.parse(jsonValue.get("min")) : null;
+                NumberProvider max = jsonValue.has("max") ? NumberProvider.parse(jsonValue.get("max")) : null;
+                yield new ClampNumberProvider(value, min, max);
+            }
+            case "comparison" -> {
+                BooleanProvider comparison = BooleanProvider.parse(jsonValue.get("comparison"));
+                NumberProvider trueValue = NumberProvider.parse(jsonValue.get("min"), 0);
+                NumberProvider falseValue = NumberProvider.parse(jsonValue.get("max"), 0);
+                yield new ComparisonNumberProvider(comparison, trueValue, falseValue);
             }
             case "constant" -> {
                 float value = jsonValue.getFloat("value");

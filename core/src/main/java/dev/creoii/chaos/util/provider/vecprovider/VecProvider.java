@@ -5,6 +5,7 @@ import com.badlogic.gdx.utils.JsonValue;
 import dev.creoii.chaos.util.provider.Operation;
 import dev.creoii.chaos.util.provider.Provider;
 import dev.creoii.chaos.util.provider.TrigFunction;
+import dev.creoii.chaos.util.provider.booleanprovider.BooleanProvider;
 import dev.creoii.chaos.util.provider.numberprovider.ConstantNumberProvider;
 import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
 
@@ -57,6 +58,12 @@ public interface VecProvider extends Provider<Vector2> {
                 NumberProvider maxX = jsonValue.has("max_x") ? NumberProvider.parse(jsonValue.get("max_x")) : null;
                 NumberProvider maxY = jsonValue.has("max_y") ? NumberProvider.parse(jsonValue.get("max_y")) : null;
                 yield new ClampVecProvider(vec, minX, minY, maxX, maxY);
+            }
+            case "comparison" -> {
+                BooleanProvider comparison = BooleanProvider.parse(jsonValue.get("comparison"));
+                VecProvider trueValue = VecProvider.parse(jsonValue.get("min"));
+                VecProvider falseValue = VecProvider.parse(jsonValue.get("max"));
+                yield new ComparisonVecProvider(comparison, trueValue, falseValue);
             }
             case "constant" -> {
                 NumberProvider x = NumberProvider.parse(jsonValue.get("x"));
