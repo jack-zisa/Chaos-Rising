@@ -1,6 +1,7 @@
 package dev.creoii.chaos.render;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -46,6 +47,31 @@ public class HudRenderer implements Renderable {
                     font.draw(batch, DEBUG_LAYOUT, x, y);
                 }
             }
+        } else if (shapeRenderer != null) {
+            CharacterEntity character = renderer.getMain().getGame().getActiveCharacter();
+
+            int health = character.getStats().health.value();
+            int maxHealth = character.getMaxStats().health.value();
+
+            Viewport viewport = renderer.getViewport();
+            float screenWidth = viewport.getWorldWidth();
+
+            float maxBarWidth = screenWidth * .5f;
+            float barHeight = 15f;
+            float healthPercentage = (float) health / maxHealth;
+            float barWidth = maxBarWidth * healthPercentage;
+
+            float x = (screenWidth / 2f) - (barWidth / 2f);
+            float y = viewport.getWorldHeight() - barHeight - 10f;
+
+            Color barColor = healthPercentage > .5f ? Color.GREEN : healthPercentage > .25f ? Color.ORANGE : Color.RED;
+
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            shapeRenderer.setColor(Color.DARK_GRAY);
+            shapeRenderer.rect((screenWidth / 2f) - (maxBarWidth / 2f), y, maxBarWidth, barHeight);
+            shapeRenderer.setColor(barColor);
+            shapeRenderer.rect(x, y, barWidth, barHeight);
+            shapeRenderer.end();
         }
     }
 }

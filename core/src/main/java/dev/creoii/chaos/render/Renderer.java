@@ -89,9 +89,7 @@ public class Renderer implements Disposable {
         worldRenderables.forEach(renderable -> renderable.render(this, batch, null, font, debug));
         batch.end();
 
-        shapeRenderer.begin();
         worldRenderables.forEach(renderable -> renderable.render(this, null, shapeRenderer, font, debug));
-        shapeRenderer.end();
 
         viewport.apply();
         batch.setProjectionMatrix(viewport.getCamera().combined);
@@ -101,18 +99,14 @@ public class Renderer implements Disposable {
         screenRenderables.forEach(renderable -> renderable.render(this, batch, null, font, debug));
         batch.end();
 
-        shapeRenderer.begin();
         screenRenderables.forEach(renderable -> renderable.render(this, null, shapeRenderer, font, debug));
-        shapeRenderer.end();
 
         if (currentScreen != null) {
             batch.begin();
             currentScreen.render(this, batch, null, font, debug);
             batch.end();
 
-            shapeRenderer.begin();
             currentScreen.render(this, null, shapeRenderer, font, debug);
-            shapeRenderer.end();
         }
     }
 

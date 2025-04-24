@@ -20,9 +20,8 @@ public final class LootUtils {
 
         for (Slot[] slotRow : inventory.getSlots()) {
             for (Slot slot : slotRow) {
-                if (!slot.hasItem()) {
+                if (!slot.hasItem())
                     availableSlots.add(slot);
-                }
             }
         }
 

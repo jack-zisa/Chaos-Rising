@@ -32,11 +32,8 @@ public class SimpleEntityRenderer<T extends Entity> extends EntityRenderer<T> {
                     StatusEffect statusEffect = livingEntity.getStatusEffects().get(i);
                     Sprite sprite = StatusEffects.EFFECT_TEXTURES.get(statusEffect.id());
 
-                    int column = i % 4;
-                    int row = i / 4;
-
-                    float x = baseX + (column * 8f);
-                    float y = baseY + (row * 8f) + 4;
+                    float x = baseX + ((i % 4f) * 8f);
+                    float y = baseY + ((i / 4f) * 8f) + 4f;
 
                     sprite.setPosition(x, y);
                     sprite.draw(batch);
@@ -45,9 +42,11 @@ public class SimpleEntityRenderer<T extends Entity> extends EntityRenderer<T> {
         }
 
         if (debug && shapeRenderer != null) {
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
             shapeRenderer.setColor(Color.GREEN);
             Rectangle collider = entity.getColliderRect();
             shapeRenderer.rect(collider.x, collider.y, collider.width, collider.height);
+            shapeRenderer.end();
         }
     }
 }

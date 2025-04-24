@@ -38,9 +38,11 @@ public class EntityRenderManager implements Renderable {
             for (ObjectMap.Entry<Integer, Array<Entity>> entry : main.getGame().getCollisionManager().getGrid().entries()) {
                 int x = (entry.key >>> 16) - CollisionManager.KEY_OFFSET;
                 int y = (entry.key & 0xffff) - CollisionManager.KEY_OFFSET;
+                shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
                 shapeRenderer.setColor(Color.FIREBRICK);
                 float cellSize = main.getGame().getCollisionManager().getCellSize();
                 shapeRenderer.rect(x * cellSize, y * cellSize, cellSize, cellSize);
+                shapeRenderer.end();
             }
         }
 
