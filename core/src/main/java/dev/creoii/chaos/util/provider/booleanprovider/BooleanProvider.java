@@ -76,7 +76,7 @@ public interface BooleanProvider extends Provider<Boolean> {
                 yield new NumberComparisonBooleanProvider(a, b, comparison);
             }
             case "rand", "random" -> new RandomBooleanProvider();
-            default -> throw new IllegalStateException("Unexpected FloatProvider value: " + type);
+            default -> throw new IllegalStateException("Unexpected BooleanProvider value: " + type);
         };
     }
 }

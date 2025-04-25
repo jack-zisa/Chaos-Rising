@@ -12,10 +12,10 @@ public class CharacterInventory extends Inventory {
 
     public CharacterInventory(CharacterEntity character) {
         super(3, 4);
-        slots[slots.length - 1][0].setType(Slot.Type.WEAPON);
-        slots[slots.length - 1][1].setType(Slot.Type.ABILITY);
-        slots[slots.length - 1][2].setType(Slot.Type.ARMOR);
-        slots[slots.length - 1][3].setType(Slot.Type.ACCESSORY);
+        getWeaponSlot().setType(Slot.Type.WEAPON);
+        getAbilitySlot().setType(Slot.Type.ABILITY);
+        getArmorSlot().setType(Slot.Type.ARMOR);
+        getAccessorySlot().setType(Slot.Type.ACCESSORY);
         this.character = character;
     }
 
@@ -57,19 +57,23 @@ public class CharacterInventory extends Inventory {
         }
     }
 
+    public Slot[] getHotbar() {
+        return slots[slots.length - 1];
+    }
+
     public Slot getWeaponSlot() {
-        return slots[slots.length - 1][0];
+        return getHotbar()[0];
     }
 
     public Slot getAbilitySlot() {
-        return slots[slots.length - 1][1];
+        return getHotbar()[1];
     }
 
     public Slot getArmorSlot() {
-        return slots[slots.length - 1][2];
+        return getHotbar()[2];
     }
 
     public Slot getAccessorySlot() {
-        return slots[slots.length - 1][3];
+        return getHotbar()[3];
     }
 }
