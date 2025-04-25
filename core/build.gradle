@@ -19,6 +19,9 @@ dependencies {
 
   implementation "com.google.guava:guava:$guavaVersion"
 
+  implementation project(path: ":server", configuration: "dev")
+  implementation project(path: ":client", configuration: "dev")
+
   if(enableGraalNative == 'true') {
     implementation "io.github.berstanio:gdx-svmhelper-annotations:$graalHelperVersion"
   }

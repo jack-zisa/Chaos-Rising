@@ -1,0 +1,5 @@
+dependencies {
+  implementation "com.esotericsoftware:kryonet:$kryonetVersion"
+
+  implementation project(":core")
+}
