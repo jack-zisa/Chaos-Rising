@@ -35,24 +35,10 @@ public class EntityRenderManager implements Renderable {
     @Override
     public void render(Renderer renderer, @Nullable SpriteBatch batch, @Nullable ShapeRenderer shapeRenderer, BitmapFont font, boolean debug) {
         if (debug && shapeRenderer != null) {
-            for (ObjectMap.Entry<Integer, Array<Entity>> entry : main.getGame().getCollisionManager().getGrid().entries()) {
-                int x = (entry.key >>> 16) - CollisionManager.KEY_OFFSET;
-                int y = (entry.key & 0xffff) - CollisionManager.KEY_OFFSET;
-                shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-                shapeRenderer.setColor(Color.FIREBRICK);
-                float cellSize = main.getGame().getCollisionManager().getCellSize();
-                shapeRenderer.rect(x * cellSize, y * cellSize, cellSize, cellSize);
-                shapeRenderer.end();
-            }
+            renderCollisionGrid(shapeRenderer);
         }
 
-        Array<Entity> visibleEntities = new Array<>();
-        for (Entity entity : renderer.getMain().getGame().getEntityManager().getEntities().values()) {
-            if (entity == renderer.getMain().getGame().getActiveCharacter() || isEntityInView(renderer.getCamera(), entity)) {
-                visibleEntities.add(entity);
-            }
-        }
-
+        Array<Entity> visibleEntities = getVisibleEntities(renderer);
         visibleEntities.sort((a, b) -> Float.compare(b.getPos().y, a.getPos().y));
 
         for (Entity entity : visibleEntities) {
@@ -60,7 +46,29 @@ public class EntityRenderManager implements Renderable {
         }
     }
 
-    public boolean isEntityInView(OrthographicCamera camera, Entity entity) {
+    private void renderCollisionGrid(ShapeRenderer shapeRenderer) {
+        for (ObjectMap.Entry<Integer, Array<Entity>> entry : main.getGame().getCollisionManager().getGrid().entries()) {
+            int x = (entry.key >>> 16) - CollisionManager.KEY_OFFSET;
+            int y = (entry.key & 0xffff) - CollisionManager.KEY_OFFSET;
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+            shapeRenderer.setColor(Color.FIREBRICK);
+            float cellSize = main.getGame().getCollisionManager().getCellSize();
+            shapeRenderer.rect(x * cellSize, y * cellSize, cellSize, cellSize);
+            shapeRenderer.end();
+        }
+    }
+
+    private Array<Entity> getVisibleEntities(Renderer renderer) {
+        Array<Entity> visibleEntities = new Array<>();
+        for (Entity entity : renderer.getMain().getGame().getEntityManager().getEntities().values()) {
+            if (entity == renderer.getMain().getGame().getActiveCharacter() || isEntityInView(renderer.getCamera(), entity)) {
+                visibleEntities.add(entity);
+            }
+        }
+        return visibleEntities;
+    }
+
+    private boolean isEntityInView(OrthographicCamera camera, Entity entity) {
         if (entity.getCenterPos().dst2(camera.position.x, camera.position.y) > RENDER_DISTANCE) {
             return false;
         }
