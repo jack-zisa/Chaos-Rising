@@ -48,7 +48,7 @@ public class CollisionManager {
         }
         grid.clear();
 
-        for (Entity entity : main.getGame().getEntityManager().getActiveEntities().values()) {
+        for (Entity entity : main.getGame().getEntityManager().getEntities().values()) {
             int x = Math.round(entity.getPos().x / cellSize);
             int y = Math.round(entity.getPos().y / cellSize);
 
@@ -106,7 +106,7 @@ public class CollisionManager {
             }
         }
 
-        for (Entity entity : main.getGame().getEntityManager().getActiveEntities().values()) {
+        for (Entity entity : main.getGame().getEntityManager().getEntities().values()) {
             Set<UUID> currentlyColliding = collisions.getOrDefault(entity.getUuid(), Collections.emptySet());
 
             Set<UUID> previousColliding = new HashSet<>(entity.getCollidingWith());

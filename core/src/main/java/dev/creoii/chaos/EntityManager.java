@@ -28,6 +28,10 @@ public class EntityManager {
         return spawned;
     }
 
+    public Map<UUID, Entity> getEntities() {
+        return entities;
+    }
+
     public Entity getEntity(UUID uuid) {
         return entities.get(uuid);
     }
@@ -43,16 +47,5 @@ public class EntityManager {
             return true;
         }
         return false;
-    }
-
-    public Map<UUID, Entity> getActiveEntities() {
-        Map<UUID, Entity> activeEntities = new HashMap<>();
-        for (Map.Entry<UUID, Entity> entry : entities.entrySet()) {
-            Entity entity = entry.getValue();
-            if (entity != null && entity.getGame() != null) {
-                activeEntities.put(entry.getKey(), entity);
-            }
-        }
-        return activeEntities;
     }
 }

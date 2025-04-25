@@ -47,7 +47,7 @@ public class EntityRenderManager implements Renderable {
         }
 
         Array<Entity> visibleEntities = new Array<>();
-        for (Entity entity : renderer.getMain().getGame().getEntityManager().getActiveEntities().values()) {
+        for (Entity entity : renderer.getMain().getGame().getEntityManager().getEntities().values()) {
             if (entity == renderer.getMain().getGame().getActiveCharacter() || isEntityInView(renderer.getCamera(), entity)) {
                 visibleEntities.add(entity);
             }
