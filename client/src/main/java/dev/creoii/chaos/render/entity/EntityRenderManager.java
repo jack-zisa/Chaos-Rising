@@ -4,30 +4,45 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 import dev.creoii.chaos.Main;
-import dev.creoii.chaos.entity.BulletEntity;
-import dev.creoii.chaos.entity.EnemyEntity;
 import dev.creoii.chaos.entity.Entity;
-import dev.creoii.chaos.entity.LootDropEntity;
-import dev.creoii.chaos.entity.character.CharacterEntity;
+import dev.creoii.chaos.network.packet.util.EntityGroup;
 import dev.creoii.chaos.render.Renderer;
 import dev.creoii.chaos.util.Renderable;
 
 import javax.annotation.Nullable;
+import java.util.UUID;
 
 public class EntityRenderManager implements Renderable {
     private static final float RENDER_DISTANCE = 17578.125f * Entity.COORDINATE_SCALE; // sqrt(17578.125 * 32) = 750 units
     private final Main main;
-    private final Array<Entity> visibleEntities;
+    private final ObjectMap<UUID, Entity> visibleEntities;
 
     public EntityRenderManager(Main main) {
         this.main = main;
-        EntityRenderers.register(CharacterEntity.class, SimpleEntityRenderer::new);
-        EntityRenderers.register(BulletEntity.class, SimpleEntityRenderer::new);
-        EntityRenderers.register(LootDropEntity.class, SimpleEntityRenderer::new);
-        EntityRenderers.register(EnemyEntity.class, EnemyEntityRenderer::new);
-        visibleEntities = new Array<>(128);
+        visibleEntities = new ObjectMap<>(128);
+
+        EntityRenderers.register(EntityGroup.CHARACTER, SimpleEntityRenderer::new);
+        EntityRenderers.register(EntityGroup.BULLET, SimpleEntityRenderer::new);
+        EntityRenderers.register(EntityGroup.OTHER, SimpleEntityRenderer::new);
+        EntityRenderers.register(EntityGroup.ENEMY, SimpleEntityRenderer::new);
+    }
+
+    public void addEntity(UUID uuid, String textureId, EntityGroup group, float x, float y, float scale) {
+        visibleEntities.put(uuid, new Entity(main.getGame(), uuid, textureId, group, x, y, scale));
+    }
+
+    public Entity getEntity(UUID uuid) {
+        return visibleEntities.get(uuid);
+    }
+
+    public void removeEntity(UUID uuid) {
+        visibleEntities.remove(uuid);
+    }
+
+    public void updateEntity(UUID uuid, float x, float y) {
+        getEntity(uuid).setPos(x, y);
     }
 
     @Override
@@ -36,12 +51,14 @@ public class EntityRenderManager implements Renderable {
             renderCollisionGrid(shapeRenderer);
         }
 
-        refreshVisibleEntities(renderer);
-        Array<Entity> visibleEntities = this.visibleEntities;
-        visibleEntities.sort((a, b) -> Float.compare(b.getPos().y, a.getPos().y));
-
-        for (Entity entity : visibleEntities) {
-            EntityRenderers.getRenderer(entity).render(entity, renderer, batch, shapeRenderer, font, debug);
+        float camX = renderer.getCamera().position.x - renderer.getCamera().viewportWidth / 2;
+        float camY = renderer.getCamera().position.y - renderer.getCamera().viewportHeight / 2;
+        float camW = renderer.getCamera().viewportWidth;
+        float camH = renderer.getCamera().viewportHeight;
+        for (Entity entity : visibleEntities.values()) {
+            if (isEntityInView(renderer.getCamera().position, camX, camY, camW, camH, entity)) {
+                EntityRenderers.getRenderer(entity).render(entity, renderer, batch, shapeRenderer, font, debug);
+            }
         }
     }
 
@@ -57,23 +74,10 @@ public class EntityRenderManager implements Renderable {
         }*/
     }
 
-    private void refreshVisibleEntities(Renderer renderer) {
-        visibleEntities.clear();
-        float camX = renderer.getCamera().position.x - renderer.getCamera().viewportWidth / 2;
-        float camY = renderer.getCamera().position.y - renderer.getCamera().viewportHeight / 2;
-        float camW = renderer.getCamera().viewportWidth;
-        float camH = renderer.getCamera().viewportHeight;
-        /*for (Entity entity : renderer.getMain().getGame().getEntityManager().getEntities().values()) {
-            if (entity == renderer.getMain().getGame().getCharacter() || isEntityInView(renderer.getCamera().position, camX, camY, camW, camH, entity)) {
-                visibleEntities.add(entity);
-            }
-        }*/
-    }
-
     private boolean isEntityInView(Vector3 cameraPos, float camX, float camY, float camW, float camH, Entity entity) {
-        if (entity.getCenterPos().dst2(cameraPos.x, cameraPos.y) > RENDER_DISTANCE) {
+        if (entity.getPos().dst2(cameraPos.x, cameraPos.y) > RENDER_DISTANCE) {
             return false;
         }
-        return camX < entity.getColliderRect().x + entity.getColliderRect().width && camX + camW > entity.getColliderRect().x && camY < entity.getColliderRect().y + entity.getColliderRect().height && camY + camH > entity.getColliderRect().y;
+        return camX < entity.getPos().x + entity.getColliderRect().width && camX + camW > entity.getPos().x && camY < entity.getPos().y + entity.getColliderRect().height && camY + camH > entity.getPos().y;
     }
 }

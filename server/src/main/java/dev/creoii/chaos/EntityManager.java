@@ -3,28 +3,52 @@ package dev.creoii.chaos;
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.entity.EntityType;
+import dev.creoii.chaos.entity.character.CharacterEntity;
+import dev.creoii.chaos.network.packet.s2c.EntitySpawnS2C;
+import dev.creoii.chaos.network.packet.s2c.EntityStateS2C;
+import dev.creoii.chaos.util.Tickable;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class EntityManager {
+public class EntityManager implements Tickable {
     private final Main main;
     private final Map<UUID, Entity> entities;
+    private final Map<UUID, CharacterEntity> characters;
 
     public EntityManager(Main main) {
         this.main = main;
-        this.entities = new HashMap<>();
+        entities = new HashMap<>();
+        characters = new HashMap<>();
+
+        main.getGame().getTickManager().addTickable(this);
+    }
+
+    @Override
+    public void tick(int gametime, float delta) {
+        entities.forEach((uuid, entity) -> {
+            main.getGame().getServer().sendToAllTCP(new EntityStateS2C(uuid, entity.getPos().x, entity.getPos().y));
+        });
     }
 
     public <E extends Entity, T extends EntityType<E>> E addEntity(T type, Vector2 pos) {
-        return addEntity(type, pos, new HashMap<>());
+        return addEntity(UUID.randomUUID(), type, pos, new HashMap<>());
     }
 
-    public <E extends Entity, T extends EntityType<E>> E addEntity(T type, Vector2 pos, Map<String, Object> customData) {
-        E spawned = type.create(main.getGame(), pos, customData);
+    public <E extends Entity, T extends EntityType<E>> E addEntity(UUID uuid, T type, Vector2 pos) {
+        return addEntity(uuid, type, pos, new HashMap<>());
+    }
+
+    public <E extends Entity, T extends EntityType<E>> E addEntity(UUID uuid, T type, Vector2 pos, Map<String, Object> customData) {
+        E spawned = type.create(main.getGame(), uuid, pos, customData);
         entities.put(spawned.getUuid(), spawned);
+
+        if (spawned instanceof CharacterEntity character)
+            characters.put(spawned.getUuid(), character);
+
         main.getGame().getTickManager().addTickable(spawned); // add boolean value to not tick
+        main.getGame().getServer().sendToAllTCP(new EntitySpawnS2C(uuid, spawned.getType().textureId(), spawned.getGroup(), spawned.getPos().x, spawned.getPos().y, spawned.getType().scale()));
         return spawned;
     }
 
@@ -32,8 +56,16 @@ public class EntityManager {
         return entities;
     }
 
+    public Map<UUID, CharacterEntity> getCharacters() {
+        return characters;
+    }
+
     public Entity getEntity(UUID uuid) {
         return entities.get(uuid);
+    }
+
+    public CharacterEntity getCharacter(UUID uuid) {
+        return characters.get(uuid);
     }
 
     public boolean removeEntity(Entity entity) {
@@ -43,6 +75,7 @@ public class EntityManager {
     public boolean removeEntity(UUID uuid) {
         if (entities.containsKey(uuid)) {
             main.getGame().getTickManager().removeTickable(entities.get(uuid));
+            characters.remove(uuid);
             entities.remove(uuid);
             return true;
         }

@@ -3,6 +3,7 @@ package dev.creoii.chaos.entity;
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.entity.controller.bullet.BulletController;
 import dev.creoii.chaos.entity.controller.EntityController;
+import dev.creoii.chaos.network.packet.util.EntityGroup;
 import dev.creoii.chaos.util.provider.Provider;
 
 public class BulletEntity extends Entity {
@@ -14,7 +15,7 @@ public class BulletEntity extends Entity {
     private int index;
 
     public BulletEntity(BulletEntityType type) {
-        super(type, new Vector2(1, 1), Group.BULLET);
+        super(type, EntityGroup.BULLET);
         controller = new BulletController(this);
         damage = 0;
         index = -1;

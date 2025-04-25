@@ -1,13 +1,11 @@
 package dev.creoii.chaos.entity;
 
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.JsonValue;
 import dev.creoii.chaos.Main;
 import dev.creoii.chaos.ServerGame;
 import dev.creoii.chaos.entity.controller.bullet.path.BulletPath;
-import dev.creoii.chaos.texture.TextureManager;
 import dev.creoii.chaos.util.provider.Provider;
 import dev.creoii.chaos.util.provider.booleanprovider.BooleanProvider;
 import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
@@ -29,27 +27,20 @@ public record BulletEntityType(String id, float scale, @Nullable String textureI
         return scale * Entity.COORDINATE_SCALE;
     }
 
-    public BulletEntity create(ServerGame game, Vector2 pos, Map<String, Object> customData) {
+    public BulletEntity create(ServerGame game, UUID uuid, Vector2 pos, Map<String, Object> customData) {
         BulletEntity bullet = new BulletEntity(this);
         bullet.game = game;
-        bullet.uuid = UUID.randomUUID();
+        bullet.uuid = uuid;
         bullet.pos = pos;
         bullet.centerPos = new Vector2();
         bullet.colliderRect = new Rectangle();
         bullet.colliderRect.setPosition(pos);
-        bullet.colliderRect.setWidth(bullet.getCollider().x * scale());
-        bullet.colliderRect.setHeight(bullet.getCollider().y * scale());
+        bullet.colliderRect.setSize(scale());
         bullet.collidingWith = new HashSet<>();
         bullet.spawnTime = game.getGametime();
         bullet.direction = (Vector2) customData.get("direction");
         bullet.damage = (int) customData.getOrDefault("damage", 0);
-        if (textureId != null) {
-            bullet.sprite = new Sprite(game.getTextureManager().getTexture("bullet", textureId));
-            bullet.sprite.setSize(scale(), scale());
-            bullet.sprite.setOriginCenter();
-            bullet.sprite.setRotation(bullet.direction.angleDeg() - angleOffset.get(Provider.Context.of(bullet, game.getGametime())));
-            bullet.getCenterPos();
-        }
+        bullet.getCenterPos();
         bullet.lifetime = lifetime.getInt(Provider.Context.of(bullet, game.getGametime()));
         bullet.postSpawn();
         return bullet;
@@ -57,7 +48,7 @@ public record BulletEntityType(String id, float scale, @Nullable String textureI
 
     public static BulletEntityType parse(String id, JsonValue jsonValue) {
         float scale = jsonValue.getFloat("scale", 1f);
-        String textureId = jsonValue.getString("texture", TextureManager.DEFAULT_TEXTURE_ID);
+        String textureId = jsonValue.getString("texture", "misc:missing");
         NumberProvider lifetime = NumberProvider.parse(jsonValue.get("lifetime"), 0);
         NumberProvider angleOffset = NumberProvider.parse(jsonValue.get("angle_offset"), 45);
         BulletPath bulletPath = BulletPath.parse(jsonValue);

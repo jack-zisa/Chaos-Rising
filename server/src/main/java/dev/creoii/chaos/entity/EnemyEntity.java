@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.entity.controller.EnemyController;
 import dev.creoii.chaos.entity.controller.EntityController;
 import dev.creoii.chaos.entity.inventory.Inventory;
+import dev.creoii.chaos.network.packet.util.EntityGroup;
 import dev.creoii.chaos.util.LootUtils;
 
 public class EnemyEntity extends LivingEntity {
@@ -11,7 +12,7 @@ public class EnemyEntity extends LivingEntity {
     private final EnemyController controller;
 
     public EnemyEntity(Vector2 spawnPos, EnemyEntityType type) {
-        super(type, new Vector2(1, 1), Group.ENEMY, type.statContainer().copy(), type.statContainer().copy());
+        super(type, EntityGroup.ENEMY, type.statContainer().copy(), type.statContainer().copy());
         this.spawnPos = spawnPos;
         this.controller = new EnemyController(type.behavior());
     }

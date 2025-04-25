@@ -26,6 +26,8 @@ public class Renderer implements Disposable {
     private final SpriteBatch batch;
     private final ShapeRenderer shapeRenderer;
 
+    private final EntityRenderManager entityRenderManager;
+
     private final List<Renderable> worldRenderables;
     private final List<Renderable> screenRenderables;
     private Screen currentScreen = null;
@@ -45,7 +47,7 @@ public class Renderer implements Disposable {
         shapeRenderer.setAutoShapeType(true);
 
         worldRenderables = new ArrayList<>();
-        worldRenderables.add(new EntityRenderManager(main));
+        worldRenderables.add(entityRenderManager = new EntityRenderManager(main));
         screenRenderables = new ArrayList<>();
         screenRenderables.add(new HudRenderer());
 
@@ -64,6 +66,10 @@ public class Renderer implements Disposable {
 
     public FitViewport getViewport() {
         return viewport;
+    }
+
+    public EntityRenderManager getEntityRenderManager() {
+        return entityRenderManager;
     }
 
     public void resize(int width, int height) {

@@ -1,10 +1,10 @@
 package dev.creoii.chaos.entity;
 
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.ServerGame;
 import dev.creoii.chaos.entity.controller.EntityController;
+import dev.creoii.chaos.network.packet.util.EntityGroup;
 import dev.creoii.chaos.util.Positionable;
 import dev.creoii.chaos.util.Tickable;
 
@@ -14,8 +14,7 @@ public abstract class Entity implements Positionable, Tickable {
     public static final float COORDINATE_SCALE = 32f;
     protected static final Random RANDOM = new Random();
     protected final EntityType<?> type;
-    private final Vector2 collider;
-    private final Group group;
+    private final EntityGroup group;
     protected long spawnTime;
     protected ServerGame game;
     protected Vector2 pos;
@@ -23,11 +22,9 @@ public abstract class Entity implements Positionable, Tickable {
     protected Rectangle colliderRect;
     protected Set<UUID> collidingWith;
     protected UUID uuid;
-    protected Sprite sprite;
 
-    public Entity(EntityType<?> type, Vector2 collider, Group group) {
+    public Entity(EntityType<?> type, EntityGroup group) {
         this.type = type;
-        this.collider = collider;
         this.group = group;
         spawnTime = -1;
     }
@@ -58,14 +55,6 @@ public abstract class Entity implements Positionable, Tickable {
         return type.textureId();
     }
 
-    public Vector2 getCollider() {
-        return collider;
-    }
-
-    public Sprite getSprite() {
-        return sprite;
-    }
-
     public Rectangle getColliderRect() {
         if (pos == null)
             return null;
@@ -73,7 +62,7 @@ public abstract class Entity implements Positionable, Tickable {
         return colliderRect;
     }
 
-    public Group getGroup() {
+    public EntityGroup getGroup() {
         return group;
     }
 
@@ -91,10 +80,7 @@ public abstract class Entity implements Positionable, Tickable {
     }
 
     public Vector2 getCenterPos() {
-        centerPos.set(getPos()).add(COORDINATE_SCALE / 4f, COORDINATE_SCALE / 4f);
-        if (sprite.getX() != centerPos.x || sprite.getY() != centerPos.y)
-            sprite.setCenter(centerPos.x, centerPos.y);
-        return centerPos;
+        return centerPos.set(getPos()).add(COORDINATE_SCALE / 4f, COORDINATE_SCALE / 4f);
     }
 
     public Set<UUID> getCollidingWith() {
@@ -131,10 +117,4 @@ public abstract class Entity implements Positionable, Tickable {
         return false;
     }
 
-    public enum Group {
-        CHARACTER,
-        ENEMY,
-        BULLET,
-        OTHER
-    }
 }

@@ -6,8 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ObjectMap;
-import dev.creoii.chaos.DataManager;
-import dev.creoii.chaos.effect.StatusEffects;
+import dev.creoii.chaos.Main;
 
 public class TextureManager implements Disposable {
     private static final String[] ATLAS_IDS = new String[]{"class", "enemy", "bullet", "item", "loot_drop", "effect"};
@@ -42,7 +41,7 @@ public class TextureManager implements Disposable {
         for (String atlasId : ATLAS_IDS) {
             FileHandle folderHandle = baseDir.child(atlasId);
             if (!folderHandle.exists()) {
-                Gdx.app.log(DataManager.class.getSimpleName(), "Folder '" + folderHandle.path() + "' does not exist, skipping.");
+                Gdx.app.log(TextureManager.class.getSimpleName(), "Folder '" + folderHandle.path() + "' does not exist, skipping.");
                 continue;
             }
 
@@ -51,12 +50,10 @@ public class TextureManager implements Disposable {
                     String path = file.path();
                     atlases.get(atlasId).addTexture(path, path.substring(10 + atlasId.length(), path.length() - 4));
                 } catch (Exception e) {
-                    Gdx.app.error(DataManager.class.getSimpleName(), "Error parsing " + file.name() + " in " + atlasId + ": " + e.getMessage());
+                    Gdx.app.error(TextureManager.class.getSimpleName(), "Error parsing " + file.name() + " in " + atlasId + ": " + e.getMessage());
                 }
             }
         }
-
-        StatusEffects.loadTextures(main.getGame());
     }
 
     @Override

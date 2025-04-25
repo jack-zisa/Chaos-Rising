@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import dev.creoii.chaos.Main;
+import dev.creoii.chaos.network.packet.c2s.ExecuteCommandC2S;
 
 import java.util.Arrays;
 
@@ -28,13 +29,15 @@ public class CommandManager extends InputAdapter {
         String[] elements = command.split(" ");
         String commandType = elements[0].substring(1);
 
-        if (Commands.ALL.containsKey(commandType)) {
-            String[] args = Arrays.copyOfRange(elements, 1, elements.length);
-            Commands.ALL.get(commandType).execute(main.getGame(), args);
-            Gdx.app.log(CommandManager.class.getSimpleName(), "Executed '/" + commandType + "' with args " + Arrays.toString(args));
-        } else {
-            Gdx.app.log(CommandManager.class.getSimpleName(), "Command '/" + commandType + "' not found");
-        }
+        String[] args = Arrays.copyOfRange(elements, 1, elements.length);
+        main.getGame().getClient().sendTCP(new ExecuteCommandC2S(main.getGame().getCharacter().getUuid(), commandType, args));
+
+        /**
+         * FOR /set_class:
+         *
+         *         sprite = new Sprite(game.getTextureManager().getTexture("class", getTextureId()));
+         *         sprite.setSize(getScale(), getScale());
+         */
     }
 
     public void update() {

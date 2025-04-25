@@ -2,6 +2,7 @@ package dev.creoii.chaos.entity;
 
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.effect.StatusEffect;
+import dev.creoii.chaos.network.packet.util.EntityGroup;
 import dev.creoii.chaos.util.stat.StatContainer;
 
 import java.util.ArrayList;
@@ -12,8 +13,8 @@ public abstract class LivingEntity extends Entity {
     private final StatContainer maxStatContainer;
     private final List<StatusEffect> statusEffects;
 
-    public LivingEntity(EntityType<? extends LivingEntity> type, Vector2 collider, Group group, StatContainer statContainer, StatContainer maxStatContainer) {
-        super(type, collider, group);
+    public LivingEntity(EntityType<? extends LivingEntity> type, EntityGroup group, StatContainer statContainer, StatContainer maxStatContainer) {
+        super(type, group);
         this.statContainer = statContainer;
         this.maxStatContainer = maxStatContainer;
         statusEffects = new ArrayList<>();

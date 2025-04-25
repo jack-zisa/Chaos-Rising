@@ -1,6 +1,5 @@
 package dev.creoii.chaos.entity.character;
 
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.entity.CharacterEntityType;
 import dev.creoii.chaos.entity.Entity;
@@ -11,6 +10,7 @@ import dev.creoii.chaos.entity.controller.EntityController;
 import dev.creoii.chaos.entity.inventory.CharacterInventory;
 import dev.creoii.chaos.entity.inventory.Inventory;
 import dev.creoii.chaos.item.ItemStack;
+import dev.creoii.chaos.network.packet.util.EntityGroup;
 
 import java.util.UUID;
 
@@ -21,7 +21,7 @@ public class CharacterEntity extends LivingEntity {
     private UUID lootUuid;
 
     public CharacterEntity(CharacterEntityType characterEntityType) {
-        super(characterEntityType, new Vector2(1, 1), Group.CHARACTER, characterEntityType.characterClass().get().baseStatContainer().copy(), characterEntityType.characterClass().get().baseStatContainer().copy());
+        super(characterEntityType, EntityGroup.CHARACTER, characterEntityType.characterClass().get().baseStatContainer().copy(), characterEntityType.characterClass().get().baseStatContainer().copy());
         controller = new CharacterController(this);
         prevPos = new Vector2();
         inventory = new CharacterInventory(this);
@@ -30,8 +30,6 @@ public class CharacterEntity extends LivingEntity {
 
     public void setCharacterClass(CharacterClass characterClass) {
         ((CharacterEntityType) type).characterClass().set(characterClass);
-        sprite = new Sprite(game.getTextureManager().getTexture("class", getTextureId()));
-        sprite.setSize(getScale(), getScale());
         getStats().set(characterClass.baseStatContainer());
         getMaxStats().set(characterClass.baseStatContainer());
     }

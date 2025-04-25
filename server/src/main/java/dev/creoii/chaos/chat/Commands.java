@@ -1,6 +1,8 @@
-package dev.creoii.chaos.chat.command;
+package dev.creoii.chaos.chat;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
+import dev.creoii.chaos.ServerGame;
 import dev.creoii.chaos.effect.StatusEffect;
 import dev.creoii.chaos.effect.StatusEffects;
 import dev.creoii.chaos.entity.Entity;
@@ -9,57 +11,65 @@ import dev.creoii.chaos.entity.character.CharacterClass;
 import dev.creoii.chaos.entity.character.CharacterEntity;
 import dev.creoii.chaos.item.Item;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 public final class Commands {
     private static final Random RANDOM = new Random();
     static final Map<String, Command> ALL = new HashMap<>();
 
+    public static void tryExecute(ServerGame game, UUID uuid, String commandType, String[] args) {
+        if (Commands.ALL.containsKey(commandType)) {
+            Commands.ALL.get(commandType).execute(game, uuid, args);
+            Gdx.app.log(Commands.class.getSimpleName(), "Executed '/" + commandType + "' with args " + Arrays.toString(args));
+        } else {
+            Gdx.app.log(Commands.class.getSimpleName(), "Command '/" + commandType + "' not found");
+        }
+    }
+
     static {
-        Command.register("set_pos", (game, args) -> {
+        Command.register("set_pos", (game, uuid, args) -> {
             if (args.length > 1) {
                 float x = Integer.parseInt(args[0]) * Entity.COORDINATE_SCALE;
                 float y = Integer.parseInt(args[1]) * Entity.COORDINATE_SCALE;
-                game.getCharacter().setPos(x, y);
+                game.getEntityManager().getCharacter(uuid).setPos(x, y);
             }
         });
 
-        Command.register("set_stat", (game, args) -> {
+        Command.register("set_stat", (game, uuid, args) -> {
             if (args.length > 1) {
                 String stat = args[0];
                 int value = Integer.parseInt(args[1]);
+                CharacterEntity character = game.getEntityManager().getCharacter(uuid);
                 switch (stat) {
                     case "health" -> {
-                        game.getCharacter().getStats().health.set(value);
-                        game.getCharacter().getMaxStats().health.set(value);
+                        character.getStats().health.set(value);
+                        character.getMaxStats().health.set(value);
                     }
                     case "speed" -> {
-                        game.getCharacter().getStats().speed.set(value);
-                        game.getCharacter().getMaxStats().speed.set(value);
+                        character.getStats().speed.set(value);
+                        character.getMaxStats().speed.set(value);
                     }
                     case "attack_speed" -> {
-                        game.getCharacter().getStats().attackSpeed.set(value);
-                        game.getCharacter().getMaxStats().attackSpeed.set(value);
+                        character.getStats().attackSpeed.set(value);
+                        character.getMaxStats().attackSpeed.set(value);
                     }
                     case "defense" -> {
-                        game.getCharacter().getStats().defense.set(value);
-                        game.getCharacter().getMaxStats().defense.set(value);
+                        character.getStats().defense.set(value);
+                        character.getMaxStats().defense.set(value);
                     }
                     case "attack" -> {
-                        game.getCharacter().getStats().attack.set(value);
-                        game.getCharacter().getMaxStats().attack.set(value);
+                        character.getStats().attack.set(value);
+                        character.getMaxStats().attack.set(value);
                     }
                     case "vitality" -> {
-                        game.getCharacter().getStats().vitality.set(value);
-                        game.getCharacter().getMaxStats().vitality.set(value);
+                        character.getStats().vitality.set(value);
+                        character.getMaxStats().vitality.set(value);
                     }
                 }
             }
         });
 
-        Command.register("spawn", (game, args) -> {
+        Command.register("spawn", (game, uuid, args) -> {
             int argCount = args.length;
 
             if (argCount < 1 || argCount == 2)
@@ -113,27 +123,27 @@ public final class Commands {
             }
         });
 
-        Command.register("give", (game, args) -> {
+        Command.register("give", (game, uuid, args) -> {
             if (args.length > 0) {
                 int count = args.length > 1 ? Integer.parseInt(args[1]) : 1;
                 for (int i = 0; i < count; ++i) {
                     Item item = game.getDataManager().getItem(args[0]);
                     if (item == null)
                         continue;
-                    game.getCharacter().getInventory().addItem(item.getDefaultStack().copy());
+                    game.getEntityManager().getCharacter(uuid).getInventory().addItem(item.getDefaultStack().copy());
                 }
             }
         });
 
-        Command.register("set_class", (game, args) -> {
+        Command.register("set_class", (game, uuid, args) -> {
             if (args.length > 0) {
                 CharacterClass characterClass = game.getDataManager().getCharacterClass(args[0]);
                 if (characterClass != null)
-                    game.getCharacter().setCharacterClass(characterClass);
+                    game.getEntityManager().getCharacter(uuid).setCharacterClass(characterClass);
             }
         });
 
-        Command.register("add_effect", (game, args) -> {
+        Command.register("add_effect", (game, uuid, args) -> {
             int argCount = args.length;
             if (argCount < 1)
                 return;
@@ -144,21 +154,21 @@ public final class Commands {
                 StatusEffect statusEffect = StatusEffects.ALL.get(effectType);
                 if (statusEffect == null)
                     return;
-                game.getCharacter().addStatusEffect(statusEffect, 1, 30);
+                game.getEntityManager().getCharacter(uuid).addStatusEffect(statusEffect, 1, 30);
             } else if (argCount == 3) {
                 StatusEffect statusEffect = StatusEffects.ALL.get(effectType);
                 if (statusEffect == null)
                     return;
                 int amplifier = Integer.parseInt(args[1]);
                 int duration = Integer.parseInt(args[2]);
-                game.getCharacter().addStatusEffect(statusEffect, amplifier, duration);
+                game.getEntityManager().getCharacter(uuid).addStatusEffect(statusEffect, amplifier, duration);
             }
         });
 
-        Command.register("remove_effect", (game, args) -> {
+        Command.register("remove_effect", (game, uuid, args) -> {
             if (args.length > 0) {
                 String effectType = args[0];
-                CharacterEntity character = game.getCharacter();
+                CharacterEntity character = game.getEntityManager().getCharacter(uuid);
 
                 if ("all".equals(effectType)) {
                     character.clearStatusEffects();

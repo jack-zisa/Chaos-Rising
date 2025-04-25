@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import dev.creoii.chaos.chat.command.CommandManager;
 import dev.creoii.chaos.entity.Entity;
-import dev.creoii.chaos.entity.character.CharacterEntity;
 import dev.creoii.chaos.util.Renderable;
 
 import javax.annotation.Nullable;
@@ -27,9 +26,9 @@ public class HudRenderer implements Renderable {
             }
 
             if (debug) {
-                CharacterEntity character = renderer.getMain().getGame().getActiveCharacter();
+                Entity character = renderer.getMain().getGame().getCharacter();
                 String posText = String.format("%.2f, %.2f", character.getPos().x / Entity.COORDINATE_SCALE, character.getPos().y / Entity.COORDINATE_SCALE);
-                String statsText = character.getStats().toDebugString(character.getMaxStats());
+                String statsText = "";//character.getStats().toDebugString(character.getMaxStats());
 
                 String[] lines = new String[]{Gdx.graphics.getFramesPerSecond() + " FPS", posText, statsText};
 
@@ -48,9 +47,9 @@ public class HudRenderer implements Renderable {
                 }
             }
         } else if (shapeRenderer != null) {
-            CharacterEntity character = renderer.getMain().getGame().getActiveCharacter();
+            Entity character = renderer.getMain().getGame().getCharacter();
 
-            int health = character.getStats().health.value();
+            /*int health = character.getStats().health.value();
             int maxHealth = character.getMaxStats().health.value();
 
             Viewport viewport = renderer.getViewport();
@@ -71,7 +70,7 @@ public class HudRenderer implements Renderable {
             shapeRenderer.rect((screenWidth / 2f) - (maxBarWidth / 2f), y, maxBarWidth, barHeight);
             shapeRenderer.setColor(barColor);
             shapeRenderer.rect(x, y, barWidth, barHeight);
-            shapeRenderer.end();
+            shapeRenderer.end();*/
         }
     }
 }

@@ -3,9 +3,9 @@ package dev.creoii.chaos;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import dev.creoii.chaos.render.screen.InventoryScreen;
+import dev.creoii.chaos.network.packet.c2s.KeyInputC2S;
+import dev.creoii.chaos.network.packet.c2s.MouseInputC2S;
 import dev.creoii.chaos.util.Inputtable;
 
 import java.util.ArrayList;
@@ -82,15 +82,17 @@ public class InputManager extends InputAdapter {
         if (keycode == main.getGame().getOptionsManager().DEBUG_KEY.intValue()) {
             main.setDebug(!main.getDebug());
             return true;
-        } else if (keycode == main.getGame().getOptionsManager().INVENTORY_KEY.intValue()) {
+        } /*else if (keycode == main.getGame().getOptionsManager().INVENTORY_KEY.intValue()) {
             if (main.getRenderer().getCurrentScreen() == null) {
                 main.getRenderer().setCurrentScreen(new InventoryScreen(main, new Vector2(1084, 400), main.getGame().getCharacter().getInventory()));
             } else
                 main.getRenderer().clearCurrentScreen();
             return true;
-        }
+        }*/
 
         forEach(inputtable -> inputtable.keyDown(this, keycode));
+
+        main.getGame().getClient().sendTCP(new KeyInputC2S(main.getGame().getCharacter().getUuid(), keycode, -1, -1));
 
         return false;
     }
@@ -99,6 +101,8 @@ public class InputManager extends InputAdapter {
         main.getRenderer().getCamera().unproject(mousePos.set(Gdx.input.getX(), Gdx.input.getY(), 0));
 
         forEach(inputtable -> inputtable.keyHeld(this, keycode));
+
+        main.getGame().getClient().sendTCP(new KeyInputC2S(main.getGame().getCharacter().getUuid(), -1, keycode, -1));
     }
 
     @Override
@@ -107,6 +111,8 @@ public class InputManager extends InputAdapter {
 
         keyHeld = -1;
         forEach(inputtable -> inputtable.keyUp(this, keycode));
+
+        main.getGame().getClient().sendTCP(new KeyInputC2S(main.getGame().getCharacter().getUuid(), -1, -1, keycode));
         return super.keyUp(keycode);
     }
 
@@ -117,6 +123,8 @@ public class InputManager extends InputAdapter {
         main.getRenderer().getCamera().unproject(mousePos.set(screenX, screenY, 0));
         dragging = true;
         forEach(inputtable -> inputtable.touchDown(this, screenX, screenY, pointer, button));
+
+        main.getGame().getClient().sendTCP(new MouseInputC2S(main.getGame().getCharacter().getUuid(), screenX, screenY));
         return true;
     }
 
@@ -125,6 +133,8 @@ public class InputManager extends InputAdapter {
         dragging = true;
         main.getRenderer().getCamera().unproject(mousePos.set(screenX, screenY, 0));
         forEach(inputtable -> inputtable.touchDragged(this, screenX, screenY, pointer));
+
+        main.getGame().getClient().sendTCP(new MouseInputC2S(main.getGame().getCharacter().getUuid(), screenX, screenY));
         return super.touchDragged(screenX, screenY, pointer);
     }
 
@@ -135,6 +145,8 @@ public class InputManager extends InputAdapter {
         main.getRenderer().getCamera().unproject(mousePos.set(screenX, screenY, 0));
         dragging = false;
         forEach(inputtable -> inputtable.touchUp(this, screenX, screenY, pointer, button));
+
+        main.getGame().getClient().sendTCP(new MouseInputC2S(main.getGame().getCharacter().getUuid(), screenX, screenY));
         return super.touchUp(screenX, screenY, pointer, button);
     }
 
@@ -142,6 +154,8 @@ public class InputManager extends InputAdapter {
     public boolean touchCancelled(int screenX, int screenY, int pointer, int button) {
         dragging = false;
         forEach(inputtable -> inputtable.touchCancelled(this, screenX, screenY, pointer, button));
+
+        main.getGame().getClient().sendTCP(new MouseInputC2S(main.getGame().getCharacter().getUuid(), screenX, screenY));
         return super.touchCancelled(screenX, screenY, pointer, button);
     }
 }

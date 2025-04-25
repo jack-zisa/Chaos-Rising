@@ -1,14 +1,14 @@
 package dev.creoii.chaos.entity;
 
-import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.entity.controller.EntityController;
 import dev.creoii.chaos.entity.inventory.Inventory;
+import dev.creoii.chaos.network.packet.util.EntityGroup;
 
 public class LootDropEntity extends Entity {
     private Inventory inventory;
 
     public LootDropEntity(LootDropEntityType type) {
-        super(type, new Vector2(1, 1), Group.OTHER);
+        super(type, EntityGroup.OTHER);
     }
 
     public Inventory getInventory() {
@@ -49,7 +49,7 @@ public class LootDropEntity extends Entity {
     @Override
     public void remove() {
         super.remove();
-        if (game.getCharacter().getLootUuid().equals(uuid))
-            game.getCharacter().clearLootUuid();
+        if (game.getEntityManager().getCharacter(uuid).getLootUuid().equals(uuid))
+            game.getEntityManager().getCharacter(uuid).clearLootUuid();
     }
 }

@@ -1,8 +1,7 @@
 package dev.creoii.chaos;
 
-import com.esotericsoftware.kryonet.Connection;
-import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
+import dev.creoii.chaos.network.Networking;
 
 import java.io.IOException;
 
@@ -20,17 +19,15 @@ public class ServerGame  {
         server.start();
         server.bind(54555, 54777);
 
+        Networking.register(server.getKryo());
+
         this.main = main;
         dataManager = new DataManager(main);
         tickManager = new TickManager(main);
         collisionManager = new CollisionManager(main);
         entityManager = new EntityManager(main);
 
-        server.addListener(new Listener() {
-            public void received(Connection connection, Object object) {
-                System.out.println("receive packet");
-            }
-        });
+        server.addListener(new ServerListener(this));
     }
 
     public void run(float delta) {

@@ -2,14 +2,9 @@ package dev.creoii.chaos.render.entity;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Rectangle;
-import dev.creoii.chaos.effect.StatusEffect;
-import dev.creoii.chaos.effect.StatusEffects;
 import dev.creoii.chaos.entity.Entity;
-import dev.creoii.chaos.entity.LivingEntity;
 import dev.creoii.chaos.render.Renderer;
 
 import javax.annotation.Nullable;
@@ -24,7 +19,7 @@ public class SimpleEntityRenderer<T extends Entity> extends EntityRenderer<T> {
             entity.getSprite().setPosition(entity.getPos().x, entity.getPos().y);
             entity.getSprite().draw(batch);
 
-            if (entity instanceof LivingEntity livingEntity) {
+            /*if (entity instanceof LivingEntity livingEntity) {
                 float baseX = entity.getPos().x + (entity.getScale() / 2f) - 16f;
                 float baseY = entity.getPos().y + entity.getScale();
 
@@ -38,14 +33,13 @@ public class SimpleEntityRenderer<T extends Entity> extends EntityRenderer<T> {
                     sprite.setPosition(x, y);
                     sprite.draw(batch);
                 }
-            }
+            }*/
         }
 
         if (debug && shapeRenderer != null) {
             shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
             shapeRenderer.setColor(Color.GREEN);
-            Rectangle collider = entity.getColliderRect();
-            shapeRenderer.rect(collider.x, collider.y, collider.width, collider.height);
+            shapeRenderer.rect(entity.getPos().x, entity.getPos().y, collider.width, collider.height);
             shapeRenderer.end();
         }
     }
