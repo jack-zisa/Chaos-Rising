@@ -14,7 +14,7 @@ public class ConstantNumberProvider implements NumberProvider {
 
     @Override
     public ConstantNumberProvider copy() {
-        return new ConstantNumberProvider(value);
+        return this;
     }
 
     public ConstantNumberProvider init(int startTime) {

@@ -36,7 +36,7 @@ public class ConstantVecProvider implements VecProvider {
 
     @Override
     public VecProvider copy() {
-        return new ConstantVecProvider(x.copy(), y == null ? null : y.copy());
+        return this;
     }
 }
 

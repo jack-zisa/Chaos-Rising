@@ -14,7 +14,7 @@ public class ConstantBooleanProvider implements BooleanProvider {
 
     @Override
     public ConstantBooleanProvider copy() {
-        return new ConstantBooleanProvider(value);
+        return this;
     }
 
     public ConstantBooleanProvider init(int startTime) {
