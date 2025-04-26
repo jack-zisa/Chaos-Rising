@@ -3,7 +3,7 @@ package dev.creoii.chaos.entity;
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.entity.controller.EnemyController;
 import dev.creoii.chaos.entity.controller.EntityController;
-import dev.creoii.chaos.entity.inventory.Inventory;
+import dev.creoii.chaos.inventory.Inventory;
 import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.LootUtils;
 

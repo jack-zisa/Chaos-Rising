@@ -1,4 +1,4 @@
-package dev.creoii.chaos.entity.inventory;
+package dev.creoii.chaos.inventory;
 
 import dev.creoii.chaos.entity.character.CharacterEntity;
 import dev.creoii.chaos.item.EquipmentItem;
@@ -24,22 +24,22 @@ public class CharacterInventory extends Inventory {
         return character;
     }
 
-    public void updateSlot(SlotUpdateC2S.Action action, Slot from, Slot to) {
+    public void updateSlot(SlotUpdateC2S.Action action, Inventory from, Inventory to, Slot fromSlot, Slot toSlot) {
         if (action == SlotUpdateC2S.Action.SWAP) {
-            getInventory().onRemoveItemFromSlot(from, from.getStack());
-            main.onRemoveItemFromSlot(to, to.getStack());
-            ItemStack takeTouched = to.takeStack();
-            to.setStack(from.getStack().copy());
-            getInventory().onAddItemToSlot(to, to.getStack());
-            from.setStack(takeTouched);
-            main.onAddItemToSlot(from, takeTouched);
+            from.onRemoveItemFromSlot(fromSlot, fromSlot.getStack());
+            to.onRemoveItemFromSlot(toSlot, toSlot.getStack());
+            ItemStack takeTouched = toSlot.takeStack();
+            toSlot.setStack(fromSlot.getStack().copy());
+            from.onAddItemToSlot(toSlot, toSlot.getStack());
+            fromSlot.setStack(takeTouched);
+            to.onAddItemToSlot(fromSlot, takeTouched);
         } else if (action == SlotUpdateC2S.Action.MOVE) {
-            getInventory().onRemoveItemFromSlot(from, from.getStack());
-            to.setStack(from.getStack().copy());
-            main.onAddItemToSlot(to, to.getStack());
+            from.onRemoveItemFromSlot(fromSlot, fromSlot.getStack());
+            toSlot.setStack(fromSlot.getStack().copy());
+            to.onAddItemToSlot(toSlot, toSlot.getStack());
         } else if (action == SlotUpdateC2S.Action.QUICK_MOVE) {
-            getInventory().onRemoveItemFromSlot(to, to.getStack());
-            main.addItem(to.takeStack());
+            from.onRemoveItemFromSlot(toSlot, toSlot.getStack());
+            to.addItem(toSlot.takeStack());
         }
     }
 

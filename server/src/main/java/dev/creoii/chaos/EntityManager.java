@@ -15,11 +15,11 @@ import java.util.Map;
 import java.util.UUID;
 
 public class EntityManager implements Tickable {
-    private final Main main;
+    private final ServerMain main;
     private final Map<UUID, ServerEntity> entities;
     private final Map<UUID, CharacterEntity> characters;
 
-    public EntityManager(Main main) {
+    public EntityManager(ServerMain main) {
         this.main = main;
         entities = new HashMap<>();
         characters = new HashMap<>();
@@ -30,10 +30,10 @@ public class EntityManager implements Tickable {
     @Override
     public void tick(int gametime, float delta) {
         entities.forEach((uuid, entity) -> {
-            main.getGame().getServer().sendToAllTCP(new EntityStateS2C(uuid, entity.getPos().x, entity.getPos().y));
+            main.getServer().sendToAllTCP(new EntityStateS2C(uuid, entity.getPos().x, entity.getPos().y));
 
             if (entity instanceof ServerLivingEntity living) {
-                main.getGame().getServer().sendToAllTCP(new LivingEntityStateS2C(uuid, living.getStats(), living.getMaxStats()));
+                main.getServer().sendToAllTCP(new LivingEntityStateS2C(uuid, living.getStats(), living.getMaxStats()));
             }
         });
     }
@@ -54,7 +54,7 @@ public class EntityManager implements Tickable {
             characters.put(spawned.getUuid(), character);
 
         main.getGame().getTickManager().addTickable(spawned); // add boolean value to not tick
-        main.getGame().getServer().sendToAllTCP(new EntitySpawnS2C(uuid, spawned.getGroup(), spawned.getType().textureId(), spawned.getPos().x, spawned.getPos().y, spawned.getType().scale()));
+        main.getServer().sendToAllTCP(new EntitySpawnS2C(uuid, spawned.getGroup(), spawned.getType().textureId(), spawned.getPos().x, spawned.getPos().y, spawned.getType().scale()));
         return spawned;
     }
 

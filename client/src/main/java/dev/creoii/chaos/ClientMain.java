@@ -9,7 +9,7 @@ import dev.creoii.chaos.render.Renderer;
 
 import java.io.IOException;
 
-public class Main extends ApplicationAdapter implements Disposable {
+public class ClientMain extends ApplicationAdapter implements Disposable {
     public static final int WINDOW_WIDTH = 1280;
     public static final int WINDOW_HEIGHT = 720;
     private ClientGame game;

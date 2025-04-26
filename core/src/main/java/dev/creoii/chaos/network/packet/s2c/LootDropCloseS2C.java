@@ -1,4 +1,6 @@
 package dev.creoii.chaos.network.packet.s2c;
 
-public record LootDropCloseS2C() {
+import java.io.Serializable;
+
+public record LootDropCloseS2C() implements Serializable {
 }

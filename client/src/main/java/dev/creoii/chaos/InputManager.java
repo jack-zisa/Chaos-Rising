@@ -13,20 +13,20 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class InputManager extends InputAdapter {
-    private final Main main;
+    private final ClientMain main;
     private final List<Inputtable> inputs;
     private final Vector3 mousePos = new Vector3();
     private int keyHeld;
     private boolean dragging;
 
-    public InputManager(Main main) {
+    public InputManager(ClientMain main) {
         this.main = main;
         inputs = new ArrayList<>();
         keyHeld = -1;
         dragging = false;
     }
 
-    public Main getMain() {
+    public ClientMain getMain() {
         return main;
     }
 

@@ -4,7 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
-import dev.creoii.chaos.Main;
+import dev.creoii.chaos.ClientMain;
+import dev.creoii.chaos.inventory.Inventory;
+import dev.creoii.chaos.inventory.Slot;
 import dev.creoii.chaos.render.screen.widget.InventoryWidget;
 import dev.creoii.chaos.render.screen.widget.LootInventoryWidget;
 import dev.creoii.chaos.render.screen.widget.Widget;
@@ -16,8 +18,8 @@ import java.util.Map;
 public class InventoryScreen extends Screen {
     public static final Map<Slot.Type, Sprite> SLOT_SPRITES = new HashMap<>();
 
-    public InventoryScreen(Main main, Vector2 pos, Slot[][] inventory) {
-        super(main, "Inventory", pos, (inventory.length * 48f) + 31f);
+    public InventoryScreen(ClientMain main, Vector2 pos, Inventory inventory) {
+        super(main, "Inventory", pos, (inventory.getSlots().length * 48f) + 31f);
 
         addWidget("main_inventory", new InventoryWidget(this, pos, inventory));
         addWidget("loot_inventory", new LootInventoryWidget(this, pos.cpy().sub(0f, 400f), main1 -> main.getGame().getCharacter().getLootInventory() != null));

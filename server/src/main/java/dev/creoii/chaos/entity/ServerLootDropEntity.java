@@ -1,7 +1,7 @@
 package dev.creoii.chaos.entity;
 
 import dev.creoii.chaos.entity.controller.EntityController;
-import dev.creoii.chaos.entity.inventory.Inventory;
+import dev.creoii.chaos.inventory.Inventory;
 import dev.creoii.chaos.util.EntityGroup;
 
 public class ServerLootDropEntity extends ServerEntity {

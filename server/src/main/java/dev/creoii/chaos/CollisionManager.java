@@ -5,6 +5,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import dev.creoii.chaos.entity.ServerBulletEntity;
 import dev.creoii.chaos.entity.ServerEntity;
+import dev.creoii.chaos.util.EntityGroup;
 
 import java.util.*;
 
@@ -12,22 +13,22 @@ public class CollisionManager {
     private static final int[][] FORWARD_NEIGHBORS = {
             {1, 0}, {1, 1}, {0, 1}, {-1, 1}
     };
-    private static final boolean[][] COLLISION_MATRIX = new boolean[ServerEntity.Group.values().length][ServerEntity.Group.values().length];
+    private static final boolean[][] COLLISION_MATRIX = new boolean[EntityGroup.values().length][EntityGroup.values().length];
     public static final int KEY_OFFSET = 32768;
     private float cellSize = ServerEntity.COORDINATE_SCALE;
-    private final Main main;
+    private final ServerMain main;
     private final ObjectMap<Integer, Array<ServerEntity>> grid;
 
-    public CollisionManager(Main main) {
+    public CollisionManager(ServerMain main) {
         this.main = main;
         grid = new ObjectMap<>();
 
-        COLLISION_MATRIX[ServerEntity.Group.BULLET.ordinal()][ServerEntity.Group.ENEMY.ordinal()] = true;
-        COLLISION_MATRIX[ServerEntity.Group.BULLET.ordinal()][ServerEntity.Group.CHARACTER.ordinal()] = true;
-        COLLISION_MATRIX[ServerEntity.Group.ENEMY.ordinal()][ServerEntity.Group.BULLET.ordinal()] = true;
-        COLLISION_MATRIX[ServerEntity.Group.CHARACTER.ordinal()][ServerEntity.Group.BULLET.ordinal()] = true;
-        COLLISION_MATRIX[ServerEntity.Group.CHARACTER.ordinal()][ServerEntity.Group.OTHER.ordinal()] = true;
-        COLLISION_MATRIX[ServerEntity.Group.OTHER.ordinal()][ServerEntity.Group.CHARACTER.ordinal()] = true;
+        COLLISION_MATRIX[EntityGroup.BULLET.ordinal()][EntityGroup.ENEMY.ordinal()] = true;
+        COLLISION_MATRIX[EntityGroup.BULLET.ordinal()][EntityGroup.CHARACTER.ordinal()] = true;
+        COLLISION_MATRIX[EntityGroup.ENEMY.ordinal()][EntityGroup.BULLET.ordinal()] = true;
+        COLLISION_MATRIX[EntityGroup.CHARACTER.ordinal()][EntityGroup.BULLET.ordinal()] = true;
+        COLLISION_MATRIX[EntityGroup.CHARACTER.ordinal()][EntityGroup.OTHER.ordinal()] = true;
+        COLLISION_MATRIX[EntityGroup.OTHER.ordinal()][EntityGroup.CHARACTER.ordinal()] = true;
     }
 
     public float getCellSize() {

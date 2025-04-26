@@ -1,6 +1,7 @@
 package dev.creoii.chaos.network.packet.c2s;
 
+import java.io.Serializable;
 import java.util.UUID;
 
-public record CharacterLeaveC2S(UUID uuid) {
+public record CharacterLeaveC2S(UUID uuid) implements Serializable {
 }

@@ -1,6 +1,7 @@
 package dev.creoii.chaos.util.provider;
 
 import com.badlogic.gdx.math.Vector2;
+import dev.creoii.chaos.Game;
 import dev.creoii.chaos.entity.ServerEntity;
 
 import java.util.Random;

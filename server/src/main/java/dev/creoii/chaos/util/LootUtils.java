@@ -1,8 +1,8 @@
 package dev.creoii.chaos.util;
 
 import dev.creoii.chaos.ServerGame;
-import dev.creoii.chaos.entity.inventory.Inventory;
-import dev.creoii.chaos.entity.inventory.Slot;
+import dev.creoii.chaos.inventory.Inventory;
+import dev.creoii.chaos.inventory.Slot;
 import dev.creoii.chaos.item.ItemStack;
 import dev.creoii.chaos.loot.LootTable;
 

@@ -12,19 +12,19 @@ import java.io.IOException;
 
 public class ClientGame implements Game {
     private final Client client;
-    private final Main main;
+    private final ClientMain main;
     private final TextureManager textureManager;
     private final OptionsManager optionsManager;
     private final InputManager inputManager;
     private final CommandManager commandManager;
     private ClientCharacterEntity character;
 
-    public ClientGame(Main main) throws IOException {
+    public ClientGame(ClientMain main) throws IOException {
         client = new Client();
+        Networking.register(client.getKryo());
+        client.addListener(new ClientListener(this));
         client.start();
         client.connect(5000, "localhost", 54555, 54777);
-
-        Networking.register(client.getKryo());
 
         this.main = main;
         textureManager = new TextureManager();
@@ -33,8 +33,6 @@ public class ClientGame implements Game {
         commandManager = new CommandManager(main);
 
         Gdx.input.setInputProcessor(new InputMultiplexer(commandManager, inputManager));
-
-        client.addListener(new ClientListener(main.getGame()));
     }
 
     public void run(float delta) {
@@ -46,7 +44,7 @@ public class ClientGame implements Game {
         return client;
     }
 
-    public Main getMain() {
+    public ClientMain getMain() {
         return main;
     }
 
@@ -54,6 +52,7 @@ public class ClientGame implements Game {
         return textureManager;
     }
 
+    @Override
     public OptionsManager getOptionsManager() {
         return optionsManager;
     }
@@ -72,5 +71,10 @@ public class ClientGame implements Game {
 
     public void setCharacter(ClientCharacterEntity character) {
         this.character = character;
+    }
+
+    @Override
+    public int getGametime() {
+        return 0;
     }
 }

@@ -21,8 +21,8 @@ public class Movements {
     }
 
     public static void chase(ServerEntity entity, float dt, JsonValue data) {
-        float speed = (entity instanceof ServerLivingEntity living ? living.getStats().speed.value() : 1f) * data.getFloat("speed", 1f);
+        /*float speed = (entity instanceof ServerLivingEntity living ? living.getStats().speed.value() : 1f) * data.getFloat("speed", 1f);
         Vector2 direction = new Vector2(entity.getGame().getActiveCharacter().getCenterPos()).sub(entity.getCenterPos()).nor();
-        entity.getPos().add(direction.nor().scl(speed * ServerEntity.COORDINATE_SCALE * dt));
+        entity.getPos().add(direction.nor().scl(speed * ServerEntity.COORDINATE_SCALE * dt));*/
     }
 }

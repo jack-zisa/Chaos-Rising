@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.entity.ServerEntity;
 import dev.creoii.chaos.entity.character.CharacterEntity;
-import dev.creoii.chaos.entity.inventory.Slot;
+import dev.creoii.chaos.inventory.Slot;
 import dev.creoii.chaos.item.AbilityItem;
 import dev.creoii.chaos.item.WeaponItem;
 import dev.creoii.chaos.network.packet.c2s.KeyInputC2S;
@@ -28,7 +28,7 @@ public class CharacterController extends EntityController<CharacterEntity> {
     }
 
     public void onKey(KeyInputC2S.Action action, int keycode) {
-        if (getEntity().getGame().getCommandManager().isActive() || action == KeyInputC2S.Action.UP)
+        if (/*getEntity().getGame().getCommandManager().isActive() || */action == KeyInputC2S.Action.UP)
             return;
 
         float dx = 0f;
@@ -60,7 +60,7 @@ public class CharacterController extends EntityController<CharacterEntity> {
     }
 
     public void onMouse(MouseInputC2S.Action action, int screenX, int screenY) {
-        if (getEntity().getGame().getCommandManager().isActive() || action != MouseInputC2S.Action.DOWN)
+        if (/*getEntity().getGame().getCommandManager().isActive() || */action != MouseInputC2S.Action.DOWN)
             return;
 
         if (--weaponCooldown <= 0 && Gdx.input.isTouched()) {

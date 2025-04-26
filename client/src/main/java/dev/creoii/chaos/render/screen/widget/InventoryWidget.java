@@ -8,7 +8,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.ClientGame;
 import dev.creoii.chaos.InputManager;
-import dev.creoii.chaos.Main;
+import dev.creoii.chaos.ClientMain;
+import dev.creoii.chaos.inventory.Inventory;
 import dev.creoii.chaos.inventory.Slot;
 import dev.creoii.chaos.item.ItemStack;
 import dev.creoii.chaos.network.packet.c2s.DropSlotItemC2S;
@@ -20,44 +21,42 @@ import dev.creoii.chaos.render.screen.InventoryScreen;
 import dev.creoii.chaos.render.screen.Screen;
 
 import javax.annotation.Nullable;
-import java.util.Arrays;
-import java.util.Objects;
 import java.util.function.Predicate;
 
 public class InventoryWidget extends Widget {
     public static final float SLOT_SIZE = 49f;
     private static final float ITEM_SCALE = 42f;
-    private final Slot[][] inventory;
-    private final Predicate<Main> activePredicate;
+    private final Inventory inventory;
+    private final Predicate<ClientMain> activePredicate;
 
     protected Slot dragSource;
     protected ItemStack dragStack;
 
-    public InventoryWidget(Screen parent, Vector2 pos, Slot[][] inventory, Predicate<Main> activePredicate) {
-        super(parent, pos, inventory[0].length * SLOT_SIZE, inventory.length * SLOT_SIZE);
+    public InventoryWidget(Screen parent, Vector2 pos, Inventory inventory, Predicate<ClientMain> activePredicate) {
+        super(parent, pos, inventory.getSlots()[0].length * SLOT_SIZE, inventory.getSlots().length * SLOT_SIZE);
         this.inventory = inventory;
         this.activePredicate = activePredicate;
     }
 
-    public InventoryWidget(Screen parent, Vector2 pos, Slot[][] inventory) {
+    public InventoryWidget(Screen parent, Vector2 pos, Inventory inventory) {
         this(parent, pos, inventory, main -> true);
     }
 
-    public boolean isActive(Main main) {
+    public boolean isActive(ClientMain main) {
         return getInventory() != null && activePredicate.test(main);
     }
 
-    public Slot[][] getInventory() {
+    public Inventory getInventory() {
         return inventory;
     }
 
     public Slot getSlotAt(float x, float y) {
-        for (int r = 0; r < getInventory().length; ++r) {
-            for (int c = 0; c < getInventory()[r].length; ++c) {
+        for (int r = 0; r < getInventory().getSlots().length; ++r) {
+            for (int c = 0; c < getInventory().getSlots()[r].length; ++c) {
                 float slotX = getPos().x + (c * SLOT_SIZE);
                 float slotY = getPos().y + (r * SLOT_SIZE);
                 if (x >= slotX && x <= slotX + SLOT_SIZE && y >= slotY && y <= slotY + SLOT_SIZE) {
-                    return getInventory()[r][c];
+                    return getInventory().getSlots()[r][c];
                 }
             }
         }
@@ -78,9 +77,9 @@ public class InventoryWidget extends Widget {
                 return;
             }
 
-            for (int r = 0; r < getInventory().length; ++r) {
-                for (int c = 0; c < getInventory()[r].length; ++c) {
-                    Slot slot = getInventory()[r][c];
+            for (int r = 0; r < getInventory().getSlots().length; ++r) {
+                for (int c = 0; c < getInventory().getSlots()[r].length; ++c) {
+                    Slot slot = getInventory().getSlots()[r][c];
                     Sprite sprite = slot.hasItem() ? InventoryScreen.SLOT_SPRITES.get(Slot.Type.NONE) : InventoryScreen.SLOT_SPRITES.get(slot.getType());
                     sprite.setPosition(getPos().x + (c * SLOT_SIZE), getPos().y + (r * SLOT_SIZE));
                     sprite.draw(batch);
@@ -108,7 +107,7 @@ public class InventoryWidget extends Widget {
         if (getParent() instanceof InventoryScreen inventoryScreen && isMouseOver()) {
             Slot touched = inventoryScreen.getMouseOverSlot();
             if (touched != null && touched.hasItem() && Gdx.input.isTouched()) {
-                if (!touched.getStack().clickInSlot(manager.getMain().getGame(), touched)) {
+                if (!touched.getStack().clickInSlot(manager.getMain().getGame(), manager.getMain().getGame().getCharacter().getUuid(), touched)) {
                     dragSource = touched;
                     dragStack = touched.takeStack();
                 }
@@ -125,19 +124,20 @@ public class InventoryWidget extends Widget {
         if (dragStack != null && getParent() instanceof InventoryScreen inventoryScreen) {
             ClientGame game = manager.getMain().getGame();
             Slot touched = inventoryScreen.getMouseOverSlot();
+            Inventory mainInventory = ((InventoryWidget) inventoryScreen.getWidget("main_inventory")).inventory;
             if (touched != null) {
                 if (!touched.canAccept(dragStack.getItem())) {
                     dragSource.setStack(dragStack.copy());
                 } else {
                     if (touched.hasItem()) {
                         if (dragSource.canAccept(touched.getStack().getItem())) {
-                            game.getClient().sendTCP(new SlotUpdateC2S(game.getCharacter().getUuid(), SlotUpdateC2S.Action.SWAP, dragSource, touched));
+                            game.getClient().sendTCP(new SlotUpdateC2S(game.getCharacter().getUuid(), SlotUpdateC2S.Action.SWAP, getInventory(), mainInventory, dragSource, touched));
                         } else
                             dragSource.setStack(dragStack.copy());
                     } else {
-                        game.getClient().sendTCP(new SlotUpdateC2S(game.getCharacter().getUuid(), SlotUpdateC2S.Action.MOVE, dragSource, touched));
+                        game.getClient().sendTCP(new SlotUpdateC2S(game.getCharacter().getUuid(), SlotUpdateC2S.Action.MOVE, getInventory(), mainInventory, dragSource, touched));
 
-                        if (Arrays.stream(getInventory()).allMatch(Objects::isNull)) {
+                        if (getInventory().isEmpty()) {
                             if (game.getCharacter().getLootInventory() != null) {
                                 game.getCharacter().clearLootInventory();
                                 game.getClient().sendTCP(new LootDropCloseC2S(game.getCharacter().getUuid()));

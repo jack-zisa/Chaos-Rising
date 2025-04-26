@@ -11,6 +11,7 @@ import dev.creoii.chaos.util.provider.vecprovider.VecProvider;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public record SimpleAttack(String bulletId, NumberProvider damage, int bulletCount, int arcGap, float predictability, NumberProvider angleOffset, VecProvider source, VecProvider target) implements Attack {
     public void attack(VecProvider targetPos, VecProvider sourcePos, ServerEntity sourceEntity) {
@@ -29,7 +30,7 @@ public record SimpleAttack(String bulletId, NumberProvider damage, int bulletCou
 
             BulletEntityType bulletType = sourceEntity.getGame().getDataManager().getBullet(bulletId);
             if (bulletType != null) {
-                ServerBulletEntity bullet = sourceEntity.getGame().getEntityManager().addEntity(bulletType, pos.cpy(), customData);
+                ServerBulletEntity bullet = sourceEntity.getGame().getEntityManager().addEntity(UUID.randomUUID(), bulletType, pos.cpy(), customData);
                 bullet.setParent(sourceEntity);
                 bullet.setIndex(i % 2 == 0 ? 1 : -1);
             }

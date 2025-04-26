@@ -8,9 +8,8 @@ import dev.creoii.chaos.entity.ServerLivingEntity;
 import dev.creoii.chaos.entity.ServerLootDropEntity;
 import dev.creoii.chaos.entity.controller.CharacterController;
 import dev.creoii.chaos.entity.controller.EntityController;
-import dev.creoii.chaos.entity.inventory.CharacterInventory;
-import dev.creoii.chaos.entity.inventory.Inventory;
-import dev.creoii.chaos.entity.inventory.Slot;
+import dev.creoii.chaos.inventory.CharacterInventory;
+import dev.creoii.chaos.inventory.Inventory;
 import dev.creoii.chaos.item.ItemStack;
 import dev.creoii.chaos.network.packet.s2c.LootDropCloseS2C;
 import dev.creoii.chaos.network.packet.s2c.LootDropOpenS2C;
@@ -100,7 +99,7 @@ public class CharacterEntity extends ServerLivingEntity {
     @Override
     public void collisionEnter(ServerEntity other) {
         if (other instanceof ServerLootDropEntity lootDropEntity) {
-            game.getServer().sendToTCP(connectionId, new LootDropOpenS2C(slotIdsFrom(lootDropEntity.getInventory().getSlots())));
+            game.getMain().getServer().sendToTCP(connectionId, new LootDropOpenS2C(lootDropEntity.getInventory()));
         }
     }
 
@@ -110,29 +109,13 @@ public class CharacterEntity extends ServerLivingEntity {
             return;
 
         if (other instanceof ServerLootDropEntity) {
-            game.getServer().sendToTCP(connectionId, new LootDropCloseS2C());
+            game.getMain().getServer().sendToTCP(connectionId, new LootDropCloseS2C());
         }
     }
 
     @Override
     public void addStatusEffect(ServerStatusEffect statusEffect, int amplifier, int duration) {
         super.addStatusEffect(statusEffect, amplifier, duration);
-        game.getServer().sendToAllTCP(new StatusEffectS2C(uuid, statusEffect));
-    }
-
-    public static String[][] slotIdsFrom(Slot[][] slots) {
-        String[][] ids = new String[slots.length][];
-        for (int row = 0; row < slots.length; row++) {
-            ids[row] = new String[slots[row].length];
-            for (int col = 0; col < slots[row].length; col++) {
-                Slot slot = slots[row][col];
-                if (slot != null && slot.getStack() != null && slot.getStack().getItem() != null) {
-                    ids[row][col] = slot.getStack().getItem().id();
-                } else {
-                    ids[row][col] = null;
-                }
-            }
-        }
-        return ids;
+        game.getMain().getServer().sendToAllTCP(new StatusEffectS2C(uuid, statusEffect));
     }
 }

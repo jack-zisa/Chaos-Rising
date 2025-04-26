@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.InputManager;
-import dev.creoii.chaos.Main;
+import dev.creoii.chaos.ClientMain;
 import dev.creoii.chaos.render.Renderer;
 import dev.creoii.chaos.render.screen.widget.Widget;
 import dev.creoii.chaos.util.Inputtable;
@@ -20,12 +20,12 @@ import java.util.Map;
 public abstract class Screen implements Renderable, Inputtable {
     private static final NinePatch SCREEN_BACKGROUND = new NinePatch(new Texture("textures/ui/screen_background.png"), 4, 4, 4, 4);
     private final Map<String, Widget> widgets;
-    private final Main main;
+    private final ClientMain main;
     private final String title;
     private final Vector2 pos;
     private final float titleOffsetY;
 
-    public Screen(Main main, String title, Vector2 pos, float titleOffsetY) {
+    public Screen(ClientMain main, String title, Vector2 pos, float titleOffsetY) {
         this.main = main;
         this.title = title;
         this.pos = pos;
@@ -33,7 +33,7 @@ public abstract class Screen implements Renderable, Inputtable {
         widgets = new HashMap<>();
     }
 
-    public Main getMain() {
+    public ClientMain getMain() {
         return main;
     }
 
@@ -57,11 +57,11 @@ public abstract class Screen implements Renderable, Inputtable {
         return widgets;
     }
 
-    public void open(Main main) {
+    public void open(ClientMain main) {
         main.getGame().getInputManager().addInput(this);
     }
 
-    public void close(Main main) {
+    public void close(ClientMain main) {
         main.getGame().getInputManager().removeInput(this);
     }
 

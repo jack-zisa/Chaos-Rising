@@ -1,6 +1,6 @@
-package dev.creoii.chaos.entity.inventory;
+package dev.creoii.chaos.inventory;
 
-import dev.creoii.chaos.item.ServerItem;
+import dev.creoii.chaos.item.Item;
 import dev.creoii.chaos.item.ItemStack;
 
 import java.util.function.Predicate;
@@ -55,7 +55,7 @@ public class Slot {
         return stack != null && stack.getItem() != null;
     }
 
-    public boolean canAccept(ServerItem item) {
+    public boolean canAccept(Item item) {
         return type.itemPredicate.test(item);
     }
 
@@ -67,18 +67,18 @@ public class Slot {
 
     public enum Type {
         NONE(item -> true),
-        WEAPON(item -> item.getType() == ServerItem.Type.WEAPON),
-        ABILITY(item -> item.getType() == ServerItem.Type.ABILITY),
-        ARMOR(item -> item.getType() == ServerItem.Type.ARMOR),
-        ACCESSORY(item -> item.getType() == ServerItem.Type.ACCESSORY);
+        WEAPON(item -> item.getType() == Item.Type.WEAPON),
+        ABILITY(item -> item.getType() == Item.Type.ABILITY),
+        ARMOR(item -> item.getType() == Item.Type.ARMOR),
+        ACCESSORY(item -> item.getType() == Item.Type.ACCESSORY);
 
-        private final Predicate<ServerItem> itemPredicate;
+        private final Predicate<Item> itemPredicate;
 
-        Type(Predicate<ServerItem> itemPredicate) {
+        Type(Predicate<Item> itemPredicate) {
             this.itemPredicate = itemPredicate;
         }
 
-        public Predicate<ServerItem> getItemPredicate() {
+        public Predicate<Item> getItemPredicate() {
             return itemPredicate;
         }
     }

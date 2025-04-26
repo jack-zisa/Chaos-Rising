@@ -3,17 +3,17 @@ package dev.creoii.chaos.chat.command;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
-import dev.creoii.chaos.Main;
+import dev.creoii.chaos.ClientMain;
 import dev.creoii.chaos.network.packet.c2s.ExecuteCommandC2S;
 
 import java.util.Arrays;
 
 public class CommandManager extends InputAdapter {
-    private final Main main;
+    private final ClientMain main;
     private final StringBuilder command = new StringBuilder("/");
     private boolean active = false;
 
-    public CommandManager(Main main) {
+    public CommandManager(ClientMain main) {
         this.main = main;
     }
 

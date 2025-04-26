@@ -7,6 +7,7 @@ import dev.creoii.chaos.entity.ClientBulletEntity;
 import dev.creoii.chaos.entity.ClientCharacterEntity;
 import dev.creoii.chaos.entity.ClientEntity;
 import dev.creoii.chaos.entity.ClientLivingEntity;
+import dev.creoii.chaos.inventory.Inventory;
 import dev.creoii.chaos.network.packet.c2s.CharacterJoinC2S;
 import dev.creoii.chaos.network.packet.c2s.CharacterLeaveC2S;
 import dev.creoii.chaos.network.packet.s2c.*;
@@ -49,8 +50,8 @@ public class ClientListener extends Listener {
             ((ClientLivingEntity) game.getMain().getRenderer().getEntityRenderManager().getEntity(uuid)).addStatusEffect(statusEffect);
         }
 
-        else if (object instanceof LootDropOpenS2C(String[][] slots)) {
-            game.getCharacter().setLootInventory(slots);
+        else if (object instanceof LootDropOpenS2C(Inventory inventory)) {
+            game.getCharacter().setLootInventory(inventory);
         }
 
         else if (object instanceof LootDropCloseS2C()) {
@@ -58,7 +59,8 @@ public class ClientListener extends Listener {
         }
 
         else if (object instanceof CharacterSpawnS2C(UUID uuid, String textureId, float x, float y, float scale)) {
-            game.setCharacter(new ClientCharacterEntity(game, uuid, textureId, x, y, scale, "wizard", new String[3][4]));
+            System.out.println("spawn character");
+            game.setCharacter(new ClientCharacterEntity(game, uuid, textureId, x, y, scale, "wizard", new Inventory(3, 4)));
             game.getMain().getRenderer().getEntityRenderManager().addEntity(game.getCharacter());
         }
     }

@@ -1,4 +1,4 @@
-package dev.creoii.chaos.entity.inventory;
+package dev.creoii.chaos.inventory;
 
 import dev.creoii.chaos.item.ItemStack;
 

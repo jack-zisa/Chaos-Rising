@@ -1,13 +1,19 @@
 package dev.creoii.chaos;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ScreenUtils;
+import dev.creoii.chaos.server.ServerLauncher;
 
-public class Main extends ApplicationAdapter implements Disposable {
+import java.io.IOException;
+
+public class ServerMain extends ServerLauncher implements Disposable {
     private ServerGame game;
+
+    public ServerMain() throws IOException {
+        getServer().addListener(new ServerListener(this));
+    }
 
     @Override
     public void create() {
