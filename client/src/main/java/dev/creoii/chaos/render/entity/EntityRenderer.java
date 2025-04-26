@@ -3,12 +3,12 @@ package dev.creoii.chaos.render.entity;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import dev.creoii.chaos.entity.Entity;
+import dev.creoii.chaos.entity.ClientEntity;
 import dev.creoii.chaos.render.Renderer;
 
 import javax.annotation.Nullable;
 
-public abstract class EntityRenderer<T extends Entity> {
+public abstract class EntityRenderer<T extends ClientEntity> {
     private final T entity;
 
     public EntityRenderer(T entity) {

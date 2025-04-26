@@ -13,6 +13,10 @@ public class StatContainer {
     public final Stat attack;
     public final Stat vitality;
 
+    public StatContainer() {
+        this(0, 0, 0, 0, 0, 0);
+    }
+
     public StatContainer(int health, int speed, int attackSpeed, int defense, int attack, int vitality) {
         this(new Stat(Stat.Type.HEALTH, health), new Stat(Stat.Type.SPEED, speed), new Stat(Stat.Type.ATTACK_SPEED, attackSpeed), new Stat(Stat.Type.DEFENSE, defense), new Stat(Stat.Type.ATTACK, attack), new Stat(Stat.Type.VITALITY, vitality));
     }

@@ -5,7 +5,7 @@ import dev.creoii.chaos.network.Networking;
 
 import java.io.IOException;
 
-public class ServerGame  {
+public class ServerGame implements Game {
     private final Server server;
     private final Main main;
     private final DataManager dataManager;
@@ -22,7 +22,7 @@ public class ServerGame  {
         Networking.register(server.getKryo());
 
         this.main = main;
-        dataManager = new DataManager(main);
+        dataManager = new DataManager();
         tickManager = new TickManager(main);
         collisionManager = new CollisionManager(main);
         entityManager = new EntityManager(main);

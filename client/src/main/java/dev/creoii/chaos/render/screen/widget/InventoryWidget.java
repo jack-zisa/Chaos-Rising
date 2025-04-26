@@ -6,35 +6,40 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import dev.creoii.chaos.ClientGame;
 import dev.creoii.chaos.InputManager;
-import dev.creoii.chaos.entity.LootDropEntity;
-import dev.creoii.chaos.entity.inventory.Inventory;
-import dev.creoii.chaos.entity.inventory.Slot;
+import dev.creoii.chaos.Main;
+import dev.creoii.chaos.inventory.Slot;
 import dev.creoii.chaos.item.ItemStack;
+import dev.creoii.chaos.network.packet.c2s.DropSlotItemC2S;
+import dev.creoii.chaos.network.packet.c2s.LootDropCloseC2S;
+import dev.creoii.chaos.network.packet.c2s.SlotUpdateC2S;
 import dev.creoii.chaos.render.ItemRenderer;
 import dev.creoii.chaos.render.Renderer;
 import dev.creoii.chaos.render.screen.InventoryScreen;
 import dev.creoii.chaos.render.screen.Screen;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 public class InventoryWidget extends Widget {
     public static final float SLOT_SIZE = 49f;
     private static final float ITEM_SCALE = 42f;
-    private final Inventory inventory;
+    private final Slot[][] inventory;
     private final Predicate<Main> activePredicate;
 
     protected Slot dragSource;
     protected ItemStack dragStack;
 
-    public InventoryWidget(Screen parent, Vector2 pos, Inventory inventory, Predicate<Main> activePredicate) {
-        super(parent, pos, inventory.getSlots()[0].length * SLOT_SIZE, inventory.getSlots().length * SLOT_SIZE);
+    public InventoryWidget(Screen parent, Vector2 pos, Slot[][] inventory, Predicate<Main> activePredicate) {
+        super(parent, pos, inventory[0].length * SLOT_SIZE, inventory.length * SLOT_SIZE);
         this.inventory = inventory;
         this.activePredicate = activePredicate;
     }
 
-    public InventoryWidget(Screen parent, Vector2 pos, Inventory inventory) {
+    public InventoryWidget(Screen parent, Vector2 pos, Slot[][] inventory) {
         this(parent, pos, inventory, main -> true);
     }
 
@@ -42,17 +47,17 @@ public class InventoryWidget extends Widget {
         return getInventory() != null && activePredicate.test(main);
     }
 
-    public Inventory getInventory() {
+    public Slot[][] getInventory() {
         return inventory;
     }
 
     public Slot getSlotAt(float x, float y) {
-        for (int r = 0; r < getInventory().getSlots().length; ++r) {
-            for (int c = 0; c < getInventory().getSlots()[r].length; ++c) {
+        for (int r = 0; r < getInventory().length; ++r) {
+            for (int c = 0; c < getInventory()[r].length; ++c) {
                 float slotX = getPos().x + (c * SLOT_SIZE);
                 float slotY = getPos().y + (r * SLOT_SIZE);
                 if (x >= slotX && x <= slotX + SLOT_SIZE && y >= slotY && y <= slotY + SLOT_SIZE) {
-                    return getInventory().getSlots()[r][c];
+                    return getInventory()[r][c];
                 }
             }
         }
@@ -73,14 +78,14 @@ public class InventoryWidget extends Widget {
                 return;
             }
 
-            for (int r = 0; r < getInventory().getSlots().length; ++r) {
-                for (int c = 0; c < getInventory().getSlots()[r].length; ++c) {
-                    Slot slot = getInventory().getSlots()[r][c];
-                    Sprite sprite = slot.hasItem() ? Slot.Type.NONE.getSprite() : slot.getType().getSprite();
+            for (int r = 0; r < getInventory().length; ++r) {
+                for (int c = 0; c < getInventory()[r].length; ++c) {
+                    Slot slot = getInventory()[r][c];
+                    Sprite sprite = slot.hasItem() ? InventoryScreen.SLOT_SPRITES.get(Slot.Type.NONE) : InventoryScreen.SLOT_SPRITES.get(slot.getType());
                     sprite.setPosition(getPos().x + (c * SLOT_SIZE), getPos().y + (r * SLOT_SIZE));
                     sprite.draw(batch);
                     if (slot.hasItem()) {
-                        ItemRenderer.renderItem(batch, slot.getStack().getItem(), new Vector2(getPos().x + (c * SLOT_SIZE) + 3, getPos().y + (r * SLOT_SIZE) + 3), ITEM_SCALE);
+                        ItemRenderer.renderItem(renderer.getMain(), batch, slot.getStack().getItem(), new Vector2(getPos().x + (c * SLOT_SIZE) + 3, getPos().y + (r * SLOT_SIZE) + 3), ITEM_SCALE);
                     }
                 }
             }
@@ -91,7 +96,7 @@ public class InventoryWidget extends Widget {
 
             if (dragStack != null && dragStack.getItem() != null) {
                 Vector2 mousePos = new Vector2(Gdx.input.getX() - (ITEM_SCALE / 2f), Gdx.graphics.getHeight() - Gdx.input.getY() - (ITEM_SCALE / 2f));
-                ItemRenderer.renderItem(batch, dragStack.getItem(), mousePos, ITEM_SCALE);
+                ItemRenderer.renderItem(renderer.getMain(), batch, dragStack.getItem(), mousePos, ITEM_SCALE);
             }
         }
     }
@@ -103,7 +108,7 @@ public class InventoryWidget extends Widget {
         if (getParent() instanceof InventoryScreen inventoryScreen && isMouseOver()) {
             Slot touched = inventoryScreen.getMouseOverSlot();
             if (touched != null && touched.hasItem() && Gdx.input.isTouched()) {
-                if (!touched.getStack().clickInSlot(manager, touched)) {
+                if (!touched.getStack().clickInSlot(manager.getMain().getGame(), touched)) {
                     dragSource = touched;
                     dragStack = touched.takeStack();
                 }
@@ -118,8 +123,7 @@ public class InventoryWidget extends Widget {
         if (!isActive(manager.getMain()))
             return false;
         if (dragStack != null && getParent() instanceof InventoryScreen inventoryScreen) {
-            Game game = manager.getMain().getGame();
-            Inventory main = ((InventoryWidget) inventoryScreen.getWidget("main_inventory")).inventory;
+            ClientGame game = manager.getMain().getGame();
             Slot touched = inventoryScreen.getMouseOverSlot();
             if (touched != null) {
                 if (!touched.canAccept(dragStack.getItem())) {
@@ -127,31 +131,22 @@ public class InventoryWidget extends Widget {
                 } else {
                     if (touched.hasItem()) {
                         if (dragSource.canAccept(touched.getStack().getItem())) {
-                            getInventory().onRemoveItemFromSlot(dragSource, dragStack);
-                            main.onRemoveItemFromSlot(touched, touched.getStack());
-                            ItemStack takeTouched = touched.takeStack();
-                            touched.setStack(dragStack.copy());
-                            getInventory().onAddItemToSlot(touched, touched.getStack());
-                            dragSource.setStack(takeTouched);
-                            main.onAddItemToSlot(dragSource, takeTouched);
-                        } else dragSource.setStack(dragStack.copy());
+                            game.getClient().sendTCP(new SlotUpdateC2S(game.getCharacter().getUuid(), SlotUpdateC2S.Action.SWAP, dragSource, touched));
+                        } else
+                            dragSource.setStack(dragStack.copy());
                     } else {
-                        getInventory().onRemoveItemFromSlot(dragSource, dragStack);
-                        touched.setStack(dragStack.copy());
-                        main.onAddItemToSlot(touched, touched.getStack());
+                        game.getClient().sendTCP(new SlotUpdateC2S(game.getCharacter().getUuid(), SlotUpdateC2S.Action.MOVE, dragSource, touched));
 
-                        if (getInventory().isEmpty()) {
-                            LootDropEntity lootDropEntity = (LootDropEntity) game.getEntityManager().getEntity(game.getActiveCharacter().getLootUuid());
-                            if (lootDropEntity != null) {
-                                game.getEntityManager().removeEntity(lootDropEntity);
+                        if (Arrays.stream(getInventory()).allMatch(Objects::isNull)) {
+                            if (game.getCharacter().getLootInventory() != null) {
+                                game.getCharacter().clearLootInventory();
+                                game.getClient().sendTCP(new LootDropCloseC2S(game.getCharacter().getUuid()));
                             }
                         }
                     }
                 }
             } else {
-                ItemStack dragCopy = dragStack.copy();
-                game.getActiveCharacter().dropItem(dragCopy);
-                main.onRemoveItemFromSlot(dragSource, dragCopy);
+                game.getClient().sendTCP(new DropSlotItemC2S(game.getCharacter().getUuid(), dragSource));
             }
             dragStack = null;
         }

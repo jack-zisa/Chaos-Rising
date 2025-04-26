@@ -2,12 +2,12 @@ package dev.creoii.chaos.entity;
 
 import dev.creoii.chaos.entity.controller.EntityController;
 import dev.creoii.chaos.entity.inventory.Inventory;
-import dev.creoii.chaos.network.packet.util.EntityGroup;
+import dev.creoii.chaos.util.EntityGroup;
 
-public class LootDropEntity extends Entity {
+public class ServerLootDropEntity extends ServerEntity {
     private Inventory inventory;
 
-    public LootDropEntity(LootDropEntityType type) {
+    public ServerLootDropEntity(LootDropEntityType type) {
         super(type, EntityGroup.OTHER);
     }
 
@@ -33,12 +33,12 @@ public class LootDropEntity extends Entity {
     }
 
     @Override
-    public void collisionEnter(Entity other) {
+    public void collisionEnter(ServerEntity other) {
 
     }
 
     @Override
-    public void collisionExit(Entity other) {
+    public void collisionExit(ServerEntity other) {
 
     }
 

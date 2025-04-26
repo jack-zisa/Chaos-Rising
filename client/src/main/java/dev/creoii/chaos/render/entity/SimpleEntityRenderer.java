@@ -4,12 +4,12 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import dev.creoii.chaos.entity.Entity;
+import dev.creoii.chaos.entity.ClientEntity;
 import dev.creoii.chaos.render.Renderer;
 
 import javax.annotation.Nullable;
 
-public class SimpleEntityRenderer<T extends Entity> extends EntityRenderer<T> {
+public class SimpleEntityRenderer<T extends ClientEntity> extends EntityRenderer<T> {
     public SimpleEntityRenderer(T entity) {
         super(entity);
     }
@@ -39,7 +39,7 @@ public class SimpleEntityRenderer<T extends Entity> extends EntityRenderer<T> {
         if (debug && shapeRenderer != null) {
             shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
             shapeRenderer.setColor(Color.GREEN);
-            shapeRenderer.rect(entity.getPos().x, entity.getPos().y, collider.width, collider.height);
+            shapeRenderer.rect(entity.getPos().x, entity.getPos().y, entity.getSprite().getWidth(), entity.getSprite().getHeight());
             shapeRenderer.end();
         }
     }

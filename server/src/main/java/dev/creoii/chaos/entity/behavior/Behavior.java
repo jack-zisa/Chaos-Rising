@@ -2,7 +2,7 @@ package dev.creoii.chaos.entity.behavior;
 
 import com.badlogic.gdx.utils.JsonValue;
 import com.google.common.collect.BiMap;
-import dev.creoii.chaos.entity.EnemyEntity;
+import dev.creoii.chaos.entity.ServerEnemyEntity;
 import dev.creoii.chaos.entity.behavior.phase.Phase;
 import dev.creoii.chaos.entity.behavior.phase.PhaseKey;
 import dev.creoii.chaos.entity.controller.EnemyController;
@@ -12,7 +12,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public interface Behavior {
-    void start(EnemyController controller, EnemyEntity entity);
+    void start(EnemyController controller, ServerEnemyEntity entity);
 
     void update(EnemyController controller, int time, float delta);
 

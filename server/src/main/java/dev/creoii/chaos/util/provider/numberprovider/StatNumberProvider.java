@@ -1,6 +1,6 @@
 package dev.creoii.chaos.util.provider.numberprovider;
 
-import dev.creoii.chaos.entity.LivingEntity;
+import dev.creoii.chaos.entity.ServerLivingEntity;
 import dev.creoii.chaos.util.stat.Stat;
 
 public class StatNumberProvider implements NumberProvider {
@@ -12,7 +12,7 @@ public class StatNumberProvider implements NumberProvider {
 
     @Override
     public Float get(Context context) {
-        if (context.sourceEntity() instanceof LivingEntity livingEntity) {
+        if (context.sourceEntity() instanceof ServerLivingEntity livingEntity) {
             switch (statType) {
                 case HEALTH -> livingEntity.getStats().health.value();
                 case ATTACK_SPEED -> livingEntity.getStats().attackSpeed.value();

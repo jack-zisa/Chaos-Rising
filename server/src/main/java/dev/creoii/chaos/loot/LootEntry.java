@@ -2,12 +2,12 @@ package dev.creoii.chaos.loot;
 
 import com.badlogic.gdx.utils.JsonValue;
 import dev.creoii.chaos.ServerGame;
-import dev.creoii.chaos.item.Item;
+import dev.creoii.chaos.item.ServerItem;
 import dev.creoii.chaos.item.ItemStack;
 
 public record LootEntry(String item, int weight, int minCount, int maxCount) {
     public ItemStack roll(ServerGame game) {
-        Item item = game.getDataManager().getItem(item());
+        ServerItem item = game.getDataManager().getItem(item());
         if (item == null)
             return ItemStack.EMPTY;
         return new ItemStack(item, minCount + (int) (Math.random() * (maxCount - minCount + 1)));

@@ -1,10 +1,10 @@
 package dev.creoii.chaos.attack;
 
 import com.badlogic.gdx.math.Vector2;
-import dev.creoii.chaos.entity.BulletEntity;
+import dev.creoii.chaos.entity.ServerBulletEntity;
 import dev.creoii.chaos.entity.BulletEntityType;
-import dev.creoii.chaos.entity.Entity;
-import dev.creoii.chaos.entity.LivingEntity;
+import dev.creoii.chaos.entity.ServerEntity;
+import dev.creoii.chaos.entity.ServerLivingEntity;
 import dev.creoii.chaos.util.provider.Provider;
 import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
 import dev.creoii.chaos.util.provider.vecprovider.VecProvider;
@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public record SimpleAttack(String bulletId, NumberProvider damage, int bulletCount, int arcGap, float predictability, NumberProvider angleOffset, VecProvider source, VecProvider target) implements Attack {
-    public void attack(VecProvider targetPos, VecProvider sourcePos, Entity sourceEntity) {
+    public void attack(VecProvider targetPos, VecProvider sourcePos, ServerEntity sourceEntity) {
         Provider.Context context = Provider.Context.of(sourceEntity, sourceEntity.getGame().getGametime());
         Vector2 pos = source != null ? source.get(context) : sourcePos.get(context);
         Vector2 direction = target != null ? target.get(context).sub(pos).nor() : targetPos.get(context).sub(pos).nor();
@@ -24,12 +24,12 @@ public record SimpleAttack(String bulletId, NumberProvider damage, int bulletCou
 
             Map<String, Object> customData = new HashMap<>();
             customData.put("direction", direction.cpy().rotateDeg(angle + angleOffset.get(context)));
-            if (sourceEntity instanceof LivingEntity livingEntity)
+            if (sourceEntity instanceof ServerLivingEntity livingEntity)
                 customData.put("damage", Math.round(damage.getInt(context) * .5f + livingEntity.getStats().attack.value() / 50f));
 
             BulletEntityType bulletType = sourceEntity.getGame().getDataManager().getBullet(bulletId);
             if (bulletType != null) {
-                BulletEntity bullet = sourceEntity.getGame().getEntityManager().addEntity(bulletType, pos.cpy(), customData);
+                ServerBulletEntity bullet = sourceEntity.getGame().getEntityManager().addEntity(bulletType, pos.cpy(), customData);
                 bullet.setParent(sourceEntity);
                 bullet.setIndex(i % 2 == 0 ? 1 : -1);
             }

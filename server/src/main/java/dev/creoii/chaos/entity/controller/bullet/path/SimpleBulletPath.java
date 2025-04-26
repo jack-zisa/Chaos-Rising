@@ -1,7 +1,7 @@
 package dev.creoii.chaos.entity.controller.bullet.path;
 
 import com.badlogic.gdx.math.Vector2;
-import dev.creoii.chaos.entity.Entity;
+import dev.creoii.chaos.entity.ServerEntity;
 import dev.creoii.chaos.entity.controller.bullet.BulletController;
 import dev.creoii.chaos.util.provider.Provider;
 import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
@@ -20,7 +20,7 @@ public record SimpleBulletPath(NumberProvider speed, VecProvider offset, NumberP
         if (speed == 0)
             return;
 
-        Vector2 forward = new Vector2(controller.getEntity().getDirection()).scl(speed * Entity.COORDINATE_SCALE * dt);
+        Vector2 forward = new Vector2(controller.getEntity().getDirection()).scl(speed * ServerEntity.COORDINATE_SCALE * dt);
         controller.getEntity().getPos().add(forward).add(offset.get(context));
 
         float angle = (float) (Math.atan2(controller.getEntity().getDirection().y, controller.getEntity().getDirection().x) + arcSpeed.init(gametime).get(context));

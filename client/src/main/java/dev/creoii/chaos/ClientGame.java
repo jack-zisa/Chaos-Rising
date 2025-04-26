@@ -4,20 +4,20 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.esotericsoftware.kryonet.Client;
 import dev.creoii.chaos.chat.command.CommandManager;
-import dev.creoii.chaos.entity.Entity;
+import dev.creoii.chaos.entity.ClientCharacterEntity;
 import dev.creoii.chaos.network.Networking;
 import dev.creoii.chaos.texture.TextureManager;
 
 import java.io.IOException;
 
-public class ClientGame {
+public class ClientGame implements Game {
     private final Client client;
     private final Main main;
     private final TextureManager textureManager;
     private final OptionsManager optionsManager;
     private final InputManager inputManager;
     private final CommandManager commandManager;
-    private Entity character;
+    private ClientCharacterEntity character;
 
     public ClientGame(Main main) throws IOException {
         client = new Client();
@@ -27,7 +27,7 @@ public class ClientGame {
         Networking.register(client.getKryo());
 
         this.main = main;
-        textureManager = new TextureManager(main);
+        textureManager = new TextureManager();
         optionsManager = new OptionsManager();
         inputManager = new InputManager(main);
         commandManager = new CommandManager(main);
@@ -66,7 +66,11 @@ public class ClientGame {
         return commandManager;
     }
 
-    public Entity getCharacter() {
+    public ClientCharacterEntity getCharacter() {
         return character;
+    }
+
+    public void setCharacter(ClientCharacterEntity character) {
+        this.character = character;
     }
 }

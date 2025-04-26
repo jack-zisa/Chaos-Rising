@@ -48,7 +48,8 @@ public class CommandManager extends InputAdapter {
 
     @Override
     public boolean keyDown(int keycode) {
-        if (!active) return false;
+        if (!active)
+            return false;
 
         if (keycode == Input.Keys.ESCAPE) {
             active = false;
@@ -64,7 +65,8 @@ public class CommandManager extends InputAdapter {
 
     @Override
     public boolean keyTyped(char character) {
-        if (!active) return false;
+        if (!active)
+            return false;
 
         if (Character.isLetterOrDigit(character) || character == ' ' || character == '_' || character == '.' || character == '-') {
             command.append(character);

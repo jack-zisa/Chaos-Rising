@@ -2,8 +2,8 @@ package dev.creoii.chaos.item;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import dev.creoii.chaos.InputManager;
-import dev.creoii.chaos.effect.StatusEffect;
+import dev.creoii.chaos.ServerGame;
+import dev.creoii.chaos.effect.ServerStatusEffect;
 import dev.creoii.chaos.entity.character.CharacterEntity;
 import dev.creoii.chaos.entity.inventory.Slot;
 import dev.creoii.chaos.util.Rarity;
@@ -11,13 +11,14 @@ import dev.creoii.chaos.util.stat.ModifierEntry;
 import dev.creoii.chaos.util.stat.StatContainer;
 
 import java.util.List;
+import java.util.UUID;
 
-public class ConsumableItem extends Item {
+public class ConsumableItem extends ServerItem {
     private final List<ModifierEntry> statBonus;
-    private final List<StatusEffect> statusEffects;
+    private final List<ServerStatusEffect> statusEffects;
 
-    public ConsumableItem(String id, Rarity rarity, String textureId, List<ModifierEntry> statBonus, List<StatusEffect> statusEffects) {
-        super(id, Type.CONSUMABLE, rarity, textureId);
+    public ConsumableItem(String id, Rarity rarity, List<ModifierEntry> statBonus, List<ServerStatusEffect> statusEffects) {
+        super(id, Type.CONSUMABLE, rarity);
         this.statBonus = statBonus;
         this.statusEffects = statusEffects;
     }
@@ -26,21 +27,21 @@ public class ConsumableItem extends Item {
         return statBonus;
     }
 
-    public List<StatusEffect> getStatusEffects() {
+    public List<ServerStatusEffect> getStatusEffects() {
         return statusEffects;
     }
 
     @Override
-    public boolean clickInSlot(InputManager manager, Slot slot, ItemStack stack) {
+    public boolean clickInSlot(ServerGame game, UUID characterUuid, Slot slot, ItemStack stack) {
         if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
-            consume(manager, slot, stack);
+            consume(game, characterUuid, slot, stack);
             return true;
         }
-        return super.clickInSlot(manager, slot, stack);
+        return super.clickInSlot(game, characterUuid, slot, stack);
     }
 
-    public void consume(InputManager manager, Slot slot, ItemStack stack) {
-        CharacterEntity character = manager.getMain().getGame().getActiveCharacter();
+    public void consume(ServerGame game, UUID characterUuid, Slot slot, ItemStack stack) {
+        CharacterEntity character = game.getEntityManager().getCharacter(characterUuid);
         if (getStatBonus() != null) {
             StatContainer stats = character.getStats();
             getStatBonus().forEach(modifierEntry -> {

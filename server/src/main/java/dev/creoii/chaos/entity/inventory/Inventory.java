@@ -5,7 +5,7 @@ import dev.creoii.chaos.item.ItemStack;
 import java.util.Arrays;
 
 public class Inventory {
-    protected final Slot[][] slots;
+    private final Slot[][] slots;
 
     public Inventory(int rows, int cols) {
         slots = new Slot[rows][cols];

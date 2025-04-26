@@ -1,7 +1,7 @@
 package dev.creoii.chaos.attack;
 
 import com.badlogic.gdx.utils.JsonValue;
-import dev.creoii.chaos.entity.Entity;
+import dev.creoii.chaos.entity.ServerEntity;
 import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
 import dev.creoii.chaos.util.provider.vecprovider.SourcePosVecProvider;
 import dev.creoii.chaos.util.provider.vecprovider.VecProvider;
@@ -10,9 +10,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 public interface Attack {
-    void attack(VecProvider targetPos, VecProvider sourcePos, Entity sourceEntity);
+    void attack(VecProvider targetPos, VecProvider sourcePos, ServerEntity sourceEntity);
 
-    default void attack(VecProvider targetPos, Entity sourceEntity) {
+    default void attack(VecProvider targetPos, ServerEntity sourceEntity) {
         attack(targetPos, new SourcePosVecProvider(), sourceEntity);
     }
 

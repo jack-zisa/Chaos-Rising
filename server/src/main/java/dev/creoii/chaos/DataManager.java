@@ -3,30 +3,30 @@ package dev.creoii.chaos;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.JsonReader;
+import dev.creoii.chaos.data.JsonParsing;
 import dev.creoii.chaos.entity.BulletEntityType;
 import dev.creoii.chaos.entity.EnemyEntityType;
 import dev.creoii.chaos.entity.LootDropEntityType;
 import dev.creoii.chaos.entity.character.CharacterClass;
-import dev.creoii.chaos.item.Item;
+import dev.creoii.chaos.item.ServerItem;
+import dev.creoii.chaos.util.Identifiable;
+import dev.creoii.chaos.util.Parser;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
 public class DataManager {
-    private final Main main;
     private final Map<String, Parser> schema;
     private final Map<String, Map<String, Identifiable>> data;
 
-    public DataManager(Main main) {
-        this.main = main;
-
+    public DataManager() {
         schema = new HashMap<>();
-        schema.put("class", fileHandle -> CharacterClass.parse(fileHandle.nameWithoutExtension(), new JsonReader().parse(fileHandle)));
-        schema.put("item", fileHandle -> Item.parse(fileHandle.nameWithoutExtension(), new JsonReader().parse(fileHandle)));
-        schema.put("enemy", fileHandle -> EnemyEntityType.parse(fileHandle.nameWithoutExtension(), new JsonReader().parse(fileHandle)));
-        schema.put("bullet", fileHandle -> BulletEntityType.parse(fileHandle.nameWithoutExtension(), new JsonReader().parse(fileHandle)));
-        schema.put("loot_drop", fileHandle -> LootDropEntityType.parse(fileHandle.nameWithoutExtension(), new JsonReader().parse(fileHandle)));
+        schema.put("class", fileHandle -> JsonParsing.parseCharacterClass(fileHandle.nameWithoutExtension(), new JsonReader().parse(fileHandle)));
+        schema.put("item", fileHandle -> JsonParsing.parseItem(fileHandle.nameWithoutExtension(), new JsonReader().parse(fileHandle)));
+        schema.put("enemy", fileHandle -> JsonParsing.parseEnemyEntityType(fileHandle.nameWithoutExtension(), new JsonReader().parse(fileHandle)));
+        schema.put("bullet", fileHandle -> JsonParsing.parseBulletEntityType(fileHandle.nameWithoutExtension(), new JsonReader().parse(fileHandle)));
+        schema.put("loot_drop", fileHandle -> JsonParsing.parseLootDropEntityType(fileHandle.nameWithoutExtension(), new JsonReader().parse(fileHandle)));
 
         data = new HashMap<>();
         for (String key : schema.keySet()) {
@@ -55,8 +55,8 @@ public class DataManager {
     }
 
     @Nullable
-    public Item getItem(String id) {
-        return (Item) data.get("item").getOrDefault(id, null);
+    public ServerItem getItem(String id) {
+        return (ServerItem) data.get("item").getOrDefault(id, null);
     }
 
     public void load() {
@@ -80,23 +80,11 @@ public class DataManager {
             for (FileHandle file : folderHandle.list("json")) {
                 try {
                     Identifiable obj = parser.parse(file);
-                    obj.onLoad(main);
                     data.get(folder).put(obj.id(), obj);
                 } catch (Exception e) {
                     Gdx.app.error(DataManager.class.getSimpleName(), "Error parsing " + file.name() + " in '/" + folder + "': " + e);
                 }
             }
         }
-    }
-
-    @FunctionalInterface
-    interface Parser {
-        Identifiable parse(FileHandle jsonFile);
-    }
-
-    public interface Identifiable {
-        String id();
-
-        default void onLoad(Main main) {}
     }
 }

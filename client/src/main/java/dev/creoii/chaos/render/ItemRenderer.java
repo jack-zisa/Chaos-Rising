@@ -3,10 +3,11 @@ package dev.creoii.chaos.render;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
-import dev.creoii.chaos.item.Item;
+import dev.creoii.chaos.Main;
 
 import javax.annotation.Nullable;
 
@@ -14,16 +15,17 @@ public class ItemRenderer {
     private static final float TOOLTIP_OFFSCREEN_PADDING = 4f;
     private static final BitmapFont FONT = new BitmapFont();
 
-    public static void renderItem(SpriteBatch batch, Item item, Vector2 pos, float scale) {
-        item.getSprite().setPosition(pos.x, pos.y);
-        item.getSprite().setSize(scale, scale);
-        item.getSprite().draw(batch);
+    public static void renderItem(Main main, SpriteBatch batch, String item, Vector2 pos, float scale) {
+        Sprite sprite = new Sprite(main.getGame().getTextureManager().getTexture("item", item));
+        sprite.setPosition(pos.x, pos.y);
+        sprite.setSize(scale, scale);
+        sprite.draw(batch);
     }
 
-    public static void renderTooltip(@Nullable SpriteBatch batch, @Nullable ShapeRenderer shapeRenderer, Item item) {
-        FONT.setColor(item.getRarity().getColor());
+    public static void renderTooltip(@Nullable SpriteBatch batch, @Nullable ShapeRenderer shapeRenderer, String item) {
+        //FONT.setColor(item.getRarity().getColor());
 
-        String tooltip = item.getTooltip();
+        String tooltip = item;//getTooltip()
         GlyphLayout layout = new GlyphLayout(FONT, tooltip);
 
         Vector2 mousePos = new Vector2(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());

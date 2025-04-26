@@ -1,4 +1,4 @@
-package dev.creoii.chaos.network.packet.util;
+package dev.creoii.chaos.util;
 
 public enum EntityGroup {
     CHARACTER,

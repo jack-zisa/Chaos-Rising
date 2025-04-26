@@ -4,15 +4,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 public final class StatusEffects {
-    public static final Map<String, StatusEffect> ALL = new HashMap<>();
+    public static final Map<String, ServerStatusEffect> ALL = new HashMap<>();
 
     static {
-        StatusEffect.register("regeneration", (entity, statusEffect) -> {
+        ServerStatusEffect.register("regeneration", (entity, statusEffect) -> {
             entity.heal(statusEffect.getAmplifier());
         });
-        StatusEffect.register("poison", (entity, statusEffect) -> {
+        ServerStatusEffect.register("poison", (entity, statusEffect) -> {
             entity.damage(statusEffect.getAmplifier());
         });
-        StatusEffect.register("invulnerable");
+        ServerStatusEffect.register("invulnerable");
     }
 }

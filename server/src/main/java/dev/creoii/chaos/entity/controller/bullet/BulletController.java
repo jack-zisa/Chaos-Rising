@@ -1,14 +1,14 @@
 package dev.creoii.chaos.entity.controller.bullet;
 
-import dev.creoii.chaos.entity.BulletEntity;
+import dev.creoii.chaos.entity.ServerBulletEntity;
 import dev.creoii.chaos.entity.BulletEntityType;
 import dev.creoii.chaos.entity.controller.EntityController;
 import dev.creoii.chaos.entity.controller.bullet.path.BulletPath;
 
-public class BulletController extends EntityController<BulletEntity> {
+public class BulletController extends EntityController<ServerBulletEntity> {
     private final BulletPath path;
 
-    public BulletController(BulletEntity bullet) {
+    public BulletController(ServerBulletEntity bullet) {
         super(bullet);
         path = ((BulletEntityType) bullet.getType()).path().copy();
     }

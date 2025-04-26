@@ -4,13 +4,13 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.ServerGame;
 import dev.creoii.chaos.entity.controller.EntityController;
-import dev.creoii.chaos.network.packet.util.EntityGroup;
+import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.Positionable;
 import dev.creoii.chaos.util.Tickable;
 
 import java.util.*;
 
-public abstract class Entity implements Positionable, Tickable {
+public abstract class ServerEntity implements Positionable, Tickable {
     public static final float COORDINATE_SCALE = 32f;
     protected static final Random RANDOM = new Random();
     protected final EntityType<?> type;
@@ -23,7 +23,7 @@ public abstract class Entity implements Positionable, Tickable {
     protected Set<UUID> collidingWith;
     protected UUID uuid;
 
-    public Entity(EntityType<?> type, EntityGroup group) {
+    public ServerEntity(EntityType<?> type, EntityGroup group) {
         this.type = type;
         this.group = group;
         spawnTime = -1;
@@ -31,9 +31,9 @@ public abstract class Entity implements Positionable, Tickable {
 
     public abstract EntityController<?> getController();
 
-    public abstract void collisionEnter(Entity other);
+    public abstract void collisionEnter(ServerEntity other);
 
-    public abstract void collisionExit(Entity other);
+    public abstract void collisionExit(ServerEntity other);
 
     public abstract void postSpawn();
 
@@ -45,14 +45,6 @@ public abstract class Entity implements Positionable, Tickable {
 
     public EntityType<?> getType() {
         return type;
-    }
-
-    public float getScale() {
-        return type.scale() * COORDINATE_SCALE;
-    }
-
-    public String getTextureId() {
-        return type.textureId();
     }
 
     public Rectangle getColliderRect() {
@@ -106,15 +98,14 @@ public abstract class Entity implements Positionable, Tickable {
     }
 
     public void remove() {
-        game.getEntityManager().removeEntity(this);
+        game.getEntityManager().removeEntity(uuid);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof Entity entity) {
+        if (obj instanceof ServerEntity entity) {
             return entity.getUuid().equals(getUuid());
         }
         return false;
     }
-
 }

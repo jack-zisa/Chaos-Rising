@@ -47,7 +47,7 @@ public class Renderer implements Disposable {
         shapeRenderer.setAutoShapeType(true);
 
         worldRenderables = new ArrayList<>();
-        worldRenderables.add(entityRenderManager = new EntityRenderManager(main));
+        worldRenderables.add(entityRenderManager = new EntityRenderManager());
         screenRenderables = new ArrayList<>();
         screenRenderables.add(new HudRenderer());
 

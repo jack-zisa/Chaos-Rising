@@ -7,11 +7,11 @@ import dev.creoii.chaos.util.stat.StatContainer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EquipmentItem extends Item {
+public class EquipmentItem extends ServerItem {
     protected final List<ModifierEntry> statBonus;
 
-    public EquipmentItem(String id, Type type, Rarity rarity, String textureId, List<ModifierEntry> statBonus) {
-        super(id, type, rarity, textureId);
+    public EquipmentItem(String id, Type type, Rarity rarity, List<ModifierEntry> statBonus) {
+        super(id, type, rarity);
         this.statBonus = statBonus;
     }
 

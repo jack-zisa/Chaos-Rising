@@ -1,31 +1,32 @@
 package dev.creoii.chaos.item;
 
-import dev.creoii.chaos.InputManager;
+import dev.creoii.chaos.ServerGame;
 import dev.creoii.chaos.entity.inventory.Slot;
 
 import javax.annotation.Nullable;
+import java.util.UUID;
 
 public class ItemStack {
     public static final ItemStack EMPTY = new ItemStack(null, 0);
     @Nullable
-    private Item item;
+    private ServerItem item;
     private int count;
 
-    public ItemStack(@Nullable Item item, int count) {
+    public ItemStack(@Nullable ServerItem item, int count) {
         this.item = item;
         this.count = count;
     }
 
-    public ItemStack(Item item) {
+    public ItemStack(ServerItem item) {
         this(item, 1);
     }
 
     @Nullable
-    public Item getItem() {
+    public ServerItem getItem() {
         return item;
     }
 
-    public void setItem(@Nullable Item item) {
+    public void setItem(@Nullable ServerItem item) {
         this.item = item;
     }
 
@@ -44,9 +45,9 @@ public class ItemStack {
     /**
      * @return false to allow dragging, true to disable dragging
      */
-    public boolean clickInSlot(InputManager manager, Slot slot) {
+    public boolean clickInSlot(ServerGame game, UUID uuid, Slot slot) {
         if (item == null)
             return false;
-        return item.clickInSlot(manager, slot, this);
+        return item.clickInSlot(game, uuid, slot, this);
     }
 }

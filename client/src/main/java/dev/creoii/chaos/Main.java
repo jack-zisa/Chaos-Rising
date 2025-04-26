@@ -7,6 +7,8 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import dev.creoii.chaos.render.Renderer;
 
+import java.io.IOException;
+
 public class Main extends ApplicationAdapter implements Disposable {
     public static final int WINDOW_WIDTH = 1280;
     public static final int WINDOW_HEIGHT = 720;
@@ -16,12 +18,14 @@ public class Main extends ApplicationAdapter implements Disposable {
 
     @Override
     public void create() {
-        game = new ClientGame(this);
+        try {
+            game = new ClientGame(this);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         renderer = new Renderer(this);
 
         game.getTextureManager().load();
-
-        //activeCharacter = entityManager.addEntity(new CharacterEntityType(new Mutable<>(dataManager.getCharacterClass("wizard"))), new Vector2(0, 0));
     }
 
     @Override

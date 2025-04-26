@@ -1,10 +1,7 @@
 package dev.creoii.chaos.entity.inventory;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import dev.creoii.chaos.item.Item;
+import dev.creoii.chaos.item.ServerItem;
 import dev.creoii.chaos.item.ItemStack;
-import dev.creoii.chaos.render.screen.widget.InventoryWidget;
 
 import java.util.function.Predicate;
 
@@ -58,7 +55,7 @@ public class Slot {
         return stack != null && stack.getItem() != null;
     }
 
-    public boolean canAccept(Item item) {
+    public boolean canAccept(ServerItem item) {
         return type.itemPredicate.test(item);
     }
 
@@ -69,26 +66,19 @@ public class Slot {
     }
 
     public enum Type {
-        NONE("textures/ui/slot.png", item -> true),
-        WEAPON("textures/ui/weapon_slot.png", item -> item.getType() == Item.Type.WEAPON),
-        ABILITY("textures/ui/ability_slot.png", item -> item.getType() == Item.Type.ABILITY),
-        ARMOR("textures/ui/armor_slot.png", item -> item.getType() == Item.Type.ARMOR),
-        ACCESSORY("textures/ui/accessory_slot.png", item -> item.getType() == Item.Type.ACCESSORY);
+        NONE(item -> true),
+        WEAPON(item -> item.getType() == ServerItem.Type.WEAPON),
+        ABILITY(item -> item.getType() == ServerItem.Type.ABILITY),
+        ARMOR(item -> item.getType() == ServerItem.Type.ARMOR),
+        ACCESSORY(item -> item.getType() == ServerItem.Type.ACCESSORY);
 
-        private final Sprite sprite;
-        private final Predicate<Item> itemPredicate;
+        private final Predicate<ServerItem> itemPredicate;
 
-        Type(String textureId, Predicate<Item> itemPredicate) {
+        Type(Predicate<ServerItem> itemPredicate) {
             this.itemPredicate = itemPredicate;
-            sprite = new Sprite(new Texture(textureId));
-            sprite.setSize(InventoryWidget.SLOT_SIZE, InventoryWidget.SLOT_SIZE);
         }
 
-        public Sprite getSprite() {
-            return sprite;
-        }
-
-        public Predicate<Item> getItemPredicate() {
+        public Predicate<ServerItem> getItemPredicate() {
             return itemPredicate;
         }
     }

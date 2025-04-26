@@ -1,8 +1,8 @@
 package dev.creoii.chaos.entity.controller;
 
-import dev.creoii.chaos.entity.Entity;
+import dev.creoii.chaos.entity.ServerEntity;
 
-public abstract class EntityController<T extends Entity> {
+public abstract class EntityController<T extends ServerEntity> {
     protected T entity;
 
     protected EntityController(T entity) {

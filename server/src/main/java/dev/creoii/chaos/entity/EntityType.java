@@ -1,14 +1,14 @@
 package dev.creoii.chaos.entity;
 
 import com.badlogic.gdx.math.Vector2;
-import dev.creoii.chaos.DataManager;
 import dev.creoii.chaos.ServerGame;
+import dev.creoii.chaos.util.Identifiable;
 
 import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.UUID;
 
-public interface EntityType<T extends Entity> extends DataManager.Identifiable {
+public interface EntityType<T extends ServerEntity> extends Identifiable {
     float scale();
 
     @Nullable String textureId();

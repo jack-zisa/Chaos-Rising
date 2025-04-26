@@ -9,8 +9,8 @@ import java.util.List;
 public class WeaponItem extends EquipmentItem {
     private final Attack attack;
 
-    public WeaponItem(String id, Rarity rarity, String textureId, Attack attack, List<ModifierEntry> statBonus) {
-        super(id, Type.WEAPON, rarity, textureId, statBonus);
+    public WeaponItem(String id, Rarity rarity, Attack attack, List<ModifierEntry> statBonus) {
+        super(id, Type.WEAPON, rarity, statBonus);
         this.attack = attack;
     }
 

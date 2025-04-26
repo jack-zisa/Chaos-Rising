@@ -10,8 +10,8 @@ public class AbilityItem extends EquipmentItem {
     private final Attack attack;
     private final int cooldown;
 
-    public AbilityItem(String id, Rarity rarity, String textureId, List<ModifierEntry> statBonus, Attack attack, int cooldown) {
-        super(id, Type.ABILITY, rarity, textureId, statBonus);
+    public AbilityItem(String id, Rarity rarity, List<ModifierEntry> statBonus, Attack attack, int cooldown) {
+        super(id, Type.ABILITY, rarity, statBonus);
         this.attack = attack;
         this.cooldown = cooldown;
     }

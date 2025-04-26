@@ -1,19 +1,18 @@
 package dev.creoii.chaos.entity;
 
-import com.badlogic.gdx.math.Vector2;
-import dev.creoii.chaos.effect.StatusEffect;
-import dev.creoii.chaos.network.packet.util.EntityGroup;
+import dev.creoii.chaos.effect.ServerStatusEffect;
+import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.stat.StatContainer;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class LivingEntity extends Entity {
+public abstract class ServerLivingEntity extends ServerEntity {
     private final StatContainer statContainer;
     private final StatContainer maxStatContainer;
-    private final List<StatusEffect> statusEffects;
+    private final List<ServerStatusEffect> statusEffects;
 
-    public LivingEntity(EntityType<? extends LivingEntity> type, EntityGroup group, StatContainer statContainer, StatContainer maxStatContainer) {
+    public ServerLivingEntity(EntityType<? extends ServerLivingEntity> type, EntityGroup group, StatContainer statContainer, StatContainer maxStatContainer) {
         super(type, group);
         this.statContainer = statContainer;
         this.maxStatContainer = maxStatContainer;
@@ -30,7 +29,7 @@ public abstract class LivingEntity extends Entity {
         return maxStatContainer;
     }
 
-    public List<StatusEffect> getStatusEffects() {
+    public List<ServerStatusEffect> getStatusEffects() {
         return statusEffects;
     }
 
@@ -57,14 +56,14 @@ public abstract class LivingEntity extends Entity {
         statContainer.health.set(Math.min(maxStatContainer.health.value(), statContainer.health.value() + amount));
     }
 
-    public void addStatusEffect(StatusEffect statusEffect, int amplifier, int duration) {
+    public void addStatusEffect(ServerStatusEffect statusEffect, int amplifier, int duration) {
         statusEffect.init(amplifier, duration);
         if (statusEffect.getStarter() != null)
             statusEffect.getStarter().accept(this, statusEffect);
         statusEffects.add(statusEffect);
     }
 
-    public void removeStatusEffect(StatusEffect statusEffect) {
+    public void removeStatusEffect(ServerStatusEffect statusEffect) {
         statusEffects.remove(statusEffect);
         if (statusEffect.getRemover() != null)
             statusEffect.getRemover().accept(this, statusEffect);
@@ -83,7 +82,7 @@ public abstract class LivingEntity extends Entity {
         super.tick(gametime, delta);
 
         for (int i = getStatusEffects().size() - 1; i >= 0; --i) {
-            StatusEffect statusEffect = getStatusEffects().get(i);
+            ServerStatusEffect statusEffect = getStatusEffects().get(i);
 
             if (statusEffect.getApplier() != null)
                 statusEffect.getApplier().accept(this, statusEffect);
