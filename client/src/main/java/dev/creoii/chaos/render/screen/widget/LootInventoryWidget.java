@@ -5,7 +5,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.ClientGame;
 import dev.creoii.chaos.InputManager;
-import dev.creoii.chaos.ClientMain;
 import dev.creoii.chaos.inventory.Inventory;
 import dev.creoii.chaos.inventory.Slot;
 import dev.creoii.chaos.network.packet.c2s.LootDropCloseC2S;
@@ -16,26 +15,25 @@ import dev.creoii.chaos.render.screen.Screen;
 import java.util.function.Predicate;
 
 public class LootInventoryWidget extends InventoryWidget {
-    public LootInventoryWidget(Screen parent, Vector2 pos, Predicate<ClientMain> activePredicate) {
+    public LootInventoryWidget(Screen parent, Vector2 pos, Predicate<ClientGame> activePredicate) {
         super(parent, pos, new Inventory(2, 4), activePredicate);
     }
 
     @Override
     public Inventory getInventory() {
-        return getParent().getMain().getGame().getCharacter().getLootInventory();
+        return getParent().getGame().getCharacter().getLootInventory();
     }
 
     @Override
     public boolean touchDown(InputManager manager, int screenX, int screenY, int pointer, int button) {
-        if (!isActive(manager.getMain()))
+        if (!isActive(manager.getGame()))
             return false;
         if (getParent() instanceof InventoryScreen inventoryScreen) {
             Slot touched = inventoryScreen.getMouseOverSlot();
             if (touched != null && touched.hasItem()) {
-                if (!touched.getStack().clickInSlot(manager.getMain().getGame(), manager.getMain().getGame().getCharacter().getUuid(), touched)) {
+                if (!touched.getStack().clickInSlot(manager.getGame(), manager.getGame().getCharacter().getUuid(), touched)) {
                     if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
-                        ClientMain main = manager.getMain();
-                        ClientGame game = main.getGame();
+                        ClientGame game = manager.getGame();
                         Inventory mainInventory = ((InventoryWidget) inventoryScreen.getWidget("main_inventory")).getInventory();
                         game.getClient().sendTCP(new SlotUpdateC2S(game.getCharacter().getUuid(), SlotUpdateC2S.Action.QUICK_MOVE, getInventory(), mainInventory, dragSource, touched));
 

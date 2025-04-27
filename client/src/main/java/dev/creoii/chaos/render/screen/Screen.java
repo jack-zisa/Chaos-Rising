@@ -6,8 +6,8 @@ import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import dev.creoii.chaos.ClientGame;
 import dev.creoii.chaos.InputManager;
-import dev.creoii.chaos.ClientMain;
 import dev.creoii.chaos.render.Renderer;
 import dev.creoii.chaos.render.screen.widget.Widget;
 import dev.creoii.chaos.util.Inputtable;
@@ -20,21 +20,21 @@ import java.util.Map;
 public abstract class Screen implements Renderable, Inputtable {
     private static final NinePatch SCREEN_BACKGROUND = new NinePatch(new Texture("textures/ui/screen_background.png"), 4, 4, 4, 4);
     private final Map<String, Widget> widgets;
-    private final ClientMain main;
+    private final ClientGame game;
     private final String title;
     private final Vector2 pos;
     private final float titleOffsetY;
 
-    public Screen(ClientMain main, String title, Vector2 pos, float titleOffsetY) {
-        this.main = main;
+    public Screen(ClientGame game, String title, Vector2 pos, float titleOffsetY) {
+        this.game = game;
         this.title = title;
         this.pos = pos;
         this.titleOffsetY = titleOffsetY;
         widgets = new HashMap<>();
     }
 
-    public ClientMain getMain() {
-        return main;
+    public ClientGame getGame() {
+        return game;
     }
 
     public Vector2 getPos() {
@@ -57,12 +57,12 @@ public abstract class Screen implements Renderable, Inputtable {
         return widgets;
     }
 
-    public void open(ClientMain main) {
-        main.getGame().getInputManager().addInput(this);
+    public void open(ClientGame game) {
+        game.getInputManager().addInput(this);
     }
 
-    public void close(ClientMain main) {
-        main.getGame().getInputManager().removeInput(this);
+    public void close(ClientGame game) {
+        game.getInputManager().removeInput(this);
     }
 
     public void render(Renderer renderer, @Nullable SpriteBatch batch, @Nullable ShapeRenderer shapeRenderer, BitmapFont font, boolean debug) {
@@ -76,8 +76,8 @@ public abstract class Screen implements Renderable, Inputtable {
 
     @Override
     public boolean keyDown(InputManager manager, int keycode) {
-        if (keycode == main.getGame().getOptionsManager().BACK_KEY.intValue()) {
-            manager.getMain().getRenderer().clearCurrentScreen();
+        if (keycode == game.getOptionsManager().BACK_KEY.intValue()) {
+            game.getRenderer().clearCurrentScreen();
         }
         widgets.forEach((key, widget) -> widget.keyDown(manager, keycode));
         return Inputtable.super.keyDown(manager, keycode);

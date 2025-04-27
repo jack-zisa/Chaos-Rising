@@ -3,15 +3,16 @@ package dev.creoii.chaos;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import dev.creoii.chaos.effect.StatusEffect;
-import dev.creoii.chaos.entity.ClientBulletEntity;
-import dev.creoii.chaos.entity.ClientCharacterEntity;
+import dev.creoii.chaos.entity.BulletEntity;
+import dev.creoii.chaos.entity.CharacterEntity;
 import dev.creoii.chaos.entity.ClientEntity;
-import dev.creoii.chaos.entity.ClientLivingEntity;
+import dev.creoii.chaos.entity.LivingEntity;
 import dev.creoii.chaos.inventory.Inventory;
 import dev.creoii.chaos.network.packet.c2s.CharacterJoinC2S;
 import dev.creoii.chaos.network.packet.c2s.CharacterLeaveC2S;
 import dev.creoii.chaos.network.packet.s2c.*;
 import dev.creoii.chaos.util.EntityGroup;
+import dev.creoii.chaos.util.provider.numberprovider.ConstantNumberProvider;
 
 import java.util.UUID;
 
@@ -30,24 +31,24 @@ public class ClientListener extends Listener {
     @Override
     public void received(Connection connection, Object object) {
         if (object instanceof EntityStateS2C(UUID uuid, float x, float y)) {
-            game.getMain().getRenderer().getEntityRenderManager().updateEntity(uuid, x, y);
+            game.getRenderer().getEntityRenderManager().updateEntity(uuid, x, y);
         }
 
         else if (object instanceof EntitySpawnS2C(UUID uuid, EntityGroup group, String textureId, float x, float y, float scale)) {
             if (group == EntityGroup.OTHER)
-                game.getMain().getRenderer().getEntityRenderManager().addEntity(new ClientEntity(game, uuid, textureId, x, y, scale));
+                game.getRenderer().getEntityRenderManager().addEntity(new ClientEntity(game, uuid, textureId, x, y, scale));
             else if (group == EntityGroup.BULLET)
-                game.getMain().getRenderer().getEntityRenderManager().addEntity(new ClientBulletEntity(game, uuid, textureId, x, y, scale, 0f, 0f));
+                game.getRenderer().getEntityRenderManager().addEntity(new BulletEntity(game, uuid, textureId, x, y, scale, 0f, 0f, new ConstantNumberProvider(0f)));
             else if (group == EntityGroup.ENEMY)
-                game.getMain().getRenderer().getEntityRenderManager().addEntity(new ClientLivingEntity(game, uuid, textureId, x, y, scale));
+                game.getRenderer().getEntityRenderManager().addEntity(new LivingEntity(game, uuid, textureId, x, y, scale));
         }
 
         else if (object instanceof EntityRemoveS2C(UUID uuid)) {
-            game.getMain().getRenderer().getEntityRenderManager().removeEntity(uuid);
+            game.getRenderer().getEntityRenderManager().removeEntity(uuid);
         }
 
         else if (object instanceof StatusEffectS2C(UUID uuid, StatusEffect statusEffect)) {
-            ((ClientLivingEntity) game.getMain().getRenderer().getEntityRenderManager().getEntity(uuid)).addStatusEffect(statusEffect);
+            ((LivingEntity) game.getRenderer().getEntityRenderManager().getEntity(uuid)).addStatusEffect(statusEffect);
         }
 
         else if (object instanceof LootDropOpenS2C(Inventory inventory)) {
@@ -60,8 +61,8 @@ public class ClientListener extends Listener {
 
         else if (object instanceof CharacterSpawnS2C(UUID uuid, String textureId, float x, float y, float scale)) {
             System.out.println("spawn character");
-            game.setCharacter(new ClientCharacterEntity(game, uuid, textureId, x, y, scale, "wizard", new Inventory(3, 4)));
-            game.getMain().getRenderer().getEntityRenderManager().addEntity(game.getCharacter());
+            game.setCharacter(new CharacterEntity(game, uuid, textureId, x, y, scale, "wizard", new Inventory(3, 4)));
+            game.getRenderer().getEntityRenderManager().addEntity(game.getCharacter());
         }
     }
 

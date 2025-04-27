@@ -2,5 +2,4 @@ dependencies {
   implementation "com.esotericsoftware:kryonet:$kryonetVersion"
 
   implementation project(":core")
-  implementation project(path: ":server", configuration: "dev")
 }

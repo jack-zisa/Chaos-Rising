@@ -2,6 +2,7 @@ package dev.creoii.chaos.entity.controller;
 
 import dev.creoii.chaos.entity.ServerEnemyEntity;
 import dev.creoii.chaos.entity.behavior.Behavior;
+import dev.creoii.chaos.entity.behavior.EntityController;
 
 public class EnemyController extends EntityController<ServerEnemyEntity> {
     private final Behavior behavior;

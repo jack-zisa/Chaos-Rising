@@ -11,16 +11,16 @@ import java.util.*;
 
 public class CollisionManager {
     private static final int[][] FORWARD_NEIGHBORS = {
-            {1, 0}, {1, 1}, {0, 1}, {-1, 1}
+        {1, 0}, {1, 1}, {0, 1}, {-1, 1}
     };
     private static final boolean[][] COLLISION_MATRIX = new boolean[EntityGroup.values().length][EntityGroup.values().length];
     public static final int KEY_OFFSET = 32768;
     private float cellSize = ServerEntity.COORDINATE_SCALE;
-    private final ServerMain main;
+    private final ServerGame game;
     private final ObjectMap<Integer, Array<ServerEntity>> grid;
 
-    public CollisionManager(ServerMain main) {
-        this.main = main;
+    public CollisionManager(ServerGame game) {
+        this.game = game;
         grid = new ObjectMap<>();
 
         COLLISION_MATRIX[EntityGroup.BULLET.ordinal()][EntityGroup.ENEMY.ordinal()] = true;
@@ -49,7 +49,7 @@ public class CollisionManager {
         }
         grid.clear();
 
-        for (ServerEntity entity : main.getGame().getEntityManager().getEntities().values()) {
+        for (ServerEntity entity : game.getEntityManager().getEntities().values()) {
             int x = Math.round(entity.getPos().x / cellSize);
             int y = Math.round(entity.getPos().y / cellSize);
 
@@ -90,10 +90,12 @@ public class CollisionManager {
                 for (int[] dir : neighborDirs) {
                     int neighborKey = ((x + dir[0] + KEY_OFFSET) << 16) | ((y + dir[1] + KEY_OFFSET) & 0xffff);
                     Array<ServerEntity> neighbors = grid.get(neighborKey);
-                    if (neighbors == null) continue;
+                    if (neighbors == null)
+                        continue;
 
                     for (ServerEntity b : neighbors) {
-                        if (a == b) continue;
+                        if (a == b)
+                            continue;
 
                         if (COLLISION_MATRIX[a.getGroup().ordinal()][b.getGroup().ordinal()] && a.getColliderRect().overlaps(b.getColliderRect())) {
                             collisions.computeIfAbsent(a.getUuid(), k -> new HashSet<>()).add(b.getUuid());
@@ -107,11 +109,9 @@ public class CollisionManager {
             }
         }
 
-        for (ServerEntity entity : main.getGame().getEntityManager().getEntities().values()) {
+        for (ServerEntity entity : game.getEntityManager().getEntities().values()) {
             Set<UUID> currentlyColliding = collisions.getOrDefault(entity.getUuid(), Collections.emptySet());
-
-            Set<UUID> previousColliding = new HashSet<>(entity.getCollidingWith());
-            for (UUID uuid : previousColliding) {
+            for (UUID uuid : entity.getCollidingWith()) {
                 if (!currentlyColliding.contains(uuid)) {
                     entity.removeCollidingWith(uuid);
                 }
@@ -132,10 +132,11 @@ public class CollisionManager {
         Array<int[]> offsets = new Array<>();
 
         offsets.add(new int[]{dx, dy});
-        if (dx != 0 && dy != 0) {
+
+        if (dx != 0)
             offsets.add(new int[]{dx, 0});
+        if (dy != 0)
             offsets.add(new int[]{0, dy});
-        }
 
         return offsets.toArray(int[].class);
     }

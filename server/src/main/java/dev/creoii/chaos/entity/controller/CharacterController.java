@@ -3,7 +3,8 @@ package dev.creoii.chaos.entity.controller;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.entity.ServerEntity;
-import dev.creoii.chaos.entity.character.CharacterEntity;
+import dev.creoii.chaos.entity.behavior.EntityController;
+import dev.creoii.chaos.entity.character.ServerCharacterEntity;
 import dev.creoii.chaos.inventory.Slot;
 import dev.creoii.chaos.item.AbilityItem;
 import dev.creoii.chaos.item.WeaponItem;
@@ -12,11 +13,11 @@ import dev.creoii.chaos.network.packet.c2s.MouseInputC2S;
 import dev.creoii.chaos.util.provider.vecprovider.MousePosVecProvider;
 import dev.creoii.chaos.util.provider.vecprovider.SourcePosVecProvider;
 
-public class CharacterController extends EntityController<CharacterEntity> {
+public class CharacterController extends EntityController<ServerCharacterEntity> {
     private int weaponCooldown;
     private int abilityCooldown;
 
-    public CharacterController(CharacterEntity character) {
+    public CharacterController(ServerCharacterEntity character) {
         super(character);
         weaponCooldown = Math.max(1, 150 / Math.max(1, entity.getStats().attackSpeed.value()));
         abilityCooldown = 0;
@@ -45,7 +46,7 @@ public class CharacterController extends EntityController<CharacterEntity> {
 
         Vector2 direction = new Vector2(dx, dy).nor();
 
-        if (entity instanceof CharacterEntity character)
+        if (entity instanceof ServerCharacterEntity character)
             character.setPrevPos(entity.getPos());
 
         entity.getPos().add(direction.scl(entity.getStats().speed.value() * (ServerEntity.COORDINATE_SCALE / 2f)));

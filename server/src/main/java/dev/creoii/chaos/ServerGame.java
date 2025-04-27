@@ -1,7 +1,13 @@
 package dev.creoii.chaos;
 
+import com.badlogic.gdx.Gdx;
+import com.esotericsoftware.kryonet.Server;
+import dev.creoii.chaos.network.Networking;
+
+import java.io.IOException;
+
 public class ServerGame implements Game {
-    private final ServerMain main;
+    private final Server server;
     private final DataManager dataManager;
     private final OptionsManager optionsManager;
     private final TickManager tickManager;
@@ -9,26 +15,36 @@ public class ServerGame implements Game {
     private final EntityManager entityManager;
     private int gametime;
 
-    public ServerGame(ServerMain main) {
-        this.main = main;
+    public ServerGame() throws IOException {
+        server = new Server();
+        server.start();
+        server.bind(54555, 54777);
+
+        Networking.register(server.getKryo());
+
+        server.addListener(new ServerListener(this));
+
         dataManager = new DataManager();
         optionsManager = new OptionsManager();
-        tickManager = new TickManager(main);
-        collisionManager = new CollisionManager(main);
-        entityManager = new EntityManager(main);
+        tickManager = new TickManager(this);
+        collisionManager = new CollisionManager(this);
+        entityManager = new EntityManager(this);
+
+        dataManager.load();
     }
 
-    public void run(float delta) {
+    public void update() {
         ++gametime;
 
-        tickManager.tick(gametime, delta);
+        tickManager.tick(gametime, Gdx.graphics.getDeltaTime());
         collisionManager.checkCollisions();
     }
 
-    public ServerMain getMain() {
-        return main;
+    public Server getServer() {
+        return server;
     }
 
+    @Override
     public DataManager getDataManager() {
         return dataManager;
     }

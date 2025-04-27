@@ -5,10 +5,10 @@ import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.ServerGame;
 import dev.creoii.chaos.effect.ServerStatusEffect;
 import dev.creoii.chaos.effect.StatusEffects;
+import dev.creoii.chaos.entity.EnemyEntityType;
 import dev.creoii.chaos.entity.ServerEntity;
-import dev.creoii.chaos.entity.EntityType;
-import dev.creoii.chaos.entity.character.CharacterClass;
-import dev.creoii.chaos.entity.character.CharacterEntity;
+import dev.creoii.chaos.entity.CharacterClass;
+import dev.creoii.chaos.entity.character.ServerCharacterEntity;
 import dev.creoii.chaos.item.ServerItem;
 
 import java.util.*;
@@ -39,7 +39,7 @@ public final class Commands {
             if (args.length > 1) {
                 String stat = args[0];
                 int value = Integer.parseInt(args[1]);
-                CharacterEntity character = game.getEntityManager().getCharacter(uuid);
+                ServerCharacterEntity character = game.getEntityManager().getCharacter(uuid);
                 switch (stat) {
                     case "health" -> {
                         character.getStats().health.set(value);
@@ -75,7 +75,7 @@ public final class Commands {
             if (argCount < 1 || argCount == 2)
                 return;
 
-            EntityType<?> enemy = game.getDataManager().getEnemy(args[0]);
+            EnemyEntityType enemy = game.getDataManager().getEnemy(args[0]);
 
             if (enemy == null)
                 return;
@@ -168,7 +168,7 @@ public final class Commands {
         Command.register("remove_effect", (game, uuid, args) -> {
             if (args.length > 0) {
                 String effectType = args[0];
-                CharacterEntity character = game.getEntityManager().getCharacter(uuid);
+                ServerCharacterEntity character = game.getEntityManager().getCharacter(uuid);
 
                 if ("all".equals(effectType)) {
                     character.clearStatusEffects();

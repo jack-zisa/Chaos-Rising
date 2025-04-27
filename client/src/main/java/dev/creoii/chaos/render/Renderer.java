@@ -9,7 +9,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import dev.creoii.chaos.ClientMain;
+import dev.creoii.chaos.ClientGame;
 import dev.creoii.chaos.render.entity.EntityRenderManager;
 import dev.creoii.chaos.render.screen.Screen;
 import dev.creoii.chaos.util.Renderable;
@@ -19,7 +19,7 @@ import java.util.List;
 
 public class Renderer implements Disposable {
     private static final float CAMERA_LOOK_OFFSET = 10f;
-    private final ClientMain main;
+    private final ClientGame game;
     private final OrthographicCamera camera;
     private final FitViewport viewport;
     private final BitmapFont font;
@@ -32,11 +32,11 @@ public class Renderer implements Disposable {
     private final List<Renderable> screenRenderables;
     private Screen currentScreen = null;
 
-    public Renderer(ClientMain main) {
-        this.main = main;
-        camera = new OrthographicCamera(ClientMain.WINDOW_WIDTH, ClientMain.WINDOW_HEIGHT);
+    public Renderer(ClientGame game) {
+        this.game = game;
+        camera = new OrthographicCamera(ClientGame.WINDOW_WIDTH, ClientGame.WINDOW_HEIGHT);
         camera.setToOrtho(false);
-        viewport = new FitViewport(ClientMain.WINDOW_WIDTH, ClientMain.WINDOW_HEIGHT);
+        viewport = new FitViewport(ClientGame.WINDOW_WIDTH, ClientGame.WINDOW_HEIGHT);
 
         font = new BitmapFont();
         font.setUseIntegerPositions(false);
@@ -50,16 +50,10 @@ public class Renderer implements Disposable {
         worldRenderables.add(entityRenderManager = new EntityRenderManager());
         screenRenderables = new ArrayList<>();
         screenRenderables.add(new HudRenderer());
-
-        if (main.getGame().getCharacter() != null) {
-            camera.position.x = main.getGame().getCharacter().getPos().x;
-            camera.position.y = main.getGame().getCharacter().getPos().y;
-            camera.update();
-        }
     }
 
-    public ClientMain getMain() {
-        return main;
+    public ClientGame getGame() {
+        return game;
     }
 
     public OrthographicCamera getCamera() {
@@ -79,10 +73,10 @@ public class Renderer implements Disposable {
     }
 
     public void render(boolean debug) {
-        if (main.getGame().getCharacter() == null)
+        if (game.getCharacter() == null)
             return;
 
-        Vector2 playerPos = main.getGame().getCharacter().getPos();
+        Vector2 playerPos = game.getCharacter().getPos();
         Vector3 mousePos = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
 
         Vector2 direction = new Vector2(mousePos.x - playerPos.x, mousePos.y - playerPos.y);
@@ -127,11 +121,11 @@ public class Renderer implements Disposable {
 
     public void setCurrentScreen(Screen currentScreen) {
         this.currentScreen = currentScreen;
-        this.currentScreen.open(main);
+        this.currentScreen.open(game);
     }
 
     public void clearCurrentScreen() {
-        currentScreen.close(main);
+        currentScreen.close(game);
         currentScreen = null;
     }
 

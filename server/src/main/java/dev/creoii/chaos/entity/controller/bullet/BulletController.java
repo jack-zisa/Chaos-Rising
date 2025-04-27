@@ -2,8 +2,8 @@ package dev.creoii.chaos.entity.controller.bullet;
 
 import dev.creoii.chaos.entity.ServerBulletEntity;
 import dev.creoii.chaos.entity.BulletEntityType;
-import dev.creoii.chaos.entity.controller.EntityController;
-import dev.creoii.chaos.entity.controller.bullet.path.BulletPath;
+import dev.creoii.chaos.entity.behavior.EntityController;
+import dev.creoii.chaos.entity.behavior.bulletpath.BulletPath;
 
 public class BulletController extends EntityController<ServerBulletEntity> {
     private final BulletPath path;

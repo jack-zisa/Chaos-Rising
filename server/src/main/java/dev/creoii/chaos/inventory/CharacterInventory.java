@@ -1,6 +1,6 @@
 package dev.creoii.chaos.inventory;
 
-import dev.creoii.chaos.entity.character.CharacterEntity;
+import dev.creoii.chaos.entity.character.ServerCharacterEntity;
 import dev.creoii.chaos.item.EquipmentItem;
 import dev.creoii.chaos.item.ItemStack;
 import dev.creoii.chaos.network.packet.c2s.SlotUpdateC2S;
@@ -9,9 +9,9 @@ import dev.creoii.chaos.util.stat.ModifierEntry;
 import java.util.List;
 
 public class CharacterInventory extends Inventory {
-    private final CharacterEntity character;
+    private final ServerCharacterEntity character;
 
-    public CharacterInventory(CharacterEntity character) {
+    public CharacterInventory(ServerCharacterEntity character) {
         super(3, 4);
         getWeaponSlot().setType(Slot.Type.WEAPON);
         getAbilitySlot().setType(Slot.Type.ABILITY);
@@ -20,7 +20,7 @@ public class CharacterInventory extends Inventory {
         this.character = character;
     }
 
-    public CharacterEntity getCharacter() {
+    public ServerCharacterEntity getCharacter() {
         return character;
     }
 

@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
-import dev.creoii.chaos.ClientMain;
+import dev.creoii.chaos.ClientGame;
 import dev.creoii.chaos.item.Item;
 
 import javax.annotation.Nullable;
@@ -16,10 +16,10 @@ public class ItemRenderer {
     private static final float TOOLTIP_OFFSCREEN_PADDING = 4f;
     private static final BitmapFont FONT = new BitmapFont();
 
-    public static void renderItem(ClientMain main, SpriteBatch batch, @Nullable Item item, Vector2 pos, float scale) {
+    public static void renderItem(ClientGame game, SpriteBatch batch, @Nullable Item item, Vector2 pos, float scale) {
         if (item == null)
             return;
-        Sprite sprite = new Sprite(main.getGame().getTextureManager().getTexture("item", item.id()));
+        Sprite sprite = new Sprite(game.getTextureManager().getTexture("item", item.id()));
         sprite.setPosition(pos.x, pos.y);
         sprite.setSize(scale, scale);
         sprite.draw(batch);

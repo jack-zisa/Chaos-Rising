@@ -7,8 +7,8 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import dev.creoii.chaos.chat.command.CommandManager;
-import dev.creoii.chaos.entity.ClientCharacterEntity;
+import dev.creoii.chaos.CommandManager;
+import dev.creoii.chaos.entity.CharacterEntity;
 import dev.creoii.chaos.entity.ClientEntity;
 import dev.creoii.chaos.util.Renderable;
 
@@ -21,13 +21,13 @@ public class HudRenderer implements Renderable {
     @Override
     public void render(Renderer renderer, @Nullable SpriteBatch batch, @Nullable ShapeRenderer shapeRenderer, BitmapFont font, boolean debug) {
         if (batch != null) {
-            CommandManager commandManager = renderer.getMain().getGame().getCommandManager();
+            CommandManager commandManager = renderer.getGame().getCommandManager();
             if (commandManager.isActive()) {
                 font.draw(batch, "> " + commandManager.getCommand() + ((System.currentTimeMillis() / 400) % 2 == 0 ? "_" : ""), TEXT_PADDING, font.getCapHeight() + TEXT_PADDING);
             }
 
             if (debug) {
-                ClientCharacterEntity character = renderer.getMain().getGame().getCharacter();
+                CharacterEntity character = renderer.getGame().getCharacter();
                 String posText = String.format("%.2f, %.2f", character.getPos().x / ClientEntity.COORDINATE_SCALE, character.getPos().y / ClientEntity.COORDINATE_SCALE);
                 String statsText = character.getStats().toDebugString(character.getMaxStats());
 
@@ -48,7 +48,7 @@ public class HudRenderer implements Renderable {
                 }
             }
         } else if (shapeRenderer != null) {
-            ClientCharacterEntity character = renderer.getMain().getGame().getCharacter();
+            CharacterEntity character = renderer.getGame().getCharacter();
 
             int health = character.getStats().health.value();
             int maxHealth = character.getMaxStats().health.value();

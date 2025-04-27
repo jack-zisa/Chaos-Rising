@@ -6,11 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TickManager {
-    private final ServerMain main;
+    private final ServerGame game;
     private final List<Tickable> tickables;
 
-    public TickManager(ServerMain main) {
-        this.main = main;
+    public TickManager(ServerGame game) {
+        this.game = game;
         tickables = new ArrayList<>();
     }
 

@@ -5,10 +5,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ObjectMap;
-import dev.creoii.chaos.entity.ClientBulletEntity;
-import dev.creoii.chaos.entity.ClientCharacterEntity;
+import dev.creoii.chaos.entity.BulletEntity;
+import dev.creoii.chaos.entity.CharacterEntity;
 import dev.creoii.chaos.entity.ClientEntity;
-import dev.creoii.chaos.entity.ClientLootDropEntity;
+import dev.creoii.chaos.entity.LootDropEntity;
 import dev.creoii.chaos.render.Renderer;
 import dev.creoii.chaos.util.Renderable;
 
@@ -22,9 +22,9 @@ public class EntityRenderManager implements Renderable {
     public EntityRenderManager() {
         visibleEntities = new ObjectMap<>(128);
 
-        EntityRenderers.register(ClientCharacterEntity.class, SimpleEntityRenderer::new);
-        EntityRenderers.register(ClientBulletEntity.class, SimpleEntityRenderer::new);
-        EntityRenderers.register(ClientLootDropEntity.class, SimpleEntityRenderer::new);
+        EntityRenderers.register(CharacterEntity.class, SimpleEntityRenderer::new);
+        EntityRenderers.register(BulletEntity.class, SimpleEntityRenderer::new);
+        EntityRenderers.register(LootDropEntity.class, SimpleEntityRenderer::new);
     }
 
     public void addEntity(ClientEntity entity) {
