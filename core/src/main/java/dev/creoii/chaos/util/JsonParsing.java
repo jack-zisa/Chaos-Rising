@@ -3,6 +3,8 @@ package dev.creoii.chaos.util;
 import com.badlogic.gdx.utils.JsonValue;
 import dev.creoii.chaos.attack.Attack;
 import dev.creoii.chaos.effect.StatusEffect;
+import dev.creoii.chaos.effect.StatusEffectType;
+import dev.creoii.chaos.effect.StatusEffectTypes;
 import dev.creoii.chaos.entity.*;
 import dev.creoii.chaos.entity.behavior.Behavior;
 import dev.creoii.chaos.entity.behavior.bulletpath.BulletPath;
@@ -40,9 +42,8 @@ public final class JsonParsing {
             List<StatusEffect> statusEffects = new ArrayList<>();
             if (jsonValue.has("status_effects")) {
                 jsonValue.get("status_effects").forEach(effectValue -> {
-                    StatusEffect statusEffect = StatusEffect.ALL.get(effectValue.getString("id"));
-                    statusEffect.init(effectValue.getInt("amplifier", 0), effectValue.getInt("duration", 0));
-                    statusEffects.add(statusEffect);
+                    StatusEffectType statusEffectType = StatusEffectTypes.ALL.get(effectValue.getString("id"));
+                    statusEffects.add(new StatusEffect(statusEffectType, effectValue.getInt("amplifier", 0), effectValue.getInt("duration", 0)));
                 });
             }
             return new ConsumableItem(id, rarity, statBonus, statusEffects);
@@ -68,39 +69,35 @@ public final class JsonParsing {
     }
 
     public static CharacterClass parseCharacterClass(String id, JsonValue jsonValue) {
-        String textureId = jsonValue.getString("texture");
         float scale = jsonValue.getFloat("scale", 1f);
         StatContainer baseStatContainer = StatContainer.parse(jsonValue.get("base_stats"));
         StatContainer maxStatContainer = StatContainer.parse(jsonValue.get("max_stats"));
-        return new CharacterClass(id, textureId, scale, baseStatContainer, maxStatContainer);
+        return new CharacterClass(id, scale, baseStatContainer, maxStatContainer);
     }
 
     public static BulletEntityType parseBulletEntityType(String id, JsonValue jsonValue) {
         float scale = jsonValue.getFloat("scale", 1f) * Entity.COORDINATE_SCALE;
-        String textureId = jsonValue.getString("texture", "misc:missing");
-        NumberProvider lifetime = NumberProvider.parse(jsonValue.get("lifetime"), 0);
+        int lifetime = jsonValue.getInt("lifetime", 0);
         NumberProvider angleOffset = NumberProvider.parse(jsonValue.get("angle_offset"), 45);
         BulletPath bulletPath = BulletPath.parse(jsonValue);
         BooleanProvider piercing = BooleanProvider.parse(jsonValue.get("piercing"), false);
-        return new BulletEntityType(id, scale, textureId, lifetime, angleOffset, bulletPath, piercing);
+        return new BulletEntityType(id, scale, lifetime, angleOffset, bulletPath, piercing);
     }
 
     public static EnemyEntityType parseEnemyEntityType(String id, JsonValue jsonValue) {
         float scale = jsonValue.getFloat("scale", 1f) * Entity.COORDINATE_SCALE;
-        String textureId = jsonValue.getString("texture", "misc:missing");
         StatContainer statContainer = jsonValue.has("stats") ? StatContainer.parse(jsonValue.get("stats")) : EnemyEntityType.DEFAULT_STAT_CONTAINER.copy();
         LootTable lootTable = jsonValue.has("loot_table") ? LootTable.parse(jsonValue.get("loot_table")) : null;
         if (jsonValue.has("behavior")) {
             Behavior behavior = Behavior.parse(jsonValue.get("behavior"));
-            return new EnemyEntityType(id, scale, textureId, lootTable, behavior, statContainer);
+            return new EnemyEntityType(id, scale, lootTable, behavior, statContainer);
         }
-        return new EnemyEntityType(id, scale, textureId, lootTable, null, statContainer);
+        return new EnemyEntityType(id, scale, lootTable, null, statContainer);
     }
 
     public static LootDropEntityType parseLootDropEntityType(String id, JsonValue jsonValue) {
         float scale = jsonValue.getFloat("scale", 1f) * Entity.COORDINATE_SCALE;
-        String textureId = jsonValue.getString("texture", "misc:missing");
         BooleanProvider removeEmpty = BooleanProvider.parse(jsonValue.get("remove_empty"), false);
-        return new LootDropEntityType(id, scale, textureId, removeEmpty);
+        return new LootDropEntityType(id, scale, removeEmpty);
     }
 }

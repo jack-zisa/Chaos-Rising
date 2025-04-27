@@ -2,7 +2,8 @@ package dev.creoii.chaos.entity.behavior.bulletpath;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.JsonValue;
-import dev.creoii.chaos.entity.controller.bullet.BulletController;
+import dev.creoii.chaos.entity.BulletEntity;
+import dev.creoii.chaos.entity.controller.EntityController;
 import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
 import dev.creoii.chaos.util.provider.vecprovider.ConstantVecProvider;
 import dev.creoii.chaos.util.provider.vecprovider.VecProvider;
@@ -11,9 +12,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public interface BulletPath {
-    float speed(BulletController controller);
+    float speed(EntityController<? extends BulletEntity> controller);
 
-    void update(BulletController controller, int gametime, float dt);
+    void update(EntityController<? extends BulletEntity> controller, int gametime, float dt);
 
     BulletPath copy();
 

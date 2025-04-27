@@ -22,7 +22,7 @@ public class InventoryScreen extends Screen {
         super(game, "Inventory", pos, (inventory.getSlots().length * 48f) + 31f);
 
         addWidget("main_inventory", new InventoryWidget(this, pos, inventory));
-        addWidget("loot_inventory", new LootInventoryWidget(this, pos.cpy().sub(0f, 400f), game1 -> game1.getCharacter().getLootInventory() != null));
+        addWidget("loot_inventory", new LootInventoryWidget(this, pos.cpy().sub(0f, 400f), game1 -> game1.getCharacter().getLootUuid() != null));
 
         SLOT_SPRITES.put(Slot.Type.NONE, new Sprite(new Texture("textures/ui/slot.png")));
         SLOT_SPRITES.put(Slot.Type.WEAPON, new Sprite(new Texture("textures/ui/weapon_slot.png")));

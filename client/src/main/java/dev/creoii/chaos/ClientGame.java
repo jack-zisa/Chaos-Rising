@@ -97,6 +97,11 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
         return null;
     }
 
+    @Override
+    public EntityManager getEntityManager() {
+        return null;
+    }
+
     public InputManager getInputManager() {
         return inputManager;
     }

@@ -5,5 +5,7 @@ public interface Game {
 
     DataManager getDataManager();
 
+    EntityManager getEntityManager();
+
     int getGametime();
 }

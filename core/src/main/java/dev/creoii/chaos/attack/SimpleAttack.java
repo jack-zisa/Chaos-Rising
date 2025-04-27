@@ -25,6 +25,7 @@ public record SimpleAttack(String bulletId, NumberProvider damage, int bulletCou
 
             Map<String, Object> customData = new HashMap<>();
             customData.put("direction", direction.cpy().rotateDeg(angle + angleOffset.get(context)));
+            customData.put("index", i % 2 == 0 ? 1 : -1);
             if (sourceEntity instanceof LivingEntity livingEntity)
                 customData.put("damage", Math.round(damage.getInt(context) * .5f + livingEntity.getStats().attack.value() / 50f));
 
@@ -32,7 +33,6 @@ public record SimpleAttack(String bulletId, NumberProvider damage, int bulletCou
             if (bulletType != null) {
                 BulletEntity bullet = sourceEntity.getGame().getEntityManager().addEntity(UUID.randomUUID(), bulletType, pos.cpy(), customData);
                 bullet.setParent(sourceEntity);
-                bullet.setIndex(i % 2 == 0 ? 1 : -1);
             }
         }
     }

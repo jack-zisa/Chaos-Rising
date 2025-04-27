@@ -26,9 +26,9 @@ public class ServerGame implements Game {
 
         dataManager = new DataManager();
         optionsManager = new OptionsManager();
-        tickManager = new TickManager(this);
+        tickManager = new TickManager();
         collisionManager = new CollisionManager(this);
-        entityManager = new EntityManager(this);
+        entityManager = new ServerEntityManager(this);
 
         dataManager.load();
     }

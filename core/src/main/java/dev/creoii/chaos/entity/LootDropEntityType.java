@@ -3,15 +3,20 @@ package dev.creoii.chaos.entity;
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.Game;
 import dev.creoii.chaos.inventory.Inventory;
+import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.provider.booleanprovider.BooleanProvider;
 
-import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.UUID;
 
-public record LootDropEntityType(String id, float scale, @Nullable String textureId, BooleanProvider removeEmpty) implements EntityType<LootDropEntity> {
+public record LootDropEntityType(String id, float scale, BooleanProvider removeEmpty) implements EntityType<LootDropEntity> {
+    @Override
+    public EntityGroup group() {
+        return EntityGroup.OTHER;
+    }
+
     public LootDropEntity create(Game game, UUID uuid, Vector2 pos, Map<String, Object> customData) {
-        LootDropEntity lootDrop = new LootDropEntity(game, uuid, pos, scale, new Inventory(2, 4));
+        LootDropEntity lootDrop = new LootDropEntity(game, this, uuid, pos, new Inventory(2, 4));
         /*lootDrop.centerPos = new Vector2();
         lootDrop.colliderRect = new Rectangle();
         lootDrop.colliderRect.setPosition(pos);

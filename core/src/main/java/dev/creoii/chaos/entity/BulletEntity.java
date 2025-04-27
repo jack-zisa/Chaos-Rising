@@ -2,29 +2,48 @@ package dev.creoii.chaos.entity;
 
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.Game;
-import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
 
 import java.util.UUID;
 
 public class BulletEntity extends Entity {
     private Entity parent;
-    protected Vector2 direction;
-    protected int lifetime;
-    protected int damage;
-    private int index;
+    private final Vector2 direction;
+    private final int lifetime;
+    private final int damage;
+    private final int index;
 
-    public BulletEntity(Game game, UUID uuid, Vector2 pos, float scale, Vector2 direction, NumberProvider angleOffset) {
-        super(game, uuid, pos, scale);
+    public BulletEntity(Game game, EntityType<? extends BulletEntity> type, UUID uuid, Vector2 pos, Vector2 direction, int lifetime, int damage, int index) {
+        super(game, type, uuid, pos);
+        this.direction = direction;
+        this.lifetime = lifetime;
+        this.damage = damage;
+        this.index = index;
         //float angle = (float) Math.atan2(yDir, xDir) * (180f / (float) Math.PI) % 360f;
         //getSprite().setOriginCenter();
         //getSprite().setRotation(angle - angleOffset.get(Provider.Context.of(this, game.getGametime())));
+    }
+
+    public Entity getParent() {
+        return parent;
     }
 
     public void setParent(Entity parent) {
         this.parent = parent;
     }
 
-    public void setIndex(int index) {
-        this.index = index;
+    public Vector2 getDirection() {
+        return direction;
+    }
+
+    public int getLifetime() {
+        return lifetime;
+    }
+
+    public int getDamage() {
+        return damage;
+    }
+
+    public int getIndex() {
+        return index;
     }
 }

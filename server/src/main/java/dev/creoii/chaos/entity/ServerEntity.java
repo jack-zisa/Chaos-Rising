@@ -3,7 +3,7 @@ package dev.creoii.chaos.entity;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.ServerGame;
-import dev.creoii.chaos.entity.behavior.EntityController;
+import dev.creoii.chaos.entity.controller.EntityController;
 import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.Positionable;
 import dev.creoii.chaos.util.Tickable;

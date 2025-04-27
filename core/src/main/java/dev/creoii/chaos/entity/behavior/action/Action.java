@@ -2,7 +2,8 @@ package dev.creoii.chaos.entity.behavior.action;
 
 import com.badlogic.gdx.utils.JsonValue;
 import dev.creoii.chaos.attack.Attack;
-import dev.creoii.chaos.entity.controller.EnemyController;
+import dev.creoii.chaos.entity.EnemyEntity;
+import dev.creoii.chaos.entity.controller.EntityController;
 
 public abstract class Action {
     private final JsonValue data;
@@ -24,7 +25,7 @@ public abstract class Action {
         };
     }
 
-    public abstract void update(EnemyController controller, int time, float delta);
+    public abstract void update(EntityController<? extends EnemyEntity> controller, int time, float delta);
 
-    public abstract void reset(EnemyController controller);
+    public abstract void reset(EntityController<? extends EnemyEntity> controller);
 }

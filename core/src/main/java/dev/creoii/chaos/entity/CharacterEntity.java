@@ -5,42 +5,45 @@ import dev.creoii.chaos.Game;
 import dev.creoii.chaos.inventory.Inventory;
 import dev.creoii.chaos.util.Mutable;
 
+import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class CharacterEntity extends LivingEntity {
-    private final Mutable<CharacterClass> characterClass;
     private final int connectionId;
+    private final Mutable<CharacterClass> characterClass;
     private final Inventory inventory;
-    private Inventory lootInventory;
+    @Nullable
+    private UUID lootUuid;
 
-    public CharacterEntity(Game game, UUID uuid, Vector2 pos, Mutable<CharacterClass> characterClass, int connectionId, Inventory inventory) {
-        super(game, uuid, pos, characterClass.get().scale());
-        this.characterClass = characterClass;
+    public CharacterEntity(Game game, EntityType<? extends CharacterEntity> type, UUID uuid, Vector2 pos, int connectionId, Mutable<CharacterClass> characterClass, Inventory inventory) {
+        super(game, type, uuid, pos);
         this.connectionId = connectionId;
+        this.characterClass = characterClass;
         this.inventory = inventory;
-    }
-
-    public Mutable<CharacterClass> getCharacterClass() {
-        return characterClass;
     }
 
     public int getConnectionId() {
         return connectionId;
     }
 
+    public Mutable<CharacterClass> getCharacterClass() {
+        return characterClass;
+    }
+
+    public void setCharacterClass(CharacterClass characterClass) {
+        this.characterClass.set(characterClass);
+    }
+
     public Inventory getInventory() {
         return inventory;
     }
 
-    public Inventory getLootInventory() {
-        return lootInventory;
+    @Nullable
+    public UUID getLootUuid() {
+        return lootUuid;
     }
 
-    public void setLootInventory(Inventory lootInventory) {
-        this.lootInventory = lootInventory;
-    }
-
-    public void clearLootInventory() {
-        lootInventory = null;
+    public void setLootUuid(@Nullable UUID lootUuid) {
+        this.lootUuid = lootUuid;
     }
 }

@@ -63,7 +63,7 @@ public class ConsumableItem extends ServerItem {
                 });
             }
             if (!getStatusEffects().isEmpty()) {
-                statusEffects.forEach(statusEffect -> character.addStatusEffect(statusEffect, statusEffect.getAmplifier(), statusEffect.getDuration()));
+                statusEffects.forEach(character::addStatusEffect);
             }
         }
         slot.setStack(ItemStack.EMPTY);

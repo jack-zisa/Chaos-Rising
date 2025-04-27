@@ -2,25 +2,34 @@ package dev.creoii.chaos.entity;
 
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.Game;
+import dev.creoii.chaos.util.Tickable;
 
 import java.util.UUID;
 
-public class Entity {
+public abstract class Entity implements Tickable {
     public static final float COORDINATE_SCALE = 32f;
     private final Game game;
+    private final EntityType<? extends Entity> type;
     private final UUID uuid;
     private final Vector2 pos;
-    private float scale;
+    private final Vector2 prevPos;
+    private final int spawnTime;
 
-    public Entity(Game game, UUID uuid, Vector2 pos, float scale) {
+    public Entity(Game game, EntityType<? extends Entity> type, UUID uuid, Vector2 pos) {
         this.game = game;
+        this.type = type;
         this.uuid = uuid;
-        this.pos = pos;
-        this.scale = scale;
+        this.pos = pos.cpy();
+        prevPos = pos.cpy();
+        spawnTime = game.getGametime();
     }
 
     public Game getGame() {
         return game;
+    }
+
+    public EntityType<? extends Entity> getType() {
+        return type;
     }
 
     public UUID getUuid() {
@@ -35,11 +44,20 @@ public class Entity {
         pos.set(x, y);
     }
 
-    public float getScale() {
-        return scale;
+    public Vector2 getPrevPos() {
+        return prevPos;
     }
 
-    public void setScale(float scale) {
-        this.scale = scale;
+    public void setPrevPos(float x, float y) {
+        prevPos.set(x, y);
+    }
+
+    public int getSpawnTime() {
+        return spawnTime;
+    }
+
+    @Override
+    public void tick(int gametime, float delta) {
+
     }
 }

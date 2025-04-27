@@ -1,10 +1,9 @@
 package dev.creoii.chaos.entity.controller;
 
-import dev.creoii.chaos.entity.ServerEnemyEntity;
+import dev.creoii.chaos.entity.EnemyEntity;
 import dev.creoii.chaos.entity.behavior.Behavior;
-import dev.creoii.chaos.entity.behavior.EntityController;
 
-public class EnemyController extends EntityController<ServerEnemyEntity> {
+public class EnemyController extends EntityController<EnemyEntity> {
     private final Behavior behavior;
     private int time;
 
@@ -13,19 +12,16 @@ public class EnemyController extends EntityController<ServerEnemyEntity> {
         this.behavior = behavior;
     }
 
-    public ServerEnemyEntity getEntity() {
-        return entity;
-    }
-
     public Behavior getBehavior() {
         return behavior;
     }
 
+    @Override
     public int getTime() {
         return time;
     }
 
-    public void start(ServerEnemyEntity entity) {
+    public void start(EnemyEntity entity) {
         if (behavior == null)
             return;
         this.entity = entity;

@@ -1,7 +1,8 @@
 package dev.creoii.chaos.network.packet.s2c;
 
-import java.io.Serializable;
-import java.util.UUID;
+import dev.creoii.chaos.entity.CharacterEntity;
 
-public record CharacterSpawnS2C(UUID uuid, String textureId, float x, float y, float scale) implements Serializable {
+import java.io.Serializable;
+
+public record CharacterSpawnS2C(CharacterEntity character) implements Serializable {
 }

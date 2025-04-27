@@ -2,7 +2,8 @@ package dev.creoii.chaos.entity.behavior.action;
 
 import com.badlogic.gdx.utils.JsonValue;
 import dev.creoii.chaos.attack.Attack;
-import dev.creoii.chaos.entity.controller.EnemyController;
+import dev.creoii.chaos.entity.EnemyEntity;
+import dev.creoii.chaos.entity.controller.EntityController;
 import dev.creoii.chaos.util.provider.vecprovider.TargetPosVecProvider;
 
 public class AttackAction extends Action {
@@ -16,7 +17,7 @@ public class AttackAction extends Action {
     }
 
     @Override
-    public void update(EnemyController controller, int time, float delta) {
+    public void update(EntityController<? extends EnemyEntity> controller, int time, float delta) {
         if (--attackCooldown <= 0) {
             attack.attack(new TargetPosVecProvider(), controller.getEntity());
             attackCooldown = getData().getInt("cooldown");
@@ -24,7 +25,7 @@ public class AttackAction extends Action {
     }
 
     @Override
-    public void reset(EnemyController controller) {
+    public void reset(EntityController<? extends EnemyEntity> controller) {
         attackCooldown = getData().getInt("cooldown");
     }
 }

@@ -5,15 +5,16 @@ import com.google.common.collect.BiMap;
 import dev.creoii.chaos.entity.EnemyEntity;
 import dev.creoii.chaos.entity.behavior.phase.Phase;
 import dev.creoii.chaos.entity.behavior.phase.PhaseKey;
+import dev.creoii.chaos.entity.controller.EnemyController;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 public interface Behavior {
-    void start(EntityController<EnemyEntity> controller, EnemyEntity entity);
+    void start(EnemyController controller, EnemyEntity entity);
 
-    void update(EntityController<EnemyEntity> controller, int time, float delta);
+    void update(EnemyController controller, int time, float delta);
 
     static Behavior copy(Behavior behavior) {
         if (behavior instanceof MultiBehavior multiBehavior) {

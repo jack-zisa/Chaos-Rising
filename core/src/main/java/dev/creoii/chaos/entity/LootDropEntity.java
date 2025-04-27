@@ -9,8 +9,8 @@ import java.util.UUID;
 public class LootDropEntity extends Entity {
     private final Inventory inventory;
 
-    public LootDropEntity(Game game, UUID uuid, Vector2 pos, float scale, Inventory inventory) {
-        super(game, uuid, pos, scale);
+    public LootDropEntity(Game game, EntityType<? extends LootDropEntity> type, UUID uuid, Vector2 pos, Inventory inventory) {
+        super(game, type, uuid, pos);
         this.inventory = inventory;
     }
 

@@ -3,12 +3,13 @@ package dev.creoii.chaos.chat;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.ServerGame;
-import dev.creoii.chaos.effect.ServerStatusEffect;
-import dev.creoii.chaos.effect.StatusEffects;
+import dev.creoii.chaos.effect.StatusEffect;
+import dev.creoii.chaos.effect.StatusEffectType;
+import dev.creoii.chaos.effect.StatusEffectTypes;
+import dev.creoii.chaos.entity.CharacterEntity;
 import dev.creoii.chaos.entity.EnemyEntityType;
 import dev.creoii.chaos.entity.ServerEntity;
 import dev.creoii.chaos.entity.CharacterClass;
-import dev.creoii.chaos.entity.character.ServerCharacterEntity;
 import dev.creoii.chaos.item.ServerItem;
 
 import java.util.*;
@@ -39,7 +40,7 @@ public final class Commands {
             if (args.length > 1) {
                 String stat = args[0];
                 int value = Integer.parseInt(args[1]);
-                ServerCharacterEntity character = game.getEntityManager().getCharacter(uuid);
+                CharacterEntity character = game.getEntityManager().getCharacter(uuid);
                 switch (stat) {
                     case "health" -> {
                         character.getStats().health.set(value);
@@ -151,24 +152,24 @@ public final class Commands {
             String effectType = args[0];
 
             if (argCount == 1) {
-                ServerStatusEffect statusEffect = StatusEffects.ALL.get(effectType);
-                if (statusEffect == null)
+                StatusEffectType type = StatusEffectTypes.ALL.get(effectType);
+                if (type == null)
                     return;
-                game.getEntityManager().getCharacter(uuid).addStatusEffect(statusEffect, 1, 30);
+                game.getEntityManager().getCharacter(uuid).addStatusEffect(new StatusEffect(type, 1, 30));
             } else if (argCount == 3) {
-                ServerStatusEffect statusEffect = StatusEffects.ALL.get(effectType);
-                if (statusEffect == null)
+                StatusEffectType type = StatusEffectTypes.ALL.get(effectType);
+                if (type == null)
                     return;
                 int amplifier = Integer.parseInt(args[1]);
                 int duration = Integer.parseInt(args[2]);
-                game.getEntityManager().getCharacter(uuid).addStatusEffect(statusEffect, amplifier, duration);
+                game.getEntityManager().getCharacter(uuid).addStatusEffect(new StatusEffect(type, amplifier, duration));
             }
         });
 
         Command.register("remove_effect", (game, uuid, args) -> {
             if (args.length > 0) {
                 String effectType = args[0];
-                ServerCharacterEntity character = game.getEntityManager().getCharacter(uuid);
+                CharacterEntity character = game.getEntityManager().getCharacter(uuid);
 
                 if ("all".equals(effectType)) {
                     character.clearStatusEffects();
@@ -176,7 +177,7 @@ public final class Commands {
                 }
 
                 for (int i = character.getStatusEffects().size() - 1; i >= 0; --i) {
-                    if (character.getStatusEffects().get(i).id().equals(effectType))
+                    if (character.getStatusEffects().get(i).getType().id().equals(effectType))
                         character.getStatusEffects().remove(i);
                 }
             }

@@ -3,19 +3,20 @@ package dev.creoii.chaos.entity;
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.Game;
 import dev.creoii.chaos.effect.StatusEffect;
+import dev.creoii.chaos.effect.StatusEffectType;
 import dev.creoii.chaos.util.stat.StatContainer;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class LivingEntity extends Entity {
+public abstract class LivingEntity extends Entity {
     private final StatContainer statContainer;
     private final StatContainer maxStatContainer;
     private final List<StatusEffect> statusEffects;
 
-    public LivingEntity(Game game, UUID uuid, Vector2 pos, float scale) {
-        super(game, uuid, pos, scale);
+    public LivingEntity(Game game, EntityType<? extends LivingEntity> type, UUID uuid, Vector2 pos) {
+        super(game, type, uuid, pos);
         statContainer = new StatContainer();
         maxStatContainer = new StatContainer();
         statusEffects = new ArrayList<>();
@@ -27,6 +28,27 @@ public class LivingEntity extends Entity {
 
     public StatContainer getMaxStats() {
         return maxStatContainer;
+    }
+
+    public void damage(int amount) {
+        if (statContainer.health.value() <= 0 || hasStatusEffect("invulnerable"))
+            return;
+        amount = Math.max(0, amount - statContainer.defense.value());
+        statContainer.health.set(Math.max(0, statContainer.health.value() - amount));
+
+        if (statContainer.health.value() <= 0) {
+            //remove();
+        }
+    }
+
+    public void heal(int amount) {
+        if (statContainer.health.value() <= 0)
+            return;
+        statContainer.health.set(Math.min(maxStatContainer.health.value(), statContainer.health.value() + amount));
+    }
+
+    public List<StatusEffect> getStatusEffects() {
+        return statusEffects;
     }
 
     public void addStatusEffect(StatusEffect statusEffect) {
@@ -42,6 +64,6 @@ public class LivingEntity extends Entity {
     }
 
     public boolean hasStatusEffect(String id) {
-        return statusEffects.stream().anyMatch(statusEffect1 -> statusEffect1.id().equals(id));
+        return statusEffects.stream().anyMatch(statusEffect1 -> statusEffect1.getType().id().equals(id));
     }
 }

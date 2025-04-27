@@ -1,7 +1,8 @@
 package dev.creoii.chaos.entity.behavior.action;
 
 import com.badlogic.gdx.utils.JsonValue;
-import dev.creoii.chaos.entity.controller.EnemyController;
+import dev.creoii.chaos.entity.EnemyEntity;
+import dev.creoii.chaos.entity.controller.EntityController;
 
 public class MoveAction extends Action {
     private final String movementId;
@@ -12,12 +13,12 @@ public class MoveAction extends Action {
     }
 
     @Override
-    public void update(EnemyController controller, int time, float delta) {
+    public void update(EntityController<? extends EnemyEntity> controller, int time, float delta) {
         Movements.MOVEMENTS.get(movementId).accept(controller.getEntity(), delta, getData());
     }
 
     @Override
-    public void reset(EnemyController controller) {
+    public void reset(EntityController<? extends EnemyEntity> controller) {
 
     }
 }

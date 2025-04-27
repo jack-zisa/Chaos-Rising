@@ -1,4 +1,4 @@
-package dev.creoii.chaos.entity.behavior;
+package dev.creoii.chaos.entity.controller;
 
 import dev.creoii.chaos.entity.Entity;
 
@@ -8,6 +8,8 @@ public abstract class EntityController<T extends Entity> {
     protected EntityController(T entity) {
         this.entity = entity;
     }
+
+    public abstract int getTime();
 
     public abstract void control(int gametime, float delta);
 

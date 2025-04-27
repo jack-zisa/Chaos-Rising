@@ -137,8 +137,8 @@ public class InventoryWidget extends Widget {
                         game.getClient().sendTCP(new SlotUpdateC2S(game.getCharacter().getUuid(), SlotUpdateC2S.Action.MOVE, getInventory(), mainInventory, dragSource, touched));
 
                         if (getInventory().isEmpty()) {
-                            if (game.getCharacter().getLootInventory() != null) {
-                                game.getCharacter().clearLootInventory();
+                            if (game.getCharacter().getLootUuid() != null) {
+                                game.getCharacter().setLootUuid(null);
                                 game.getClient().sendTCP(new LootDropCloseC2S(game.getCharacter().getUuid()));
                             }
                         }

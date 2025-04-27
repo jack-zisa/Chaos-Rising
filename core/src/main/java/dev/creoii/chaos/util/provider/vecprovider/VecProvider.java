@@ -88,7 +88,6 @@ public interface VecProvider extends Provider<Vector2> {
                 VecProvider value = VecProvider.parse(jsonValue.get("value"));
                 yield new NormalizedVecProvider(value);
             }
-            case "parent_pos" -> new ParentVecProvider();
             case "perpendicular" -> {
                 VecProvider value = VecProvider.parse(jsonValue.get("value"));
                 yield new PerpendicularVecProvider(value);
@@ -110,7 +109,6 @@ public interface VecProvider extends Provider<Vector2> {
                 yield new RotatedOffsetVecProvider(from, to, offset);
             }
             case "source_pos" -> new SourcePosVecProvider();
-            case "spawn_pos" -> new SpawnPosVecProvider();
             case "target_pos" -> new TargetPosVecProvider();
             case "unary" -> {
                 UnaryOperation function = UnaryOperation.valueOf(jsonValue.getString("function", "SIN").toUpperCase());

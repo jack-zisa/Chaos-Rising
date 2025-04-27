@@ -2,7 +2,7 @@ package dev.creoii.chaos.entity.behavior;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import dev.creoii.chaos.entity.ServerEnemyEntity;
+import dev.creoii.chaos.entity.EnemyEntity;
 import dev.creoii.chaos.entity.behavior.phase.Phase;
 import dev.creoii.chaos.entity.behavior.phase.PhaseKey;
 import dev.creoii.chaos.entity.controller.EnemyController;
@@ -53,7 +53,7 @@ public class MultiBehavior implements Behavior {
     }
 
     @Override
-    public void start(EnemyController controller, ServerEnemyEntity entity) {
+    public void start(EnemyController controller, EnemyEntity entity) {
         currentPhase = getPhase(startPhaseKey);
         currentPhase.start(controller, controller.getTime());
     }
@@ -62,7 +62,7 @@ public class MultiBehavior implements Behavior {
     public void update(EnemyController controller, int time, float delta) {
         currentPhase.update(controller, time, delta);
 
-        if (currentPhase.shouldTransition(controller, time)) {
+        if (currentPhase.shouldTransition(time)) {
             currentPhase.end(controller);
             currentPhase = currentPhase.getNext(controller);
             currentPhase.start(controller, time);

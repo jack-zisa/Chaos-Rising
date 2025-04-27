@@ -1,7 +1,7 @@
 package dev.creoii.chaos.util.provider.booleanprovider;
 
+import dev.creoii.chaos.entity.CharacterEntity;
 import dev.creoii.chaos.entity.CharacterEntityType;
-import dev.creoii.chaos.entity.character.CharacterEntity;
 
 public class IsClassBooleanProvider implements BooleanProvider {
     private final String classId;

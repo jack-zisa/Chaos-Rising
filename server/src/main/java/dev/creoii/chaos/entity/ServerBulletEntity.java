@@ -2,7 +2,7 @@ package dev.creoii.chaos.entity;
 
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.entity.controller.bullet.BulletController;
-import dev.creoii.chaos.entity.behavior.EntityController;
+import dev.creoii.chaos.entity.controller.EntityController;
 import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.provider.Provider;
 

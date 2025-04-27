@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.ClientGame;
 import dev.creoii.chaos.InputManager;
+import dev.creoii.chaos.entity.LootDropEntity;
 import dev.creoii.chaos.inventory.Inventory;
 import dev.creoii.chaos.inventory.Slot;
 import dev.creoii.chaos.network.packet.c2s.LootDropCloseC2S;
@@ -21,7 +22,7 @@ public class LootInventoryWidget extends InventoryWidget {
 
     @Override
     public Inventory getInventory() {
-        return getParent().getGame().getCharacter().getLootInventory();
+        return ((LootDropEntity) getParent().getGame().getEntityManager().getEntity(getParent().getGame().getCharacter().getLootUuid())).getInventory();
     }
 
     @Override
@@ -38,8 +39,8 @@ public class LootInventoryWidget extends InventoryWidget {
                         game.getClient().sendTCP(new SlotUpdateC2S(game.getCharacter().getUuid(), SlotUpdateC2S.Action.QUICK_MOVE, getInventory(), mainInventory, dragSource, touched));
 
                         if (getInventory().isEmpty()) {
-                            if (game.getCharacter().getLootInventory() != null) {
-                                game.getCharacter().clearLootInventory();
+                            if (game.getCharacter().getLootUuid() != null) {
+                                game.getCharacter().setLootUuid(null);
                                 game.getClient().sendTCP(new LootDropCloseC2S(game.getCharacter().getUuid()));
                             }
                         }

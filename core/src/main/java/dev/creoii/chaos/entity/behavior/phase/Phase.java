@@ -1,10 +1,12 @@
 package dev.creoii.chaos.entity.behavior.phase;
 
 import com.badlogic.gdx.utils.JsonValue;
+import dev.creoii.chaos.entity.EnemyEntity;
+import dev.creoii.chaos.entity.controller.EnemyController;
+import dev.creoii.chaos.entity.controller.EntityController;
 import dev.creoii.chaos.entity.behavior.MultiBehavior;
 import dev.creoii.chaos.entity.behavior.action.Action;
 import dev.creoii.chaos.entity.behavior.transition.Transition;
-import dev.creoii.chaos.entity.controller.EnemyController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,22 +39,22 @@ public class Phase {
         return id;
     }
 
-    public void start(EnemyController controller, int startTime) {
+    public void start(EntityController<? extends EnemyEntity> controller, int startTime) {
         this.startTime = startTime;
     }
 
-    public void end(EnemyController controller) {
+    public void end(EntityController<? extends EnemyEntity> controller) {
         this.startTime = 0;
         actions.forEach(action -> action.reset(controller));
     }
 
-    public void update(EnemyController controller, int time, float delta) {
+    public void update(EntityController<? extends EnemyEntity> controller, int time, float delta) {
         if (startTime >= 0 || transition == null) {
             actions.forEach(action -> action.update(controller, time, delta));
         }
     }
 
-    public boolean shouldTransition(EnemyController controller, int time) {
+    public boolean shouldTransition(int time) {
         if (duration == -1 || transition == null)
             return false;
         return (time - startTime) >= duration;
