@@ -2,6 +2,7 @@ package dev.creoii.chaos.entity;
 
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.Game;
+import dev.creoii.chaos.util.provider.Provider;
 
 import java.util.UUID;
 
@@ -45,5 +46,24 @@ public class BulletEntity extends Entity {
 
     public int getIndex() {
         return index;
+    }
+
+    @Override
+    public void tick(int gametime, float delta) {
+        super.tick(gametime, delta);
+
+        if (gametime - getSpawnTime() >= lifetime) {
+            remove();
+        }
+    }
+
+    @Override
+    public void collisionEnter(Entity other) {
+        if (other instanceof LivingEntity living && other.getType().group() != parent.getType().group()) {
+            living.damage(damage);
+            if (!((BulletEntityType) getType()).piercing().get(Provider.Context.of(this, getGame().getGametime()))) {
+                remove();
+            }
+        }
     }
 }

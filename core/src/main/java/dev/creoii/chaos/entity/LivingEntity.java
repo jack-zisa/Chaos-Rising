@@ -3,7 +3,6 @@ package dev.creoii.chaos.entity;
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.Game;
 import dev.creoii.chaos.effect.StatusEffect;
-import dev.creoii.chaos.effect.StatusEffectType;
 import dev.creoii.chaos.util.stat.StatContainer;
 
 import java.util.ArrayList;
@@ -37,7 +36,7 @@ public abstract class LivingEntity extends Entity {
         statContainer.health.set(Math.max(0, statContainer.health.value() - amount));
 
         if (statContainer.health.value() <= 0) {
-            //remove();
+            remove();
         }
     }
 
@@ -65,5 +64,26 @@ public abstract class LivingEntity extends Entity {
 
     public boolean hasStatusEffect(String id) {
         return statusEffects.stream().anyMatch(statusEffect1 -> statusEffect1.getType().id().equals(id));
+    }
+
+    @Override
+    public void tick(int gametime, float delta) {
+        super.tick(gametime, delta);
+
+        for (int i = getStatusEffects().size() - 1; i >= 0; --i) {
+            StatusEffect statusEffect = getStatusEffects().get(i);
+
+            if (statusEffect.getType().applier() != null)
+                statusEffect.getType().applier().accept(this, statusEffect);
+
+            if (statusEffect.getDuration() > 0) {
+                statusEffect.decrementDuration();
+            } else {
+                removeStatusEffect(statusEffect);
+            }
+        }
+
+        if (statContainer.health.value() <= maxStatContainer.health.value() && gametime % 40 == 0)
+            heal(Math.round(1f + .2f * statContainer.vitality.value()));
     }
 }

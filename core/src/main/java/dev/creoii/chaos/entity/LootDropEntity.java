@@ -3,6 +3,7 @@ package dev.creoii.chaos.entity;
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.Game;
 import dev.creoii.chaos.inventory.Inventory;
+import dev.creoii.chaos.item.ItemStack;
 
 import java.util.UUID;
 
@@ -16,5 +17,17 @@ public class LootDropEntity extends Entity {
 
     public Inventory getInventory() {
         return inventory;
+    }
+
+    public void addItem(ItemStack stack) {
+        inventory.addItem(stack);
+    }
+
+    @Override
+    public void tick(int gametime, float delta) {
+        super.tick(gametime, delta);
+
+        if (gametime - getSpawnTime() >= 2400)
+            remove();
     }
 }

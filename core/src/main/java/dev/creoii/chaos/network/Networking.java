@@ -11,10 +11,9 @@ public class Networking {
 
         kryo.register(CharacterJoinC2S.class, serializer);
         kryo.register(CharacterLeaveC2S.class, serializer);
+        kryo.register(CharacterStateC2S.class, serializer);
         kryo.register(ExecuteCommandC2S.class, serializer);
-        kryo.register(KeyInputC2S.class, serializer);
         kryo.register(LootDropCloseC2S.class, serializer);
-        kryo.register(MouseInputC2S.class, serializer);
         kryo.register(SlotUpdateC2S.class, serializer);
 
         kryo.register(CharacterSpawnS2C.class, serializer);

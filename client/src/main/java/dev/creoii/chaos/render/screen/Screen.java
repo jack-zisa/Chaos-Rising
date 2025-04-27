@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.ClientGame;
-import dev.creoii.chaos.InputManager;
+import dev.creoii.chaos.input.InputManager;
 import dev.creoii.chaos.render.Renderer;
 import dev.creoii.chaos.render.screen.widget.Widget;
 import dev.creoii.chaos.util.Inputtable;

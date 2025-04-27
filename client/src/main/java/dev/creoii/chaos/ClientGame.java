@@ -8,6 +8,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.esotericsoftware.kryonet.Client;
 import dev.creoii.chaos.entity.CharacterEntity;
+import dev.creoii.chaos.input.InputManager;
 import dev.creoii.chaos.network.Networking;
 import dev.creoii.chaos.render.Renderer;
 import dev.creoii.chaos.texture.TextureManager;

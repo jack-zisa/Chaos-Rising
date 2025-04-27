@@ -6,7 +6,6 @@ import com.esotericsoftware.kryonet.Listener;
 import dev.creoii.chaos.chat.Commands;
 import dev.creoii.chaos.entity.CharacterEntity;
 import dev.creoii.chaos.entity.CharacterEntityType;
-import dev.creoii.chaos.entity.controller.CharacterController;
 import dev.creoii.chaos.inventory.Inventory;
 import dev.creoii.chaos.inventory.Slot;
 import dev.creoii.chaos.item.ItemStack;
@@ -27,14 +26,10 @@ public class ServerListener extends Listener {
 
     @Override
     public void received(Connection connection, Object object) {
-        if (object instanceof KeyInputC2S(UUID uuid, KeyInputC2S.Action action, int keycode)) {
+        if (object instanceof CharacterStateC2S(UUID uuid, float x, float y)) {
             CharacterEntity character = game.getEntityManager().getCharacter(uuid);
-            ((CharacterController) character.getController()).onKey(action, keycode);
-        }
-
-        else if (object instanceof MouseInputC2S(UUID uuid, MouseInputC2S.Action action, int screenX, int screenY)) {
-            CharacterEntity character = game.getEntityManager().getCharacter(uuid);
-            ((CharacterController) character.getController()).onMouse(action, screenX, screenY);
+            character.setPrevPos(character.getPos().x, character.getPos().y);
+            character.setPos(x, y);
         }
 
         else if (object instanceof SlotUpdateC2S(UUID uuid, SlotUpdateC2S.Action action, Inventory from, Inventory to, Slot fromSlot, Slot toSlot)) {

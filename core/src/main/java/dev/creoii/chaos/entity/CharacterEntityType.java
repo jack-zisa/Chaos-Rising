@@ -2,7 +2,7 @@ package dev.creoii.chaos.entity;
 
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.Game;
-import dev.creoii.chaos.inventory.Inventory;
+import dev.creoii.chaos.inventory.CharacterInventory;
 import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.Mutable;
 
@@ -26,7 +26,7 @@ public record CharacterEntityType(Mutable<CharacterClass> characterClass) implem
     }
 
     public CharacterEntity create(Game game, UUID uuid, Vector2 pos, Map<String, Object> customData) {
-        CharacterEntity character = new CharacterEntity(game, this, uuid, pos.cpy(), (int) customData.get("connection_id"), characterClass, new Inventory(3, 4));
+        CharacterEntity character = new CharacterEntity(game, this, uuid, pos.cpy(), (int) customData.get("connection_id"), characterClass, new CharacterInventory());
 /*        character.centerPos = new Vector2();
         character.colliderRect = new Rectangle();
         character.colliderRect.setPosition(pos);

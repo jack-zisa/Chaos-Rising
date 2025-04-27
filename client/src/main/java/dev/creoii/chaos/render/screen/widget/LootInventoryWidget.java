@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.ClientGame;
-import dev.creoii.chaos.InputManager;
+import dev.creoii.chaos.input.InputManager;
 import dev.creoii.chaos.entity.LootDropEntity;
 import dev.creoii.chaos.inventory.Inventory;
 import dev.creoii.chaos.inventory.Slot;

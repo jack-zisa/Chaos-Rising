@@ -1,11 +1,10 @@
-package dev.creoii.chaos;
+package dev.creoii.chaos.input;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.math.Vector3;
-import dev.creoii.chaos.network.packet.c2s.KeyInputC2S;
-import dev.creoii.chaos.network.packet.c2s.MouseInputC2S;
+import dev.creoii.chaos.ClientGame;
 import dev.creoii.chaos.util.Inputtable;
 
 import java.util.ArrayList;
@@ -24,6 +23,8 @@ public class InputManager extends InputAdapter {
         inputs = new ArrayList<>();
         keyHeld = -1;
         dragging = false;
+
+        inputs.add(new CharacterController(game.getCharacter()));
     }
 
     public ClientGame getGame() {

@@ -6,10 +6,7 @@ import dev.creoii.chaos.ServerGame;
 import dev.creoii.chaos.effect.StatusEffect;
 import dev.creoii.chaos.effect.StatusEffectType;
 import dev.creoii.chaos.effect.StatusEffectTypes;
-import dev.creoii.chaos.entity.CharacterEntity;
-import dev.creoii.chaos.entity.EnemyEntityType;
-import dev.creoii.chaos.entity.ServerEntity;
-import dev.creoii.chaos.entity.CharacterClass;
+import dev.creoii.chaos.entity.*;
 import dev.creoii.chaos.item.ServerItem;
 
 import java.util.*;
@@ -30,8 +27,8 @@ public final class Commands {
     static {
         Command.register("set_pos", (game, uuid, args) -> {
             if (args.length > 1) {
-                float x = Integer.parseInt(args[0]) * ServerEntity.COORDINATE_SCALE;
-                float y = Integer.parseInt(args[1]) * ServerEntity.COORDINATE_SCALE;
+                float x = Integer.parseInt(args[0]) * Entity.COORDINATE_SCALE;
+                float y = Integer.parseInt(args[1]) * Entity.COORDINATE_SCALE;
                 game.getEntityManager().getCharacter(uuid).setPos(x, y);
             }
         });
@@ -84,29 +81,29 @@ public final class Commands {
             if (argCount == 1) {
                 game.getEntityManager().addEntity(enemy, new Vector2(0, 0));
             } else if (argCount == 3) {
-                float x = Float.parseFloat(args[1]) * ServerEntity.COORDINATE_SCALE;
-                float y = Float.parseFloat(args[2]) * ServerEntity.COORDINATE_SCALE;
+                float x = Float.parseFloat(args[1]) * Entity.COORDINATE_SCALE;
+                float y = Float.parseFloat(args[2]) * Entity.COORDINATE_SCALE;
                 game.getEntityManager().addEntity(enemy, new Vector2(x, y));
             } else if (argCount == 4) {
-                float x = Float.parseFloat(args[1]) * ServerEntity.COORDINATE_SCALE;
-                float y = Float.parseFloat(args[2]) * ServerEntity.COORDINATE_SCALE;
+                float x = Float.parseFloat(args[1]) * Entity.COORDINATE_SCALE;
+                float y = Float.parseFloat(args[2]) * Entity.COORDINATE_SCALE;
                 int count = Integer.parseInt(args[3]);
                 for (int i = 0; i < count; i++) {
                     game.getEntityManager().addEntity(enemy, new Vector2(x, y));
                 }
             } else if (argCount == 5) {
-                int x1 = Integer.parseInt(args[1]) * (int) ServerEntity.COORDINATE_SCALE;
-                int y1 = Integer.parseInt(args[2]) * (int) ServerEntity.COORDINATE_SCALE;
-                int x2 = Integer.parseInt(args[3]) * (int) ServerEntity.COORDINATE_SCALE;
-                int y2 = Integer.parseInt(args[4]) * (int) ServerEntity.COORDINATE_SCALE;
+                int x1 = Integer.parseInt(args[1]) * (int) Entity.COORDINATE_SCALE;
+                int y1 = Integer.parseInt(args[2]) * (int) Entity.COORDINATE_SCALE;
+                int x2 = Integer.parseInt(args[3]) * (int) Entity.COORDINATE_SCALE;
+                int y2 = Integer.parseInt(args[4]) * (int) Entity.COORDINATE_SCALE;
                 float x = x1 + RANDOM.nextInt(Math.max(1, x2 - x1));
                 float y = y1 + RANDOM.nextInt(Math.max(1, y2 - y1));
                 game.getEntityManager().addEntity(enemy, new Vector2(x, y));
             } else if (argCount == 6) {
-                int x1 = Integer.parseInt(args[1]) * (int) ServerEntity.COORDINATE_SCALE;
-                int y1 = Integer.parseInt(args[2]) * (int) ServerEntity.COORDINATE_SCALE;
-                int x2 = Integer.parseInt(args[3]) * (int) ServerEntity.COORDINATE_SCALE;
-                int y2 = Integer.parseInt(args[4]) * (int) ServerEntity.COORDINATE_SCALE;
+                int x1 = Integer.parseInt(args[1]) * (int) Entity.COORDINATE_SCALE;
+                int y1 = Integer.parseInt(args[2]) * (int) Entity.COORDINATE_SCALE;
+                int x2 = Integer.parseInt(args[3]) * (int) Entity.COORDINATE_SCALE;
+                int y2 = Integer.parseInt(args[4]) * (int) Entity.COORDINATE_SCALE;
                 int count = Integer.parseInt(args[5]);
 
                 if (x1 >= x2) {

@@ -71,7 +71,7 @@ public class CollisionManager {
                 Entity a = entities.get(i);
                 for (int j = i + 1; j < entities.size; ++j) {
                     Entity b = entities.get(j);
-                    if (COLLISION_MATRIX[a.getType().group().ordinal()][b.getType().group().ordinal()] && a.getColliderRect().overlaps(b.getColliderRect())) {
+                    if (COLLISION_MATRIX[a.getType().group().ordinal()][b.getType().group().ordinal()] && a.collides(b)) {
                         collisions.computeIfAbsent(a.getUuid(), k -> new HashSet<>()).add(b.getUuid());
                         collisions.computeIfAbsent(b.getUuid(), k -> new HashSet<>()).add(a.getUuid());
 
@@ -97,7 +97,7 @@ public class CollisionManager {
                         if (a == b)
                             continue;
 
-                        if (COLLISION_MATRIX[a.getType().group().ordinal()][b.getType().group().ordinal()] && a.getColliderRect().overlaps(b.getColliderRect())) {
+                        if (COLLISION_MATRIX[a.getType().group().ordinal()][b.getType().group().ordinal()] && a.collides(b)) {
                             collisions.computeIfAbsent(a.getUuid(), k -> new HashSet<>()).add(b.getUuid());
                             collisions.computeIfAbsent(b.getUuid(), k -> new HashSet<>()).add(a.getUuid());
 

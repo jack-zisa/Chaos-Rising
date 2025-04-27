@@ -1,6 +1,6 @@
 package dev.creoii.chaos.util;
 
-import dev.creoii.chaos.InputManager;
+import dev.creoii.chaos.input.InputManager;
 
 public interface Inputtable {
     default boolean keyDown(InputManager manager, int keycode) {
