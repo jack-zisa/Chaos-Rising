@@ -63,7 +63,7 @@ public class InputManager extends InputAdapter {
         return mousePos;
     }
 
-    protected void update() {
+    public void update() {
         if (isKeyHeld()) {
             keyHeld(keyHeld);
         }
@@ -92,9 +92,6 @@ public class InputManager extends InputAdapter {
         }*/
 
         forEach(inputtable -> inputtable.keyDown(this, keycode));
-
-        game.getClient().sendTCP(new KeyInputC2S(game.getCharacter().getUuid(), KeyInputC2S.Action.DOWN, keycode));
-
         return false;
     }
 
@@ -102,8 +99,6 @@ public class InputManager extends InputAdapter {
         game.getRenderer().getCamera().unproject(mousePos.set(Gdx.input.getX(), Gdx.input.getY(), 0));
 
         forEach(inputtable -> inputtable.keyHeld(this, keycode));
-
-        game.getClient().sendTCP(new KeyInputC2S(game.getCharacter().getUuid(), KeyInputC2S.Action.HELD, keycode));
     }
 
     @Override
@@ -112,8 +107,6 @@ public class InputManager extends InputAdapter {
 
         keyHeld = -1;
         forEach(inputtable -> inputtable.keyUp(this, keycode));
-
-        game.getClient().sendTCP(new KeyInputC2S(game.getCharacter().getUuid(), KeyInputC2S.Action.UP, keycode));
         return super.keyUp(keycode);
     }
 
@@ -124,8 +117,6 @@ public class InputManager extends InputAdapter {
         game.getRenderer().getCamera().unproject(mousePos.set(screenX, screenY, 0));
         dragging = true;
         forEach(inputtable -> inputtable.touchDown(this, screenX, screenY, pointer, button));
-
-        game.getClient().sendTCP(new MouseInputC2S(game.getCharacter().getUuid(), MouseInputC2S.Action.DOWN, screenX, screenY));
         return true;
     }
 
@@ -134,8 +125,6 @@ public class InputManager extends InputAdapter {
         dragging = true;
         game.getRenderer().getCamera().unproject(mousePos.set(screenX, screenY, 0));
         forEach(inputtable -> inputtable.touchDragged(this, screenX, screenY, pointer));
-
-        game.getClient().sendTCP(new MouseInputC2S(game.getCharacter().getUuid(), MouseInputC2S.Action.DRAG, screenX, screenY));
         return super.touchDragged(screenX, screenY, pointer);
     }
 
@@ -146,8 +135,6 @@ public class InputManager extends InputAdapter {
         game.getRenderer().getCamera().unproject(mousePos.set(screenX, screenY, 0));
         dragging = false;
         forEach(inputtable -> inputtable.touchUp(this, screenX, screenY, pointer, button));
-
-        game.getClient().sendTCP(new MouseInputC2S(game.getCharacter().getUuid(), MouseInputC2S.Action.UP, screenX, screenY));
         return super.touchUp(screenX, screenY, pointer, button);
     }
 
@@ -155,8 +142,6 @@ public class InputManager extends InputAdapter {
     public boolean touchCancelled(int screenX, int screenY, int pointer, int button) {
         dragging = false;
         forEach(inputtable -> inputtable.touchCancelled(this, screenX, screenY, pointer, button));
-
-        game.getClient().sendTCP(new MouseInputC2S(game.getCharacter().getUuid(), MouseInputC2S.Action.CANCEL, screenX, screenY));
         return super.touchCancelled(screenX, screenY, pointer, button);
     }
 }
