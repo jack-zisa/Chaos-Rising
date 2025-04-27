@@ -1,8 +1,8 @@
 package dev.creoii.chaos.util;
 
-import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.JsonValue;
 
 @FunctionalInterface
 public interface Parser {
-    Identifiable parse(FileHandle jsonFile);
+    Identifiable parse(String id, JsonValue jsonValue);
 }

@@ -54,7 +54,7 @@ public class ServerListener extends Listener {
         }
 
         else if (object instanceof CharacterJoinC2S(UUID uuid)) {
-            System.out.println("character join");
+            System.out.println("character join " + connection.getID());
             Map<String, Object> data = new HashMap<>();
             data.put("connection_id", connection.getID());
             CharacterEntity character = game.getEntityManager().addEntity(uuid, new CharacterEntityType(new Mutable<>(game.getDataManager().getCharacterClass("wizard"))), new Vector2(0, 0), data);

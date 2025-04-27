@@ -1,8 +1,7 @@
 package dev.creoii.chaos;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
 import dev.creoii.chaos.entity.BulletEntityType;
 import dev.creoii.chaos.entity.CharacterClass;
 import dev.creoii.chaos.entity.EnemyEntityType;
@@ -13,6 +12,14 @@ import dev.creoii.chaos.util.JsonParsing;
 import dev.creoii.chaos.util.Parser;
 
 import javax.annotation.Nullable;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,11 +29,11 @@ public class DataManager {
 
     public DataManager() {
         schema = new HashMap<>();
-        schema.put("class", fileHandle -> JsonParsing.parseCharacterClass(fileHandle.nameWithoutExtension(), new JsonReader().parse(fileHandle)));
-        schema.put("item", fileHandle -> JsonParsing.parseItem(fileHandle.nameWithoutExtension(), new JsonReader().parse(fileHandle)));
-        schema.put("enemy", fileHandle -> JsonParsing.parseEnemyEntityType(fileHandle.nameWithoutExtension(), new JsonReader().parse(fileHandle)));
-        schema.put("bullet", fileHandle -> JsonParsing.parseBulletEntityType(fileHandle.nameWithoutExtension(), new JsonReader().parse(fileHandle)));
-        schema.put("loot_drop", fileHandle -> JsonParsing.parseLootDropEntityType(fileHandle.nameWithoutExtension(), new JsonReader().parse(fileHandle)));
+        schema.put("class", JsonParsing::parseCharacterClass);
+        schema.put("item", JsonParsing::parseItem);
+        schema.put("enemy", JsonParsing::parseEnemyEntityType);
+        schema.put("bullet", JsonParsing::parseBulletEntityType);
+        schema.put("loot_drop", JsonParsing::parseLootDropEntityType);
 
         data = new HashMap<>();
         for (String key : schema.keySet()) {
@@ -60,31 +67,42 @@ public class DataManager {
     }
 
     public void load() {
-        FileHandle baseDir = Gdx.files.internal("data");
-
-        if (!baseDir.exists()) {
-            Gdx.app.log(DataManager.class.getSimpleName(), "Directory 'data/' does not exist.");
-            return;
-        }
-
-        for (Map.Entry<String, Parser> entry : schema.entrySet()) {
-            String folder = entry.getKey();
-            Parser parser = entry.getValue();
-
-            FileHandle folderHandle = baseDir.child(folder);
-            if (!folderHandle.exists()) {
-                Gdx.app.log(DataManager.class.getSimpleName(), "Folder '" + folderHandle.path() + "' does not exist, skipping.");
-                continue;
+        try {
+            URL baseUrl = getClass().getClassLoader().getResource("data");
+            if (baseUrl == null) {
+                System.out.println("[DataManager] Directory 'data/' does not exist.");
+                return;
             }
 
-            for (FileHandle file : folderHandle.list("json")) {
-                try {
-                    Identifiable obj = parser.parse(file);
-                    data.get(folder).put(obj.id(), obj);
-                } catch (Exception e) {
-                    Gdx.app.error(DataManager.class.getSimpleName(), "Error parsing " + file.name() + " in '/" + folder + "': " + e);
+            Path baseDir = Paths.get(baseUrl.toURI());
+
+            for (Map.Entry<String, Parser> entry : schema.entrySet()) {
+                String folder = entry.getKey();
+                Parser parser = entry.getValue();
+
+                Path folderPath = baseDir.resolve(folder);
+                if (!Files.exists(folderPath)) {
+                    System.out.println("[DataManager] Folder '" + folderPath + "' does not exist, skipping.");
+                    continue;
+                }
+
+                try (DirectoryStream<Path> stream = Files.newDirectoryStream(folderPath, "*.json")) {
+                    for (Path file : stream) {
+                        try (InputStream input = Files.newInputStream(file)) {
+                            JsonValue jsonValue = new JsonReader().parse(new InputStreamReader(input, StandardCharsets.UTF_8));
+                            String id = com.google.common.io.Files.getNameWithoutExtension(file.getFileName().toString());
+
+                            Identifiable obj = parser.parse(id, jsonValue);
+                            data.get(folder).put(obj.id(), obj);
+                        } catch (Exception e) {
+                            System.out.println("[DataManager] Error parsing " + file.getFileName() + " in '/" + folder + "': " + e);
+                        }
+                    }
                 }
             }
+        } catch (Exception e) {
+            System.out.println("[DataManager] Error loading data: " + e);
+            e.printStackTrace();
         }
     }
 }

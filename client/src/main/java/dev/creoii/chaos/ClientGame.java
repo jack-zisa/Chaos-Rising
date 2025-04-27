@@ -29,7 +29,6 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
 
     public ClientGame() throws IOException {
         client = new Client();
-
         optionsManager = new OptionsManager();
         inputManager = new InputManager(this);
         commandManager = new CommandManager(this);

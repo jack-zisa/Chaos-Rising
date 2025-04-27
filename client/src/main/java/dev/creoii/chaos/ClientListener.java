@@ -4,6 +4,7 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import dev.creoii.chaos.effect.StatusEffect;
 import dev.creoii.chaos.entity.*;
+import dev.creoii.chaos.input.CharacterController;
 import dev.creoii.chaos.network.packet.c2s.CharacterJoinC2S;
 import dev.creoii.chaos.network.packet.c2s.CharacterLeaveC2S;
 import dev.creoii.chaos.network.packet.s2c.*;
@@ -49,9 +50,9 @@ public class ClientListener extends Listener {
         }
 
         else if (object instanceof CharacterSpawnS2C(CharacterEntity character)) {
-            System.out.println("spawn character");
             game.setCharacter(character);
             game.getRenderer().getEntityRenderManager().addEntity(character);
+            game.getInputManager().addInput(new CharacterController(game.getCharacter()));
         }
     }
 

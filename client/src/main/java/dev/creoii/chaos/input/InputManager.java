@@ -23,8 +23,6 @@ public class InputManager extends InputAdapter {
         inputs = new ArrayList<>();
         keyHeld = -1;
         dragging = false;
-
-        inputs.add(new CharacterController(game.getCharacter()));
     }
 
     public ClientGame getGame() {
