@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.ClientGame;
 import dev.creoii.chaos.entity.CharacterEntity;
-import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.inventory.Slot;
 import dev.creoii.chaos.item.AbilityItem;
 import dev.creoii.chaos.item.WeaponItem;
@@ -43,15 +42,17 @@ public class CharacterController implements Inputtable {
                 dy -= 1;
 
             if (dx != 0f || dy != 0f) {
-                Vector2 newPos = character.getPos().add(new Vector2(dx, dy).nor().scl(character.getStats().speed.value()));
+                Vector2 newPos = character.getPos().add(new Vector2(dx, dy).nor().scl(character.getStats().speed.value() / 8f));
                 clientGame.getClient().sendTCP(new CharacterStateC2S(character.getUuid(), newPos.x, newPos.y));
             }
 
-            if (--abilityCooldown <= 0 && keycode == character.getGame().getOptionsManager().ABILITY_KEY.intValue()) {
-                Slot abilitySlot = character.getInventory().getAbilitySlot();
-                if (abilitySlot.hasItem() && abilitySlot.getStack().getItem() instanceof AbilityItem abilityItem) {
-                    abilityItem.getAttack().attack(new MousePosVecProvider(), new SourcePosVecProvider(), character);
-                    abilityCooldown = abilityItem.getCooldown();
+            if (keycode == character.getGame().getOptionsManager().ABILITY_KEY.intValue()) {
+                if (--abilityCooldown <= 0) {
+                    Slot abilitySlot = character.getInventory().getAbilitySlot();
+                    if (abilitySlot.hasItem() && abilitySlot.getStack().getItem() instanceof AbilityItem abilityItem) {
+                        abilityItem.getAttack().attack(new MousePosVecProvider(), new SourcePosVecProvider(), character);
+                        abilityCooldown = abilityItem.getCooldown();
+                    }
                 }
             }
         }

@@ -10,20 +10,22 @@ import dev.creoii.chaos.render.screen.InventoryScreen;
 import dev.creoii.chaos.util.Inputtable;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 
 public class InputManager extends InputAdapter {
     private final ClientGame game;
     private final List<Inputtable> inputs;
     private final Vector3 mousePos = new Vector3();
-    private int keyHeld;
+    private final Set<Integer> keysHeld;
     private boolean dragging;
 
     public InputManager(ClientGame game) {
         this.game = game;
         inputs = new ArrayList<>();
-        keyHeld = -1;
+        keysHeld = new HashSet<>();
         dragging = false;
     }
 
@@ -32,11 +34,15 @@ public class InputManager extends InputAdapter {
     }
 
     public boolean isKeyHeld() {
-        return keyHeld >= 0;
+        return !keysHeld.isEmpty();
     }
 
-    public int getKeyHeld() {
-        return keyHeld;
+    public boolean isKeyHeld(int keycode) {
+        return keysHeld.contains(keycode);
+    }
+
+    public Set<Integer> getKeysHeld() {
+        return keysHeld;
     }
 
     public boolean isDragging() {
@@ -64,8 +70,8 @@ public class InputManager extends InputAdapter {
     }
 
     public void update() {
-        if (isKeyHeld()) {
-            keyHeld(keyHeld);
+        for (int keycode : keysHeld) {
+            keyHeld(keycode);
         }
     }
 
@@ -79,7 +85,7 @@ public class InputManager extends InputAdapter {
     public boolean keyDown(int keycode) {
         game.getRenderer().getCamera().unproject(mousePos.set(Gdx.input.getX(), Gdx.input.getY(), 0));
 
-        keyHeld = keycode;
+        keysHeld.add(keycode);
         if (keycode == game.getOptionsManager().DEBUG_KEY.intValue()) {
             game.setDebug(!game.getDebug());
             return true;
@@ -105,7 +111,7 @@ public class InputManager extends InputAdapter {
     public boolean keyUp(int keycode) {
         game.getRenderer().getCamera().unproject(mousePos.set(Gdx.input.getX(), Gdx.input.getY(), 0));
 
-        keyHeld = -1;
+        keysHeld.remove(keycode);
         forEach(inputtable -> inputtable.keyUp(this, keycode));
         return super.keyUp(keycode);
     }

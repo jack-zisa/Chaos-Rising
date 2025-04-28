@@ -3,3 +3,5 @@ dependencies {
 
   implementation project(":core")
 }
+
+sourceSets.main.resources.srcDirs += [file("../assets")]
