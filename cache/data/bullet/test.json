@@ -1,0 +1,8 @@
+{
+  "texture": "dark_magic_blade",
+  "lifetime": 100,
+  "path": {
+    "speed": 10
+  },
+  "piercing": true
+}

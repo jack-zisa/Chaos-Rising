@@ -14,12 +14,10 @@ import dev.creoii.chaos.util.Parser;
 import javax.annotation.Nullable;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -66,21 +64,13 @@ public class DataManager {
         return (ServerItem) data.get("item").getOrDefault(id, null);
     }
 
-    public void load() {
+    public void load(Path path) {
         try {
-            URL baseUrl = getClass().getClassLoader().getResource("data");
-            if (baseUrl == null) {
-                System.out.println("[DataManager] Directory 'data/' does not exist.");
-                return;
-            }
-
-            Path baseDir = Paths.get(baseUrl.toURI());
-
             for (Map.Entry<String, Parser> entry : schema.entrySet()) {
                 String folder = entry.getKey();
                 Parser parser = entry.getValue();
 
-                Path folderPath = baseDir.resolve(folder);
+                Path folderPath = path.resolve(folder);
                 if (!Files.exists(folderPath)) {
                     System.out.println("[DataManager] Folder '" + folderPath + "' does not exist, skipping.");
                     continue;

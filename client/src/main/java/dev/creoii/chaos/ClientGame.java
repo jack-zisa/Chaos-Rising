@@ -11,6 +11,7 @@ import dev.creoii.chaos.entity.CharacterEntity;
 import dev.creoii.chaos.input.InputManager;
 import dev.creoii.chaos.network.Networking;
 import dev.creoii.chaos.render.Renderer;
+import dev.creoii.chaos.render.entity.EntityRenderManager;
 import dev.creoii.chaos.texture.TextureManager;
 
 import java.io.IOException;
@@ -22,14 +23,18 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
     private Renderer renderer;
     private TextureManager textureManager;
     private final OptionsManager optionsManager;
+    private final DataManager dataManager;
+    private final EntityRenderManager entityManager;
     private final InputManager inputManager;
     private final CommandManager commandManager;
     private CharacterEntity character;
     private boolean debug;
 
     public ClientGame() throws IOException {
-        client = new Client();
+        client = new Client(32768, 32768);
         optionsManager = new OptionsManager();
+        dataManager = new DataManager();
+        entityManager = new EntityRenderManager(this);
         inputManager = new InputManager(this);
         commandManager = new CommandManager(this);
     }
@@ -94,12 +99,12 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
 
     @Override
     public DataManager getDataManager() {
-        return null;
+        return dataManager;
     }
 
     @Override
-    public EntityManager getEntityManager() {
-        return null;
+    public EntityRenderManager getEntityManager() {
+        return entityManager;
     }
 
     public InputManager getInputManager() {

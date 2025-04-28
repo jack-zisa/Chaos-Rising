@@ -1,8 +1,9 @@
 package dev.creoii.chaos.network.packet.s2c;
 
-import dev.creoii.chaos.entity.CharacterEntity;
+import com.badlogic.gdx.math.Vector2;
 
 import java.io.Serializable;
+import java.util.UUID;
 
-public record CharacterSpawnS2C(CharacterEntity character) implements Serializable {
+public record CharacterSpawnS2C(UUID uuid, String classId, Vector2 pos) implements Serializable {
 }

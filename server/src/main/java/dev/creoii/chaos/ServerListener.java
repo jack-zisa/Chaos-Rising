@@ -11,17 +11,66 @@ import dev.creoii.chaos.inventory.Slot;
 import dev.creoii.chaos.item.ItemStack;
 import dev.creoii.chaos.network.packet.c2s.*;
 import dev.creoii.chaos.network.packet.s2c.CharacterSpawnS2C;
+import dev.creoii.chaos.network.packet.s2c.SyncDataS2C;
 import dev.creoii.chaos.util.Mutable;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 public class ServerListener extends Listener {
     private final ServerGame game;
 
     public ServerListener(ServerGame game) {
         this.game = game;
+    }
+
+    @Override
+    public void connected(Connection connection) {
+        System.out.println("[Server] Client connected: " + connection.getRemoteAddressTCP());
+
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        URL url = classLoader.getResource("data/");
+        if (url == null)
+            throw new IllegalStateException("Could not find data folder");
+        Path dataRoot;
+        try {
+            dataRoot = Paths.get(url.toURI());
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream(32768);
+        try (ZipOutputStream zipOut = new ZipOutputStream(baos)) {
+            Files.walk(dataRoot)
+                .filter(Files::isRegularFile)
+                .forEach(path -> {
+                    try {
+                        if (Files.isDirectory(path))
+                            return;
+                        String relativePath = dataRoot.relativize(path).toString().replace("\\", "/");
+                        zipOut.putNextEntry(new ZipEntry(relativePath));
+                        byte[] bytes = Files.readAllBytes(path);
+                        zipOut.write(bytes);
+                        zipOut.closeEntry();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+            zipOut.finish();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        game.getServer().sendToTCP(connection.getID(), new SyncDataS2C(baos.toByteArray()));
     }
 
     @Override
@@ -54,15 +103,17 @@ public class ServerListener extends Listener {
         }
 
         else if (object instanceof CharacterJoinC2S(UUID uuid)) {
-            System.out.println("character join " + connection.getID());
-            Map<String, Object> data = new HashMap<>();
-            data.put("connection_id", connection.getID());
-            CharacterEntity character = game.getEntityManager().addEntity(uuid, new CharacterEntityType(new Mutable<>(game.getDataManager().getCharacterClass("wizard"))), new Vector2(0, 0), data);
-            game.getServer().sendToTCP(connection.getID(), new CharacterSpawnS2C(character));
+            CharacterEntity character = game.getEntityManager().addEntity(uuid, new CharacterEntityType(new Mutable<>(game.getDataManager().getCharacterClass("wizard"))), new Vector2(0, 0), new HashMap<>());
+            game.getServer().sendToTCP(connection.getID(), new CharacterSpawnS2C(uuid, character.getCharacterClass().get().id(), character.getPos()));
         }
 
         else if (object instanceof CharacterLeaveC2S(UUID uuid)) {
             game.getEntityManager().removeEntity(uuid);
         }
+    }
+
+    @Override
+    public void disconnected(Connection connection) {
+        System.out.println("[Server] Client disconnected: " + connection.getRemoteAddressTCP());
     }
 }

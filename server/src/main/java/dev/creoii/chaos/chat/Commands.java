@@ -1,6 +1,5 @@
 package dev.creoii.chaos.chat;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.ServerGame;
 import dev.creoii.chaos.effect.StatusEffect;
@@ -18,9 +17,9 @@ public final class Commands {
     public static void tryExecute(ServerGame game, UUID uuid, String commandType, String[] args) {
         if (Commands.ALL.containsKey(commandType)) {
             Commands.ALL.get(commandType).execute(game, uuid, args);
-            Gdx.app.log(Commands.class.getSimpleName(), "Executed '/" + commandType + "' with args " + Arrays.toString(args));
+            System.out.println("[Commands] Executed '/" + commandType + "' with args " + Arrays.toString(args));
         } else {
-            Gdx.app.log(Commands.class.getSimpleName(), "Command '/" + commandType + "' not found");
+            System.out.println("[Commands] Command '/" + commandType + "' not found");
         }
     }
 

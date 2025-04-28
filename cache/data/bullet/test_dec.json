@@ -1,0 +1,12 @@
+{
+  "texture": "fireball",
+  "lifetime": 150,
+  "path": {
+    "speed": {
+      "type": "curve",
+      "start": 12,
+      "end": -2.5,
+      "duration": 150
+    }
+  }
+}

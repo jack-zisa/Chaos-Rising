@@ -1,0 +1,81 @@
+{
+  "texture": "crystal_arrow",
+  "lifetime": 150,
+  "path": {
+    "speed": 5,
+    "offset": {
+      "type": "mul",
+      "a": {
+        "type": "mul",
+        "a": {
+          "type": "mul",
+          "a": {
+            "type": "cos",
+            "value": {
+              "type": "binary",
+              "a": {
+                "type": "constant",
+                "x": {
+                  "type": "sub",
+                  "a": {
+                    "type": "time"
+                  },
+                  "b": {
+                    "type": "spawn_time"
+                  }
+                },
+                "y": {
+                  "type": "sub",
+                  "a": {
+                    "type": "time"
+                  },
+                  "b": {
+                    "type": "spawn_time"
+                  }
+                }
+              },
+              "b": {
+                "type": "constant",
+                "x": {
+                  "type": "curve",
+                  "start": 0.1,
+                  "end": -1.225,
+                  "duration": 150
+                },
+                "y": {
+                  "type": "curve",
+                  "start": 0.1,
+                  "end": -1.225,
+                  "duration": 150
+                }
+              },
+              "operation": "mul"
+            }
+          },
+          "b": {
+            "type": "perpendicular",
+            "value": {
+              "type": "direction",
+              "from": {
+                "type": "source_pos"
+              },
+              "to": {
+                "type": "target_pos"
+              }
+            }
+          }
+        },
+        "b": {
+          "type": "constant",
+          "x": {
+            "type": "bullet_index"
+          },
+          "y": {
+            "type": "bullet_index"
+          }
+        }
+      },
+      "b": [-1, -1]
+    }
+  }
+}

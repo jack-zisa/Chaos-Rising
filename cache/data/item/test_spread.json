@@ -1,0 +1,10 @@
+{
+  "type": "weapon",
+  "texture": "occult",
+  "attack": {
+    "bullet_id": "test_sin",
+    "damage": 4,
+    "bullet_count": 6,
+    "arc_gap": 12
+  }
+}

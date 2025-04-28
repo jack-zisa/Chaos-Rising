@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ObjectMap;
 import dev.creoii.chaos.ClientGame;
+import dev.creoii.chaos.EntityManager;
 import dev.creoii.chaos.entity.BulletEntity;
 import dev.creoii.chaos.entity.CharacterEntity;
 import dev.creoii.chaos.entity.Entity;
@@ -17,22 +18,17 @@ import dev.creoii.chaos.util.Renderable;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public class EntityRenderManager implements Renderable {
+public class EntityRenderManager extends EntityManager implements Renderable {
     private static final float RENDER_DISTANCE = 17578.125f * Entity.COORDINATE_SCALE; // sqrt(17578.125 * 32) = 750 units
-    private final ClientGame game;
     private final ObjectMap<UUID, Entity> visibleEntities;
 
     public EntityRenderManager(ClientGame game) {
-        this.game = game;
+        super(game);
         visibleEntities = new ObjectMap<>(128);
 
         EntityRenderers.register(CharacterEntity.class, SimpleEntityRenderer::new);
         EntityRenderers.register(BulletEntity.class, SimpleEntityRenderer::new);
         EntityRenderers.register(LootDropEntity.class, SimpleEntityRenderer::new);
-    }
-
-    public ClientGame getGame() {
-        return game;
     }
 
     public void addEntity(Entity entity) {
@@ -43,8 +39,9 @@ public class EntityRenderManager implements Renderable {
         return visibleEntities.get(uuid);
     }
 
-    public void removeEntity(UUID uuid) {
+    public boolean removeEntity(UUID uuid) {
         visibleEntities.remove(uuid);
+        return visibleEntities.containsKey(uuid);
     }
 
     public void updateEntity(UUID uuid, float x, float y) {
@@ -88,7 +85,7 @@ public class EntityRenderManager implements Renderable {
         if (entity.getPos().dst2(cameraPos.x, cameraPos.y) > RENDER_DISTANCE) {
             return false;
         }
-        Sprite sprite = getSprite(game, entity);
+        Sprite sprite = getSprite((ClientGame) getGame(), entity);
         return camX < entity.getPos().x + sprite.getWidth() && camX + camW > entity.getPos().x && camY < entity.getPos().y + sprite.getHeight() && camY + camH > entity.getPos().y;
     }
 }

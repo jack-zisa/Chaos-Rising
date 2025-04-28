@@ -24,5 +24,6 @@ public class Networking {
         kryo.register(LootDropCloseS2C.class, serializer);
         kryo.register(LootDropOpenS2C.class, serializer);
         kryo.register(StatusEffectS2C.class, serializer);
+        kryo.register(SyncDataS2C.class, serializer);
     }
 }

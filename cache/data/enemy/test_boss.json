@@ -1,0 +1,123 @@
+{
+  "texture": "winged_black_demon",
+  "scale": 3,
+  "stats": {
+    "health": 300
+  },
+  "behavior": {
+    "start_phase": "lotus_idle",
+    "phases": {
+      "lotus_idle": {
+        "duration": 600,
+        "transition": {
+          "id": "next"
+        },
+        "actions": [
+          {
+            "id": "move",
+            "movement": "random",
+            "speed": 1
+          }
+        ]
+      },
+      "lotus_bloom": {
+        "duration": 2000,
+        "transition": {
+          "id": "next"
+        },
+        "actions": [
+          {
+            "id": "attack",
+            "attack": {
+              "bullet_id": "test_arc",
+              "damage": 8,
+              "bullet_count": 12,
+              "arc_gap": 30,
+              "angle_offset": {
+                "type": "cycle",
+                "value": {
+                  "type": "binary",
+                  "a": {
+                    "type": "time"
+                  },
+                  "b": 0.15,
+                  "operation": "mul"
+                },
+                "max": 360
+              },
+              "target": {
+                "type": "constant",
+                "x": 0,
+                "y": 0
+              }
+            },
+            "cooldown": 20
+          }
+        ]
+      },
+      "lotus_spin": {
+        "duration": 1500,
+        "transition": {
+          "id": "next"
+        },
+        "actions": [
+          {
+            "id": "attack",
+            "attack": {
+              "bullet_id": "test",
+              "damage": 15,
+              "bullet_count": 8,
+              "arc_gap": 45,
+              "angle_offset": {
+                "type": "cycle",
+                "value": {
+                  "type": "binary",
+                  "a": {
+                    "type": "time"
+                  },
+                  "b": -0.25,
+                  "operation": "mul"
+                },
+                "max": 360
+              }
+            },
+            "cooldown": 15
+          },
+          {
+            "id": "move",
+            "movement": "random",
+            "speed": 3
+          }
+        ]
+      },
+      "lotus_rage": {
+        "actions": [
+          {
+            "id": "attack",
+            "attack": {
+              "attacks": [
+                {
+                  "bullet_id": "test_segment",
+                  "damage": 10,
+                  "bullet_count": 3,
+                  "arc_gap": 15
+                },
+                {
+                  "bullet_id": "test_sin_acc",
+                  "damage": 5,
+                  "angle_offset": 180
+                }
+              ]
+            },
+            "cooldown": 30
+          },
+          {
+            "id": "move",
+            "movement": "chase",
+            "speed": 2
+          }
+        ]
+      }
+    }
+  }
+}

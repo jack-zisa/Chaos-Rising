@@ -1,15 +1,27 @@
 package dev.creoii.chaos;
 
+import com.badlogic.gdx.math.Vector2;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import dev.creoii.chaos.effect.StatusEffect;
 import dev.creoii.chaos.entity.*;
 import dev.creoii.chaos.input.CharacterController;
+import dev.creoii.chaos.inventory.Inventory;
 import dev.creoii.chaos.network.packet.c2s.CharacterJoinC2S;
 import dev.creoii.chaos.network.packet.c2s.CharacterLeaveC2S;
 import dev.creoii.chaos.network.packet.s2c.*;
+import dev.creoii.chaos.util.EntityGroup;
+import dev.creoii.chaos.util.Mutable;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.UUID;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 public class ClientListener extends Listener {
     private final ClientGame game;
@@ -26,19 +38,27 @@ public class ClientListener extends Listener {
     @Override
     public void received(Connection connection, Object object) {
         if (object instanceof EntityStateS2C(UUID uuid, float x, float y)) {
-            game.getRenderer().getEntityRenderManager().updateEntity(uuid, x, y);
+            game.getEntityManager().updateEntity(uuid, x, y);
         }
 
-        else if (object instanceof EntitySpawnS2C(Entity entity)) {
-            game.getRenderer().getEntityRenderManager().addEntity(entity);
+        else if (object instanceof EntitySpawnS2C(EntityGroup group, UUID uuid, String id, Vector2 pos)) {
+            if (group != EntityGroup.CHARACTER) {
+                Entity entity = switch (group) {
+                    case BULLET -> new BulletEntity(game, game.getDataManager().getBullet(id), uuid, pos, Vector2.Zero, 1, 1, 1);
+                    case ENEMY -> new EnemyEntity(game, game.getDataManager().getEnemy(id), uuid, pos);
+                    case OTHER -> new LootDropEntity(game, game.getDataManager().getLootDrop(id), uuid, pos, new Inventory(2, 4));
+                    default -> throw new IllegalStateException("Unexpected value: " + group);
+                };
+                game.getEntityManager().addEntity(entity);
+            }
         }
 
         else if (object instanceof EntityRemoveS2C(UUID uuid)) {
-            game.getRenderer().getEntityRenderManager().removeEntity(uuid);
+            game.getEntityManager().removeEntity(uuid);
         }
 
         else if (object instanceof StatusEffectS2C(UUID uuid, StatusEffect statusEffect)) {
-            ((LivingEntity) game.getRenderer().getEntityRenderManager().getEntity(uuid)).addStatusEffect(statusEffect);
+            ((LivingEntity) game.getEntityManager().getEntity(uuid)).addStatusEffect(statusEffect);
         }
 
         else if (object instanceof LootDropOpenS2C(UUID uuid)) {
@@ -49,15 +69,34 @@ public class ClientListener extends Listener {
             game.getCharacter().setLootUuid(null);
         }
 
-        else if (object instanceof CharacterSpawnS2C(CharacterEntity character)) {
+        else if (object instanceof CharacterSpawnS2C(UUID uuid, String classId, Vector2 pos)) {
+            CharacterEntity character = game.getEntityManager().addEntity(uuid, new CharacterEntityType(new Mutable<>(game.getDataManager().getCharacterClass(classId))), pos, new HashMap<>());
             game.setCharacter(character);
-            game.getRenderer().getEntityRenderManager().addEntity(character);
             game.getInputManager().addInput(new CharacterController(game.getCharacter()));
+        }
+
+        else if (object instanceof SyncDataS2C(byte[] data)) {
+            Path cacheRoot = Paths.get(System.getProperty("user.dir"), "cache", "data");
+
+            try (ZipInputStream zipIn = new ZipInputStream(new ByteArrayInputStream(data))) {
+                ZipEntry entry;
+                while ((entry = zipIn.getNextEntry()) != null) {
+                    Path filePath = cacheRoot.resolve(entry.getName());
+                    Files.createDirectories(filePath.getParent());
+                    Files.write(filePath, zipIn.readAllBytes());
+                    zipIn.closeEntry();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            game.getDataManager().load(cacheRoot);
         }
     }
 
     @Override
     public void disconnected(Connection connection) {
-        game.getClient().sendTCP(new CharacterLeaveC2S(game.getCharacter().getUuid()));
+        if (game.getCharacter() != null)
+            game.getClient().sendTCP(new CharacterLeaveC2S(game.getCharacter().getUuid()));
     }
 }

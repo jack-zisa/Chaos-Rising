@@ -8,6 +8,7 @@ import dev.creoii.chaos.entity.LivingEntity;
 import dev.creoii.chaos.network.packet.s2c.EntitySpawnS2C;
 import dev.creoii.chaos.network.packet.s2c.EntityStateS2C;
 import dev.creoii.chaos.network.packet.s2c.LivingEntityStateS2C;
+import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.Tickable;
 
 import java.util.Map;
@@ -29,7 +30,7 @@ public class ServerEntityManager extends EntityManager implements Tickable {
 
         if (getGame() instanceof ServerGame serverGame) {
             serverGame.getTickManager().addTickable(spawned);
-            serverGame.getServer().sendToAllTCP(new EntitySpawnS2C(spawned));
+            serverGame.getServer().sendToAllTCP(new EntitySpawnS2C(spawned.getType().group(), spawned.getUuid(), spawned.getType().id(), spawned.getPos()));
         }
         return spawned;
     }
@@ -38,6 +39,9 @@ public class ServerEntityManager extends EntityManager implements Tickable {
     public void tick(int gametime, float delta) {
         if (getGame() instanceof ServerGame serverGame) {
             getEntities().forEach((uuid, entity) -> {
+                if (entity.getType().group() == EntityGroup.CHARACTER)
+                    return;
+
                 serverGame.getServer().sendToAllTCP(new EntityStateS2C(uuid, entity.getPos().x, entity.getPos().y));
 
                 if (entity instanceof LivingEntity living) {

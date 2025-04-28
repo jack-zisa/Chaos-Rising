@@ -1,10 +1,12 @@
 package dev.creoii.chaos;
 
-import com.badlogic.gdx.Gdx;
 import com.esotericsoftware.kryonet.Server;
 import dev.creoii.chaos.network.Networking;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Paths;
 
 public class ServerGame implements Game {
     private final Server server;
@@ -15,8 +17,8 @@ public class ServerGame implements Game {
     private final EntityManager entityManager;
     private int gametime;
 
-    public ServerGame() throws IOException {
-        server = new Server();
+    public ServerGame() throws IOException, URISyntaxException {
+        server = new Server(32768, 32768);
         server.start();
         server.bind(54555, 54777);
 
@@ -30,13 +32,23 @@ public class ServerGame implements Game {
         collisionManager = new CollisionManager(this);
         entityManager = new ServerEntityManager(this);
 
-        dataManager.load();
+        URL baseUrl = getClass().getClassLoader().getResource("data");
+        if (baseUrl == null) {
+            System.out.println("[DataManager] Directory 'data/' does not exist.");
+            return;
+        }
+
+        dataManager.load(Paths.get(baseUrl.toURI()));
+
+        while (true) {
+            update();
+        }
     }
 
     public void update() {
         ++gametime;
 
-        tickManager.tick(gametime, Gdx.graphics.getDeltaTime());
+        tickManager.tick(gametime, 1f);
         collisionManager.checkCollisions();
     }
 

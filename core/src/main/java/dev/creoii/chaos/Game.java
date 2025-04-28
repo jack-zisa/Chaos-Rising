@@ -1,6 +1,8 @@
 package dev.creoii.chaos;
 
-public interface Game {
+import java.io.Serializable;
+
+public interface Game extends Serializable {
     OptionsManager getOptionsManager();
 
     DataManager getDataManager();

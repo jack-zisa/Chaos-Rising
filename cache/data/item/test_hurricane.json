@@ -1,0 +1,10 @@
+{
+  "type": "weapon",
+  "texture": "inferno",
+  "attack": {
+    "bullet_id": "test_dec",
+    "damage": 2,
+    "bullet_count": 360,
+    "arc_gap": 1
+  }
+}

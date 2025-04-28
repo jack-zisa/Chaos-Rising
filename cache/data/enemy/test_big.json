@@ -1,0 +1,77 @@
+{
+  "texture": "beholder",
+  "scale": 2,
+  "stats": {
+    "health": 50
+  },
+  "behavior": {
+    "phase": {
+      "actions": [
+        {
+          "id": "move",
+          "movement": "chase",
+          "speed": 0.5
+        },
+        {
+          "id": "attack",
+          "attack": {
+            "bullet_id": "test_big",
+            "damage": 20,
+            "bullet_count": 6,
+            "arc_gap": 60,
+            "angle_offset": {
+              "type": "cycle",
+              "value": {
+                "type": "binary",
+                "a": {
+                  "type": "time"
+                },
+                "b": 0.33334,
+                "operation": "mul"
+              },
+              "max": 360
+            },
+            "target": {
+              "type": "constant",
+              "x": 0,
+              "y": 0
+            }
+          },
+          "cooldown": 10
+        }
+      ]
+    }
+  },
+  "loot_table": {
+    "entries": [
+      {
+        "item": "test_random",
+        "weight": 1
+      },
+      {
+        "item": "test_spread",
+        "weight": 1
+      },
+      {
+        "item": "test_three",
+        "weight": 1
+      },
+      {
+        "item": "test_two",
+        "weight": 1
+      },
+      {
+        "item": "test_circle",
+        "weight": 1
+      },
+      {
+        "item": "test_backwards",
+        "weight": 1
+      },
+      {
+        "item": "test_multi",
+        "weight": 1
+      }
+    ]
+  }
+}

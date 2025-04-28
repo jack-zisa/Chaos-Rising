@@ -10,7 +10,6 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import dev.creoii.chaos.ClientGame;
-import dev.creoii.chaos.render.entity.EntityRenderManager;
 import dev.creoii.chaos.render.screen.Screen;
 import dev.creoii.chaos.util.Renderable;
 
@@ -25,8 +24,6 @@ public class Renderer implements Disposable {
     private final BitmapFont font;
     private final SpriteBatch batch;
     private final ShapeRenderer shapeRenderer;
-
-    private final EntityRenderManager entityRenderManager;
 
     private final List<Renderable> worldRenderables;
     private final List<Renderable> screenRenderables;
@@ -47,7 +44,7 @@ public class Renderer implements Disposable {
         shapeRenderer.setAutoShapeType(true);
 
         worldRenderables = new ArrayList<>();
-        worldRenderables.add(entityRenderManager = new EntityRenderManager(game));
+        worldRenderables.add(game.getEntityManager());
         screenRenderables = new ArrayList<>();
         screenRenderables.add(new HudRenderer());
     }
@@ -62,10 +59,6 @@ public class Renderer implements Disposable {
 
     public FitViewport getViewport() {
         return viewport;
-    }
-
-    public EntityRenderManager getEntityRenderManager() {
-        return entityRenderManager;
     }
 
     public void resize(int width, int height) {
