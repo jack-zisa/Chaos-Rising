@@ -4,6 +4,6 @@ public enum EntityGroup {
     CHARACTER,
     ENEMY,
     BULLET,
-    OTHER
+    LOOT_DROP
 }
 

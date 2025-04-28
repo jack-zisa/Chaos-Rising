@@ -3,8 +3,10 @@ package dev.creoii.chaos.input;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import dev.creoii.chaos.ClientGame;
+import dev.creoii.chaos.render.screen.InventoryScreen;
 import dev.creoii.chaos.util.Inputtable;
 
 import java.util.ArrayList;
@@ -81,13 +83,13 @@ public class InputManager extends InputAdapter {
         if (keycode == game.getOptionsManager().DEBUG_KEY.intValue()) {
             game.setDebug(!game.getDebug());
             return true;
-        } /*else if (keycode == main.getGame().getOptionsManager().INVENTORY_KEY.intValue()) {
-            if (main.getRenderer().getCurrentScreen() == null) {
-                main.getRenderer().setCurrentScreen(new InventoryScreen(main, new Vector2(1084, 400), main.getGame().getCharacter().getInventory()));
+        } else if (keycode == game.getOptionsManager().INVENTORY_KEY.intValue()) {
+            if (game.getRenderer().getCurrentScreen() == null) {
+                game.getRenderer().setCurrentScreen(new InventoryScreen(game, new Vector2(1084, 400), game.getCharacter().getInventory()));
             } else
-                main.getRenderer().clearCurrentScreen();
+                game.getRenderer().clearCurrentScreen();
             return true;
-        }*/
+        }
 
         forEach(inputtable -> inputtable.keyDown(this, keycode));
         return false;

@@ -42,8 +42,8 @@ public class CharacterController implements Inputtable {
             if (keycode == clientGame.getOptionsManager().BACKWARDS_KEY.intValue())
                 dy -= 1;
 
-            if (dx != 0f && dy != 0f) {
-                Vector2 newPos = character.getPos().cpy().add(new Vector2(dx, dy).nor().scl(character.getStats().speed.value() * (Entity.COORDINATE_SCALE / 2f)));
+            if (dx != 0f || dy != 0f) {
+                Vector2 newPos = character.getPos().add(new Vector2(dx, dy).nor().scl(character.getStats().speed.value()));
                 clientGame.getClient().sendTCP(new CharacterStateC2S(character.getUuid(), newPos.x, newPos.y));
             }
 

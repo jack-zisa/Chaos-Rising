@@ -12,12 +12,12 @@ import java.util.UUID;
 public record CharacterEntityType(Mutable<CharacterClass> characterClass) implements EntityType<CharacterEntity> {
     @Override
     public String id() {
-        return "character";
+        return characterClass.get().id();
     }
 
     @Override
     public float scale() {
-        return characterClass.get().scale();
+        return characterClass.get().scale() * Entity.COORDINATE_SCALE;
     }
 
     @Override
@@ -26,7 +26,7 @@ public record CharacterEntityType(Mutable<CharacterClass> characterClass) implem
     }
 
     public CharacterEntity create(Game game, UUID uuid, Vector2 pos, Map<String, Object> customData) {
-        CharacterEntity character = new CharacterEntity(game, this, uuid, pos.cpy(), characterClass, new CharacterInventory());
+        CharacterEntity character = new CharacterEntity(game, this, uuid, pos.cpy(), new CharacterInventory());
 /*        character.centerPos = new Vector2();
         character.colliderRect = new Rectangle();
         character.colliderRect.setPosition(pos);

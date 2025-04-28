@@ -8,10 +8,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ObjectMap;
 import dev.creoii.chaos.ClientGame;
 import dev.creoii.chaos.EntityManager;
-import dev.creoii.chaos.entity.BulletEntity;
-import dev.creoii.chaos.entity.CharacterEntity;
-import dev.creoii.chaos.entity.Entity;
-import dev.creoii.chaos.entity.LootDropEntity;
+import dev.creoii.chaos.entity.*;
 import dev.creoii.chaos.render.Renderer;
 import dev.creoii.chaos.util.Renderable;
 
@@ -27,6 +24,7 @@ public class EntityRenderManager extends EntityManager implements Renderable {
         visibleEntities = new ObjectMap<>(128);
 
         EntityRenderers.register(CharacterEntity.class, SimpleEntityRenderer::new);
+        EntityRenderers.register(EnemyEntity.class, SimpleEntityRenderer::new);
         EntityRenderers.register(BulletEntity.class, SimpleEntityRenderer::new);
         EntityRenderers.register(LootDropEntity.class, SimpleEntityRenderer::new);
     }
@@ -48,8 +46,19 @@ public class EntityRenderManager extends EntityManager implements Renderable {
         getEntity(uuid).setPos(x, y);
     }
 
+    public void updateLivingEntity(UUID uuid, int health, int maxHealth, int speed, int maxSpeed) {
+        if (getEntity(uuid) instanceof LivingEntity living) {
+            living.getStats().setHealth(health);
+            living.getMaxStats().setHealth(maxHealth);
+            living.getStats().setSpeed(speed);
+            living.getMaxStats().setSpeed(maxSpeed);
+        }
+    }
+
     public static Sprite getSprite(ClientGame game, Entity entity) {
-        return new Sprite(game.getTextureManager().getTexture("entity", entity.getType().id()));
+        Sprite sprite = new Sprite(game.getTextureManager().getTexture(entity.getType().group().name().toLowerCase(), entity.getType().id()));
+        sprite.setSize(entity.getType().scale(), entity.getType().scale());
+        return sprite;
     }
 
     @Override
@@ -70,12 +79,12 @@ public class EntityRenderManager extends EntityManager implements Renderable {
     }
 
     private void renderCollisionGrid(ShapeRenderer shapeRenderer) {
-        /*for (ObjectMap.Entry<Integer, Array<Entity>> entry : main.getGame().getCollisionManager().getGrid().entries()) {
+        /*for (ObjectMap.Entry<Integer, Array<Entity>> entry : getGame().getCollisionManager().getGrid().entries()) {
             int x = (entry.key >>> 16) - CollisionManager.KEY_OFFSET;
             int y = (entry.key & 0xffff) - CollisionManager.KEY_OFFSET;
             shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
             shapeRenderer.setColor(Color.FIREBRICK);
-            float cellSize = main.getGame().getCollisionManager().getCellSize();
+            float cellSize = getGame().getCollisionManager().getCellSize();
             shapeRenderer.rect(x * cellSize, y * cellSize, cellSize, cellSize);
             shapeRenderer.end();
         }*/

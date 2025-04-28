@@ -8,7 +8,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ObjectMap;
 
 public class TextureManager implements Disposable {
-    private static final String[] ATLAS_IDS = new String[]{"class", "enemy", "bullet", "item", "loot_drop", "effect", "ui"};
+    private static final String[] ATLAS_IDS = new String[]{"character", "enemy", "bullet", "item", "loot_drop", "effect", "ui"};
     public static final String DEFAULT_TEXTURE_ID = "textures/misc/missing.png";
     protected static final Texture DEFAULT_TEXTURE = new Texture(DEFAULT_TEXTURE_ID);
     protected static final TextureRegion DEFAULT_TEXTURE_REGION = new TextureRegion(DEFAULT_TEXTURE);

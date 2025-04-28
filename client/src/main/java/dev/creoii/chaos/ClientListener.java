@@ -6,6 +6,7 @@ import com.esotericsoftware.kryonet.Listener;
 import dev.creoii.chaos.effect.StatusEffect;
 import dev.creoii.chaos.entity.*;
 import dev.creoii.chaos.input.CharacterController;
+import dev.creoii.chaos.inventory.CharacterInventory;
 import dev.creoii.chaos.inventory.Inventory;
 import dev.creoii.chaos.network.packet.c2s.CharacterJoinC2S;
 import dev.creoii.chaos.network.packet.c2s.CharacterLeaveC2S;
@@ -18,7 +19,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -41,15 +41,18 @@ public class ClientListener extends Listener {
             game.getEntityManager().updateEntity(uuid, x, y);
         }
 
+        else if (object instanceof LivingEntityStateS2C(UUID uuid, int health, int maxHealth, int speed, int maxSpeed)) {
+            game.getEntityManager().updateLivingEntity(uuid, health, maxHealth, speed, maxSpeed);
+        }
+
         else if (object instanceof EntitySpawnS2C(EntityGroup group, UUID uuid, String id, Vector2 pos)) {
             if (group != EntityGroup.CHARACTER) {
-                Entity entity = switch (group) {
+                game.getEntityManager().addEntity(switch (group) {
                     case BULLET -> new BulletEntity(game, game.getDataManager().getBullet(id), uuid, pos, Vector2.Zero, 1, 1, 1);
                     case ENEMY -> new EnemyEntity(game, game.getDataManager().getEnemy(id), uuid, pos);
-                    case OTHER -> new LootDropEntity(game, game.getDataManager().getLootDrop(id), uuid, pos, new Inventory(2, 4));
+                    case LOOT_DROP -> new LootDropEntity(game, game.getDataManager().getLootDrop(id), uuid, pos, new Inventory(2, 4));
                     default -> throw new IllegalStateException("Unexpected value: " + group);
-                };
-                game.getEntityManager().addEntity(entity);
+                });
             }
         }
 
@@ -70,8 +73,10 @@ public class ClientListener extends Listener {
         }
 
         else if (object instanceof CharacterSpawnS2C(UUID uuid, String classId, Vector2 pos)) {
-            CharacterEntity character = game.getEntityManager().addEntity(uuid, new CharacterEntityType(new Mutable<>(game.getDataManager().getCharacterClass(classId))), pos, new HashMap<>());
+            Mutable<CharacterClass> characterClass = new Mutable<>(game.getDataManager().getCharacterClass(classId));
+            CharacterEntity character = new CharacterEntity(game, new CharacterEntityType(characterClass), uuid, pos, new CharacterInventory());
             game.setCharacter(character);
+            game.getEntityManager().addEntity(character);
             game.getInputManager().addInput(new CharacterController(game.getCharacter()));
         }
 

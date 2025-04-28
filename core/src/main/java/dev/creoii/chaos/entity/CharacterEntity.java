@@ -10,23 +10,21 @@ import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class CharacterEntity extends LivingEntity {
-    private final Mutable<CharacterClass> characterClass;
     private final CharacterInventory inventory;
     @Nullable
     private UUID lootUuid;
 
-    public CharacterEntity(Game game, EntityType<? extends CharacterEntity> type, UUID uuid, Vector2 pos, Mutable<CharacterClass> characterClass, CharacterInventory inventory) {
-        super(game, type, uuid, pos);
-        this.characterClass = characterClass;
+    public CharacterEntity(Game game, EntityType<? extends CharacterEntity> type, UUID uuid, Vector2 pos, CharacterInventory inventory) {
+        super(game, type, uuid, pos, ((CharacterEntityType) type).characterClass().get().baseStatContainer().copy(), ((CharacterEntityType) type).characterClass().get().baseStatContainer().copy());
         this.inventory = inventory.withCharacter(this);
     }
 
     public Mutable<CharacterClass> getCharacterClass() {
-        return characterClass;
+        return ((CharacterEntityType) getType()).characterClass();
     }
 
     public void setCharacterClass(CharacterClass characterClass) {
-        this.characterClass.set(characterClass);
+        ((CharacterEntityType) getType()).characterClass().set(characterClass);
         getStats().set(characterClass.baseStatContainer());
         getMaxStats().set(characterClass.baseStatContainer());
     }

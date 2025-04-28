@@ -12,7 +12,7 @@ import java.util.UUID;
 public record LootDropEntityType(String id, float scale, BooleanProvider removeEmpty) implements EntityType<LootDropEntity> {
     @Override
     public EntityGroup group() {
-        return EntityGroup.OTHER;
+        return EntityGroup.LOOT_DROP;
     }
 
     public LootDropEntity create(Game game, UUID uuid, Vector2 pos, Map<String, Object> customData) {

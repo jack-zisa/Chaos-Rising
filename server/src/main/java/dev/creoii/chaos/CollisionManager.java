@@ -27,8 +27,8 @@ public class CollisionManager {
         COLLISION_MATRIX[EntityGroup.BULLET.ordinal()][EntityGroup.CHARACTER.ordinal()] = true;
         COLLISION_MATRIX[EntityGroup.ENEMY.ordinal()][EntityGroup.BULLET.ordinal()] = true;
         COLLISION_MATRIX[EntityGroup.CHARACTER.ordinal()][EntityGroup.BULLET.ordinal()] = true;
-        COLLISION_MATRIX[EntityGroup.CHARACTER.ordinal()][EntityGroup.OTHER.ordinal()] = true;
-        COLLISION_MATRIX[EntityGroup.OTHER.ordinal()][EntityGroup.CHARACTER.ordinal()] = true;
+        COLLISION_MATRIX[EntityGroup.CHARACTER.ordinal()][EntityGroup.LOOT_DROP.ordinal()] = true;
+        COLLISION_MATRIX[EntityGroup.LOOT_DROP.ordinal()][EntityGroup.CHARACTER.ordinal()] = true;
     }
 
     public float getCellSize() {

@@ -39,14 +39,12 @@ public class ServerEntityManager extends EntityManager implements Tickable {
     public void tick(int gametime, float delta) {
         if (getGame() instanceof ServerGame serverGame) {
             getEntities().forEach((uuid, entity) -> {
-                if (entity.getType().group() == EntityGroup.CHARACTER)
-                    return;
+                if (entity.getType().group() != EntityGroup.CHARACTER)
+                    serverGame.getServer().sendToAllTCP(new EntityStateS2C(uuid, entity.getPos().x, entity.getPos().y));
 
-                serverGame.getServer().sendToAllTCP(new EntityStateS2C(uuid, entity.getPos().x, entity.getPos().y));
-
-                if (entity instanceof LivingEntity living) {
-                    serverGame.getServer().sendToAllTCP(new LivingEntityStateS2C(uuid, living.getStats(), living.getMaxStats()));
-                }
+                /*if (entity instanceof LivingEntity living) {
+                    serverGame.getServer().sendToAllTCP(new LivingEntityStateS2C(uuid, living.getStats().health.base(), living.getMaxStats().health.base(), living.getStats().speed.base(), living.getMaxStats().speed.base()));
+                }*/
             });
         }
     }

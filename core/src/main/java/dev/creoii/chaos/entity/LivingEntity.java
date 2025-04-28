@@ -14,10 +14,10 @@ public abstract class LivingEntity extends Entity {
     private final StatContainer maxStatContainer;
     private final List<StatusEffect> statusEffects;
 
-    public LivingEntity(Game game, EntityType<? extends LivingEntity> type, UUID uuid, Vector2 pos) {
+    public LivingEntity(Game game, EntityType<? extends LivingEntity> type, UUID uuid, Vector2 pos, StatContainer statContainer, StatContainer maxStatContainer) {
         super(game, type, uuid, pos);
-        statContainer = new StatContainer();
-        maxStatContainer = new StatContainer();
+        this.statContainer = statContainer;
+        this.maxStatContainer = statContainer;
         statusEffects = new ArrayList<>();
     }
 

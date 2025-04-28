@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.Game;
 import dev.creoii.chaos.entity.controller.EnemyController;
 import dev.creoii.chaos.util.LootUtils;
+import dev.creoii.chaos.util.stat.StatContainer;
 
 import java.util.UUID;
 
@@ -11,7 +12,7 @@ public class EnemyEntity extends LivingEntity {
     private final EnemyController controller;
 
     public EnemyEntity(Game game, EntityType<? extends EnemyEntity> type, UUID uuid, Vector2 pos) {
-        super(game, type, uuid, pos);
+        super(game, type, uuid, pos, new StatContainer(), new StatContainer());
         controller = new EnemyController(((EnemyEntityType) type).behavior());
         controller.start(this);
     }
