@@ -1,6 +1,7 @@
 package dev.creoii.chaos.inventory;
 
 import dev.creoii.chaos.item.ItemStack;
+import dev.creoii.chaos.network.packet.c2s.SlotUpdateC2S;
 
 import java.util.Arrays;
 
@@ -61,5 +62,24 @@ public class Inventory {
      * Assumes that the item is still in the slot
      */
     public void onRemoveItemFromSlot(Slot slot, ItemStack stack) {
+    }
+
+    public void updateSlot(SlotUpdateC2S.Action action, Inventory from, Inventory to, Slot fromSlot, Slot toSlot) {
+        if (action == SlotUpdateC2S.Action.SWAP) {
+            from.onRemoveItemFromSlot(fromSlot, fromSlot.getStack());
+            to.onRemoveItemFromSlot(toSlot, toSlot.getStack());
+            ItemStack takeTouched = toSlot.takeStack();
+            toSlot.setStack(fromSlot.getStack().copy());
+            from.onAddItemToSlot(toSlot, toSlot.getStack());
+            fromSlot.setStack(takeTouched);
+            to.onAddItemToSlot(fromSlot, takeTouched);
+        } else if (action == SlotUpdateC2S.Action.MOVE) {
+            from.onRemoveItemFromSlot(fromSlot, fromSlot.getStack());
+            toSlot.setStack(fromSlot.getStack().copy());
+            to.onAddItemToSlot(toSlot, toSlot.getStack());
+        } else if (action == SlotUpdateC2S.Action.QUICK_MOVE) {
+            from.onRemoveItemFromSlot(toSlot, toSlot.getStack());
+            to.addItem(toSlot.takeStack());
+        }
     }
 }

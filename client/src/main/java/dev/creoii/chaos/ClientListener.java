@@ -8,6 +8,9 @@ import dev.creoii.chaos.entity.*;
 import dev.creoii.chaos.input.CharacterController;
 import dev.creoii.chaos.inventory.CharacterInventory;
 import dev.creoii.chaos.inventory.Inventory;
+import dev.creoii.chaos.inventory.InventoryType;
+import dev.creoii.chaos.inventory.SlotEntry;
+import dev.creoii.chaos.item.ItemStack;
 import dev.creoii.chaos.network.packet.c2s.CharacterJoinC2S;
 import dev.creoii.chaos.network.packet.c2s.CharacterLeaveC2S;
 import dev.creoii.chaos.network.packet.s2c.*;
@@ -19,6 +22,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -64,6 +68,14 @@ public class ClientListener extends Listener {
             ((LivingEntity) game.getEntityManager().getEntity(uuid)).addStatusEffect(statusEffect);
         }
 
+        else if (object instanceof InventoryUpdateS2C(InventoryType type, List<SlotEntry> slots)) {
+            for (SlotEntry entry : slots) {
+                if (type == InventoryType.MAIN) {
+                    game.getCharacter().getInventory().getSlots()[entry.r()][entry.c()].setStack(new ItemStack(game.getDataManager().getItem(entry.id()), entry.count()));
+                }
+            }
+        }
+
         else if (object instanceof LootDropOpenS2C(UUID uuid)) {
             game.getCharacter().setLootUuid(uuid);
         }
@@ -74,7 +86,7 @@ public class ClientListener extends Listener {
 
         else if (object instanceof CharacterSpawnS2C(UUID uuid, String classId, Vector2 pos)) {
             Mutable<CharacterClass> characterClass = new Mutable<>(game.getDataManager().getCharacterClass(classId));
-            CharacterEntity character = new CharacterEntity(game, new CharacterEntityType(characterClass), uuid, pos, new CharacterInventory());
+            CharacterEntity character = new CharacterEntity(game, new CharacterEntityType(characterClass), uuid, pos, connection.getID(), new CharacterInventory());
             game.setCharacter(character);
             game.getEntityManager().addEntity(character);
             game.getInputManager().addInput(new CharacterController(game.getCharacter()));

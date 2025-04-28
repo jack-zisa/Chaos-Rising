@@ -6,8 +6,8 @@ import com.esotericsoftware.kryonet.Listener;
 import dev.creoii.chaos.chat.Commands;
 import dev.creoii.chaos.entity.CharacterEntity;
 import dev.creoii.chaos.entity.CharacterEntityType;
-import dev.creoii.chaos.inventory.Inventory;
-import dev.creoii.chaos.inventory.Slot;
+import dev.creoii.chaos.entity.LootDropEntity;
+import dev.creoii.chaos.inventory.*;
 import dev.creoii.chaos.item.ItemStack;
 import dev.creoii.chaos.network.packet.c2s.*;
 import dev.creoii.chaos.network.packet.s2c.CharacterSpawnS2C;
@@ -23,6 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -51,16 +52,13 @@ public class ServerListener extends Listener {
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream(32768);
         try (ZipOutputStream zipOut = new ZipOutputStream(baos)) {
-            Files.walk(dataRoot)
-                .filter(Files::isRegularFile)
-                .forEach(path -> {
+            Files.walk(dataRoot).filter(Files::isRegularFile).forEach(path -> {
                     try {
                         if (Files.isDirectory(path))
                             return;
-                        String relativePath = dataRoot.relativize(path).toString().replace("\\", "/");
-                        zipOut.putNextEntry(new ZipEntry(relativePath));
-                        byte[] bytes = Files.readAllBytes(path);
-                        zipOut.write(bytes);
+
+                        zipOut.putNextEntry(new ZipEntry(dataRoot.relativize(path).toString().replace("\\", "/")));
+                        zipOut.write(Files.readAllBytes(path));
                         zipOut.closeEntry();
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -85,9 +83,13 @@ public class ServerListener extends Listener {
             game.getServer().sendToTCP(connection.getID(), new EntityStateS2C(uuid, newPos.x, newPos.y));
         }
 
-        else if (object instanceof SlotUpdateC2S(UUID uuid, SlotUpdateC2S.Action action, Inventory from, Inventory to, Slot fromSlot, Slot toSlot)) {
+        else if (object instanceof SlotUpdateC2S(UUID uuid, SlotUpdateC2S.Action action, InventoryType from, InventoryType to, SlotEntry fromSlot, SlotEntry toSlot)) {
             CharacterEntity character = game.getEntityManager().getCharacter(uuid);
-            character.getInventory().updateSlot(action, from, to, fromSlot, toSlot);
+
+            Inventory fromInventory = from == InventoryType.MAIN ? character.getInventory() : ((LootDropEntity) game.getEntityManager().getEntity(character.getLootUuid())).getInventory();
+            Inventory toInventory = from == InventoryType.MAIN ? character.getInventory() : ((LootDropEntity) game.getEntityManager().getEntity(character.getLootUuid())).getInventory();
+
+            toInventory.updateSlot(action, fromInventory, toInventory, fromInventory.getSlot(fromSlot.r(), fromSlot.c()), toInventory.getSlot(toSlot.r(), toSlot.c()));
         }
 
         else if (object instanceof LootDropCloseC2S(UUID uuid)) {
@@ -107,7 +109,10 @@ public class ServerListener extends Listener {
         }
 
         else if (object instanceof CharacterJoinC2S(UUID uuid)) {
-            CharacterEntity character = game.getEntityManager().addEntity(uuid, new CharacterEntityType(new Mutable<>(game.getDataManager().getCharacterClass("wizard"))), new Vector2(0, 0), new HashMap<>());
+            Map<String, Object> customData = new HashMap<>();
+            customData.put("connection_id", connection.getID());
+            customData.put("inventory", new ServerCharacterInventory());
+            CharacterEntity character = game.getEntityManager().addEntity(uuid, new CharacterEntityType(new Mutable<>(game.getDataManager().getCharacterClass("wizard"))), new Vector2(0, 0), customData);
             game.getServer().sendToTCP(connection.getID(), new CharacterSpawnS2C(uuid, character.getCharacterClass().get().id(), character.getPos()));
         }
 

@@ -9,7 +9,9 @@ import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.ClientGame;
 import dev.creoii.chaos.input.InputManager;
 import dev.creoii.chaos.inventory.Inventory;
+import dev.creoii.chaos.inventory.InventoryType;
 import dev.creoii.chaos.inventory.Slot;
+import dev.creoii.chaos.inventory.SlotEntry;
 import dev.creoii.chaos.item.ItemStack;
 import dev.creoii.chaos.network.packet.c2s.DropSlotItemC2S;
 import dev.creoii.chaos.network.packet.c2s.LootDropCloseC2S;
@@ -130,11 +132,11 @@ public class InventoryWidget extends Widget {
                 } else {
                     if (touched.hasItem()) {
                         if (dragSource.canAccept(touched.getStack().getItem())) {
-                            game.getClient().sendTCP(new SlotUpdateC2S(game.getCharacter().getUuid(), SlotUpdateC2S.Action.SWAP, getInventory(), mainInventory, dragSource, touched));
+                            game.getClient().sendTCP(new SlotUpdateC2S(game.getCharacter().getUuid(), SlotUpdateC2S.Action.SWAP, InventoryType.MAIN, InventoryType.MAIN, new SlotEntry(dragSource.getR(), dragSource.getC(), dragSource.getStack().getItem().id(), dragSource.getStack().getCount()), new SlotEntry(touched.getR(), touched.getC(), touched.getStack().getItem().id(), touched.getStack().getCount())));
                         } else
                             dragSource.setStack(dragStack.copy());
                     } else {
-                        game.getClient().sendTCP(new SlotUpdateC2S(game.getCharacter().getUuid(), SlotUpdateC2S.Action.MOVE, getInventory(), mainInventory, dragSource, touched));
+                        game.getClient().sendTCP(new SlotUpdateC2S(game.getCharacter().getUuid(), SlotUpdateC2S.Action.MOVE, InventoryType.MAIN, InventoryType.MAIN, new SlotEntry(dragSource.getR(), dragSource.getC(), dragSource.getStack().getItem().id(), dragSource.getStack().getCount()), new SlotEntry(touched.getR(), touched.getC(), touched.getStack().getItem().id(), touched.getStack().getCount())));
 
                         if (getInventory().isEmpty()) {
                             if (game.getCharacter().getLootUuid() != null) {

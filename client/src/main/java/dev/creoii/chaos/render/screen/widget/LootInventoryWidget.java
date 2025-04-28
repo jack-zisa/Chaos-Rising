@@ -7,7 +7,9 @@ import dev.creoii.chaos.ClientGame;
 import dev.creoii.chaos.input.InputManager;
 import dev.creoii.chaos.entity.LootDropEntity;
 import dev.creoii.chaos.inventory.Inventory;
+import dev.creoii.chaos.inventory.InventoryType;
 import dev.creoii.chaos.inventory.Slot;
+import dev.creoii.chaos.inventory.SlotEntry;
 import dev.creoii.chaos.network.packet.c2s.LootDropCloseC2S;
 import dev.creoii.chaos.network.packet.c2s.SlotUpdateC2S;
 import dev.creoii.chaos.render.screen.InventoryScreen;
@@ -41,8 +43,7 @@ public class LootInventoryWidget extends InventoryWidget {
                 if (!touched.getStack().clickInSlot(manager.getGame(), manager.getGame().getCharacter().getUuid(), touched)) {
                     if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
                         ClientGame game = manager.getGame();
-                        Inventory mainInventory = ((InventoryWidget) inventoryScreen.getWidget("main_inventory")).getInventory();
-                        game.getClient().sendTCP(new SlotUpdateC2S(game.getCharacter().getUuid(), SlotUpdateC2S.Action.QUICK_MOVE, getInventory(), mainInventory, dragSource, touched));
+                        game.getClient().sendTCP(new SlotUpdateC2S(game.getCharacter().getUuid(), SlotUpdateC2S.Action.QUICK_MOVE, InventoryType.LOOT, InventoryType.MAIN, new SlotEntry(dragSource.getR(), dragSource.getC(), dragSource.getStack().getItem().id(), dragSource.getStack().getCount()), new SlotEntry(touched.getR(), touched.getC(), touched.getStack().getItem().id(), touched.getStack().getCount())));
 
                         if (getInventory() != null && getInventory().isEmpty()) {
                             if (game.getCharacter().getLootUuid() != null) {
