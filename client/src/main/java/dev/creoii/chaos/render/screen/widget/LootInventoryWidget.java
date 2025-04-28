@@ -13,6 +13,8 @@ import dev.creoii.chaos.network.packet.c2s.SlotUpdateC2S;
 import dev.creoii.chaos.render.screen.InventoryScreen;
 import dev.creoii.chaos.render.screen.Screen;
 
+import javax.annotation.Nullable;
+import java.util.UUID;
 import java.util.function.Predicate;
 
 public class LootInventoryWidget extends InventoryWidget {
@@ -21,8 +23,12 @@ public class LootInventoryWidget extends InventoryWidget {
     }
 
     @Override
+    @Nullable
     public Inventory getInventory() {
-        return ((LootDropEntity) getParent().getGame().getEntityManager().getEntity(getParent().getGame().getCharacter().getLootUuid())).getInventory();
+        UUID lootUuid = getParent().getGame().getCharacter().getLootUuid();
+        if (lootUuid == null)
+            return null;
+        return ((LootDropEntity) getParent().getGame().getEntityManager().getEntity(lootUuid)).getInventory();
     }
 
     @Override
@@ -38,7 +44,7 @@ public class LootInventoryWidget extends InventoryWidget {
                         Inventory mainInventory = ((InventoryWidget) inventoryScreen.getWidget("main_inventory")).getInventory();
                         game.getClient().sendTCP(new SlotUpdateC2S(game.getCharacter().getUuid(), SlotUpdateC2S.Action.QUICK_MOVE, getInventory(), mainInventory, dragSource, touched));
 
-                        if (getInventory().isEmpty()) {
+                        if (getInventory() != null && getInventory().isEmpty()) {
                             if (game.getCharacter().getLootUuid() != null) {
                                 game.getCharacter().setLootUuid(null);
                                 game.getClient().sendTCP(new LootDropCloseC2S(game.getCharacter().getUuid()));

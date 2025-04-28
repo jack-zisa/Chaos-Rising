@@ -11,6 +11,7 @@ import dev.creoii.chaos.inventory.Slot;
 import dev.creoii.chaos.item.ItemStack;
 import dev.creoii.chaos.network.packet.c2s.*;
 import dev.creoii.chaos.network.packet.s2c.CharacterSpawnS2C;
+import dev.creoii.chaos.network.packet.s2c.EntityStateS2C;
 import dev.creoii.chaos.network.packet.s2c.SyncDataS2C;
 import dev.creoii.chaos.util.Mutable;
 
@@ -75,10 +76,13 @@ public class ServerListener extends Listener {
 
     @Override
     public void received(Connection connection, Object object) {
-        if (object instanceof CharacterStateC2S(UUID uuid, float x, float y)) {
+        if (object instanceof CharacterMoveC2S(UUID uuid, float dx, float dy)) {
             CharacterEntity character = game.getEntityManager().getCharacter(uuid);
+            Vector2 newPos = character.getPos().add(new Vector2(dx, dy).nor().scl(character.getStats().speed.value() / 8f));
             character.setPrevPos(character.getPos().x, character.getPos().y);
-            character.setPos(x, y);
+            character.setPos(newPos.x, newPos.y);
+
+            game.getServer().sendToTCP(connection.getID(), new EntityStateS2C(uuid, newPos.x, newPos.y));
         }
 
         else if (object instanceof SlotUpdateC2S(UUID uuid, SlotUpdateC2S.Action action, Inventory from, Inventory to, Slot fromSlot, Slot toSlot)) {

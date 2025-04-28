@@ -1,13 +1,12 @@
 package dev.creoii.chaos.input;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.ClientGame;
 import dev.creoii.chaos.entity.CharacterEntity;
 import dev.creoii.chaos.inventory.Slot;
 import dev.creoii.chaos.item.AbilityItem;
 import dev.creoii.chaos.item.WeaponItem;
-import dev.creoii.chaos.network.packet.c2s.CharacterStateC2S;
+import dev.creoii.chaos.network.packet.c2s.CharacterMoveC2S;
 import dev.creoii.chaos.util.Inputtable;
 import dev.creoii.chaos.util.provider.vecprovider.MousePosVecProvider;
 import dev.creoii.chaos.util.provider.vecprovider.SourcePosVecProvider;
@@ -42,8 +41,7 @@ public class CharacterController implements Inputtable {
                 dy -= 1;
 
             if (dx != 0f || dy != 0f) {
-                Vector2 newPos = character.getPos().add(new Vector2(dx, dy).nor().scl(character.getStats().speed.value() / 8f));
-                clientGame.getClient().sendTCP(new CharacterStateC2S(character.getUuid(), newPos.x, newPos.y));
+                clientGame.getClient().sendTCP(new CharacterMoveC2S(character.getUuid(), dx, dy));
             }
 
             if (keycode == character.getGame().getOptionsManager().ABILITY_KEY.intValue()) {
