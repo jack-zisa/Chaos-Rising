@@ -1,6 +1,5 @@
 {
   "type": "ability",
-  "texture": "inferno",
   "attack": {
     "bullet_id": "test_dec",
     "damage": 2,

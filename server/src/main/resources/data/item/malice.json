@@ -1,6 +1,9 @@
 {
-  "type": "armor",
-  "texture": "incinerator_on",
+  "type": "weapon",
+  "attack": {
+    "bullet_id": "test_sin",
+    "damage": 10
+  },
   "stat_bonus": [
     {
       "type": "health",
@@ -9,7 +12,8 @@
     },
     {
       "type": "defense",
-      "amount": 10,
+      "amount": -5,
+      "operation": "add",
       "modifier": "max"
     }
   ]

@@ -132,11 +132,11 @@ public class InventoryWidget extends Widget {
                 } else {
                     if (touched.hasItem()) {
                         if (dragSource.canAccept(touched.getStack().getItem())) {
-                            game.getClient().sendTCP(new SlotUpdateC2S(game.getCharacter().getUuid(), SlotUpdateC2S.Action.SWAP, InventoryType.MAIN, InventoryType.MAIN, new SlotEntry(dragSource.getR(), dragSource.getC(), dragSource.getStack().getItem().id(), dragSource.getStack().getCount()), new SlotEntry(touched.getR(), touched.getC(), touched.getStack().getItem().id(), touched.getStack().getCount())));
+                            game.getClient().sendTCP(new SlotUpdateC2S(game.getCharacter().getUuid(), SlotUpdateC2S.Action.SWAP, InventoryType.MAIN, InventoryType.MAIN, new SlotEntry(dragSource.getR(), dragSource.getC(), dragSource.hasItem() ? dragSource.getStack().getItem().id() : "", dragSource.hasItem() ? dragSource.getStack().getCount() : 0), new SlotEntry(touched.getR(), touched.getC(), touched.hasItem() ? touched.getStack().getItem().id() : "", touched.hasItem() ? touched.getStack().getCount() : 0)));
                         } else
                             dragSource.setStack(dragStack.copy());
                     } else {
-                        game.getClient().sendTCP(new SlotUpdateC2S(game.getCharacter().getUuid(), SlotUpdateC2S.Action.MOVE, InventoryType.MAIN, InventoryType.MAIN, new SlotEntry(dragSource.getR(), dragSource.getC(), dragSource.getStack().getItem().id(), dragSource.getStack().getCount()), new SlotEntry(touched.getR(), touched.getC(), touched.getStack().getItem().id(), touched.getStack().getCount())));
+                        game.getClient().sendTCP(new SlotUpdateC2S(game.getCharacter().getUuid(), SlotUpdateC2S.Action.MOVE, InventoryType.MAIN, InventoryType.MAIN, new SlotEntry(dragSource.getR(), dragSource.getC(), dragSource.hasItem() ? dragSource.getStack().getItem().id() : "", dragSource.hasItem() ? dragSource.getStack().getCount() : 0), new SlotEntry(touched.getR(), touched.getC(), touched.hasItem() ? touched.getStack().getItem().id() : "", touched.hasItem() ? touched.getStack().getCount() : 0)));
 
                         if (getInventory().isEmpty()) {
                             if (game.getCharacter().getLootUuid() != null) {

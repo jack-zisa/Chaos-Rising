@@ -1,6 +1,5 @@
 {
   "type": "weapon",
-  "texture": "polar_blade",
   "attack": {
     "bullet_id": "test_segment",
     "damage": {

@@ -1,10 +1,5 @@
 {
-  "type": "weapon",
-  "texture": "malice",
-  "attack": {
-    "bullet_id": "test_sin",
-    "damage": 10
-  },
+  "type": "armor",
   "stat_bonus": [
     {
       "type": "health",
@@ -13,8 +8,7 @@
     },
     {
       "type": "defense",
-      "amount": -5,
-      "operation": "add",
+      "amount": 10,
       "modifier": "max"
     }
   ]

@@ -1,7 +1,6 @@
 {
   "type": "consumable",
   "rarity": "legendary",
-  "texture": "vulcans_eruption",
   "stat_bonus": [
     {
       "type": "health",

@@ -1,7 +1,6 @@
 {
   "type": "weapon",
   "rarity": "uncommon",
-  "texture": "shrieking_ripper",
   "attack": {
     "bullet_id": "test_dec",
     "damage": 10,
