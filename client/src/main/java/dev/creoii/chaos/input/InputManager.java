@@ -20,12 +20,14 @@ public class InputManager extends InputAdapter {
     private final List<Inputtable> inputs;
     private final Vector3 mousePos = new Vector3();
     private final Set<Integer> keysHeld;
+    private final Set<TouchEntry> mouseKeysHeld;
     private boolean dragging;
 
     public InputManager(ClientGame game) {
         this.game = game;
         inputs = new ArrayList<>();
         keysHeld = new HashSet<>();
+        mouseKeysHeld = new HashSet<>();
         dragging = false;
     }
 
@@ -72,6 +74,10 @@ public class InputManager extends InputAdapter {
     public void update() {
         for (int keycode : keysHeld) {
             keyHeld(keycode);
+        }
+
+        for (TouchEntry touchEntry : mouseKeysHeld) {
+            touchHeld(touchEntry.screenX, touchEntry.screenY, touchEntry.pointer, touchEntry.button);
         }
     }
 
@@ -122,6 +128,7 @@ public class InputManager extends InputAdapter {
             return false;
         game.getRenderer().getCamera().unproject(mousePos.set(screenX, screenY, 0));
         dragging = true;
+        mouseKeysHeld.add(new TouchEntry(screenX, screenY, pointer, button));
         forEach(inputtable -> inputtable.touchDown(this, screenX, screenY, pointer, button));
         return true;
     }
@@ -140,14 +147,24 @@ public class InputManager extends InputAdapter {
             return false;
         game.getRenderer().getCamera().unproject(mousePos.set(screenX, screenY, 0));
         dragging = false;
+        mouseKeysHeld.removeIf(touchEntry -> touchEntry.button == button && touchEntry.pointer == pointer);
         forEach(inputtable -> inputtable.touchUp(this, screenX, screenY, pointer, button));
         return super.touchUp(screenX, screenY, pointer, button);
+    }
+
+    public void touchHeld(int screenX, int screenY, int pointer, int button) {
+        game.getRenderer().getCamera().unproject(mousePos.set(Gdx.input.getX(), Gdx.input.getY(), 0));
+        forEach(inputtable -> inputtable.touchHeld(this, screenX, screenY, pointer, button));
     }
 
     @Override
     public boolean touchCancelled(int screenX, int screenY, int pointer, int button) {
         dragging = false;
+        mouseKeysHeld.removeIf(touchEntry -> touchEntry.button == button && touchEntry.pointer == pointer);
         forEach(inputtable -> inputtable.touchCancelled(this, screenX, screenY, pointer, button));
         return super.touchCancelled(screenX, screenY, pointer, button);
+    }
+
+    private record TouchEntry(int screenX, int screenY, int pointer, int button) {
     }
 }

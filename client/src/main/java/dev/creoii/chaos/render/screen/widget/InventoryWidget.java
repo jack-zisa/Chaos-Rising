@@ -125,7 +125,6 @@ public class InventoryWidget extends Widget {
         if (dragStack != null && getParent() instanceof InventoryScreen inventoryScreen) {
             ClientGame game = manager.getGame();
             Slot touched = inventoryScreen.getMouseOverSlot();
-            Inventory mainInventory = ((InventoryWidget) inventoryScreen.getWidget("main_inventory")).inventory;
             if (touched != null) {
                 if (!touched.canAccept(dragStack.getItem())) {
                     dragSource.setStack(dragStack.copy());
@@ -147,7 +146,7 @@ public class InventoryWidget extends Widget {
                     }
                 }
             } else {
-                game.getClient().sendTCP(new DropSlotItemC2S(game.getCharacter().getUuid(), dragSource));
+                game.getClient().sendTCP(new DropSlotItemC2S(game.getCharacter().getUuid(), new SlotEntry(dragSource.getR(), dragSource.getC(), dragSource.hasItem() ? dragSource.getStack().getItem().id() : "", dragSource.hasItem() ? dragSource.getStack().getCount() : 0)));
             }
             dragStack = null;
         }

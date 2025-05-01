@@ -5,5 +5,5 @@ import dev.creoii.chaos.inventory.SlotEntry;
 import java.io.Serializable;
 import java.util.UUID;
 
-public record DropSlotItemC2S(UUID uuid, SlotEntry slot) implements Serializable {
+public record UseItemC2S(UUID uuid, SlotEntry slot) implements Serializable {
 }

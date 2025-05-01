@@ -8,7 +8,6 @@ public interface Inputtable {
     }
 
     default void keyHeld(InputManager manager, int keycode) {
-
     }
 
     default boolean keyUp(InputManager manager, int keycode) {
@@ -33,6 +32,9 @@ public interface Inputtable {
 
     default boolean touchDragged(InputManager manager, int screenX, int screenY, int pointer) {
         return false;
+    }
+
+    default void touchHeld(InputManager manager, int screenX, int screenY, int pointer, int button) {
     }
 
     default boolean mouseMoved(InputManager manager, int screenX, int screenY) {

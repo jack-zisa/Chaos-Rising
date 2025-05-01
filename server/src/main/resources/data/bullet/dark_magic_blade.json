@@ -1,8 +1,7 @@
 {
-  "texture": "dark_magic",
   "lifetime": 100,
   "path": {
     "speed": 10
   },
-  "scale": 2
+  "piercing": true
 }

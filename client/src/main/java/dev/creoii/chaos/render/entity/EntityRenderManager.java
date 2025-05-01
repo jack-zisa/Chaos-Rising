@@ -63,10 +63,6 @@ public class EntityRenderManager extends EntityManager implements Renderable {
 
     @Override
     public void render(Renderer renderer, @Nullable SpriteBatch batch, @Nullable ShapeRenderer shapeRenderer, BitmapFont font, boolean debug) {
-        if (debug && shapeRenderer != null) {
-            renderCollisionGrid(shapeRenderer);
-        }
-
         float camX = renderer.getCamera().position.x - renderer.getCamera().viewportWidth / 2;
         float camY = renderer.getCamera().position.y - renderer.getCamera().viewportHeight / 2;
         float camW = renderer.getCamera().viewportWidth;
@@ -76,18 +72,6 @@ public class EntityRenderManager extends EntityManager implements Renderable {
                 EntityRenderers.getRenderer(entity).render(entity, renderer, batch, shapeRenderer, font, debug);
             }
         }
-    }
-
-    private void renderCollisionGrid(ShapeRenderer shapeRenderer) {
-        /*for (ObjectMap.Entry<Integer, Array<Entity>> entry : getGame().getCollisionManager().getGrid().entries()) {
-            int x = (entry.key >>> 16) - CollisionManager.KEY_OFFSET;
-            int y = (entry.key & 0xffff) - CollisionManager.KEY_OFFSET;
-            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-            shapeRenderer.setColor(Color.FIREBRICK);
-            float cellSize = getGame().getCollisionManager().getCellSize();
-            shapeRenderer.rect(x * cellSize, y * cellSize, cellSize, cellSize);
-            shapeRenderer.end();
-        }*/
     }
 
     private boolean isEntityInView(Vector3 cameraPos, float camX, float camY, float camW, float camH, Entity entity) {

@@ -8,12 +8,16 @@ import dev.creoii.chaos.entity.CharacterEntity;
 import dev.creoii.chaos.entity.CharacterEntityType;
 import dev.creoii.chaos.entity.LootDropEntity;
 import dev.creoii.chaos.inventory.*;
+import dev.creoii.chaos.item.AbilityItem;
 import dev.creoii.chaos.item.ItemStack;
+import dev.creoii.chaos.item.WeaponItem;
 import dev.creoii.chaos.network.packet.c2s.*;
 import dev.creoii.chaos.network.packet.s2c.CharacterSpawnS2C;
 import dev.creoii.chaos.network.packet.s2c.EntityStateS2C;
 import dev.creoii.chaos.network.packet.s2c.SyncDataS2C;
 import dev.creoii.chaos.util.Mutable;
+import dev.creoii.chaos.util.provider.vecprovider.MousePosVecProvider;
+import dev.creoii.chaos.util.provider.vecprovider.SourcePosVecProvider;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -83,6 +87,16 @@ public class ServerListener extends Listener {
             game.getServer().sendToTCP(connection.getID(), new EntityStateS2C(uuid, newPos.x, newPos.y));
         }
 
+        else if (object instanceof UseItemC2S(UUID uuid, SlotEntry slot)) {
+            CharacterEntity character = game.getEntityManager().getCharacter(uuid);
+            ItemStack stack = character.getInventory().getSlot(slot.r(), slot.c()).getStack();
+            if (stack.getItem() instanceof AbilityItem abilityItem) {
+                abilityItem.getAttack().attack(new MousePosVecProvider(), new SourcePosVecProvider(), character);
+            } else if (stack.getItem() instanceof WeaponItem weaponItem) {
+                weaponItem.getAttack().attack(new MousePosVecProvider(), new SourcePosVecProvider(), character);
+            }
+        }
+
         else if (object instanceof SlotUpdateC2S(UUID uuid, SlotUpdateC2S.Action action, InventoryType from, InventoryType to, SlotEntry fromSlot, SlotEntry toSlot)) {
             CharacterEntity character = game.getEntityManager().getCharacter(uuid);
 
@@ -97,11 +111,12 @@ public class ServerListener extends Listener {
             character.setLootUuid(null);
         }
 
-        else if (object instanceof DropSlotItemC2S(UUID uuid, Slot slot)) {
-            ItemStack dragCopy = slot.getStack().copy();
+        else if (object instanceof DropSlotItemC2S(UUID uuid, SlotEntry slot)) {
             CharacterEntity character = game.getEntityManager().getCharacter(uuid);
+            Slot slot1 = character.getInventory().getSlot(slot.r(), slot.c());
+            ItemStack dragCopy = slot1.getStack().copy();
             character.dropItem(dragCopy);
-            character.getInventory().onRemoveItemFromSlot(slot, dragCopy);
+            character.getInventory().onRemoveItemFromSlot(slot1, slot1.getStack());
         }
 
         else if (object instanceof ExecuteCommandC2S(UUID uuid, String commandType, String[] args)) {
