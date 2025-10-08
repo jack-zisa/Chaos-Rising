@@ -35,7 +35,11 @@ public class ServerEntityManager extends EntityManager<Entity> implements Tickab
         getAllEntities().values().forEach(uuidEntityMap -> uuidEntityMap.values().forEach(entity -> {
             entity.tick(gametime, delta);
 
-            if (entity.getType().group() != EntityGroup.CHARACTER && entity.getPos() != entity.getPrevPos()) {
+            if (entity.getType().group() == EntityGroup.CHARACTER)
+                return;
+
+            Vector2 velocity = entity.getVelocity();
+            if (velocity.x != 0f || velocity.y != 0f) {
                 ((ServerGame) getGame()).getServer().sendToAllTCP(new EntityMoveS2C(entity.getUuid(), entity.getPos().x, entity.getPos().y, entity.getPos().x - entity.getPrevPos().x, entity.getPos().y - entity.getPrevPos().y));
             }
         }));

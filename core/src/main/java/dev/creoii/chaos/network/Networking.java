@@ -1,6 +1,9 @@
 package dev.creoii.chaos.network;
 
 import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.Serializer;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.kryo.serializers.JavaSerializer;
 import dev.creoii.chaos.inventory.InventoryType;
 import dev.creoii.chaos.inventory.SlotEntry;
@@ -33,7 +36,20 @@ public class Networking {
         kryo.register(LootDropCloseS2C.class, new CodecSerializer<>(LootDropCloseS2C.CODEC));
         kryo.register(LootDropOpenS2C.class, new CodecSerializer<>(LootDropOpenS2C.CODEC));
         kryo.register(StatusEffectS2C.class, serializer);
-        kryo.register(SyncDataS2C.class, new CodecSerializer<>(SyncDataS2C.CODEC));
+        kryo.register(SyncDataS2C.class, new Serializer<SyncDataS2C>() {
+            @Override
+            public void write(Kryo kryo, Output output, SyncDataS2C msg) {
+                output.writeInt(msg.data().length);
+                output.writeBytes(msg.data());
+            }
+
+            @Override
+            public SyncDataS2C read(Kryo kryo, Input input, Class<SyncDataS2C> aClass) {
+                int len = input.readInt();
+                byte[] bytes = input.readBytes(len);
+                return new SyncDataS2C(bytes);
+            }
+        });
 
         kryo.register(InventoryType.class, new CodecSerializer<>(InventoryType.CODEC));
         kryo.register(SlotEntry.class, serializer);

@@ -1,6 +1,7 @@
 package dev.creoii.chaos.entity;
 
 import com.badlogic.gdx.math.Vector2;
+import dev.creoii.chaos.DataManager;
 import dev.creoii.chaos.Game;
 import dev.creoii.chaos.entity.controller.EnemyController;
 import dev.creoii.chaos.util.LootUtils;
@@ -31,7 +32,7 @@ public class EnemyEntity extends LivingEntity {
             int rolls = RANDOM.nextInt(4);
             if (rolls == 0)
                 return;
-            LootDropEntity lootDropEntity = getGame().getEntityManager().addEntity(getGame().getDataManager().getLootDrop("bag"), getPos().cpy());
+            LootDropEntity lootDropEntity = getGame().getEntityManager().addEntity(DataManager.getLootDrop("bag"), getPos().cpy());
             LootUtils.fillInventory(getGame(), lootDropEntity.getInventory(), ((EnemyEntityType) getType()).lootTable(), rolls);
         }
     }

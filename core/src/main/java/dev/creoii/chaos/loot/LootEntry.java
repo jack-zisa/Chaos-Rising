@@ -3,6 +3,7 @@ package dev.creoii.chaos.loot;
 import com.badlogic.gdx.utils.JsonValue;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.chaos.DataManager;
 import dev.creoii.chaos.Game;
 import dev.creoii.chaos.item.Item;
 import dev.creoii.chaos.item.ItemStack;
@@ -18,7 +19,7 @@ public record LootEntry(String item, int weight, int minCount, int maxCount) {
     });
 
     public ItemStack roll(Game game) {
-        Item item = game.getDataManager().getItem(item());
+        Item item = DataManager.getItem(item());
         if (item == null)
             return ItemStack.EMPTY;
         return new ItemStack(item, minCount + (int) (Math.random() * (maxCount - minCount + 1)));

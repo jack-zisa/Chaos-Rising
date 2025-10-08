@@ -24,17 +24,6 @@ public class DataManager {
     private static final Map<String, Codec<? extends Identifiable>> SCHEMA = new HashMap<>();
     private static final Map<String, Map<String, Identifiable>> DATA = new HashMap<>();
 
-    public DataManager() {
-        SCHEMA.put("class", CharacterClass.CODEC);
-        SCHEMA.put("item", Item.CODEC);
-        SCHEMA.put("entity", EntityType.CODEC);
-        SCHEMA.put("loot_table", LootTable.CODEC);
-
-        for (String key : SCHEMA.keySet()) {
-            DATA.put(key, new HashMap<>());
-        }
-    }
-
     public static Map<String, Identifiable> getClasses() {
         return DATA.get("class");
     }
@@ -81,7 +70,7 @@ public class DataManager {
         return (LootTable) getLootTables().getOrDefault(id, null);
     }
 
-    public void load(Path path) {
+    public static void load(Path path) {
         try {
             for (Map.Entry<String, Codec<? extends Identifiable>> entry : SCHEMA.entrySet()) {
                 String folder = entry.getKey();
@@ -111,6 +100,17 @@ public class DataManager {
         } catch (Exception e) {
             System.out.println("[DataManager] Error loading data: " + e);
             e.printStackTrace();
+        }
+    }
+
+    static {
+        SCHEMA.put("class", CharacterClass.CODEC);
+        SCHEMA.put("item", Item.CODEC);
+        SCHEMA.put("entity", EntityType.CODEC);
+        SCHEMA.put("loot_table", LootTable.CODEC);
+
+        for (String key : SCHEMA.keySet()) {
+            DATA.put(key, new HashMap<>());
         }
     }
 }

@@ -2,6 +2,7 @@ package dev.creoii.chaos;
 
 import com.esotericsoftware.kryonet.Server;
 import dev.creoii.chaos.inventory.cooldown.CooldownManager;
+import dev.creoii.chaos.network.CreoSerialization;
 import dev.creoii.chaos.network.Networking;
 
 import java.io.IOException;
@@ -11,7 +12,6 @@ import java.nio.file.Paths;
 
 public class ServerGame implements Game {
     private final Server server;
-    private final DataManager dataManager;
     private final OptionsManager optionsManager;
     private final TickManager tickManager;
     private final CollisionManager collisionManager;
@@ -20,7 +20,7 @@ public class ServerGame implements Game {
     private int gametime;
 
     public ServerGame() throws IOException, URISyntaxException {
-        server = new Server(32768, 32768);
+        server = new Server(65536, 65536, new CreoSerialization());
         server.start();
         server.bind(54555, 54777);
 
@@ -28,7 +28,6 @@ public class ServerGame implements Game {
 
         server.addListener(new ServerListener(this));
 
-        dataManager = new DataManager();
         optionsManager = new OptionsManager();
         tickManager = new TickManager();
         collisionManager = new CollisionManager(this);
@@ -37,11 +36,11 @@ public class ServerGame implements Game {
 
         URL baseUrl = getClass().getClassLoader().getResource("data");
         if (baseUrl == null) {
-            System.out.println("[DataManager] Directory 'data/' does not exist.");
+            System.out.println("[DataManager] Directory 'data/' does not exist");
             return;
         }
 
-        dataManager.load(Paths.get(baseUrl.toURI()));
+        DataManager.load(Paths.get(baseUrl.toURI()));
 
         while (true) {
             update();
@@ -62,11 +61,6 @@ public class ServerGame implements Game {
 
     public Server getServer() {
         return server;
-    }
-
-    @Override
-    public DataManager getDataManager() {
-        return dataManager;
     }
 
     @Override

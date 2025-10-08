@@ -105,7 +105,7 @@ public class ClientListener extends Listener {
                     e.printStackTrace();
                 }
 
-                game.getDataManager().load(cacheRoot);
+                DataManager.load(cacheRoot);
             }
             default -> System.out.println("Unhandled packet type: " + object.getClass().getSimpleName());
         }

@@ -8,6 +8,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.esotericsoftware.kryonet.Client;
 import dev.creoii.chaos.input.InputManager;
+import dev.creoii.chaos.network.CreoSerialization;
 import dev.creoii.chaos.network.Networking;
 import dev.creoii.chaos.render.Renderer;
 import dev.creoii.chaos.render.entity.EntityRenderManager;
@@ -23,7 +24,6 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
     private Renderer renderer;
     private TextureManager textureManager;
     private final OptionsManager optionsManager;
-    private final DataManager dataManager;
     private final EntityRenderManager entityManager;
     private final InputManager inputManager;
     private final CommandManager commandManager;
@@ -31,9 +31,8 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
     private boolean debug;
 
     public ClientGame() throws IOException {
-        client = new Client(32768, 32768);
+        client = new Client(32768, 32768, new CreoSerialization());
         optionsManager = new OptionsManager();
-        dataManager = new DataManager();
         entityManager = new EntityRenderManager(this);
         inputManager = new InputManager(this);
         commandManager = new CommandManager(this);
@@ -100,11 +99,6 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
     @Override
     public OptionsManager getOptionsManager() {
         return optionsManager;
-    }
-
-    @Override
-    public DataManager getDataManager() {
-        return dataManager;
     }
 
     public EntityRenderManager getEntityManager() {

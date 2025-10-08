@@ -7,8 +7,6 @@ public interface Game extends Serializable {
 
     OptionsManager getOptionsManager();
 
-    DataManager getDataManager();
-
     EntityManager<?> getEntityManager();
 
     int getGametime();
