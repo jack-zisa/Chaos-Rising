@@ -11,7 +11,7 @@ public class ServerCharacterInventory extends CharacterInventory {
     @Override
     public void onAddItemToSlot(Slot slot, ItemStack stack) {
         List<SlotEntry> slots = new ArrayList<>();
-        slots.add(new SlotEntry(slot.getR(), slot.getC(), stack.getItem().id(), stack.getCount()));
+        slots.add(new SlotEntry(slot.getR(), slot.getC(), stack));
         ((ServerGame) getCharacter().getGame()).getServer().sendToTCP(getCharacter().getConnectionId(), new InventoryUpdateS2C(InventoryType.MAIN, slots));
         super.onAddItemToSlot(slot, stack);
     }
@@ -19,7 +19,7 @@ public class ServerCharacterInventory extends CharacterInventory {
     @Override
     public void onRemoveItemFromSlot(Slot slot, ItemStack stack) {
         List<SlotEntry> slots = new ArrayList<>();
-        slots.add(new SlotEntry(slot.getR(), slot.getC(), null, 0));
+        slots.add(new SlotEntry(slot.getR(), slot.getC(), ItemStack.EMPTY));
         ((ServerGame) getCharacter().getGame()).getServer().sendToTCP(getCharacter().getConnectionId(), new InventoryUpdateS2C(InventoryType.MAIN, slots));
         super.onRemoveItemFromSlot(slot, stack);
     }

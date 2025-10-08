@@ -13,12 +13,15 @@ public class EnemyEntity extends LivingEntity {
 
     public EnemyEntity(Game game, EntityType<? extends EnemyEntity> type, UUID uuid, Vector2 pos) {
         super(game, type, uuid, pos, new StatContainer(), new StatContainer());
-        controller = new EnemyController(((EnemyEntityType) type).behavior());
-        controller.start(this);
+        if (!game.isClient()) {
+            controller = new EnemyController(((EnemyEntityType) type).behavior());
+            controller.start(this);
+        } else controller = null;
     }
 
     @Override
     public void tick(int gametime, float delta) {
+        super.tick(gametime, delta);
         controller.control(gametime, delta);
     }
 

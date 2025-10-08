@@ -1,4 +1,6 @@
 {
+  "id": "skeleton",
+  "type": "enemy",
   "behavior": {
     "start_phase": "test0",
     "phases": {
@@ -65,20 +67,5 @@
       }
     }
   },
-  "loot_table": {
-    "entries": [
-      {
-        "item": "test",
-        "weight": 3
-      },
-      {
-        "item": "test_random",
-        "weight": 1
-      },
-      {
-        "item": "test_circle",
-        "weight": 1
-      }
-    ]
-  }
+  "loot_table": "test_skeleton"
 }

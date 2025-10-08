@@ -14,12 +14,12 @@ public class StatNumberProvider implements NumberProvider {
     public Float get(Context context) {
         if (context.sourceEntity() instanceof LivingEntity livingEntity) {
             switch (statType) {
-                case HEALTH -> livingEntity.getStats().health.value();
-                case ATTACK_SPEED -> livingEntity.getStats().attackSpeed.value();
-                case SPEED -> livingEntity.getStats().speed.value();
-                case ATTACK -> livingEntity.getStats().attack.value();
-                case DEFENSE -> livingEntity.getStats().defense.value();
-                case VITALITY -> livingEntity.getStats().vitality.value();
+                case HEALTH -> livingEntity.getStats().health().value();
+                case ATTACK_SPEED -> livingEntity.getStats().attackSpeed().value();
+                case SPEED -> livingEntity.getStats().speed().value();
+                case ATTACK -> livingEntity.getStats().attack().value();
+                case DEFENSE -> livingEntity.getStats().defense().value();
+                case VITALITY -> livingEntity.getStats().vitality().value();
             }
         }
         return 0f;

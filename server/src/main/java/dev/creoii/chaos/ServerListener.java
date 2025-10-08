@@ -12,9 +12,9 @@ import dev.creoii.chaos.item.AbilityItem;
 import dev.creoii.chaos.item.ItemStack;
 import dev.creoii.chaos.item.WeaponItem;
 import dev.creoii.chaos.network.packet.c2s.*;
-import dev.creoii.chaos.network.packet.s2c.CharacterSpawnS2C;
-import dev.creoii.chaos.network.packet.s2c.EntityStateS2C;
+import dev.creoii.chaos.network.packet.s2c.EntityMoveS2C;
 import dev.creoii.chaos.network.packet.s2c.SyncDataS2C;
+import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.Mutable;
 import dev.creoii.chaos.util.provider.vecprovider.MousePosVecProvider;
 import dev.creoii.chaos.util.provider.vecprovider.SourcePosVecProvider;
@@ -79,26 +79,32 @@ public class ServerListener extends Listener {
     @Override
     public void received(Connection connection, Object object) {
         if (object instanceof CharacterMoveC2S(UUID uuid, float dx, float dy)) {
-            CharacterEntity character = game.getEntityManager().getCharacter(uuid);
-            Vector2 newPos = character.getPos().add(new Vector2(dx, dy).nor().scl(character.getStats().speed.value() / 8f));
+            CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, uuid);
+            Vector2 newPos = character.getPos().add(new Vector2(dx, dy).nor().scl(character.getStats().speed().value() / 8f));
             character.setPrevPos(character.getPos().x, character.getPos().y);
             character.setPos(newPos.x, newPos.y);
-
-            game.getServer().sendToTCP(connection.getID(), new EntityStateS2C(uuid, newPos.x, newPos.y));
+            game.getServer().sendToTCP(connection.getID(), new EntityMoveS2C(uuid, newPos.x, newPos.y, newPos.x - character.getPrevPos().x, newPos.y - character.getPrevPos().y));
         }
 
-        else if (object instanceof UseItemC2S(UUID uuid, SlotEntry slot)) {
-            CharacterEntity character = game.getEntityManager().getCharacter(uuid);
-            ItemStack stack = character.getInventory().getSlot(slot.r(), slot.c()).getStack();
-            if (stack.getItem() instanceof AbilityItem abilityItem) {
-                abilityItem.getAttack().attack(new MousePosVecProvider(), new SourcePosVecProvider(), character);
-            } else if (stack.getItem() instanceof WeaponItem weaponItem) {
-                weaponItem.getAttack().attack(new MousePosVecProvider(), new SourcePosVecProvider(), character);
+        else if (object instanceof UseItemC2S(UUID uuid, SlotEntry slotEntry)) {
+            CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, uuid);
+            Slot slot = character.getInventory().getSlot(slotEntry.r(), slotEntry.c());
+
+            if (slot.isActive()) {
+                ItemStack stack = slot.getStack();
+                if (stack.getItem() instanceof AbilityItem abilityItem) {
+                    abilityItem.getAttack().attack(new MousePosVecProvider(), new SourcePosVecProvider(), character);
+                    game.getCooldownManager().addCooldown(uuid, slotEntry.r(), slotEntry.c(), abilityItem.getCooldown());
+                } else if (stack.getItem() instanceof WeaponItem weaponItem) {
+                    weaponItem.getAttack().attack(new MousePosVecProvider(), new SourcePosVecProvider(), character);
+                    System.out.println("attack");
+                    game.getCooldownManager().addCooldown(uuid, slotEntry.r(), slotEntry.c(), Math.max(1, 150 / Math.max(1, character.getStats().attackSpeed().value())));
+                }
             }
         }
 
         else if (object instanceof SlotUpdateC2S(UUID uuid, SlotUpdateC2S.Action action, InventoryType from, InventoryType to, SlotEntry fromSlot, SlotEntry toSlot)) {
-            CharacterEntity character = game.getEntityManager().getCharacter(uuid);
+            CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, uuid);
 
             Inventory fromInventory = from == InventoryType.MAIN ? character.getInventory() : ((LootDropEntity) game.getEntityManager().getEntity(character.getLootUuid())).getInventory();
             Inventory toInventory = from == InventoryType.MAIN ? character.getInventory() : ((LootDropEntity) game.getEntityManager().getEntity(character.getLootUuid())).getInventory();
@@ -107,12 +113,12 @@ public class ServerListener extends Listener {
         }
 
         else if (object instanceof LootDropCloseC2S(UUID uuid)) {
-            CharacterEntity character = game.getEntityManager().getCharacter(uuid);
+            CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, uuid);
             character.setLootUuid(null);
         }
 
         else if (object instanceof DropSlotItemC2S(UUID uuid, SlotEntry slot)) {
-            CharacterEntity character = game.getEntityManager().getCharacter(uuid);
+            CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, uuid);
             Slot slot1 = character.getInventory().getSlot(slot.r(), slot.c());
             ItemStack dragCopy = slot1.getStack().copy();
             character.dropItem(dragCopy);
@@ -126,9 +132,7 @@ public class ServerListener extends Listener {
         else if (object instanceof CharacterJoinC2S(UUID uuid)) {
             Map<String, Object> customData = new HashMap<>();
             customData.put("connection_id", connection.getID());
-            customData.put("inventory", new ServerCharacterInventory());
-            CharacterEntity character = game.getEntityManager().addEntity(uuid, new CharacterEntityType(new Mutable<>(game.getDataManager().getCharacterClass("wizard"))), new Vector2(0, 0), customData);
-            game.getServer().sendToTCP(connection.getID(), new CharacterSpawnS2C(uuid, character.getCharacterClass().get().id(), character.getPos()));
+            game.getEntityManager().addEntity(uuid, new CharacterEntityType(new Mutable<>(DataManager.getCharacterClass("wizard"))), new Vector2(0, 0), customData);
         }
 
         else if (object instanceof CharacterLeaveC2S(UUID uuid)) {
@@ -138,6 +142,7 @@ public class ServerListener extends Listener {
 
     @Override
     public void disconnected(Connection connection) {
+        // TODO: remove character from game
         System.out.println("[Server] Client disconnected: " + connection.getRemoteAddressTCP());
     }
 }

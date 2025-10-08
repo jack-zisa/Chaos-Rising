@@ -1,63 +1,54 @@
 package dev.creoii.chaos;
 
 import com.badlogic.gdx.math.Vector2;
-import dev.creoii.chaos.entity.CharacterEntity;
 import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.entity.EntityType;
-import dev.creoii.chaos.entity.LivingEntity;
+import dev.creoii.chaos.network.packet.s2c.EntityDisplayS2C;
+import dev.creoii.chaos.network.packet.s2c.EntityMoveS2C;
 import dev.creoii.chaos.network.packet.s2c.EntitySpawnS2C;
-import dev.creoii.chaos.network.packet.s2c.EntityStateS2C;
-import dev.creoii.chaos.network.packet.s2c.LivingEntityStateS2C;
 import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.Tickable;
 
 import java.util.Map;
 import java.util.UUID;
 
-public class ServerEntityManager extends EntityManager implements Tickable {
+public class ServerEntityManager extends EntityManager<Entity> implements Tickable {
     public ServerEntityManager(ServerGame game) {
         super(game);
         game.getTickManager().addTickable(this);
     }
 
-    @Override
     public <E extends Entity, T extends EntityType<E>> E addEntity(UUID uuid, T type, Vector2 pos, Map<String, Object> customData) {
         E spawned = type.create(getGame(), uuid, pos, customData);
-        getEntities().put(spawned.getUuid(), spawned);
-
-        if (spawned instanceof CharacterEntity character)
-            getCharacters().put(spawned.getUuid(), character);
+        getEntities(type.group()).put(spawned.getUuid(), spawned);
 
         if (getGame() instanceof ServerGame serverGame) {
             serverGame.getTickManager().addTickable(spawned);
-            serverGame.getServer().sendToAllTCP(new EntitySpawnS2C(spawned.getType().group(), spawned.getUuid(), spawned.getType().id(), spawned.getPos()));
+            serverGame.getServer().sendToAllTCP(new EntitySpawnS2C(spawned.getUuid(), spawned.getType().group(), pos.x, pos.y));
+            serverGame.getServer().sendToAllTCP(new EntityDisplayS2C(spawned.getUuid(), type.id(), type.scale()));
         }
         return spawned;
     }
 
     @Override
     public void tick(int gametime, float delta) {
-        if (getGame() instanceof ServerGame serverGame) {
-            getEntities().forEach((uuid, entity) -> {
-                if (entity.getType().group() != EntityGroup.CHARACTER)
-                    serverGame.getServer().sendToAllTCP(new EntityStateS2C(uuid, entity.getPos().x, entity.getPos().y));
+        getAllEntities().values().forEach(uuidEntityMap -> uuidEntityMap.values().forEach(entity -> {
+            entity.tick(gametime, delta);
 
-                /*if (entity instanceof LivingEntity living) {
-                    serverGame.getServer().sendToAllTCP(new LivingEntityStateS2C(uuid, living.getStats().health.base(), living.getMaxStats().health.base(), living.getStats().speed.base(), living.getMaxStats().speed.base()));
-                }*/
-            });
-        }
+            if (entity.getType().group() != EntityGroup.CHARACTER && entity.getPos() != entity.getPrevPos()) {
+                ((ServerGame) getGame()).getServer().sendToAllTCP(new EntityMoveS2C(entity.getUuid(), entity.getPos().x, entity.getPos().y, entity.getPos().x - entity.getPrevPos().x, entity.getPos().y - entity.getPrevPos().y));
+            }
+        }));
     }
 
     @Override
     public boolean removeEntity(UUID uuid) {
-        if (getEntities().containsKey(uuid)) {
-            if (getGame() instanceof ServerGame serverGame) {
-                serverGame.getTickManager().removeTickable(getEntities().get(uuid));
+        for (Map.Entry<EntityGroup, Map<UUID, Entity>> entry : getAllEntities().entrySet()) {
+            if (entry.getValue().containsKey(uuid)) {
+                ((ServerGame) getGame()).getTickManager().removeTickable(entry.getValue().get(uuid));
+                entry.getValue().remove(uuid);
+                return true;
             }
-            getCharacters().remove(uuid);
-            getEntities().remove(uuid);
-            return true;
         }
         return false;
     }

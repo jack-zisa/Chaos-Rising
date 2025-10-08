@@ -16,10 +16,10 @@ public class ItemRenderer {
     private static final float TOOLTIP_OFFSCREEN_PADDING = 4f;
     private static final BitmapFont FONT = new BitmapFont();
 
-    public static void renderItem(ClientGame game, SpriteBatch batch, @Nullable Item item, Vector2 pos, float scale) {
-        if (item == null)
+    public static void renderItem(ClientGame game, SpriteBatch batch, @Nullable String id, Vector2 pos, float scale) {
+        if (id == null || id.isBlank())
             return;
-        Sprite sprite = new Sprite(game.getTextureManager().getTexture("item", item.id()));
+        Sprite sprite = new Sprite(game.getTextureManager().getTexture("item", id));
         sprite.setPosition(pos.x, pos.y);
         sprite.setSize(scale, scale);
         sprite.draw(batch);

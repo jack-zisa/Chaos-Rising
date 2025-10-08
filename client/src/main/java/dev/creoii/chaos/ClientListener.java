@@ -1,21 +1,17 @@
 package dev.creoii.chaos;
 
-import com.badlogic.gdx.math.Vector2;
 import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.FrameworkMessage;
 import com.esotericsoftware.kryonet.Listener;
 import dev.creoii.chaos.effect.StatusEffect;
-import dev.creoii.chaos.entity.*;
 import dev.creoii.chaos.input.CharacterController;
-import dev.creoii.chaos.inventory.CharacterInventory;
-import dev.creoii.chaos.inventory.Inventory;
 import dev.creoii.chaos.inventory.InventoryType;
 import dev.creoii.chaos.inventory.SlotEntry;
-import dev.creoii.chaos.item.ItemStack;
 import dev.creoii.chaos.network.packet.c2s.CharacterJoinC2S;
 import dev.creoii.chaos.network.packet.c2s.CharacterLeaveC2S;
 import dev.creoii.chaos.network.packet.s2c.*;
+import dev.creoii.chaos.render.entity.data.*;
 import dev.creoii.chaos.util.EntityGroup;
-import dev.creoii.chaos.util.Mutable;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -41,79 +37,83 @@ public class ClientListener extends Listener {
 
     @Override
     public void received(Connection connection, Object object) {
-        if (object instanceof EntityStateS2C(UUID uuid, float x, float y)) {
-            game.getEntityManager().updateEntity(uuid, x, y);
+        if (object instanceof FrameworkMessage.KeepAlive) {
+            return;
         }
-
-        else if (object instanceof LivingEntityStateS2C(UUID uuid, int health, int maxHealth, int speed, int maxSpeed)) {
-            game.getEntityManager().updateLivingEntity(uuid, health, maxHealth, speed, maxSpeed);
-        }
-
-        else if (object instanceof EntitySpawnS2C(EntityGroup group, UUID uuid, String id, Vector2 pos)) {
-            if (group != EntityGroup.CHARACTER) {
-                game.getEntityManager().addEntity(switch (group) {
-                    case BULLET -> new BulletEntity(game, game.getDataManager().getBullet(id), uuid, pos, Vector2.Zero, 1, 1, 1);
-                    case ENEMY -> new EnemyEntity(game, game.getDataManager().getEnemy(id), uuid, pos);
-                    case LOOT_DROP -> new LootDropEntity(game, game.getDataManager().getLootDrop(id), uuid, pos, new Inventory(2, 4));
-                    default -> throw new IllegalStateException("Unexpected value: " + group);
-                });
-            }
-        }
-
-        else if (object instanceof EntityRemoveS2C(UUID uuid)) {
-            game.getEntityManager().removeEntity(uuid);
-        }
-
-        else if (object instanceof StatusEffectS2C(UUID uuid, StatusEffect statusEffect)) {
-            ((LivingEntity) game.getEntityManager().getEntity(uuid)).addStatusEffect(statusEffect);
-        }
-
-        else if (object instanceof InventoryUpdateS2C(InventoryType type, List<SlotEntry> slots)) {
-            for (SlotEntry entry : slots) {
-                if (type == InventoryType.MAIN) {
-                    game.getCharacter().getInventory().getSlots()[entry.r()][entry.c()].setStack(new ItemStack(game.getDataManager().getItem(entry.id()), entry.count()));
+        switch (object) {
+            case EntitySpawnS2C(UUID uuid, EntityGroup group, float x, float y) -> {
+                switch (group) {
+                    case BULLET -> game.getEntityManager().addEntity(uuid, new BulletEntityRenderData(uuid, x, y, 0f, 0f, group.name().toLowerCase(), 32f, 0f, 0f));
+                    case ENEMY -> game.getEntityManager().addEntity(uuid, new LivingEntityRenderData(uuid, EntityGroup.ENEMY, x, y, 0f, 0f, group.name().toLowerCase(), 32f));
+                    case CHARACTER -> {
+                        CharacterEntityRenderData character = new CharacterEntityRenderData(uuid, x, y, 0f, 0f, "wizard", 32f, new SlotRenderData[3][4]);
+                        game.setCharacter(character);
+                        game.getEntityManager().addEntity(uuid, character);
+                        game.getInputManager().addInput(new CharacterController(character));
+                    }
+                    case LOOT_DROP -> game.getEntityManager().addEntity(uuid, new LootDropEntityRenderData(uuid, x, y, 0f, 0f, group.name().toLowerCase(), 32f, new SlotRenderData[2][4]));
+                    case null, default -> throw new IllegalArgumentException("Unknown EntityGroup: " + (group == null ? "null" : group.name()));
                 }
             }
-        }
+            case EntityDisplayS2C(UUID uuid, String textureId, float scale) -> {
+                EntityRenderData entityRenderData = game.getEntityManager().getEntityData(uuid);
+                if (entityRenderData != null) {
+                    entityRenderData.textureId = textureId;
+                    entityRenderData.scale = scale;
+                }
+            }
+            case EntityMoveS2C(UUID uuid, float x, float y, float xv, float yv) -> {
+                EntityRenderData entityRenderData = game.getEntityManager().getEntityData(uuid);
+                if (entityRenderData != null) {
+                    entityRenderData.x = x;
+                    entityRenderData.y = y;
+                    entityRenderData.xv = xv;
+                    entityRenderData.yv = yv;
+                }
+            }
+            case EntityRemoveS2C(UUID uuid) -> game.getEntityManager().removeEntity(uuid);
+            case StatusEffectS2C(UUID uuid, StatusEffect statusEffect) -> {
+                //((LivingEntity) game.getEntityManager().getEntityData(uuid)).addStatusEffect(statusEffect);
+            }
+            case InventoryUpdateS2C(InventoryType type, List<SlotEntry> slots) -> {
+                for (SlotEntry entry : slots) {
+                    if (type == InventoryType.MAIN) {
+                        game.getCharacter().slots[entry.r()][entry.c()].stack = entry.stack();
+                    }
+                }
+            }
 
-        else if (object instanceof LootDropOpenS2C(UUID uuid)) {
+        /*else if (object instanceof LootDropOpenS2C(UUID uuid)) {
             game.getCharacter().setLootUuid(uuid);
         }
 
         else if (object instanceof LootDropCloseS2C()) {
             game.getCharacter().setLootUuid(null);
-        }
+        }*/
+            case SyncDataS2C(byte[] data) -> {
+                Path cacheRoot = Paths.get(System.getProperty("user.dir"), "cache", "data");
 
-        else if (object instanceof CharacterSpawnS2C(UUID uuid, String classId, Vector2 pos)) {
-            Mutable<CharacterClass> characterClass = new Mutable<>(game.getDataManager().getCharacterClass(classId));
-            CharacterEntity character = new CharacterEntity(game, new CharacterEntityType(characterClass), uuid, pos, connection.getID(), new CharacterInventory());
-            game.setCharacter(character);
-            game.getEntityManager().addEntity(character);
-            game.getInputManager().addInput(new CharacterController(game.getCharacter()));
-        }
-
-        else if (object instanceof SyncDataS2C(byte[] data)) {
-            Path cacheRoot = Paths.get(System.getProperty("user.dir"), "cache", "data");
-
-            try (ZipInputStream zipIn = new ZipInputStream(new ByteArrayInputStream(data))) {
-                ZipEntry entry;
-                while ((entry = zipIn.getNextEntry()) != null) {
-                    Path filePath = cacheRoot.resolve(entry.getName());
-                    Files.createDirectories(filePath.getParent());
-                    Files.write(filePath, zipIn.readAllBytes());
-                    zipIn.closeEntry();
+                try (ZipInputStream zipIn = new ZipInputStream(new ByteArrayInputStream(data))) {
+                    ZipEntry entry;
+                    while ((entry = zipIn.getNextEntry()) != null) {
+                        Path filePath = cacheRoot.resolve(entry.getName());
+                        Files.createDirectories(filePath.getParent());
+                        Files.write(filePath, zipIn.readAllBytes());
+                        zipIn.closeEntry();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
 
-            game.getDataManager().load(cacheRoot);
+                game.getDataManager().load(cacheRoot);
+            }
+            default -> System.out.println("Unhandled packet type: " + object.getClass().getSimpleName());
         }
     }
 
     @Override
     public void disconnected(Connection connection) {
         if (game.getCharacter() != null)
-            game.getClient().sendTCP(new CharacterLeaveC2S(game.getCharacter().getUuid()));
+            game.getClient().sendTCP(new CharacterLeaveC2S(game.getCharacter().uuid));
     }
 }

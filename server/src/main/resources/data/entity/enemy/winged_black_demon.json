@@ -1,4 +1,6 @@
 {
+  "id": "winged_black_demon",
+  "type": "enemy",
   "scale": 3,
   "stats": {
     "health": 300

@@ -6,6 +6,7 @@ import dev.creoii.chaos.Game;
 import dev.creoii.chaos.effect.StatusEffect;
 import dev.creoii.chaos.entity.CharacterEntity;
 import dev.creoii.chaos.inventory.Slot;
+import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.Rarity;
 import dev.creoii.chaos.util.stat.ModifierEntry;
 import dev.creoii.chaos.util.stat.StatContainer;
@@ -13,7 +14,7 @@ import dev.creoii.chaos.util.stat.StatContainer;
 import java.util.List;
 import java.util.UUID;
 
-public class ConsumableItem extends ServerItem {
+public class ConsumableItem extends Item {
     private final List<ModifierEntry> statBonus;
     private final List<StatusEffect> statusEffects;
 
@@ -41,24 +42,24 @@ public class ConsumableItem extends ServerItem {
     }
 
     public void consume(Game game, UUID characterUuid, Slot slot, ItemStack stack) {
-        if (game instanceof Game serverGame) {
-            CharacterEntity character = serverGame.getEntityManager().getCharacter(characterUuid);
+        if (!game.isClient()) {
+            CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, characterUuid);
             if (getStatBonus() != null) {
                 StatContainer stats = character.getStats();
                 getStatBonus().forEach(modifierEntry -> {
                     switch (modifierEntry.type()) {
                         case HEALTH ->
-                            stats.setHealth(Math.min(character.getMaxStats().health.value(), stats.health.value() + modifierEntry.amount()));
+                            stats.setHealth(Math.min(character.getMaxStats().health().value(), stats.health().value() + modifierEntry.amount()));
                         case SPEED ->
-                            stats.setSpeed(Math.min(character.getMaxStats().speed.value(), stats.speed.value() + modifierEntry.amount()));
+                            stats.setSpeed(Math.min(character.getMaxStats().speed().value(), stats.speed().value() + modifierEntry.amount()));
                         case ATTACK_SPEED ->
-                            stats.setAttackSpeed(Math.min(character.getMaxStats().attackSpeed.value(), stats.attackSpeed.value() + modifierEntry.amount()));
+                            stats.setAttackSpeed(Math.min(character.getMaxStats().attackSpeed().value(), stats.attackSpeed().value() + modifierEntry.amount()));
                         case DEFENSE ->
-                            stats.setDefense(Math.min(character.getMaxStats().defense.value(), stats.defense.value() + modifierEntry.amount()));
+                            stats.setDefense(Math.min(character.getMaxStats().defense().value(), stats.defense().value() + modifierEntry.amount()));
                         case ATTACK ->
-                            stats.setAttack(Math.min(character.getMaxStats().attack.value(), stats.attack.value() + modifierEntry.amount()));
+                            stats.setAttack(Math.min(character.getMaxStats().attack().value(), stats.attack().value() + modifierEntry.amount()));
                         case VITALITY ->
-                            stats.setVitality(Math.min(character.getMaxStats().vitality.value(), stats.vitality.value() + modifierEntry.amount()));
+                            stats.setVitality(Math.min(character.getMaxStats().vitality().value(), stats.vitality().value() + modifierEntry.amount()));
                     }
                 });
             }

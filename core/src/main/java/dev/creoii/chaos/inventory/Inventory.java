@@ -3,6 +3,7 @@ package dev.creoii.chaos.inventory;
 import dev.creoii.chaos.item.ItemStack;
 import dev.creoii.chaos.network.packet.c2s.SlotUpdateC2S;
 
+import javax.annotation.Nullable;
 import java.util.Arrays;
 
 public class Inventory {
@@ -30,7 +31,8 @@ public class Inventory {
         return Arrays.stream(slots).allMatch(slotRow -> Arrays.stream(slotRow).noneMatch(Slot::hasItem));
     }
 
-    public boolean addItem(ItemStack stack) {
+    @Nullable
+    public Slot addItem(ItemStack stack) {
         Slot firstValid = null;
         for (int i = slots.length - 1; i >= 0; --i) {
             for (Slot slot : slots[i]) {
@@ -46,10 +48,10 @@ public class Inventory {
         if (firstValid != null) {
             firstValid.setStack(stack);
             onAddItemToSlot(firstValid, stack);
-            return true;
+            return firstValid;
         }
 
-        return false;
+        return null;
     }
 
     /**

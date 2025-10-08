@@ -1,4 +1,5 @@
 {
+  "id": "wizard",
   "texture": "wizard",
   "base_stats": {
     "health": 100,

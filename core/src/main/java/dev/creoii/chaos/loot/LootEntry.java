@@ -1,11 +1,22 @@
 package dev.creoii.chaos.loot;
 
 import com.badlogic.gdx.utils.JsonValue;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.Game;
 import dev.creoii.chaos.item.Item;
 import dev.creoii.chaos.item.ItemStack;
 
 public record LootEntry(String item, int weight, int minCount, int maxCount) {
+    public static final Codec<LootEntry> CODEC = RecordCodecBuilder.create(instance -> {
+        return instance.group(
+            Codec.STRING.fieldOf("item").forGetter(LootEntry::item),
+            Codec.INT.fieldOf("weight").orElse(1).forGetter(LootEntry::weight),
+            Codec.INT.fieldOf("min_count").orElse(1).forGetter(LootEntry::minCount),
+            Codec.INT.fieldOf("max_count").orElse(1).forGetter(LootEntry::maxCount)
+        ).apply(instance, LootEntry::new);
+    });
+
     public ItemStack roll(Game game) {
         Item item = game.getDataManager().getItem(item());
         if (item == null)

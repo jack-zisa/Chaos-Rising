@@ -2,6 +2,7 @@ package dev.creoii.chaos.entity;
 
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.Game;
+import dev.creoii.chaos.entity.controller.BulletController;
 import dev.creoii.chaos.util.provider.Provider;
 
 import java.util.UUID;
@@ -12,6 +13,7 @@ public class BulletEntity extends Entity {
     private final int lifetime;
     private final int damage;
     private final int index;
+    private final BulletController controller;
 
     public BulletEntity(Game game, EntityType<? extends BulletEntity> type, UUID uuid, Vector2 pos, Vector2 direction, int lifetime, int damage, int index) {
         super(game, type, uuid, pos);
@@ -19,9 +21,10 @@ public class BulletEntity extends Entity {
         this.lifetime = lifetime;
         this.damage = damage;
         this.index = index;
-        //float angle = (float) Math.atan2(yDir, xDir) * (180f / (float) Math.PI) % 360f;
-        //getSprite().setOriginCenter();
-        //getSprite().setRotation(angle - angleOffset.get(Provider.Context.of(this, game.getGametime())));
+
+        if (!game.isClient()) {
+            controller = new BulletController(this);
+        } else controller = null;
     }
 
     public Entity getParent() {
@@ -55,11 +58,13 @@ public class BulletEntity extends Entity {
         if (gametime - getSpawnTime() >= lifetime) {
             remove();
         }
+
+        controller.control(gametime, delta);
     }
 
     @Override
     public void collisionEnter(Entity other) {
-        if (other instanceof LivingEntity living && other.getType().group() != parent.getType().group()) {
+        if (other instanceof LivingEntity living && parent != null && other.getType().group() != parent.getType().group()) {
             living.damage(damage);
             if (!((BulletEntityType) getType()).piercing().get(Provider.Context.of(this, getGame().getGametime()))) {
                 remove();

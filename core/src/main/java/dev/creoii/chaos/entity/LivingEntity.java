@@ -30,20 +30,20 @@ public abstract class LivingEntity extends Entity {
     }
 
     public void damage(int amount) {
-        if (statContainer.health.value() <= 0 || hasStatusEffect("invulnerable"))
+        if (statContainer.health().value() <= 0 || hasStatusEffect("invulnerable"))
             return;
-        amount = Math.max(0, amount - statContainer.defense.value());
-        statContainer.health.set(Math.max(0, statContainer.health.value() - amount));
+        amount = Math.max(0, amount - statContainer.defense().value());
+        statContainer.health().set(Math.max(0, statContainer.health().value() - amount));
 
-        if (statContainer.health.value() <= 0) {
+        if (statContainer.health().value() <= 0) {
             remove();
         }
     }
 
     public void heal(int amount) {
-        if (statContainer.health.value() <= 0)
+        if (statContainer.health().value() <= 0)
             return;
-        statContainer.health.set(Math.min(maxStatContainer.health.value(), statContainer.health.value() + amount));
+        statContainer.health().set(Math.min(maxStatContainer.health().value(), statContainer.health().value() + amount));
     }
 
     public List<StatusEffect> getStatusEffects() {
@@ -83,7 +83,7 @@ public abstract class LivingEntity extends Entity {
             }
         }
 
-        if (statContainer.health.value() <= maxStatContainer.health.value() && gametime % 40 == 0)
-            heal(Math.round(1f + .2f * statContainer.vitality.value()));
+        if (statContainer.health().value() <= maxStatContainer.health().value() && gametime % 40 == 0)
+            heal(Math.round(1f + .2f * statContainer.vitality().value()));
     }
 }

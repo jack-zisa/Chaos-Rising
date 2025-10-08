@@ -1,6 +1,7 @@
 package dev.creoii.chaos;
 
 import com.esotericsoftware.kryonet.Server;
+import dev.creoii.chaos.inventory.cooldown.CooldownManager;
 import dev.creoii.chaos.network.Networking;
 
 import java.io.IOException;
@@ -14,7 +15,8 @@ public class ServerGame implements Game {
     private final OptionsManager optionsManager;
     private final TickManager tickManager;
     private final CollisionManager collisionManager;
-    private final EntityManager entityManager;
+    private final ServerEntityManager entityManager;
+    private final CooldownManager cooldownManager;
     private int gametime;
 
     public ServerGame() throws IOException, URISyntaxException {
@@ -31,6 +33,7 @@ public class ServerGame implements Game {
         tickManager = new TickManager();
         collisionManager = new CollisionManager(this);
         entityManager = new ServerEntityManager(this);
+        cooldownManager = new CooldownManager(this);
 
         URL baseUrl = getClass().getClassLoader().getResource("data");
         if (baseUrl == null) {
@@ -43,6 +46,11 @@ public class ServerGame implements Game {
         while (true) {
             update();
         }
+    }
+
+    @Override
+    public boolean isClient() {
+        return false;
     }
 
     public void update() {
@@ -74,8 +82,13 @@ public class ServerGame implements Game {
         return collisionManager;
     }
 
-    public EntityManager getEntityManager() {
+    @Override
+    public ServerEntityManager getEntityManager() {
         return entityManager;
+    }
+
+    public CooldownManager getCooldownManager() {
+        return cooldownManager;
     }
 
     @Override

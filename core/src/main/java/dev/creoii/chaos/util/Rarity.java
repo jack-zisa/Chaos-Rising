@@ -1,6 +1,7 @@
 package dev.creoii.chaos.util;
 
 import com.badlogic.gdx.graphics.Color;
+import com.mojang.serialization.Codec;
 
 public enum Rarity {
     COMMON(Color.LIGHT_GRAY),
@@ -9,6 +10,7 @@ public enum Rarity {
     LEGENDARY(Color.GOLD),
     DIVINE(Color.WHITE);
 
+    public static final Codec<Rarity> CODEC = Codec.STRING.xmap(s -> Rarity.valueOf(s.toUpperCase()), entityGroup -> entityGroup.name().toLowerCase());
     private final Color color;
 
     Rarity(Color color) {

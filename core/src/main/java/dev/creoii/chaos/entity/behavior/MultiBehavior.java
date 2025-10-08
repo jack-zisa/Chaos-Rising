@@ -67,5 +67,6 @@ public class MultiBehavior implements Behavior {
             currentPhase = currentPhase.getNext(controller);
             currentPhase.start(controller, time);
         }
+        //System.out.println("multi");
     }
 }

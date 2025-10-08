@@ -1,4 +1,6 @@
 {
+  "id": "fireball",
+  "type": "bullet",
   "lifetime": 150,
   "path": {
     "speed": {

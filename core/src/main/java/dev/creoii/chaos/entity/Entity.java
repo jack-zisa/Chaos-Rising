@@ -4,10 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.Game;
 import dev.creoii.chaos.util.Tickable;
 
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public abstract class Entity implements Tickable {
     public static final float COORDINATE_SCALE = 32f;
@@ -28,7 +25,7 @@ public abstract class Entity implements Tickable {
         this.pos = pos.cpy();
         prevPos = pos.cpy();
         spawnTime = game.getGametime();
-        collider = new Vector2(type.scale() * Entity.COORDINATE_SCALE, type.scale() * Entity.COORDINATE_SCALE);
+        collider = new Vector2(type.scale(), type.scale());
         collidingWith = new HashSet<>();
     }
 
@@ -60,6 +57,10 @@ public abstract class Entity implements Tickable {
         prevPos.set(x, y);
     }
 
+    public Vector2 getVelocity() {
+        return pos.cpy().sub(prevPos);
+    }
+
     public int getSpawnTime() {
         return spawnTime;
     }
@@ -86,12 +87,12 @@ public abstract class Entity implements Tickable {
 
     public void setCollidingWith(UUID uuid) {
         if (collidingWith.add(uuid))
-            collisionEnter(getGame().getEntityManager().getEntity(uuid));
+            collisionEnter((Entity) getGame().getEntityManager().getEntity(uuid));
     }
 
     public void removeCollidingWith(UUID uuid) {
         if (collidingWith.remove(uuid))
-            collisionExit(getGame().getEntityManager().getEntity(uuid));
+            collisionExit((Entity) getGame().getEntityManager().getEntity(uuid));
     }
 
     public void collisionEnter(Entity other) {

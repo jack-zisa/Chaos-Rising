@@ -1,17 +1,47 @@
 package dev.creoii.chaos.loot;
 
 import com.badlogic.gdx.utils.JsonValue;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.chaos.DataManager;
 import dev.creoii.chaos.Game;
 import dev.creoii.chaos.item.ItemStack;
+import dev.creoii.chaos.util.Identifiable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class LootTable {
+public class LootTable implements Identifiable {
+    public static final LootTable EMPTY = new LootTable("empty");
+    public static final Codec<LootTable> CODEC = RecordCodecBuilder.create(instance -> {
+        return instance.group(
+            Codec.STRING.fieldOf("id").forGetter(lootTable -> lootTable.id),
+            LootEntry.CODEC.listOf().fieldOf("entries").forGetter(lootTable -> lootTable.entries)
+        ).apply(instance, (id, entries) -> {
+            LootTable lootTable = new LootTable(id);
+            entries.forEach(lootTable::addEntry);
+            return lootTable;
+        });
+    });
+    public static final Codec<LootTable> ID_CODEC = Codec.STRING.xmap(DataManager::getLootTable, lootTable -> lootTable.id);
+    private final String id;
     private final List<LootEntry> entries = new ArrayList<>();
 
+    public LootTable(String id) {
+        this.id = id;
+    }
+
+    @Override
+    public String id() {
+        return id;
+    }
+
+    public List<LootEntry> getEntries() {
+        return entries;
+    }
+
     public static LootTable parse(JsonValue jsonValue) {
-        LootTable lootTable = new LootTable();
+        LootTable lootTable = new LootTable("");
         jsonValue.get("entries").forEach(jsonValue1 -> {
             lootTable.addEntry(LootEntry.parse(jsonValue1));
         });

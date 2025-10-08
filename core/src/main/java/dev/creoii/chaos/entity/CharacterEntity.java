@@ -59,7 +59,7 @@ public class CharacterEntity extends LivingEntity {
             lootUuid = lootDropEntity.getUuid();
         } else {
             LootDropEntity lootDropEntity = (LootDropEntity) getGame().getEntityManager().getEntity(lootUuid);
-            if (lootDropEntity == null || !lootDropEntity.getInventory().addItem(stack))
+            if (lootDropEntity == null || lootDropEntity.getInventory().addItem(stack) == null)
                 dropItem(stack, true);
         }
     }

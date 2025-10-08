@@ -2,16 +2,28 @@ package dev.creoii.chaos.util.stat;
 
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.StringBuilder;
+import com.mojang.serialization.Codec;
 
 import java.util.*;
 
-public class StatContainer {
-    public final Stat health;
-    public final Stat speed;
-    public final Stat attackSpeed;
-    public final Stat defense;
-    public final Stat attack;
-    public final Stat vitality;
+public record StatContainer(Stat health, Stat speed, Stat attackSpeed, Stat defense, Stat attack, Stat vitality) {
+    public static final Codec<StatContainer> CODEC = Codec.unboundedMap(Codec.STRING, Codec.INT).xmap(map -> new StatContainer(
+        map.getOrDefault(Stat.Type.HEALTH.name().toLowerCase(), 0),
+        map.getOrDefault(Stat.Type.SPEED.name().toLowerCase(), 0),
+        map.getOrDefault(Stat.Type.ATTACK_SPEED.name().toLowerCase(), 0),
+        map.getOrDefault(Stat.Type.DEFENSE.name().toLowerCase(), 0),
+        map.getOrDefault(Stat.Type.VITALITY.name().toLowerCase(), 0),
+        map.getOrDefault(Stat.Type.ATTACK.name().toLowerCase(), 0)
+    ), statContainer -> {
+        Map<String, Integer> map = new HashMap<>();
+        map.put(Stat.Type.HEALTH.name().toLowerCase(), statContainer.health.value());
+        map.put(Stat.Type.SPEED.name().toLowerCase(), statContainer.speed.value());
+        map.put(Stat.Type.ATTACK_SPEED.name().toLowerCase(), statContainer.attackSpeed.value());
+        map.put(Stat.Type.DEFENSE.name().toLowerCase(), statContainer.defense.value());
+        map.put(Stat.Type.VITALITY.name().toLowerCase(), statContainer.vitality.value());
+        map.put(Stat.Type.ATTACK.name().toLowerCase(), statContainer.attack.value());
+        return map;
+    });
 
     public StatContainer() {
         this(0, 0, 0, 0, 0, 0);
@@ -19,15 +31,6 @@ public class StatContainer {
 
     public StatContainer(int health, int speed, int attackSpeed, int defense, int attack, int vitality) {
         this(new Stat(Stat.Type.HEALTH, health), new Stat(Stat.Type.SPEED, speed), new Stat(Stat.Type.ATTACK_SPEED, attackSpeed), new Stat(Stat.Type.DEFENSE, defense), new Stat(Stat.Type.ATTACK, attack), new Stat(Stat.Type.VITALITY, vitality));
-    }
-
-    public StatContainer(Stat health, Stat speed, Stat attackSpeed, Stat defense, Stat attack, Stat vitality) {
-        this.health = health;
-        this.speed = speed;
-        this.attackSpeed = attackSpeed;
-        this.defense = defense;
-        this.attack = attack;
-        this.vitality = vitality;
     }
 
     public void setHealth(int health) {

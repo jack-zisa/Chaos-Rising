@@ -1,12 +1,22 @@
 package dev.creoii.chaos.item;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.chaos.DataManager;
 import dev.creoii.chaos.Game;
 import dev.creoii.chaos.inventory.Slot;
 
 import javax.annotation.Nullable;
+import java.io.Serializable;
 import java.util.UUID;
 
-public class ItemStack {
+public class ItemStack implements Serializable {
+    public static final Codec<ItemStack> CODEC = RecordCodecBuilder.create(instance -> {
+        return instance.group(
+            Codec.STRING.fieldOf("id").forGetter(stack -> stack.getItem() == null ? "" : stack.getItem().id()),
+            Codec.INT.fieldOf("count").forGetter(ItemStack::getCount)
+        ).apply(instance, (id, count) -> new ItemStack(DataManager.getItem(id), count));
+    });
     public static final ItemStack EMPTY = new ItemStack(null, 0);
     @Nullable
     private Item item;

@@ -93,11 +93,11 @@ public class InputManager extends InputAdapter {
 
         keysHeld.add(keycode);
         if (keycode == game.getOptionsManager().DEBUG_KEY.intValue()) {
-            game.setDebug(!game.getDebug());
+            game.setDebug(!game.isDebug());
             return true;
         } else if (keycode == game.getOptionsManager().INVENTORY_KEY.intValue()) {
             if (game.getRenderer().getCurrentScreen() == null) {
-                game.getRenderer().setCurrentScreen(new InventoryScreen(game, new Vector2(1084, 400), game.getCharacter().getInventory()));
+                game.getRenderer().setCurrentScreen(new InventoryScreen(game, new Vector2(1084, 400), game.getCharacter().slots));
             } else
                 game.getRenderer().clearCurrentScreen();
             return true;

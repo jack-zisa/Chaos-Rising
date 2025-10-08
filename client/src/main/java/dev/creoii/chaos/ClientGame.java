@@ -7,11 +7,11 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.esotericsoftware.kryonet.Client;
-import dev.creoii.chaos.entity.CharacterEntity;
 import dev.creoii.chaos.input.InputManager;
 import dev.creoii.chaos.network.Networking;
 import dev.creoii.chaos.render.Renderer;
 import dev.creoii.chaos.render.entity.EntityRenderManager;
+import dev.creoii.chaos.render.entity.data.CharacterEntityRenderData;
 import dev.creoii.chaos.texture.TextureManager;
 
 import java.io.IOException;
@@ -27,7 +27,7 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
     private final EntityRenderManager entityManager;
     private final InputManager inputManager;
     private final CommandManager commandManager;
-    private CharacterEntity character;
+    private CharacterEntityRenderData character;
     private boolean debug;
 
     public ClientGame() throws IOException {
@@ -37,6 +37,11 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
         entityManager = new EntityRenderManager(this);
         inputManager = new InputManager(this);
         commandManager = new CommandManager(this);
+    }
+
+    @Override
+    public boolean isClient() {
+        return true;
     }
 
     @Override
@@ -102,7 +107,6 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
         return dataManager;
     }
 
-    @Override
     public EntityRenderManager getEntityManager() {
         return entityManager;
     }
@@ -115,11 +119,11 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
         return commandManager;
     }
 
-    public CharacterEntity getCharacter() {
+    public CharacterEntityRenderData getCharacter() {
         return character;
     }
 
-    public void setCharacter(CharacterEntity character) {
+    public void setCharacter(CharacterEntityRenderData character) {
         this.character = character;
     }
 
@@ -128,7 +132,7 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
         return 0;
     }
 
-    public boolean getDebug() {
+    public boolean isDebug() {
         return debug;
     }
 

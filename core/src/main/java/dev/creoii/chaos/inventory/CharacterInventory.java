@@ -33,9 +33,9 @@ public class CharacterInventory extends Inventory {
             List<ModifierEntry> statBonus = equipmentItem.getStatBonus();
             statBonus.forEach(modifierEntry -> {
                 switch (modifierEntry.modifierType()) {
-                    case ModifierEntry.ModifierType.BASE -> modifierEntry.apply(character.getStats());
-                    case ModifierEntry.ModifierType.MAX -> modifierEntry.apply(character.getMaxStats());
-                    case ModifierEntry.ModifierType.ALL -> {
+                    case BASE -> modifierEntry.apply(character.getStats());
+                    case MAX -> modifierEntry.apply(character.getMaxStats());
+                    case ALL -> {
                         modifierEntry.apply(character.getStats());
                         modifierEntry.apply(character.getMaxStats());
                     }
@@ -50,9 +50,9 @@ public class CharacterInventory extends Inventory {
             List<ModifierEntry> statBonus = equipmentItem.getStatBonus();
             statBonus.forEach(modifierEntry -> {
                 switch (modifierEntry.modifierType()) {
-                    case ModifierEntry.ModifierType.BASE -> modifierEntry.remove(character.getStats());
-                    case ModifierEntry.ModifierType.MAX -> modifierEntry.remove(character.getMaxStats());
-                    case ModifierEntry.ModifierType.ALL -> {
+                    case BASE -> modifierEntry.remove(character.getStats());
+                    case MAX -> modifierEntry.remove(character.getMaxStats());
+                    case ALL -> {
                         modifierEntry.remove(character.getStats());
                         modifierEntry.remove(character.getMaxStats());
                     }

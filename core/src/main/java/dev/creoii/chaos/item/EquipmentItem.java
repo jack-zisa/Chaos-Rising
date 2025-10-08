@@ -7,7 +7,7 @@ import dev.creoii.chaos.util.stat.StatContainer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EquipmentItem extends ServerItem {
+public class EquipmentItem extends Item {
     protected final List<ModifierEntry> statBonus;
 
     public EquipmentItem(String id, Type type, Rarity rarity, List<ModifierEntry> statBonus) {

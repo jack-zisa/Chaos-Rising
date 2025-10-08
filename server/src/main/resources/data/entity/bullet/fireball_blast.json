@@ -1,4 +1,6 @@
 {
+  "id": "fireball_blast",
+  "type": "bullet",
   "lifetime": 200,
   "path": {
     "segments": [

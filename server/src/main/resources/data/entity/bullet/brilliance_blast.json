@@ -1,4 +1,6 @@
 {
+  "id": "brilliance_blast",
+  "type": "bullet",
   "lifetime": 150,
   "path": {
     "speed": 10,

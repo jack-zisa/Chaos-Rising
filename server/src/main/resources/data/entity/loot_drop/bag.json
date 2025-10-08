@@ -1,0 +1,5 @@
+{
+  "id": "bag",
+  "type": "loot_drop",
+  "remove_empty": true
+}

@@ -1,4 +1,5 @@
 {
+  "id": "kingforge_blade",
   "type": "weapon",
   "attack": {
     "bullet_id": "test_sin_acc",

@@ -69,15 +69,14 @@ public class Renderer implements Disposable {
         if (game.getCharacter() == null)
             return;
 
-        Vector2 playerPos = game.getCharacter().getPos();
         Vector3 mousePos = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
 
-        Vector2 direction = new Vector2(mousePos.x - playerPos.x, mousePos.y - playerPos.y);
+        Vector2 direction = new Vector2(mousePos.x - game.getCharacter().x, mousePos.y - game.getCharacter().y);
         if (direction.len2() > 1e-4f)
             direction.nor().scl(CAMERA_LOOK_OFFSET);
 
-        camera.position.x += ((playerPos.x + direction.x) - camera.position.x) * 0.2f;
-        camera.position.y += ((playerPos.y + direction.y) - camera.position.y) * 0.2f;
+        camera.position.x += ((game.getCharacter().x + direction.x) - camera.position.x) * 0.2f;
+        camera.position.y += ((game.getCharacter().y + direction.y) - camera.position.y) * 0.2f;
         camera.update();
 
         shapeRenderer.setProjectionMatrix(camera.combined);

@@ -1,4 +1,6 @@
 {
+  "id": "lightning_bolt",
+  "type": "bullet",
   "lifetime": 150,
   "path": {
     "speed": 5,

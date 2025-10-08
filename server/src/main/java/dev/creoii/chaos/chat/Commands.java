@@ -1,12 +1,18 @@
 package dev.creoii.chaos.chat;
 
 import com.badlogic.gdx.math.Vector2;
+import dev.creoii.chaos.DataManager;
 import dev.creoii.chaos.ServerGame;
 import dev.creoii.chaos.effect.StatusEffect;
 import dev.creoii.chaos.effect.StatusEffectType;
 import dev.creoii.chaos.effect.StatusEffectTypes;
 import dev.creoii.chaos.entity.*;
-import dev.creoii.chaos.item.ServerItem;
+import dev.creoii.chaos.inventory.InventoryType;
+import dev.creoii.chaos.inventory.Slot;
+import dev.creoii.chaos.inventory.SlotEntry;
+import dev.creoii.chaos.item.Item;
+import dev.creoii.chaos.network.packet.s2c.InventoryUpdateS2C;
+import dev.creoii.chaos.util.EntityGroup;
 
 import java.util.*;
 
@@ -28,7 +34,7 @@ public final class Commands {
             if (args.length > 1) {
                 float x = Integer.parseInt(args[0]) * Entity.COORDINATE_SCALE;
                 float y = Integer.parseInt(args[1]) * Entity.COORDINATE_SCALE;
-                game.getEntityManager().getCharacter(uuid).setPos(x, y);
+                game.getEntityManager().getEntity(EntityGroup.CHARACTER, uuid).setPos(x, y);
             }
         });
 
@@ -36,31 +42,31 @@ public final class Commands {
             if (args.length > 1) {
                 String stat = args[0];
                 int value = Integer.parseInt(args[1]);
-                CharacterEntity character = game.getEntityManager().getCharacter(uuid);
+                CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, uuid);
                 switch (stat) {
                     case "health" -> {
-                        character.getStats().health.set(value);
-                        character.getMaxStats().health.set(value);
+                        character.getStats().health().set(value);
+                        character.getMaxStats().health().set(value);
                     }
                     case "speed" -> {
-                        character.getStats().speed.set(value);
-                        character.getMaxStats().speed.set(value);
+                        character.getStats().speed().set(value);
+                        character.getMaxStats().speed().set(value);
                     }
                     case "attack_speed" -> {
-                        character.getStats().attackSpeed.set(value);
-                        character.getMaxStats().attackSpeed.set(value);
+                        character.getStats().attackSpeed().set(value);
+                        character.getMaxStats().attackSpeed().set(value);
                     }
                     case "defense" -> {
-                        character.getStats().defense.set(value);
-                        character.getMaxStats().defense.set(value);
+                        character.getStats().defense().set(value);
+                        character.getMaxStats().defense().set(value);
                     }
                     case "attack" -> {
-                        character.getStats().attack.set(value);
-                        character.getMaxStats().attack.set(value);
+                        character.getStats().attack().set(value);
+                        character.getMaxStats().attack().set(value);
                     }
                     case "vitality" -> {
-                        character.getStats().vitality.set(value);
-                        character.getMaxStats().vitality.set(value);
+                        character.getStats().vitality().set(value);
+                        character.getMaxStats().vitality().set(value);
                     }
                 }
             }
@@ -72,7 +78,7 @@ public final class Commands {
             if (argCount < 1 || argCount == 2)
                 return;
 
-            EnemyEntityType enemy = game.getDataManager().getEnemy(args[0]);
+            EnemyEntityType enemy = DataManager.getEnemy(args[0]);
 
             if (enemy == null)
                 return;
@@ -124,19 +130,23 @@ public final class Commands {
             if (args.length > 0) {
                 int count = args.length > 1 ? Integer.parseInt(args[1]) : 1;
                 for (int i = 0; i < count; ++i) {
-                    ServerItem item = game.getDataManager().getItem(args[0]);
+                    Item item = DataManager.getItem(args[0]);
                     if (item == null)
                         continue;
-                    game.getEntityManager().getCharacter(uuid).getInventory().addItem(item.getDefaultStack().copy());
+                    CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, uuid);
+                    Slot slot;
+                    if ((slot = character.getInventory().addItem(item.getDefaultStack().copy())) != null) {
+                        game.getServer().sendToTCP(character.getConnectionId(), new InventoryUpdateS2C(InventoryType.MAIN, List.of(new SlotEntry(slot.getR(), slot.getC(), slot.getStack()))));
+                    }
                 }
             }
         });
 
         Command.register("set_class", (game, uuid, args) -> {
             if (args.length > 0) {
-                CharacterClass characterClass = game.getDataManager().getCharacterClass(args[0]);
+                CharacterClass characterClass = DataManager.getCharacterClass(args[0]);
                 if (characterClass != null)
-                    game.getEntityManager().getCharacter(uuid).setCharacterClass(characterClass);
+                    ((CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, uuid)).setCharacterClass(characterClass);
             }
         });
 
@@ -151,21 +161,21 @@ public final class Commands {
                 StatusEffectType type = StatusEffectTypes.ALL.get(effectType);
                 if (type == null)
                     return;
-                game.getEntityManager().getCharacter(uuid).addStatusEffect(new StatusEffect(type, 1, 30));
+                ((CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, uuid)).addStatusEffect(new StatusEffect(type, 1, 30));
             } else if (argCount == 3) {
                 StatusEffectType type = StatusEffectTypes.ALL.get(effectType);
                 if (type == null)
                     return;
                 int amplifier = Integer.parseInt(args[1]);
                 int duration = Integer.parseInt(args[2]);
-                game.getEntityManager().getCharacter(uuid).addStatusEffect(new StatusEffect(type, amplifier, duration));
+                ((CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, uuid)).addStatusEffect(new StatusEffect(type, amplifier, duration));
             }
         });
 
         Command.register("remove_effect", (game, uuid, args) -> {
             if (args.length > 0) {
                 String effectType = args[0];
-                CharacterEntity character = game.getEntityManager().getCharacter(uuid);
+                CharacterEntity character = ((CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, uuid));
 
                 if ("all".equals(effectType)) {
                     character.clearStatusEffects();

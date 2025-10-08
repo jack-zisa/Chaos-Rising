@@ -1,4 +1,6 @@
 {
+  "id": "beholder",
+  "type": "enemy",
   "scale": 2,
   "stats": {
     "health": 50
@@ -41,36 +43,5 @@
       ]
     }
   },
-  "loot_table": {
-    "entries": [
-      {
-        "item": "test_random",
-        "weight": 1
-      },
-      {
-        "item": "test_spread",
-        "weight": 1
-      },
-      {
-        "item": "test_three",
-        "weight": 1
-      },
-      {
-        "item": "test_two",
-        "weight": 1
-      },
-      {
-        "item": "test_circle",
-        "weight": 1
-      },
-      {
-        "item": "test_backwards",
-        "weight": 1
-      },
-      {
-        "item": "test_multi",
-        "weight": 1
-      }
-    ]
-  }
+  "loot_table": "test_beholder"
 }

@@ -7,5 +7,4 @@ import java.io.Serializable;
 import java.util.List;
 
 public record InventoryUpdateS2C(InventoryType type, List<SlotEntry> slots) implements Serializable {
-
 }

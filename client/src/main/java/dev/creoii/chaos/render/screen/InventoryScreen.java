@@ -5,8 +5,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.ClientGame;
-import dev.creoii.chaos.inventory.Inventory;
 import dev.creoii.chaos.inventory.Slot;
+import dev.creoii.chaos.render.entity.data.SlotRenderData;
 import dev.creoii.chaos.render.screen.widget.InventoryWidget;
 import dev.creoii.chaos.render.screen.widget.LootInventoryWidget;
 import dev.creoii.chaos.render.screen.widget.Widget;
@@ -18,11 +18,11 @@ import java.util.Map;
 public class InventoryScreen extends Screen {
     public static final Map<Slot.Type, Sprite> SLOT_SPRITES = new HashMap<>();
 
-    public InventoryScreen(ClientGame game, Vector2 pos, Inventory inventory) {
-        super(game, "Inventory", pos, (inventory.getSlots().length * 48f) + 31f);
+    public InventoryScreen(ClientGame game, Vector2 pos, SlotRenderData[][] slots) {
+        super(game, "Inventory", pos, (slots.length * 48f) + 31f);
 
-        addWidget("main_inventory", new InventoryWidget(this, pos, inventory));
-        addWidget("loot_inventory", new LootInventoryWidget(this, pos.cpy().sub(0f, 400f), game1 -> game1.getCharacter().getLootUuid() != null));
+        addWidget("main_inventory", new InventoryWidget(this, pos, slots));
+        //addWidget("loot_inventory", new LootInventoryWidget(this, pos.cpy().sub(0f, 400f), game1 -> game1.getCharacter().getLootUuid() != null));
 
         SLOT_SPRITES.put(Slot.Type.NONE, new Sprite(new Texture("textures/ui/slot.png")));
         SLOT_SPRITES.put(Slot.Type.WEAPON, new Sprite(new Texture("textures/ui/weapon_slot.png")));
@@ -36,7 +36,7 @@ public class InventoryScreen extends Screen {
     }
 
     @Nullable
-    public Slot getMouseOverSlot() {
+    public SlotRenderData getMouseOverSlot() {
         if (getWidgets().isEmpty())
             return null;
 
@@ -47,7 +47,7 @@ public class InventoryScreen extends Screen {
             if (widget instanceof InventoryWidget inventoryWidget) {
                 if (!inventoryWidget.isActive(getGame()))
                     continue;
-                Slot slot = inventoryWidget.getSlotAt(mouseX, mouseY);
+                SlotRenderData slot = inventoryWidget.getSlotAt(mouseX, mouseY);
                 if (slot != null)
                     return slot;
             }

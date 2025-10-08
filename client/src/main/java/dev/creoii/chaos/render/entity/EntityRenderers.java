@@ -1,20 +1,21 @@
 package dev.creoii.chaos.render.entity;
 
-import dev.creoii.chaos.entity.Entity;
+import dev.creoii.chaos.render.entity.data.EntityRenderData;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
 public class EntityRenderers {
-    private static final Map<Class<? extends Entity>, Function<Entity, EntityRenderer<? extends Entity>>> RENDERERS = new HashMap<>();
+    private static final Map<Class<? extends EntityRenderData>, Function<?, ?>> RENDERERS = new HashMap<>();
 
     @SuppressWarnings("unchecked")
-    public static <T extends Entity> EntityRenderer<T> getRenderer(T entity) {
-        return (EntityRenderer<T>) RENDERERS.get(entity.getClass()).apply(entity);
+    public static <T extends EntityRenderData> EntityRenderer<T> getRenderer(T entity) {
+        Function<T, EntityRenderer<T>> function = (Function<T, EntityRenderer<T>>) RENDERERS.get(entity.getClass());
+        return function.apply(entity);
     }
 
-    public static void register(Class<? extends Entity> clazz, Function<Entity, EntityRenderer<? extends Entity>> renderFunction) {
+    public static <T extends EntityRenderData> void register(Class<T> clazz, Function<T, EntityRenderer<T>> renderFunction) {
         RENDERERS.put(clazz, renderFunction);
     }
 }

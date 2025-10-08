@@ -10,11 +10,13 @@ public class Slot {
     private final int c;
     private Type type;
     private ItemStack stack;
+    private boolean active;
 
     public Slot(int r, int c, Type type) {
         this.r = r;
         this.c = c;
         this.type = type;
+        active = false;
     }
 
     public Slot(int r, int c) {
@@ -55,6 +57,14 @@ public class Slot {
         return stack != null && stack.getItem() != null;
     }
 
+    public void setActive(boolean active) {
+        this.active = true;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
     public boolean canAccept(Item item) {
         return type.itemPredicate.test(item);
     }
@@ -66,7 +76,7 @@ public class Slot {
     }
 
     public enum Type {
-        NONE(item -> true),
+        NONE(_ -> true),
         WEAPON(item -> item.getType() == Item.Type.WEAPON),
         ABILITY(item -> item.getType() == Item.Type.ABILITY),
         ARMOR(item -> item.getType() == Item.Type.ARMOR),

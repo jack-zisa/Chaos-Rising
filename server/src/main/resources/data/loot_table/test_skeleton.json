@@ -1,0 +1,17 @@
+{
+  "id": "test_skeleton",
+  "entries": [
+    {
+      "item": "test",
+      "weight": 3
+    },
+    {
+      "item": "test_random",
+      "weight": 1
+    },
+    {
+      "item": "test_circle",
+      "weight": 1
+    }
+  ]
+}

@@ -22,6 +22,7 @@ public class EnemyController extends EntityController<EnemyEntity> {
     }
 
     public void start(EnemyEntity entity) {
+        //System.out.println("control start");
         if (behavior == null)
             return;
         this.entity = entity;
@@ -31,8 +32,10 @@ public class EnemyController extends EntityController<EnemyEntity> {
 
     @Override
     public void control(int gametime, float delta) {
+        //System.out.println("control enemy");
         if (entity != null && behavior != null) {
             behavior.update(this, ++time, delta);
+            //System.out.println("behavior update: " + time);
         }
     }
 }

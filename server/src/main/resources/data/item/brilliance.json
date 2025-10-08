@@ -1,8 +1,9 @@
 {
+  "id": "brilliance",
   "type": "weapon",
   "rarity": "divine",
   "attack": {
-    "bullet_id": "test_arc",
+    "bullet_id": "brilliance_blast",
     "damage": 5,
     "bullet_count": 3,
     "arc_gap": 120

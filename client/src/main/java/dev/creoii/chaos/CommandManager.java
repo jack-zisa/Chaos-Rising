@@ -29,7 +29,7 @@ public class CommandManager extends InputAdapter {
         String commandType = elements[0].substring(1);
 
         String[] args = Arrays.copyOfRange(elements, 1, elements.length);
-        game.getClient().sendTCP(new ExecuteCommandC2S(game.getCharacter().getUuid(), commandType, args));
+        game.getClient().sendTCP(new ExecuteCommandC2S(game.getCharacter().uuid, commandType, args));
 
         /**
          * FOR /set_class:
