@@ -8,8 +8,11 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.ClientGame;
 import dev.creoii.chaos.input.InputManager;
+import dev.creoii.chaos.inventory.InventoryType;
 import dev.creoii.chaos.inventory.Slot;
+import dev.creoii.chaos.inventory.SlotEntry;
 import dev.creoii.chaos.item.ItemStack;
+import dev.creoii.chaos.network.packet.c2s.SlotUpdateC2S;
 import dev.creoii.chaos.render.ItemRenderer;
 import dev.creoii.chaos.render.Renderer;
 import dev.creoii.chaos.render.data.SlotRenderData;
@@ -46,13 +49,17 @@ public class InventoryWidget extends Widget {
         return slots;
     }
 
+    @Nullable
     public SlotRenderData getSlotAt(float x, float y) {
-        for (int r = 0; r < slots.length; ++r) {
+        for (int r = 0; r < getInventory().length; ++r) {
             for (int c = 0; c < getInventory()[r].length; ++c) {
                 float slotX = getPos().x + (c * SLOT_SIZE);
                 float slotY = getPos().y + (r * SLOT_SIZE);
                 if (x >= slotX && x <= slotX + SLOT_SIZE && y >= slotY && y <= slotY + SLOT_SIZE) {
-                    return getInventory()[r][c];
+                    SlotRenderData slot = getInventory()[r][c];
+                    slot.r = r;
+                    slot.c = c;
+                    return slot;
                 }
             }
         }
@@ -121,27 +128,27 @@ public class InventoryWidget extends Widget {
             ClientGame game = manager.getGame();
             SlotRenderData touched = inventoryScreen.getMouseOverSlot();
             if (touched != null) {
-                /*if (!touched.canAccept(dragStack.getItem())) {
-                    dragSource.setStack(dragStack.copy());
+                if (!touched.canAccept(dragStack.getItem())) {
+                    dragSource.stack = dragStack.copy();
                 } else {
-                    if (touched.hasItem()) {
-                        if (dragSource.canAccept(touched.getStack().getItem())) {
-                            game.getClient().sendTCP(new SlotUpdateC2S(manager.getGame().getCharacter().uuid, SlotUpdateC2S.Action.SWAP, InventoryType.MAIN, InventoryType.MAIN, new SlotEntry(dragSource.getR(), dragSource.getC(), dragSource.hasItem() ? dragSource.getStack().getItem().id() : "", dragSource.hasItem() ? dragSource.getStack().getCount() : 0), new SlotEntry(touched.getR(), touched.getC(), touched.hasItem() ? touched.getStack().getItem().id() : "", touched.hasItem() ? touched.getStack().getCount() : 0)));
+                    if (touched.stack != ItemStack.EMPTY) {
+                        if (dragSource.canAccept(touched.stack.getItem())) {
+                            game.getClient().sendTCP(new SlotUpdateC2S(manager.getGame().getCharacter().uuid, SlotUpdateC2S.Action.SWAP, InventoryType.MAIN, InventoryType.MAIN, new SlotEntry(dragSource.r, dragSource.c, dragSource.type, dragSource.stack, true), new SlotEntry(touched.r, touched.c, touched.type, touched.stack, true)));
                         } else
-                            dragSource.setStack(dragStack.copy());
+                            dragSource.stack = dragStack.copy();
                     } else {
-                        game.getClient().sendTCP(new SlotUpdateC2S(manager.getGame().getCharacter().uuid, SlotUpdateC2S.Action.MOVE, InventoryType.MAIN, InventoryType.MAIN, new SlotEntry(dragSource.getR(), dragSource.getC(), dragSource.hasItem() ? dragSource.getStack().getItem().id() : "", dragSource.hasItem() ? dragSource.getStack().getCount() : 0), new SlotEntry(touched.getR(), touched.getC(), touched.hasItem() ? touched.getStack().getItem().id() : "", touched.hasItem() ? touched.getStack().getCount() : 0)));
+                        game.getClient().sendTCP(new SlotUpdateC2S(manager.getGame().getCharacter().uuid, SlotUpdateC2S.Action.MOVE, InventoryType.MAIN, InventoryType.MAIN, new SlotEntry(dragSource.r, dragSource.c, dragSource.type, dragSource.stack, true), new SlotEntry(touched.r, touched.c, touched.type, touched.stack, true)));
 
-                        if (getInventory().isEmpty()) {
+                        /*if (getInventory().isEmpty()) {
                             if (game.getCharacter().getLootUuid() != null) {
                                 game.getCharacter().setLootUuid(null);
                                 game.getClient().sendTCP(new LootDropCloseC2S(game.getCharacter().uuid()));
                             }
-                        }
+                        }*/
                     }
-                }*/
+                }
             } else {
-                //game.getClient().sendTCP(new DropSlotItemC2S(manager.getGame().getCharacter().uuid, new SlotEntry(dragSource.getR(), dragSource.getC(), dragSource.hasItem() ? dragSource.getStack().getItem().id() : "", dragSource.hasItem() ? dragSource.getStack().getCount() : 0)));
+                //game.getClient().sendTCP(new DropSlotItemC2S(manager.getGame().getCharacter().uuid, new SlotEntry(dragSource.getR(), dragSource.getC(), dragSource.stack)));
             }
             dragStack = null;
         }

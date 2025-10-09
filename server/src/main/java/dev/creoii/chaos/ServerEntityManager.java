@@ -6,6 +6,7 @@ import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.entity.EntityType;
 import dev.creoii.chaos.network.packet.s2c.EntityDisplayS2C;
 import dev.creoii.chaos.network.packet.s2c.EntityMoveS2C;
+import dev.creoii.chaos.network.packet.s2c.EntityRemoveS2C;
 import dev.creoii.chaos.network.packet.s2c.EntitySpawnS2C;
 import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.Tickable;
@@ -57,6 +58,7 @@ public class ServerEntityManager extends EntityManager<Entity> implements Tickab
             if (entry.getValue().containsKey(uuid)) {
                 ((ServerGame) getGame()).getTickManager().removeTickable(entry.getValue().get(uuid));
                 entry.getValue().remove(uuid);
+                ((ServerGame) getGame()).getServer().sendToAllTCP(new EntityRemoveS2C(uuid));
                 return true;
             }
         }

@@ -2,6 +2,7 @@ package dev.creoii.chaos.render.data;
 
 import dev.creoii.chaos.inventory.Slot;
 import dev.creoii.chaos.inventory.SlotEntry;
+import dev.creoii.chaos.item.Item;
 import dev.creoii.chaos.item.ItemStack;
 
 import java.util.List;
@@ -9,6 +10,8 @@ import java.util.List;
 public class SlotRenderData {
     public Slot.Type type;
     public ItemStack stack;
+    public int r;
+    public int c;
 
     public SlotRenderData(Slot.Type type, ItemStack stack) {
         this.type = type;
@@ -32,5 +35,15 @@ public class SlotRenderData {
         }
 
         return array;
+    }
+
+    public boolean canAccept(Item item) {
+        return type.getItemPredicate().test(item);
+    }
+
+    public ItemStack takeStack() {
+        ItemStack temp = stack.copy();
+        stack = null;
+        return temp;
     }
 }
