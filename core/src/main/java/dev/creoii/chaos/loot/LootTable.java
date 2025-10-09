@@ -1,6 +1,5 @@
 package dev.creoii.chaos.loot;
 
-import com.badlogic.gdx.utils.JsonValue;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.DataManager;
@@ -38,14 +37,6 @@ public class LootTable implements Identifiable {
 
     public List<LootEntry> getEntries() {
         return entries;
-    }
-
-    public static LootTable parse(JsonValue jsonValue) {
-        LootTable lootTable = new LootTable("");
-        jsonValue.get("entries").forEach(jsonValue1 -> {
-            lootTable.addEntry(LootEntry.parse(jsonValue1));
-        });
-        return lootTable;
     }
 
     public void addEntry(LootEntry entry) {

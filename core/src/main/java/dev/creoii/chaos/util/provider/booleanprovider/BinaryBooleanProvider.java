@@ -9,7 +9,7 @@ public record BinaryBooleanProvider(BooleanProvider a, BooleanProvider b, Binary
         return instance.group(
             BooleanProvider.CODEC.fieldOf("a").forGetter(BinaryBooleanProvider::a),
             BooleanProvider.CODEC.fieldOf("b").forGetter(BinaryBooleanProvider::b),
-            BinaryOperation.CODEC.fieldOf("operation").forGetter(BinaryBooleanProvider::operation)
+            BinaryOperation.CODEC.fieldOf("operation").orElse(BinaryOperation.AND).forGetter(BinaryBooleanProvider::operation)
         ).apply(instance, BinaryBooleanProvider::new);
     });
 

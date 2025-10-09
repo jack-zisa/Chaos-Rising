@@ -1,8 +1,20 @@
 package dev.creoii.chaos.util.provider.vecprovider;
 
 import com.badlogic.gdx.math.Vector2;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 public record PerpendicularVecProvider(VecProvider value) implements VecProvider {
+    public static final MapCodec<PerpendicularVecProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
+        return instance.group(
+            VecProvider.CODEC.fieldOf("value").forGetter(PerpendicularVecProvider::value)
+        ).apply(instance, PerpendicularVecProvider::new);
+    });
+
+    @Override
+    public Type getType() {
+        return Type.PERPENDICULAR;
+    }
 
     @Override
     public Vector2 get(Context context) {

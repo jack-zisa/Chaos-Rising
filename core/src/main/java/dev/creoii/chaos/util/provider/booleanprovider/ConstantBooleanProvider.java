@@ -5,6 +5,8 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 public record ConstantBooleanProvider(boolean value) implements BooleanProvider {
+    public static final ConstantBooleanProvider TRUE = new ConstantBooleanProvider(true);
+    public static final ConstantBooleanProvider FALSE = new ConstantBooleanProvider(false);
     public static final MapCodec<ConstantBooleanProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(
             Codec.BOOL.fieldOf("value").forGetter(ConstantBooleanProvider::value)

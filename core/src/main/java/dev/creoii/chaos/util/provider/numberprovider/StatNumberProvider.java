@@ -8,7 +8,7 @@ import dev.creoii.chaos.util.stat.Stat;
 public record StatNumberProvider(Stat.Type statType) implements NumberProvider {
     public static final MapCodec<StatNumberProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(
-            Stat.Type.CODEC.fieldOf("stat_type").forGetter(StatNumberProvider::statType)
+            Stat.Type.CODEC.fieldOf("stat_type").orElse(Stat.Type.HEALTH).forGetter(StatNumberProvider::statType)
         ).apply(instance, StatNumberProvider::new);
     });
 

@@ -8,8 +8,8 @@ public record ComparisonNumberProvider(BooleanProvider comparison, NumberProvide
     public static final MapCodec<ComparisonNumberProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(
             BooleanProvider.CODEC.fieldOf("comparison").forGetter(ComparisonNumberProvider::comparison),
-            NumberProvider.CODEC.fieldOf("trueValue").forGetter(ComparisonNumberProvider::trueValue),
-            NumberProvider.CODEC.fieldOf("falseValue").forGetter(ComparisonNumberProvider::falseValue)
+            NumberProvider.CODEC.fieldOf("trueValue").orElse(ConstantNumberProvider.ZERO).forGetter(ComparisonNumberProvider::trueValue),
+            NumberProvider.CODEC.fieldOf("falseValue").orElse(ConstantNumberProvider.ZERO).forGetter(ComparisonNumberProvider::falseValue)
         ).apply(instance, ComparisonNumberProvider::new);
     });
 

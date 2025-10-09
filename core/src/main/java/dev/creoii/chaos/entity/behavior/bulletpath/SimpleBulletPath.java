@@ -2,6 +2,7 @@ package dev.creoii.chaos.entity.behavior.bulletpath;
 
 import com.badlogic.gdx.math.Vector2;
 import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.entity.BulletEntity;
 import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.entity.controller.EntityController;
@@ -12,7 +13,13 @@ import dev.creoii.chaos.util.provider.vecprovider.ConstantVecProvider;
 import dev.creoii.chaos.util.provider.vecprovider.VecProvider;
 
 public record SimpleBulletPath(NumberProvider speed, VecProvider offset, NumberProvider arcSpeed) implements BulletPath {
-    public static final MapCodec<SimpleBulletPath> CODEC = MapCodec.unit(new SimpleBulletPath(new ConstantNumberProvider(0), new ConstantVecProvider(0), new ConstantNumberProvider(0)));
+    public static final MapCodec<SimpleBulletPath> CODEC = RecordCodecBuilder.mapCodec(instance -> {
+        return instance.group(
+            NumberProvider.CODEC.fieldOf("speed").forGetter(SimpleBulletPath::speed),
+            VecProvider.CODEC.fieldOf("offset").orElse(ConstantVecProvider.ZERO).forGetter(SimpleBulletPath::offset),
+            NumberProvider.CODEC.fieldOf("arc_speed").orElse(ConstantNumberProvider.ZERO).forGetter(SimpleBulletPath::arcSpeed)
+        ).apply(instance, SimpleBulletPath::new);
+    });
 
     @Override
     public Type getType() {

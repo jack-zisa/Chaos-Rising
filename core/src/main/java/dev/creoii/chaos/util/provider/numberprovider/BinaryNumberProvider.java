@@ -9,7 +9,7 @@ public record BinaryNumberProvider(NumberProvider a, NumberProvider b, Operation
         return instance.group(
             NumberProvider.CODEC.fieldOf("a").forGetter(BinaryNumberProvider::a),
             NumberProvider.CODEC.fieldOf("b").forGetter(BinaryNumberProvider::b),
-            Operation.CODEC.fieldOf("operation").forGetter(BinaryNumberProvider::operation)
+            Operation.CODEC.fieldOf("operation").orElse(Operation.ADD).forGetter(BinaryNumberProvider::operation)
         ).apply(instance, BinaryNumberProvider::new);
     });
 

@@ -5,6 +5,8 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 public record ConstantNumberProvider(float value) implements NumberProvider {
+    public static final ConstantNumberProvider ZERO = new ConstantNumberProvider(0);
+    public static final ConstantNumberProvider ONE = new ConstantNumberProvider(1);
     public static final MapCodec<ConstantNumberProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(
             Codec.FLOAT.fieldOf("value").forGetter(ConstantNumberProvider::value)

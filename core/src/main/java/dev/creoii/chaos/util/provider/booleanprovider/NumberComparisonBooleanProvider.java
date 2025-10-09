@@ -10,7 +10,7 @@ public record NumberComparisonBooleanProvider(NumberProvider a, NumberProvider b
         return instance.group(
             NumberProvider.CODEC.fieldOf("a").forGetter(NumberComparisonBooleanProvider::a),
             NumberProvider.CODEC.fieldOf("b").forGetter(NumberComparisonBooleanProvider::b),
-            Comparison.CODEC.fieldOf("comparison").forGetter(NumberComparisonBooleanProvider::comparison)
+            Comparison.CODEC.fieldOf("comparison").orElse(Comparison.E).forGetter(NumberComparisonBooleanProvider::comparison)
         ).apply(instance, NumberComparisonBooleanProvider::new);
     });
 

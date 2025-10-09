@@ -7,15 +7,15 @@ import dev.creoii.chaos.entity.CharacterEntity;
 import dev.creoii.chaos.entity.CharacterEntityType;
 
 public record IsClassBooleanProvider(String classId) implements BooleanProvider {
-    public static final MapCodec<HasEffectBooleanProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
+    public static final MapCodec<IsClassBooleanProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(
-            Codec.STRING.fieldOf("classId").forGetter(HasEffectBooleanProvider::classId)
-        ).apply(instance, HasEffectBooleanProvider::new);
+            Codec.STRING.fieldOf("classId").forGetter(IsClassBooleanProvider::classId)
+        ).apply(instance, IsClassBooleanProvider::new);
     });
 
     @Override
     public Type getType() {
-        return Type.HAS_EFFECT;
+        return Type.IS_CLASS;
     }
 
     @Override

@@ -12,20 +12,23 @@ import dev.creoii.chaos.entity.BulletEntityType;
 import dev.creoii.chaos.util.provider.Provider;
 import dev.creoii.chaos.util.provider.numberprovider.ConstantNumberProvider;
 import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
-import dev.creoii.chaos.util.provider.vecprovider.ConstantVecProvider;
 import dev.creoii.chaos.util.provider.vecprovider.VecProvider;
 
 import java.io.Serializable;
 import java.util.*;
 
-public record SimpleAttack(String bulletId, NumberProvider damage, int bulletCount, int arcGap, float predictability, NumberProvider angleOffset, VecProvider source, VecProvider target) implements Attack, Serializable {
+public record SimpleAttack(String bulletId, NumberProvider damage, int bulletCount, int arcGap, float predictability, NumberProvider angleOffset, Optional<VecProvider> source, Optional<VecProvider> target) implements Attack, Serializable {
     public static final MapCodec<SimpleAttack> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(
             Codec.STRING.fieldOf("bullet_id").forGetter(SimpleAttack::bulletId),
+            NumberProvider.CODEC.fieldOf("damage").forGetter(SimpleAttack::damage),
             Codec.INT.fieldOf("bullet_count").orElse(1).forGetter(SimpleAttack::bulletCount),
             Codec.INT.fieldOf("arc_gap").orElse(0).forGetter(SimpleAttack::arcGap),
-            Codec.FLOAT.fieldOf("predictability").orElse(0f).forGetter(SimpleAttack::predictability)
-        ).apply(instance, (bulletId, bulletCount, arcGap, predictability) -> new SimpleAttack(bulletId, new ConstantNumberProvider(0), bulletCount, arcGap, predictability, new ConstantNumberProvider(0), new ConstantVecProvider(0), new ConstantVecProvider(0)));
+            Codec.FLOAT.fieldOf("predictability").orElse(0f).forGetter(SimpleAttack::predictability),
+            NumberProvider.CODEC.fieldOf("angle_offset").orElse(ConstantNumberProvider.ZERO).forGetter(SimpleAttack::angleOffset),
+            VecProvider.CODEC.optionalFieldOf("source").forGetter(SimpleAttack::source),
+            VecProvider.CODEC.optionalFieldOf("target").forGetter(SimpleAttack::target)
+        ).apply(instance, SimpleAttack::new);
     });
 
     @Override
@@ -35,8 +38,8 @@ public record SimpleAttack(String bulletId, NumberProvider damage, int bulletCou
 
     public void attack(VecProvider targetPos, VecProvider sourcePos, Entity sourceEntity) {
         Provider.Context context = Provider.Context.of(sourceEntity, sourceEntity.getGame().getGametime());
-        Vector2 pos = source != null ? source.get(context) : sourcePos.get(context);
-        Vector2 direction = target != null ? target.get(context).sub(pos).nor() : targetPos.get(context).sub(pos).nor();
+        Vector2 pos = source.isPresent() ? source.get().get(context) : sourcePos.get(context);
+        Vector2 direction = target.isPresent() ? target.get().get(context).sub(pos).nor() : targetPos.get(context).sub(pos).nor();
         float baseAngle = -arcGap * (bulletCount - 1) / 2f;
 
         for (int i = 0; i < bulletCount; ++i) {

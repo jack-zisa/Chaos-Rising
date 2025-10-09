@@ -21,8 +21,9 @@ public record EnemyEntityType(String id, float scale, @Nullable LootTable lootTa
             Codec.STRING.fieldOf("id").forGetter(EnemyEntityType::id),
             Codec.FLOAT.fieldOf("scale").orElse(1f).forGetter(EnemyEntityType::scale),
             LootTable.CODEC.fieldOf("loot_table").orElse(LootTable.EMPTY).forGetter(EnemyEntityType::lootTable),
+            Behavior.CODEC.fieldOf("behavior").forGetter(EnemyEntityType::behavior),
             StatContainer.CODEC.fieldOf("stats").orElse(DEFAULT_STAT_CONTAINER).forGetter(EnemyEntityType::stats)
-        ).apply(instance, (id, scale, lootTable, stats) -> new EnemyEntityType(id, scale, lootTable, null, stats));
+        ).apply(instance, EnemyEntityType::new);
     });
 
     @Override

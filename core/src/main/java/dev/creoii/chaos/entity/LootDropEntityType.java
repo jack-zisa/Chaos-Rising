@@ -16,8 +16,9 @@ public record LootDropEntityType(String id, float scale, BooleanProvider removeE
     public static final MapCodec<LootDropEntityType> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(
             Codec.STRING.fieldOf("id").forGetter(LootDropEntityType::id),
-            Codec.FLOAT.fieldOf("scale").orElse(1f).forGetter(LootDropEntityType::scale)
-        ).apply(instance, (id, scale) -> new LootDropEntityType(id, scale, null));
+            Codec.FLOAT.fieldOf("scale").orElse(1f).forGetter(LootDropEntityType::scale),
+            BooleanProvider.CODEC.fieldOf("remove_empty").forGetter(LootDropEntityType::removeEmpty)
+        ).apply(instance, LootDropEntityType::new);
     });
 
     @Override

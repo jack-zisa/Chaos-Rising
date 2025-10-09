@@ -3,14 +3,14 @@ package dev.creoii.chaos.util.provider.numberprovider;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import javax.annotation.Nullable;
+import java.util.Optional;
 
-public record ClampNumberProvider(NumberProvider value, @Nullable NumberProvider min, @Nullable NumberProvider max) implements NumberProvider {
+public record ClampNumberProvider(NumberProvider value, Optional<NumberProvider> min, Optional<NumberProvider> max) implements NumberProvider {
     public static final MapCodec<ClampNumberProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(
             NumberProvider.CODEC.fieldOf("value").forGetter(ClampNumberProvider::value),
-            NumberProvider.CODEC.fieldOf("min").forGetter(ClampNumberProvider::min),
-            NumberProvider.CODEC.fieldOf("max").forGetter(ClampNumberProvider::max)
+            NumberProvider.CODEC.optionalFieldOf("min").forGetter(ClampNumberProvider::min),
+            NumberProvider.CODEC.optionalFieldOf("max").forGetter(ClampNumberProvider::max)
         ).apply(instance, ClampNumberProvider::new);
     });
 
@@ -23,12 +23,12 @@ public record ClampNumberProvider(NumberProvider value, @Nullable NumberProvider
     public Float get(Context context) {
         float value = this.value.get(context);
 
-        if (max != null) {
-            value = Math.min(value, max.get(context));
+        if (max.isPresent()) {
+            value = Math.min(value, max.get().get(context));
         }
 
-        if (min != null) {
-            value = Math.max(value, min.get(context));
+        if (min.isPresent()) {
+            value = Math.max(value, min.get().get(context));
         }
 
         return value;
@@ -36,16 +36,14 @@ public record ClampNumberProvider(NumberProvider value, @Nullable NumberProvider
 
     @Override
     public ClampNumberProvider copy() {
-        return new ClampNumberProvider(value.copy(), min.copy(), max.copy());
+        return new ClampNumberProvider(value.copy(), min.map(NumberProvider::copy), max.map(NumberProvider::copy));
     }
 
     @Override
     public ClampNumberProvider init(int startTime) {
         value.init(startTime);
-        if (min != null)
-            min.init(startTime);
-        if (max != null)
-            max.init(startTime);
+        min.ifPresent(numberProvider -> numberProvider.init(startTime));
+        max.ifPresent(numberProvider -> numberProvider.init(startTime));
         return this;
     }
 }
