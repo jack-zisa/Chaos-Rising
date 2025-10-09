@@ -1,6 +1,6 @@
 package dev.creoii.chaos.util.provider.numberprovider;
 
-public class TimeNumberProvider implements NumberProvider {
+public record TimeNumberProvider() implements NumberProvider {
     @Override
     public Float get(Context context) {
         return (float) context.game().getGametime();

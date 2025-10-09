@@ -3,15 +3,7 @@ package dev.creoii.chaos.util.provider.vecprovider;
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.util.provider.Operation;
 
-public class BinaryVecProvider implements VecProvider {
-    private final VecProvider a, b;
-    private final Operation op;
-
-    public BinaryVecProvider(VecProvider a, VecProvider b, Operation op) {
-        this.a = a;
-        this.b = b;
-        this.op = op;
-    }
+public record BinaryVecProvider(VecProvider a, VecProvider b, Operation op) implements VecProvider {
 
     @Override
     public Vector2 get(Context context) {

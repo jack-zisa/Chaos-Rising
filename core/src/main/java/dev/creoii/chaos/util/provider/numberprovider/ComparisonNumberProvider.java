@@ -2,17 +2,7 @@ package dev.creoii.chaos.util.provider.numberprovider;
 
 import dev.creoii.chaos.util.provider.booleanprovider.BooleanProvider;
 
-public class ComparisonNumberProvider implements NumberProvider {
-    private final BooleanProvider comparison;
-    private final NumberProvider trueValue;
-    private final NumberProvider falseValue;
-
-    public ComparisonNumberProvider(BooleanProvider comparison, NumberProvider trueValue, NumberProvider falseValue) {
-        this.comparison = comparison;
-        this.trueValue = trueValue;
-        this.falseValue = falseValue;
-    }
-
+public record ComparisonNumberProvider(BooleanProvider comparison, NumberProvider trueValue, NumberProvider falseValue) implements NumberProvider {
     @Override
     public Float get(Context context) {
         return comparison.get(context) ? trueValue.get(context) : falseValue.get(context);

@@ -2,16 +2,7 @@ package dev.creoii.chaos.util.provider.vecprovider;
 
 import com.badlogic.gdx.math.Vector2;
 
-public class RotatedOffsetVecProvider implements VecProvider {
-    private final VecProvider from;
-    private final VecProvider to;
-    private final VecProvider offset;
-
-    public RotatedOffsetVecProvider(VecProvider from, VecProvider to, VecProvider offset) {
-        this.from = from;
-        this.to = to;
-        this.offset = offset;
-    }
+public record RotatedOffsetVecProvider(VecProvider from, VecProvider to, VecProvider offset) implements VecProvider {
 
     @Override
     public Vector2 get(Context context) {

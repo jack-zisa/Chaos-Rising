@@ -2,16 +2,7 @@ package dev.creoii.chaos.util.provider.numberprovider;
 
 import javax.annotation.Nullable;
 
-public class ClampNumberProvider implements NumberProvider {
-    private final NumberProvider value;
-    private final @Nullable NumberProvider min, max;
-
-    public ClampNumberProvider(NumberProvider value, @Nullable NumberProvider min, @Nullable NumberProvider max) {
-        this.value = value;
-        this.min = min;
-        this.max = max;
-    }
-
+public record ClampNumberProvider(NumberProvider value, @Nullable NumberProvider min, @Nullable NumberProvider max) implements NumberProvider {
     @Override
     public Float get(Context context) {
         float value = this.value.get(context);

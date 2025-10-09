@@ -1,13 +1,7 @@
 package dev.creoii.chaos.util.provider.booleanprovider;
 
 
-public class NotBooleanProvider implements BooleanProvider {
-    private final BooleanProvider value;
-
-    public NotBooleanProvider(BooleanProvider value) {
-        this.value = value;
-    }
-
+public record NotBooleanProvider(BooleanProvider value) implements BooleanProvider {
     @Override
     public Boolean get(Context context) {
         return !value.get(context);

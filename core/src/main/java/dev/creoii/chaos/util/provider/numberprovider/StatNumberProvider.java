@@ -3,12 +3,7 @@ package dev.creoii.chaos.util.provider.numberprovider;
 import dev.creoii.chaos.entity.LivingEntity;
 import dev.creoii.chaos.util.stat.Stat;
 
-public class StatNumberProvider implements NumberProvider {
-    private final Stat.Type statType;
-
-    public StatNumberProvider(Stat.Type statType) {
-        this.statType = statType;
-    }
+public record StatNumberProvider(Stat.Type statType) implements NumberProvider {
 
     @Override
     public Float get(Context context) {

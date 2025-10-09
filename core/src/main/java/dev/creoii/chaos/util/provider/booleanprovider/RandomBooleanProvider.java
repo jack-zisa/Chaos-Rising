@@ -1,6 +1,6 @@
 package dev.creoii.chaos.util.provider.booleanprovider;
 
-public class RandomBooleanProvider implements BooleanProvider {
+public record RandomBooleanProvider() implements BooleanProvider {
     @Override
     public Boolean get(Context context) {
         return context.random().nextBoolean();

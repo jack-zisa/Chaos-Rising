@@ -2,15 +2,7 @@ package dev.creoii.chaos.util.provider.numberprovider;
 
 import dev.creoii.chaos.util.provider.Operation;
 
-public class BinaryNumberProvider implements NumberProvider {
-    private final NumberProvider a, b;
-    private final Operation op;
-
-    public BinaryNumberProvider(NumberProvider a, NumberProvider b, Operation op) {
-        this.a = a;
-        this.b = b;
-        this.op = op;
-    }
+public record BinaryNumberProvider(NumberProvider a, NumberProvider b, Operation op) implements NumberProvider {
 
     @Override
     public Float get(Context context) {

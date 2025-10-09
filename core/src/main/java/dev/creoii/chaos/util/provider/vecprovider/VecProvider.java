@@ -2,6 +2,7 @@ package dev.creoii.chaos.util.provider.vecprovider;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.JsonValue;
+import com.mojang.serialization.Codec;
 import dev.creoii.chaos.util.provider.Operation;
 import dev.creoii.chaos.util.provider.Provider;
 import dev.creoii.chaos.util.provider.UnaryOperation;
@@ -141,5 +142,11 @@ public interface VecProvider extends Provider<Vector2> {
             }
             default -> throw new IllegalStateException("Unexpected VecProvider value: " + type);
         };
+    }
+
+    enum Type {
+        ;
+
+        public static final Codec<Type> CODEC = Codec.STRING.xmap(s -> Type.valueOf(s.toUpperCase()), type -> type.name().toLowerCase());
     }
 }

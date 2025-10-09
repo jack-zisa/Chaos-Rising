@@ -1,12 +1,6 @@
 package dev.creoii.chaos.util.provider.numberprovider;
 
-public class RandomNumberProvider implements NumberProvider {
-    private final NumberProvider min, max;
-
-    public RandomNumberProvider(NumberProvider min, NumberProvider max) {
-        this.min = min;
-        this.max = max;
-    }
+public record RandomNumberProvider(NumberProvider min, NumberProvider max) implements NumberProvider {
 
     @Override
     public Float get(Context context) {

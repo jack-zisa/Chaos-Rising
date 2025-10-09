@@ -2,13 +2,7 @@ package dev.creoii.chaos.util.provider.booleanprovider;
 
 import dev.creoii.chaos.entity.LivingEntity;
 
-public class HasEffectBooleanProvider implements BooleanProvider {
-    private final String effect;
-
-    public HasEffectBooleanProvider(String effect) {
-        this.effect = effect;
-    }
-
+public record HasEffectBooleanProvider(String effect) implements BooleanProvider {
     @Override
     public Boolean get(Context context) {
         if (context.sourceEntity() instanceof LivingEntity livingEntity) {

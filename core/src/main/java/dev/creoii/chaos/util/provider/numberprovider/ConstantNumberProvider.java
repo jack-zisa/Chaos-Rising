@@ -1,12 +1,6 @@
 package dev.creoii.chaos.util.provider.numberprovider;
 
-public class ConstantNumberProvider implements NumberProvider {
-    private final float value;
-
-    public ConstantNumberProvider(float value) {
-        this.value = value;
-    }
-
+public record ConstantNumberProvider(float value) implements NumberProvider {
     @Override
     public Float get(Context context) {
         return value;

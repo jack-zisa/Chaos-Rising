@@ -1,6 +1,7 @@
 package dev.creoii.chaos.util.provider.booleanprovider;
 
 import com.badlogic.gdx.utils.JsonValue;
+import com.mojang.serialization.Codec;
 import dev.creoii.chaos.util.provider.BinaryOperation;
 import dev.creoii.chaos.util.provider.Comparison;
 import dev.creoii.chaos.util.provider.Provider;
@@ -78,5 +79,11 @@ public interface BooleanProvider extends Provider<Boolean> {
             case "rand", "random" -> new RandomBooleanProvider();
             default -> throw new IllegalStateException("Unexpected BooleanProvider value: " + type);
         };
+    }
+
+    enum Type {
+        ;
+
+        public static final Codec<Type> CODEC = Codec.STRING.xmap(s -> Type.valueOf(s.toUpperCase()), type -> type.name().toLowerCase());
     }
 }

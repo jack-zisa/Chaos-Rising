@@ -2,14 +2,7 @@ package dev.creoii.chaos.util.provider.numberprovider;
 
 import dev.creoii.chaos.util.provider.vecprovider.VecProvider;
 
-public class DistanceNumberProvider implements NumberProvider {
-    private final VecProvider a;
-    private final VecProvider b;
-
-    public DistanceNumberProvider(VecProvider a, VecProvider b) {
-        this.a = a;
-        this.b = b;
-    }
+public record DistanceNumberProvider(VecProvider a, VecProvider b) implements NumberProvider {
 
     @Override
     public Float get(Context context) {

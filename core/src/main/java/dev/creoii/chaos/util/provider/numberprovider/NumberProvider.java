@@ -1,6 +1,7 @@
 package dev.creoii.chaos.util.provider.numberprovider;
 
 import com.badlogic.gdx.utils.JsonValue;
+import com.mojang.serialization.Codec;
 import dev.creoii.chaos.util.provider.Operation;
 import dev.creoii.chaos.util.provider.Provider;
 import dev.creoii.chaos.util.provider.UnaryOperation;
@@ -163,5 +164,11 @@ public interface NumberProvider extends Provider<Float> {
             }
             default -> throw new IllegalStateException("Unexpected FloatProvider value: " + type);
         };
+    }
+
+    enum Type {
+        ;
+
+        public static final Codec<Type> CODEC = Codec.STRING.xmap(s -> Type.valueOf(s.toUpperCase()), type -> type.name().toLowerCase());
     }
 }

@@ -3,17 +3,7 @@ package dev.creoii.chaos.util.provider.booleanprovider;
 import dev.creoii.chaos.util.provider.Comparison;
 import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
 
-public class NumberComparisonBooleanProvider implements BooleanProvider {
-    private final NumberProvider a;
-    private final NumberProvider b;
-    private final Comparison comparison;
-
-    public NumberComparisonBooleanProvider(NumberProvider a, NumberProvider b, Comparison comparison) {
-        this.a = a;
-        this.b = b;
-        this.comparison = comparison;
-    }
-
+public record NumberComparisonBooleanProvider(NumberProvider a, NumberProvider b, Comparison comparison) implements BooleanProvider {
     @Override
     public Boolean get(Context context) {
         float av = a.get(context), bv = b.get(context);

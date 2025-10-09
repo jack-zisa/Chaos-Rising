@@ -3,13 +3,7 @@ package dev.creoii.chaos.util.provider.booleanprovider;
 import dev.creoii.chaos.entity.CharacterEntity;
 import dev.creoii.chaos.entity.CharacterEntityType;
 
-public class IsClassBooleanProvider implements BooleanProvider {
-    private final String classId;
-
-    public IsClassBooleanProvider(String classId) {
-        this.classId = classId;
-    }
-
+public record IsClassBooleanProvider(String classId) implements BooleanProvider {
     @Override
     public Boolean get(Context context) {
         if (context.sourceEntity() instanceof CharacterEntity character) {

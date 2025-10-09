@@ -2,14 +2,7 @@ package dev.creoii.chaos.util.provider.vecprovider;
 
 import com.badlogic.gdx.math.Vector2;
 
-public class RelativeToVecProvider implements VecProvider {
-    private final VecProvider parent;
-    private final VecProvider offset;
-
-    public RelativeToVecProvider(VecProvider parent, VecProvider offset) {
-        this.parent = parent;
-        this.offset = offset;
-    }
+public record RelativeToVecProvider(VecProvider parent, VecProvider offset) implements VecProvider {
 
     @Override
     public Vector2 get(Context context) {

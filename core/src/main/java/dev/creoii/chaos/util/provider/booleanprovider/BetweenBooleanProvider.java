@@ -3,17 +3,7 @@ package dev.creoii.chaos.util.provider.booleanprovider;
 
 import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
 
-public class BetweenBooleanProvider implements BooleanProvider {
-    private final NumberProvider value;
-    private final NumberProvider min;
-    private final NumberProvider max;
-
-    public BetweenBooleanProvider(NumberProvider value, NumberProvider min, NumberProvider max) {
-        this.value = value;
-        this.min = min;
-        this.max = max;
-    }
-
+public record BetweenBooleanProvider(NumberProvider value, NumberProvider min, NumberProvider max) implements BooleanProvider {
     @Override
     public Boolean get(Context context) {
         float val = value.get(context);

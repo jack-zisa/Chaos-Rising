@@ -3,14 +3,7 @@ package dev.creoii.chaos.util.provider.vecprovider;
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
 
-public class RotateAngleVecProvider implements VecProvider {
-    private final VecProvider direction;
-    private final NumberProvider angle;
-
-    public RotateAngleVecProvider(VecProvider direction, NumberProvider angle) {
-        this.direction = direction;
-        this.angle = angle;
-    }
+public record RotateAngleVecProvider(VecProvider direction, NumberProvider angle) implements VecProvider {
 
     @Override
     public Vector2 get(Context context) {

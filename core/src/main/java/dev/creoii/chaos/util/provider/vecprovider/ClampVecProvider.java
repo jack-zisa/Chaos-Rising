@@ -5,17 +5,7 @@ import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
 
 import javax.annotation.Nullable;
 
-public class ClampVecProvider implements VecProvider {
-    private final VecProvider vec;
-    private final @Nullable NumberProvider minX, minY, maxX, maxY;
-
-    public ClampVecProvider(VecProvider vec, @Nullable NumberProvider minX, @Nullable NumberProvider minY, @Nullable NumberProvider maxX, @Nullable NumberProvider maxY) {
-        this.vec = vec;
-        this.minX = minX;
-        this.minY = minY;
-        this.maxX = maxX;
-        this.maxY = maxY;
-    }
+public record ClampVecProvider(VecProvider vec, @Nullable NumberProvider minX, @Nullable NumberProvider minY, @Nullable NumberProvider maxX, @Nullable NumberProvider maxY) implements VecProvider {
 
     @Override
     public Vector2 get(Context context) {
@@ -39,4 +29,5 @@ public class ClampVecProvider implements VecProvider {
     @Override
     public VecProvider copy() {
         return new ClampVecProvider(vec.copy(), minX != null ? minX.copy() : null, minY != null ? minY.copy() : null, maxX != null ? maxX.copy() : null, maxY != null ? maxY.copy() : null);
-    }}
+    }
+}

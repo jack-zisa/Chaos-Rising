@@ -1,6 +1,6 @@
 package dev.creoii.chaos.util.provider.numberprovider;
 
-public class SpawnTimeNumberProvider implements NumberProvider {
+public record SpawnTimeNumberProvider() implements NumberProvider {
     @Override
     public Float get(Context context) {
         return (float) context.sourceEntity().getSpawnTime();

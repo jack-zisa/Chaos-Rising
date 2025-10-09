@@ -3,14 +3,7 @@ package dev.creoii.chaos.util.provider.vecprovider;
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.util.provider.UnaryOperation;
 
-public class UnaryVecProvider implements VecProvider {
-    private final UnaryOperation function;
-    private final VecProvider value;
-
-    public UnaryVecProvider(UnaryOperation function, VecProvider value) {
-        this.function = function;
-        this.value = value;
-    }
+public record UnaryVecProvider(UnaryOperation function, VecProvider value) implements VecProvider {
 
     @Override
     public Vector2 get(Context context) {

@@ -4,25 +4,15 @@ import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.util.provider.numberprovider.ConstantNumberProvider;
 import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
 
-import javax.annotation.Nullable;
 import java.util.Objects;
 
-public class ConstantVecProvider implements VecProvider {
-    private final NumberProvider x, y;
-
-    public ConstantVecProvider(NumberProvider x, @Nullable NumberProvider y) {
-        this.x = x;
-        this.y = y;
-    }
-
+public record ConstantVecProvider(NumberProvider x, NumberProvider y) implements VecProvider {
     public ConstantVecProvider(Vector2 vector2) {
-        this.x = new ConstantNumberProvider(vector2.x);
-        this.y = new ConstantNumberProvider(vector2.y);
+        this(new ConstantNumberProvider(vector2.x), new ConstantNumberProvider(vector2.y));
     }
 
     public ConstantVecProvider(int x, int y) {
-        this.x = new ConstantNumberProvider(x);
-        this.y = new ConstantNumberProvider(y);
+        this(new ConstantNumberProvider(x), new ConstantNumberProvider(y));
     }
 
     public ConstantVecProvider(int num) {

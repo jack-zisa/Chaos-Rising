@@ -2,12 +2,7 @@ package dev.creoii.chaos.util.provider.numberprovider;
 
 import dev.creoii.chaos.util.provider.vecprovider.VecProvider;
 
-public class LengthNumberProvider implements NumberProvider {
-    private final VecProvider vec;
-
-    public LengthNumberProvider(VecProvider vec) {
-        this.vec = vec;
-    }
+public record LengthNumberProvider(VecProvider vec) implements NumberProvider {
 
     @Override
     public Float get(Context context) {

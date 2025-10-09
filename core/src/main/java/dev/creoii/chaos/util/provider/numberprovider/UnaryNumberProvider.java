@@ -2,14 +2,7 @@ package dev.creoii.chaos.util.provider.numberprovider;
 
 import dev.creoii.chaos.util.provider.UnaryOperation;
 
-public class UnaryNumberProvider implements NumberProvider {
-    private final UnaryOperation function;
-    private final NumberProvider value;
-
-    public UnaryNumberProvider(UnaryOperation function, NumberProvider value) {
-        this.function = function;
-        this.value = value;
-    }
+public record UnaryNumberProvider(UnaryOperation function, NumberProvider value) implements NumberProvider {
 
     @Override
     public Float get(Context context) {

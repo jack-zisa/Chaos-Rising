@@ -2,17 +2,7 @@ package dev.creoii.chaos.util.provider.booleanprovider;
 
 import dev.creoii.chaos.util.provider.BinaryOperation;
 
-public class BinaryBooleanProvider implements BooleanProvider {
-    private final BooleanProvider a;
-    private final BooleanProvider b;
-    private final BinaryOperation operation;
-
-    public BinaryBooleanProvider(BooleanProvider a, BooleanProvider b, BinaryOperation operation) {
-        this.a = a;
-        this.b = b;
-        this.operation = operation;
-    }
-
+public record BinaryBooleanProvider(BooleanProvider a, BooleanProvider b, BinaryOperation operation) implements BooleanProvider {
     @Override
     public Boolean get(Context context) {
         boolean av = a.get(context), bv = b.get(context);

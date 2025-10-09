@@ -1,13 +1,6 @@
 package dev.creoii.chaos.util.provider.numberprovider;
 
-public class CycleNumberProvider implements NumberProvider {
-    private final NumberProvider value;
-    private final NumberProvider max;
-
-    public CycleNumberProvider(NumberProvider value, NumberProvider max) {
-        this.value = value;
-        this.max = max;
-    }
+public record CycleNumberProvider(NumberProvider value, NumberProvider max) implements NumberProvider {
 
     @Override
     public Float get(Context context) {
