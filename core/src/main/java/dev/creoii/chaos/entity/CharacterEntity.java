@@ -24,6 +24,12 @@ public class CharacterEntity extends LivingEntity {
         this.inventory = inventory.withCharacter(this);
     }
 
+    @Nullable
+    @Override
+    public EntityCustomData getCustomPacketData() {
+        return new CharacterData(getStats(), getMaxStats(), inventory.getSlots());
+    }
+
     public Mutable<CharacterClass> getCharacterClass() {
         return ((CharacterEntityType) getType()).characterClass();
     }
