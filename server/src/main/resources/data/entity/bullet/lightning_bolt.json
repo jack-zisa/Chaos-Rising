@@ -3,6 +3,7 @@
   "type": "bullet",
   "lifetime": 150,
   "path": {
+    "type": "simple",
     "speed": 5,
     "offset": {
       "type": "mul",

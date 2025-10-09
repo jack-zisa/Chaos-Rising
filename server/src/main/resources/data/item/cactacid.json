@@ -3,8 +3,10 @@
   "type": "weapon",
   "rarity": "uncommon",
   "attack": {
+    "type": "multi",
     "attacks": [
       {
+        "type": "simple",
         "bullet_id": "test_sin",
         "damage": 10,
         "source": {
@@ -41,6 +43,7 @@
         }
       },
       {
+        "type": "simple",
         "bullet_id": "test_sin",
         "damage": 10,
         "source": {
@@ -77,6 +80,7 @@
         }
       },
       {
+        "type": "simple",
         "bullet_id": "test_sin",
         "damage": 10,
         "source": {
@@ -113,6 +117,7 @@
         }
       },
       {
+        "type": "simple",
         "bullet_id": "test_sin",
         "damage": 10,
         "source": {

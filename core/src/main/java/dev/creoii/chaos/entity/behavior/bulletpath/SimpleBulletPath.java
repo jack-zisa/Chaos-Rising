@@ -1,14 +1,24 @@
 package dev.creoii.chaos.entity.behavior.bulletpath;
 
 import com.badlogic.gdx.math.Vector2;
+import com.mojang.serialization.MapCodec;
 import dev.creoii.chaos.entity.BulletEntity;
 import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.entity.controller.EntityController;
 import dev.creoii.chaos.util.provider.Provider;
+import dev.creoii.chaos.util.provider.numberprovider.ConstantNumberProvider;
 import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
+import dev.creoii.chaos.util.provider.vecprovider.ConstantVecProvider;
 import dev.creoii.chaos.util.provider.vecprovider.VecProvider;
 
 public record SimpleBulletPath(NumberProvider speed, VecProvider offset, NumberProvider arcSpeed) implements BulletPath {
+    public static final MapCodec<SimpleBulletPath> CODEC = MapCodec.unit(new SimpleBulletPath(new ConstantNumberProvider(0), new ConstantVecProvider(0), new ConstantNumberProvider(0)));
+
+    @Override
+    public Type getType() {
+        return Type.SIMPLE;
+    }
+
     @Override
     public float speed(EntityController<? extends BulletEntity> controller) {
         return speed.init(controller.getEntity().getGame().getGametime()).get(Provider.Context.of(controller.getEntity(), controller.getEntity().getGame().getGametime()));

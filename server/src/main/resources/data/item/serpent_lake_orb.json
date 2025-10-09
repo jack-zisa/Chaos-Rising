@@ -2,6 +2,7 @@
   "id": "serpent_lake_orb",
   "type": "weapon",
   "attack": {
+    "type": "simple",
     "bullet_id": "test_dec",
     "damage": 2,
     "bullet_count": 360,

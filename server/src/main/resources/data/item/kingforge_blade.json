@@ -2,6 +2,7 @@
   "id": "kingforge_blade",
   "type": "weapon",
   "attack": {
+    "type": "simple",
     "bullet_id": "test_sin_acc",
     "damage": 5,
     "bullet_count": 2,

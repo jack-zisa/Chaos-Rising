@@ -15,8 +15,9 @@ public class AbilityItem extends EquipmentItem {
             Codec.STRING.fieldOf("id").forGetter(AbilityItem::id),
             Rarity.CODEC.fieldOf("rarity").orElse(Rarity.COMMON).forGetter(AbilityItem::getRarity),
             ModifierEntry.CODEC.listOf().fieldOf("stat_bonus").orElse(List.of()).forGetter(AbilityItem::getStatBonus),
+            Attack.CODEC.fieldOf("attack").forGetter(AbilityItem::getAttack),
             Codec.INT.fieldOf("cooldown").orElse(0).forGetter(AbilityItem::getCooldown)
-        ).apply(instance, (id, rarity, statBonus, cooldown) -> new AbilityItem(id, rarity, statBonus, null, cooldown));
+        ).apply(instance, AbilityItem::new);
     });
     private final Attack attack;
     private final int cooldown;

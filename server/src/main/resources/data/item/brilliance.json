@@ -3,6 +3,7 @@
   "type": "weapon",
   "rarity": "divine",
   "attack": {
+    "type": "simple",
     "bullet_id": "brilliance_blast",
     "damage": 5,
     "bullet_count": 3,

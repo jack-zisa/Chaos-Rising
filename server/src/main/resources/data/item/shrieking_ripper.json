@@ -3,6 +3,7 @@
   "type": "weapon",
   "rarity": "uncommon",
   "attack": {
+    "type": "simple",
     "bullet_id": "test_dec",
     "damage": 10,
     "bullet_count": 3,

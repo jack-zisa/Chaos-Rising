@@ -14,8 +14,9 @@ public class WeaponItem extends EquipmentItem {
         return instance.group(
             Codec.STRING.fieldOf("id").forGetter(WeaponItem::id),
             Rarity.CODEC.fieldOf("rarity").orElse(Rarity.COMMON).forGetter(WeaponItem::getRarity),
+            Attack.CODEC.fieldOf("attack").forGetter(WeaponItem::getAttack),
             ModifierEntry.CODEC.listOf().fieldOf("stat_bonus").orElse(List.of()).forGetter(WeaponItem::getStatBonus)
-        ).apply(instance, (id, rarity, statBonus) -> new WeaponItem(id, rarity, null, statBonus));
+        ).apply(instance, WeaponItem::new);
     });
     private final Attack attack;
 

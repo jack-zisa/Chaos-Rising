@@ -3,6 +3,7 @@
   "type": "weapon",
   "rarity": "legendary",
   "attack": {
+    "type": "simple",
     "bullet_id": "test",
     "damage": 10,
     "angle_offset": 180

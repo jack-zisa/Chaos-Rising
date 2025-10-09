@@ -1,17 +1,23 @@
 package dev.creoii.chaos.entity.behavior;
 
-import com.badlogic.gdx.utils.JsonValue;
 import com.google.common.collect.BiMap;
+import com.mojang.serialization.Codec;
 import dev.creoii.chaos.entity.EnemyEntity;
 import dev.creoii.chaos.entity.behavior.phase.Phase;
 import dev.creoii.chaos.entity.behavior.phase.PhaseKey;
 import dev.creoii.chaos.entity.controller.EnemyController;
 
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 public interface Behavior {
+    Codec<Behavior> CODEC = Behavior.Type.CODEC.dispatch(Behavior::getType, type -> switch (type) {
+        case SIMPLE -> SimpleBehavior.CODEC;
+        case MULTI -> null;
+    });
+
+    Type getType();
+
     void start(EnemyController controller, EnemyEntity entity);
 
     void update(EnemyController controller, int time, float delta);
@@ -29,19 +35,10 @@ public interface Behavior {
         }
     }
 
-    static Behavior parse(JsonValue jsonValue) {
-        if (jsonValue.has("start_phase")) {
-            String startPhaseKey = jsonValue.getString("start_phase");
+    enum Type {
+        SIMPLE,
+        MULTI;
 
-            Map<PhaseKey, Phase> phases = new LinkedHashMap<>();
-            int i = 0;
-            for (JsonValue phaseValue : jsonValue.get("phases")) {
-                phases.put(new PhaseKey(phaseValue.name, i), Phase.parse(phaseValue));
-                ++i;
-            }
-            return new MultiBehavior(phases, startPhaseKey);
-        } else {
-            return new SimpleBehavior(Phase.parse(jsonValue.get("phase")));
-        }
+        public static final Codec<Type> CODEC = Codec.STRING.xmap(s -> Type.valueOf(s.toUpperCase()), type -> type.name().toLowerCase());
     }
 }

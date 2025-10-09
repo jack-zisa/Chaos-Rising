@@ -15,7 +15,7 @@ public class CooldownManager implements Tickable {
     public CooldownManager(ServerGame game) {
         this.game = game;
         playerSlotCooldowns = new HashMap<>();
-        game.getTickManager().addTickable(this);
+        //game.getTickManager().addTickable(this);
     }
 
     public ServerGame getGame() {

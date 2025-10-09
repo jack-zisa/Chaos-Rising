@@ -8,6 +8,7 @@ import dev.creoii.chaos.Game;
 import dev.creoii.chaos.entity.behavior.bulletpath.BulletPath;
 import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.provider.booleanprovider.BooleanProvider;
+import dev.creoii.chaos.util.provider.numberprovider.ConstantNumberProvider;
 import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
 
 import java.util.Map;
@@ -18,8 +19,9 @@ public record BulletEntityType(String id, float scale, int lifetime, NumberProvi
         return instance.group(
             Codec.STRING.fieldOf("id").forGetter(BulletEntityType::id),
             Codec.FLOAT.fieldOf("scale").orElse(1f).forGetter(BulletEntityType::scale),
-            Codec.INT.fieldOf("lifetime").orElse(1).forGetter(BulletEntityType::lifetime)
-        ).apply(instance, (id, scale, lifetime) -> new BulletEntityType(id, scale, lifetime, null, null, null));
+            Codec.INT.fieldOf("lifetime").orElse(1).forGetter(BulletEntityType::lifetime),
+            BulletPath.CODEC.fieldOf("path").forGetter(BulletEntityType::path)
+        ).apply(instance, (id, scale, lifetime, path) -> new BulletEntityType(id, scale, lifetime, new ConstantNumberProvider(0), path, null));
     });
 
     @Override

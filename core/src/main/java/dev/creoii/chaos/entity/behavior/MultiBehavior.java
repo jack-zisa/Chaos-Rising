@@ -24,6 +24,11 @@ public class MultiBehavior implements Behavior {
         this.phases = phases.values().toArray(new Phase[0]);
     }
 
+    @Override
+    public Type getType() {
+        return Type.MULTI;
+    }
+
     public BiMap<String, Integer> getPhaseKeys() {
         return phaseKeys;
     }

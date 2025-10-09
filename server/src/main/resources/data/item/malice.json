@@ -2,6 +2,7 @@
   "id": "malice",
   "type": "weapon",
   "attack": {
+    "type": "simple",
     "bullet_id": "test_sin",
     "damage": 10
   },

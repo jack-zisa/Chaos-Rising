@@ -2,6 +2,7 @@
   "id": "polar_blade",
   "type": "weapon",
   "attack": {
+    "type": "simple",
     "bullet_id": "test_segment",
     "damage": {
       "type": "random",
