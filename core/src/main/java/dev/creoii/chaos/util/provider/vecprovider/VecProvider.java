@@ -3,6 +3,7 @@ package dev.creoii.chaos.util.provider.vecprovider;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.JsonValue;
 import com.mojang.serialization.Codec;
+import dev.creoii.chaos.entity.behavior.Behavior;
 import dev.creoii.chaos.util.provider.Operation;
 import dev.creoii.chaos.util.provider.Provider;
 import dev.creoii.chaos.util.provider.UnaryOperation;
@@ -11,6 +12,11 @@ import dev.creoii.chaos.util.provider.numberprovider.ConstantNumberProvider;
 import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
 
 public interface VecProvider extends Provider<Vector2> {
+    Codec<VecProvider> CODEC = Behavior.Type.CODEC.dispatch(VecProvider::getType, type -> switch (type) {
+    });
+
+    Type getType();
+
     VecProvider copy();
 
     static VecProvider parse(JsonValue jsonValue) {
@@ -145,7 +151,20 @@ public interface VecProvider extends Provider<Vector2> {
     }
 
     enum Type {
-        ;
+        BINARY,
+        CLAMP,
+        COMPARISON,
+        CONSTANT,
+        DIRECTION,
+        MOUSE_POS,
+        NORMALIZED,
+        PERPENDICULAR,
+        RELATIVE_TO,
+        ROTATE_ANGLE,
+        ROTATED_OFFSET,
+        SOURCE_POS,
+        TARGET_POS,
+        UNARY;
 
         public static final Codec<Type> CODEC = Codec.STRING.xmap(s -> Type.valueOf(s.toUpperCase()), type -> type.name().toLowerCase());
     }

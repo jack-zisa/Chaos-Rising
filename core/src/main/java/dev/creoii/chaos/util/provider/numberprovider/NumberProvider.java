@@ -2,6 +2,7 @@ package dev.creoii.chaos.util.provider.numberprovider;
 
 import com.badlogic.gdx.utils.JsonValue;
 import com.mojang.serialization.Codec;
+import dev.creoii.chaos.entity.behavior.Behavior;
 import dev.creoii.chaos.util.provider.Operation;
 import dev.creoii.chaos.util.provider.Provider;
 import dev.creoii.chaos.util.provider.UnaryOperation;
@@ -10,6 +11,11 @@ import dev.creoii.chaos.util.provider.vecprovider.VecProvider;
 import dev.creoii.chaos.util.stat.Stat;
 
 public interface NumberProvider extends Provider<Float> {
+    Codec<NumberProvider> CODEC = Behavior.Type.CODEC.dispatch(NumberProvider::getType, type -> switch (type) {
+    });
+
+    Type getType();
+
     NumberProvider copy();
 
     NumberProvider init(int startTime);
@@ -167,7 +173,23 @@ public interface NumberProvider extends Provider<Float> {
     }
 
     enum Type {
-        ;
+        ANGLE,
+        BINARY,
+        BULLET_INDEX,
+        CLAMP,
+        COMPARISON,
+        CONSTANT,
+        CURVE,
+        CYCLE,
+        DISTANCE_2,
+        DISTANCE,
+        LENGTH_2,
+        LENGTH,
+        RANDOM,
+        SPAWN_TIME,
+        STAT,
+        TIME,
+        UNARY;
 
         public static final Codec<Type> CODEC = Codec.STRING.xmap(s -> Type.valueOf(s.toUpperCase()), type -> type.name().toLowerCase());
     }

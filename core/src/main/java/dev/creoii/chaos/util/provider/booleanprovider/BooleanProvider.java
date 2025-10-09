@@ -8,6 +8,19 @@ import dev.creoii.chaos.util.provider.Provider;
 import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
 
 public interface BooleanProvider extends Provider<Boolean> {
+    Codec<BooleanProvider> CODEC = Type.CODEC.dispatch(BooleanProvider::getType, type -> switch (type) {
+        case BETWEEN -> BetweenBooleanProvider.CODEC;
+        case BINARY -> BinaryBooleanProvider.CODEC;
+        case CONSTANT -> ConstantBooleanProvider.CODEC;
+        case HAS_EFFECT -> HasEffectBooleanProvider.CODEC;
+        case IS_CLASS -> IsClassBooleanProvider.CODEC;
+        case NOT -> NotBooleanProvider.CODEC;
+        case NUMBER_COMPARISON -> NumberComparisonBooleanProvider.CODEC;
+        case RANDOM -> RandomBooleanProvider.CODEC;
+    });
+
+    Type getType();
+
     BooleanProvider copy();
 
     BooleanProvider init(int startTime);
@@ -82,7 +95,14 @@ public interface BooleanProvider extends Provider<Boolean> {
     }
 
     enum Type {
-        ;
+        BETWEEN,
+        BINARY,
+        CONSTANT,
+        HAS_EFFECT,
+        IS_CLASS,
+        NOT,
+        NUMBER_COMPARISON,
+        RANDOM;
 
         public static final Codec<Type> CODEC = Codec.STRING.xmap(s -> Type.valueOf(s.toUpperCase()), type -> type.name().toLowerCase());
     }
