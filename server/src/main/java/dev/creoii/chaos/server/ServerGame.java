@@ -15,6 +15,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.TimeUnit;
 
 public class ServerGame implements Game {
     private final Server server;
@@ -54,8 +55,25 @@ public class ServerGame implements Game {
 
         DataManager.load(Paths.get(baseUrl.toURI()));
 
+        long nextTick = System.nanoTime();
+        long tickInterval = 50_000_000L; // 20 TPS
+
         while (true) {
             update();
+
+            nextTick += tickInterval;
+            long sleepNanos = nextTick - System.nanoTime();
+
+            if (sleepNanos > 0) {
+                try {
+                    TimeUnit.NANOSECONDS.sleep(sleepNanos);
+                } catch (InterruptedException e) {
+                    System.out.println("[Server] Thread sleep interrupted: " + e);
+                }
+            } else {
+                System.out.println("[Server] Falling " + (-sleepNanos) + " ns behind");
+                nextTick = System.nanoTime();
+            }
         }
     }
 
