@@ -13,7 +13,7 @@ import java.util.Map;
 public interface Behavior {
     Codec<Behavior> CODEC = Behavior.Type.CODEC.dispatch(Behavior::getType, type -> switch (type) {
         case SIMPLE -> SimpleBehavior.CODEC;
-        case MULTI -> null;
+        case MULTI -> MultiBehavior.CODEC;
         case EMPTY -> EmptyBehavior.CODEC;
     });
 
