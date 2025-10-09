@@ -38,47 +38,53 @@ public final class Commands {
     static {
         Command.register("set_pos", (game, uuid, args) -> {
             if (args.length > 1) {
-                float x = Integer.parseInt(args[0]) * Entity.COORDINATE_SCALE;
-                float y = Integer.parseInt(args[1]) * Entity.COORDINATE_SCALE;
-                game.getEntityManager().getEntity(EntityGroup.CHARACTER, uuid).setPos(x, y);
-                return Command.Result.SUCCESS;
+                CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, uuid);
+                if (character != null) {
+                    float x = Integer.parseInt(args[0]) * Entity.COORDINATE_SCALE;
+                    float y = Integer.parseInt(args[1]) * Entity.COORDINATE_SCALE;
+                    character.setPos(x, y);
+                    return Command.Result.SUCCESS;
+                }
             }
             return Command.Result.FAIL;
         });
 
         Command.register("set_stat", (game, uuid, args) -> {
             if (args.length > 1) {
-                Stat.Type statType = Stat.Type.valueOf(args[0].toUpperCase());
-                int value = Integer.parseInt(args[1]);
                 CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, uuid);
-                switch (statType) {
-                    case HEALTH -> {
-                        character.getStats().setHealth(value);
-                        character.getMaxStats().setHealth(value);
+
+                if (character != null) {
+                    Stat.Type statType = Stat.Type.valueOf(args[0].toUpperCase());
+                    int value = Integer.parseInt(args[1]);
+                    switch (statType) {
+                        case HEALTH -> {
+                            character.getStats().setHealth(value);
+                            character.getMaxStats().setHealth(value);
+                        }
+                        case SPEED -> {
+                            character.getStats().setSpeed(value);
+                            character.getMaxStats().setSpeed(value);
+                        }
+                        case ATTACK_SPEED -> {
+                            character.getStats().setAttackSpeed(value);
+                            character.getMaxStats().setAttackSpeed(value);
+                        }
+                        case DEFENSE -> {
+                            character.getStats().setDefense(value);
+                            character.getMaxStats().setDefense(value);
+                        }
+                        case ATTACK -> {
+                            character.getStats().setAttack(value);
+                            character.getMaxStats().setAttack(value);
+                        }
+                        case VITALITY -> {
+                            character.getStats().setVitality(value);
+                            character.getMaxStats().setVitality(value);
+                        }
                     }
-                    case SPEED -> {
-                        character.getStats().setSpeed(value);
-                        character.getMaxStats().setSpeed(value);
-                    }
-                    case ATTACK_SPEED -> {
-                        character.getStats().setAttackSpeed(value);
-                        character.getMaxStats().setAttackSpeed(value);
-                    }
-                    case DEFENSE -> {
-                        character.getStats().setDefense(value);
-                        character.getMaxStats().setDefense(value);
-                    }
-                    case ATTACK -> {
-                        character.getStats().setAttack(value);
-                        character.getMaxStats().setAttack(value);
-                    }
-                    case VITALITY -> {
-                        character.getStats().setVitality(value);
-                        character.getMaxStats().setVitality(value);
-                    }
+                    game.getServer().sendToTCP(character.getConnectionId(), new LivingStatUpdateS2C(statType, value));
+                    return Command.Result.SUCCESS;
                 }
-                game.getServer().sendToTCP(character.getConnectionId(), new LivingStatUpdateS2C(statType, value));
-                return Command.Result.SUCCESS;
             }
             return Command.Result.FAIL;
         });
@@ -145,18 +151,20 @@ public final class Commands {
 
         Command.register("give", (game, uuid, args) -> {
             if (args.length > 0) {
-                int count = args.length > 1 ? Integer.parseInt(args[1]) : 1;
-                for (int i = 0; i < count; ++i) {
-                    Item item = DataManager.getItem(args[0]);
-                    if (item == null)
-                        continue;
-                    CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, uuid);
-                    Slot slot;
-                    if ((slot = character.getInventory().addItem(item.getDefaultStack().copy())) != null) {
-                        game.getServer().sendToTCP(character.getConnectionId(), new InventoryUpdateS2C(InventoryType.MAIN, List.of(new SlotEntry(slot.getR(), slot.getC(), slot.getType(), slot.getStack(), slot.isActive()))));
+                CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, uuid);
+                if (character != null) {
+                    int count = args.length > 1 ? Integer.parseInt(args[1]) : 1;
+                    for (int i = 0; i < count; ++i) {
+                        Item item = DataManager.getItem(args[0]);
+                        if (item == null)
+                            continue;
+                        Slot slot;
+                        if ((slot = character.getInventory().addItem(item.getDefaultStack().copy())) != null) {
+                            game.getServer().sendToTCP(character.getConnectionId(), new InventoryUpdateS2C(InventoryType.MAIN, List.of(new SlotEntry(slot.getR(), slot.getC(), slot.getType(), slot.getStack(), slot.isActive()))));
+                        }
                     }
+                    return Command.Result.SUCCESS;
                 }
-                return Command.Result.SUCCESS;
             }
             return Command.Result.FAIL;
         });
@@ -165,8 +173,11 @@ public final class Commands {
             if (args.length > 0) {
                 CharacterClass characterClass = DataManager.getCharacterClass(args[0]);
                 if (characterClass != null) {
-                    ((CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, uuid)).setCharacterClass(characterClass);
-                    return Command.Result.SUCCESS;
+                    CharacterEntity character = ((CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, uuid));
+                    if (character != null) {
+                        character.setCharacterClass(characterClass);
+                        return Command.Result.SUCCESS;
+                    }
                 }
             }
             return Command.Result.FAIL;
@@ -183,16 +194,22 @@ public final class Commands {
                 StatusEffectType type = StatusEffectTypes.ALL.get(effectType);
                 if (type == null)
                     return Command.Result.FAIL;
-                ((CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, uuid)).addStatusEffect(new StatusEffect(type, 1, 30));
-                return Command.Result.SUCCESS;
+                CharacterEntity character = ((CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, uuid));
+                if (character != null) {
+                    character.addStatusEffect(new StatusEffect(type, 1, 30));
+                    return Command.Result.SUCCESS;
+                }
             } else if (argCount == 3) {
                 StatusEffectType type = StatusEffectTypes.ALL.get(effectType);
                 if (type == null)
                     return Command.Result.FAIL;
-                int amplifier = Integer.parseInt(args[1]);
-                int duration = Integer.parseInt(args[2]);
-                ((CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, uuid)).addStatusEffect(new StatusEffect(type, amplifier, duration));
-                return Command.Result.SUCCESS;
+                CharacterEntity character = ((CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, uuid));
+                if (character != null) {
+                    int amplifier = Integer.parseInt(args[1]);
+                    int duration = Integer.parseInt(args[2]);
+                    character.addStatusEffect(new StatusEffect(type, amplifier, duration));
+                    return Command.Result.SUCCESS;
+                }
             }
             return Command.Result.FAIL;
         });
@@ -202,16 +219,18 @@ public final class Commands {
                 String effectType = args[0];
                 CharacterEntity character = ((CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, uuid));
 
-                if ("all".equals(effectType)) {
-                    character.clearStatusEffects();
-                    return Command.Result.FAIL;
-                }
+                if (character != null) {
+                    if ("all".equals(effectType)) {
+                        character.clearStatusEffects();
+                        return Command.Result.FAIL;
+                    }
 
-                for (int i = character.getStatusEffects().size() - 1; i >= 0; --i) {
-                    if (character.getStatusEffects().get(i).getType().id().equals(effectType))
-                        character.getStatusEffects().remove(i);
+                    for (int i = character.getStatusEffects().size() - 1; i >= 0; --i) {
+                        if (character.getStatusEffects().get(i).getType().id().equals(effectType))
+                            character.getStatusEffects().remove(i);
+                    }
+                    return Command.Result.SUCCESS;
                 }
-                return Command.Result.SUCCESS;
             }
             return Command.Result.FAIL;
         });

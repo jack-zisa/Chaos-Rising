@@ -1,6 +1,7 @@
 package dev.creoii.chaos.render;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -47,10 +48,10 @@ public class HudRenderer implements Renderable {
                 }
             }
         } else if (shapeRenderer != null) {
-            /*LivingEntityData character = renderer.getGame().getCharacter();
+            CharacterEntityRenderData character = renderer.getGame().getCharacter();
 
-            int health = character.getStats().health.value();
-            int maxHealth = character.getMaxStats().health.value();
+            int health = character.statContainer.health().value();
+            int maxHealth = character.maxStatContainer.health().value();
 
             Viewport viewport = renderer.getViewport();
             float screenWidth = viewport.getWorldWidth();
@@ -70,7 +71,7 @@ public class HudRenderer implements Renderable {
             shapeRenderer.rect((screenWidth / 2f) - (maxBarWidth / 2f), y, maxBarWidth, barHeight);
             shapeRenderer.setColor(barColor);
             shapeRenderer.rect(x, y, barWidth, barHeight);
-            shapeRenderer.end();*/
+            shapeRenderer.end();
         }
     }
 }
