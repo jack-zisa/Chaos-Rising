@@ -10,12 +10,11 @@ import dev.creoii.chaos.ClientGame;
 import dev.creoii.chaos.input.InputManager;
 import dev.creoii.chaos.inventory.InventoryType;
 import dev.creoii.chaos.inventory.Slot;
-import dev.creoii.chaos.inventory.SlotEntry;
 import dev.creoii.chaos.item.ItemStack;
+import dev.creoii.chaos.network.packet.c2s.DropSlotItemC2S;
 import dev.creoii.chaos.network.packet.c2s.SlotUpdateC2S;
 import dev.creoii.chaos.render.ItemRenderer;
 import dev.creoii.chaos.render.Renderer;
-import dev.creoii.chaos.render.data.SlotRenderData;
 import dev.creoii.chaos.render.screen.InventoryScreen;
 import dev.creoii.chaos.render.screen.Screen;
 
@@ -25,19 +24,19 @@ import java.util.function.Predicate;
 public class InventoryWidget extends Widget {
     public static final float SLOT_SIZE = 49f;
     private static final float ITEM_SCALE = 42f;
-    private final SlotRenderData[][] slots;
+    private final Slot[][] slots;
     private final Predicate<ClientGame> activePredicate;
 
-    protected SlotRenderData dragSource;
+    protected Slot dragSource;
     protected ItemStack dragStack;
 
-    public InventoryWidget(Screen parent, Vector2 pos, SlotRenderData[][] slots, Predicate<ClientGame> activePredicate) {
+    public InventoryWidget(Screen parent, Vector2 pos, Slot[][] slots, Predicate<ClientGame> activePredicate) {
         super(parent, pos, slots.length * SLOT_SIZE, slots.length * SLOT_SIZE);
         this.slots = slots;
         this.activePredicate = activePredicate;
     }
 
-    public InventoryWidget(Screen parent, Vector2 pos, SlotRenderData[][] slots) {
+    public InventoryWidget(Screen parent, Vector2 pos, Slot[][] slots) {
         this(parent, pos, slots, _ -> true);
     }
 
@@ -45,21 +44,18 @@ public class InventoryWidget extends Widget {
         return getInventory() != null && activePredicate.test(game);
     }
 
-    public SlotRenderData[][] getInventory() {
+    public Slot[][] getInventory() {
         return slots;
     }
 
     @Nullable
-    public SlotRenderData getSlotAt(float x, float y) {
+    public Slot getSlotAt(float x, float y) {
         for (int r = 0; r < getInventory().length; ++r) {
             for (int c = 0; c < getInventory()[r].length; ++c) {
                 float slotX = getPos().x + (c * SLOT_SIZE);
                 float slotY = getPos().y + (r * SLOT_SIZE);
                 if (x >= slotX && x <= slotX + SLOT_SIZE && y >= slotY && y <= slotY + SLOT_SIZE) {
-                    SlotRenderData slot = getInventory()[r][c];
-                    slot.r = r;
-                    slot.c = c;
-                    return slot;
+                    return getInventory()[r][c];
                 }
             }
         }
@@ -72,31 +68,31 @@ public class InventoryWidget extends Widget {
             return;
 
         if (getParent() instanceof InventoryScreen inventoryScreen) {
-            SlotRenderData mouseOverSlot = inventoryScreen.getMouseOverSlot();
+            Slot mouseOverSlot = inventoryScreen.getMouseOverSlot();
             if (batch == null && shapeRenderer != null) {
-                if (mouseOverSlot != null && mouseOverSlot.stack.getCount() > 0) {
-                    ItemRenderer.renderTooltip(null, shapeRenderer, mouseOverSlot.stack.getItem());
+                if (mouseOverSlot != null && mouseOverSlot.hasItem()) {
+                    ItemRenderer.renderTooltip(null, shapeRenderer, mouseOverSlot.getStack().getItem());
                 }
                 return;
             }
 
             for (int r = 0; r < getInventory().length; ++r) {
                 for (int c = 0; c < getInventory()[r].length; ++c) {
-                    SlotRenderData slot = getInventory()[r][c];
-                    Sprite sprite = slot.stack.getCount() > 0 ? InventoryScreen.SLOT_SPRITES.get(Slot.Type.NONE) : InventoryScreen.SLOT_SPRITES.get(slot.type);
+                    Slot slot = getInventory()[r][c];
+                    Sprite sprite = slot.hasItem() ? InventoryScreen.SLOT_SPRITES.get(Slot.Type.NONE) : InventoryScreen.SLOT_SPRITES.get(slot.getType());
                     sprite.setPosition(getPos().x + (c * SLOT_SIZE), getPos().y + (r * SLOT_SIZE));
                     sprite.draw(batch);
-                    if (slot.stack.getCount() > 0) {
-                        ItemRenderer.renderItem(renderer.getGame(), batch, slot.stack.getItem().id(), new Vector2(getPos().x + (c * SLOT_SIZE) + 3, getPos().y + (r * SLOT_SIZE) + 3), ITEM_SCALE);
+                    if (slot.hasItem()) {
+                        ItemRenderer.renderItem(renderer.getGame(), batch, slot.getStack().getItem().id(), new Vector2(getPos().x + (c * SLOT_SIZE) + 3, getPos().y + (r * SLOT_SIZE) + 3), ITEM_SCALE);
                     }
                 }
             }
 
-            if (mouseOverSlot != null && mouseOverSlot.stack.getCount() > 0) {
-                ItemRenderer.renderTooltip(batch, null, mouseOverSlot.stack.getItem());
+            if (mouseOverSlot != null && mouseOverSlot.hasItem()) {
+                ItemRenderer.renderTooltip(batch, null, mouseOverSlot.getStack().getItem());
             }
 
-            if (dragStack != null && dragStack.getItem() != null) {
+            if (dragStack != null && dragStack != ItemStack.EMPTY) {
                 Vector2 mousePos = new Vector2(Gdx.input.getX() - (ITEM_SCALE / 2f), Gdx.graphics.getHeight() - Gdx.input.getY() - (ITEM_SCALE / 2f));
                 ItemRenderer.renderItem(renderer.getGame(), batch, dragStack.getItem().id(), mousePos, ITEM_SCALE);
             }
@@ -108,12 +104,12 @@ public class InventoryWidget extends Widget {
         if (!isActive(manager.getGame()))
             return false;
         if (getParent() instanceof InventoryScreen inventoryScreen && isMouseOver()) {
-            SlotRenderData touched = inventoryScreen.getMouseOverSlot();
-            if (touched != null && touched.stack.getCount() > 0 && Gdx.input.isTouched()) {
-                /*if (!touched.stack.clickInSlot(manager.getGame(), manager.getGame().getCharacter().uuid, touched)) {
+            Slot touched = inventoryScreen.getMouseOverSlot();
+            if (touched != null && touched.hasItem()) {
+                if (!touched.getStack().clickInSlot(manager.getGame(), manager.getGame().getCharacter().uuid, touched)) {
                     dragSource = touched;
                     dragStack = touched.takeStack();
-                }*/
+                }
                 return true;
             }
         }
@@ -126,18 +122,18 @@ public class InventoryWidget extends Widget {
             return false;
         if (dragStack != null && getParent() instanceof InventoryScreen inventoryScreen) {
             ClientGame game = manager.getGame();
-            SlotRenderData touched = inventoryScreen.getMouseOverSlot();
+            Slot touched = inventoryScreen.getMouseOverSlot();
             if (touched != null) {
                 if (!touched.canAccept(dragStack.getItem())) {
-                    dragSource.stack = dragStack.copy();
+                    dragSource.setStack(dragStack.copy());
                 } else {
-                    if (touched.stack != ItemStack.EMPTY) {
-                        if (dragSource.canAccept(touched.stack.getItem())) {
-                            game.getClient().sendTCP(new SlotUpdateC2S(manager.getGame().getCharacter().uuid, SlotUpdateC2S.Action.SWAP, InventoryType.MAIN, InventoryType.MAIN, new SlotEntry(dragSource.r, dragSource.c, dragSource.type, dragSource.stack, true), new SlotEntry(touched.r, touched.c, touched.type, touched.stack, true)));
+                    if (touched.hasItem()) {
+                        if (dragSource.canAccept(touched.getStack().getItem())) {
+                            game.getClient().sendTCP(new SlotUpdateC2S(manager.getGame().getCharacter().uuid, SlotUpdateC2S.Action.SWAP, InventoryType.MAIN, InventoryType.MAIN, dragSource, touched));
                         } else
-                            dragSource.stack = dragStack.copy();
+                            dragSource.setStack(dragStack.copy());
                     } else {
-                        game.getClient().sendTCP(new SlotUpdateC2S(manager.getGame().getCharacter().uuid, SlotUpdateC2S.Action.MOVE, InventoryType.MAIN, InventoryType.MAIN, new SlotEntry(dragSource.r, dragSource.c, dragSource.type, dragSource.stack, true), new SlotEntry(touched.r, touched.c, touched.type, touched.stack, true)));
+                        game.getClient().sendTCP(new SlotUpdateC2S(manager.getGame().getCharacter().uuid, SlotUpdateC2S.Action.MOVE, InventoryType.MAIN, InventoryType.MAIN, dragSource, touched));
 
                         /*if (getInventory().isEmpty()) {
                             if (game.getCharacter().getLootUuid() != null) {
@@ -148,7 +144,7 @@ public class InventoryWidget extends Widget {
                     }
                 }
             } else {
-                //game.getClient().sendTCP(new DropSlotItemC2S(manager.getGame().getCharacter().uuid, new SlotEntry(dragSource.getR(), dragSource.getC(), dragSource.stack)));
+                game.getClient().sendTCP(new DropSlotItemC2S(manager.getGame().getCharacter().uuid, dragSource));
             }
             dragStack = null;
         }

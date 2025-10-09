@@ -88,25 +88,25 @@ public class ServerListener extends Listener {
             }
         }
 
-        else if (object instanceof UseItemC2S(UUID uuid, SlotEntry slotEntry)) {
+        else if (object instanceof UseItemC2S(UUID uuid, Slot slotEntry)) {
             CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, uuid);
             if (character != null) {
-                Slot slot = character.getInventory().getSlot(slotEntry.r(), slotEntry.c());
+                Slot slot = character.getInventory().getSlot(slotEntry.getR(), slotEntry.getC());
 
                 //if (slot.isActive()) {
                     ItemStack stack = slot.getStack();
                     if (stack.getItem() instanceof AbilityItem abilityItem) {
                         abilityItem.getAttack().attack(new MousePosVecProvider(), new SourcePosVecProvider(), character);
-                        game.getCooldownManager().addCooldown(uuid, slotEntry.r(), slotEntry.c(), abilityItem.getCooldown());
+                        game.getCooldownManager().addCooldown(uuid, slotEntry.getR(), slotEntry.getC(), abilityItem.getCooldown());
                     } else if (stack.getItem() instanceof WeaponItem weaponItem) {
                         weaponItem.getAttack().attack(new MousePosVecProvider(), new SourcePosVecProvider(), character);
-                        game.getCooldownManager().addCooldown(uuid, slotEntry.r(), slotEntry.c(), Math.max(1, 150 / Math.max(1, character.getStats().attackSpeed().value())));
+                        game.getCooldownManager().addCooldown(uuid, slotEntry.getR(), slotEntry.getC(), Math.max(1, 150 / Math.max(1, character.getStats().attackSpeed().value())));
                     }
                 //}
             }
         }
 
-        else if (object instanceof SlotUpdateC2S(UUID uuid, SlotUpdateC2S.Action action, InventoryType from, InventoryType to, SlotEntry fromSlot, SlotEntry toSlot)) {
+        else if (object instanceof SlotUpdateC2S(UUID uuid, SlotUpdateC2S.Action action, InventoryType from, InventoryType to, Slot fromSlot, Slot toSlot)) {
             CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, uuid);
 
             if (character != null) {
@@ -126,8 +126,9 @@ public class ServerListener extends Listener {
                     toInventory = lootDrop.getInventory();
                 }
 
-                if (fromInventory != null && toInventory != null)
-                    toInventory.updateSlot(action, fromInventory, toInventory, fromInventory.getSlot(fromSlot.r(), fromSlot.c()), toInventory.getSlot(toSlot.r(), toSlot.c()));
+                if (fromInventory != null && toInventory != null) {
+                    toInventory.updateSlot(action, fromInventory, toInventory, fromInventory.getSlot(fromSlot.getR(), fromSlot.getC()), toInventory.getSlot(toSlot.getR(), toSlot.getC()));
+                }
             }
         }
 
@@ -137,10 +138,10 @@ public class ServerListener extends Listener {
                 character.setLootUuid(null);
         }
 
-        else if (object instanceof DropSlotItemC2S(UUID uuid, SlotEntry slot)) {
+        else if (object instanceof DropSlotItemC2S(UUID uuid, Slot slot)) {
             CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, uuid);
             if (character != null) {
-                Slot slot1 = character.getInventory().getSlot(slot.r(), slot.c());
+                Slot slot1 = character.getInventory().getSlot(slot.getR(), slot.getC());
                 ItemStack dragCopy = slot1.getStack().copy();
                 character.dropItem(dragCopy);
                 character.getInventory().onRemoveItemFromSlot(slot1, slot1.getStack());

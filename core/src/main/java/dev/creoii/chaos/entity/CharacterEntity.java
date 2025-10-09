@@ -27,7 +27,7 @@ public class CharacterEntity extends LivingEntity {
     @Nullable
     @Override
     public EntityCustomData getCustomPacketData() {
-        return new CharacterData(getStats(), getMaxStats(), inventory.getSlots());
+        return new CharacterData(getStats(), getMaxStats(), inventory.isEmpty() ? null : inventory.getSlots());
     }
 
     public Mutable<CharacterClass> getCharacterClass() {

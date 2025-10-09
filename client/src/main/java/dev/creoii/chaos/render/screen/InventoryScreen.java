@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.ClientGame;
 import dev.creoii.chaos.inventory.Slot;
-import dev.creoii.chaos.render.data.SlotRenderData;
 import dev.creoii.chaos.render.screen.widget.InventoryWidget;
 import dev.creoii.chaos.render.screen.widget.Widget;
 
@@ -17,7 +16,7 @@ import java.util.Map;
 public class InventoryScreen extends Screen {
     public static final Map<Slot.Type, Sprite> SLOT_SPRITES = new HashMap<>();
 
-    public InventoryScreen(ClientGame game, Vector2 pos, SlotRenderData[][] slots) {
+    public InventoryScreen(ClientGame game, Vector2 pos, Slot[][] slots) {
         super(game, "Inventory", pos, (slots.length * 48f) + 31f);
 
         addWidget("main_inventory", new InventoryWidget(this, pos, slots));
@@ -35,7 +34,7 @@ public class InventoryScreen extends Screen {
     }
 
     @Nullable
-    public SlotRenderData getMouseOverSlot() {
+    public Slot getMouseOverSlot() {
         if (getWidgets().isEmpty())
             return null;
 
@@ -46,7 +45,7 @@ public class InventoryScreen extends Screen {
             if (widget instanceof InventoryWidget inventoryWidget) {
                 if (!inventoryWidget.isActive(getGame()))
                     continue;
-                SlotRenderData slot = inventoryWidget.getSlotAt(mouseX, mouseY);
+                Slot slot = inventoryWidget.getSlotAt(mouseX, mouseY);
                 if (slot != null)
                     return slot;
             }

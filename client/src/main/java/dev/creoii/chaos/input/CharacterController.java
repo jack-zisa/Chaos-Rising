@@ -1,14 +1,12 @@
 package dev.creoii.chaos.input;
 
 import dev.creoii.chaos.ClientGame;
-import dev.creoii.chaos.inventory.SlotEntry;
+import dev.creoii.chaos.inventory.Slot;
 import dev.creoii.chaos.item.AbilityItem;
-import dev.creoii.chaos.item.ItemStack;
 import dev.creoii.chaos.item.WeaponItem;
 import dev.creoii.chaos.network.packet.c2s.CharacterMoveC2S;
 import dev.creoii.chaos.network.packet.c2s.UseItemC2S;
 import dev.creoii.chaos.render.data.CharacterEntityRenderData;
-import dev.creoii.chaos.render.data.SlotRenderData;
 import dev.creoii.chaos.util.Inputtable;
 
 public record CharacterController(CharacterEntityRenderData character) implements Inputtable {
@@ -41,9 +39,9 @@ public record CharacterController(CharacterEntityRenderData character) implement
         }
 
         if (keycode == game.getOptionsManager().ABILITY_KEY.intValue()) {
-            SlotRenderData abilitySlot = character.getAbilitySlot();
-            if (abilitySlot.stack != ItemStack.EMPTY && abilitySlot.stack.getItem() instanceof AbilityItem abilityItem) {
-                //game.getClient().sendTCP(new UseItemC2S(character.uuid, new SlotEntry(2, 1, Slot.Type.ABILITY, abilitySlot.stack, true)));
+            Slot abilitySlot = character.getAbilitySlot();
+            if (abilitySlot.getStack().getItem() instanceof AbilityItem abilityItem) {
+                game.getClient().sendTCP(new UseItemC2S(character.uuid, abilitySlot));
             }
         }
     }
@@ -53,9 +51,9 @@ public record CharacterController(CharacterEntityRenderData character) implement
         if (manager.getGame().getCommandManager().isActive())
             return;
 
-        SlotRenderData weaponSlot = character.getWeaponSlot();
-        if (weaponSlot.stack != ItemStack.EMPTY && weaponSlot.stack.getItem() instanceof WeaponItem weaponItem) {
-            manager.getGame().getClient().sendTCP(new UseItemC2S(character.uuid, new SlotEntry(2, 0, weaponSlot.type, weaponSlot.stack, true)));
+        Slot weaponSlot = character.getWeaponSlot();
+        if (weaponSlot.getStack().getItem() instanceof WeaponItem weaponItem) {
+            manager.getGame().getClient().sendTCP(new UseItemC2S(character.uuid, weaponSlot));
         }
     }
 }

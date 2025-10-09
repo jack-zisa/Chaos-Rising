@@ -64,7 +64,7 @@ public class EntityManager<T> {
     @Nullable
     public T getEntity(UUID uuid) {
         for (Map.Entry<EntityGroup, Map<UUID, T>> entry : getAllEntities().entrySet()) {
-            if (entry.getValue().containsKey(uuid)) {
+            if (uuid != null && entry.getValue().containsKey(uuid)) {
                 return entry.getValue().get(uuid);
             }
         }

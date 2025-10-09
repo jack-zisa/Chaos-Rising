@@ -11,8 +11,8 @@ public record CharacterClass(String id, float scale, StatContainer baseStatConta
         return instance.group(
             Codec.STRING.fieldOf("id").forGetter(CharacterClass::id),
             Codec.FLOAT.fieldOf("scale").orElse(1f).forGetter(CharacterClass::scale),
-            StatContainer.CODEC.fieldOf("base_stats").orElse(new StatContainer()).forGetter(CharacterClass::baseStatContainer),
-            StatContainer.CODEC.fieldOf("max_stats").orElse(new StatContainer()).forGetter(CharacterClass::maxStatContainer)
+            StatContainer.INT_CODEC.fieldOf("base_stats").orElse(new StatContainer()).forGetter(CharacterClass::baseStatContainer),
+            StatContainer.INT_CODEC.fieldOf("max_stats").orElse(new StatContainer()).forGetter(CharacterClass::maxStatContainer)
         ).apply(instance, CharacterClass::new);
     });
 

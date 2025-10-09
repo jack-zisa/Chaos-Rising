@@ -14,7 +14,7 @@ public class ItemStack implements Serializable {
     public static final Codec<ItemStack> CODEC = RecordCodecBuilder.create(instance -> {
         return instance.group(
             Codec.STRING.fieldOf("id").forGetter(stack -> stack.getItem() == null ? "" : stack.getItem().id()),
-            Codec.INT.fieldOf("count").forGetter(ItemStack::getCount)
+            Codec.INT.fieldOf("count").orElse(1).forGetter(ItemStack::getCount)
         ).apply(instance, (id, count) -> new ItemStack(DataManager.getItem(id), count));
     });
     public static final ItemStack EMPTY = new ItemStack(null, 0);

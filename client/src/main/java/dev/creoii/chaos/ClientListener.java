@@ -7,7 +7,7 @@ import dev.creoii.chaos.effect.StatusEffect;
 import dev.creoii.chaos.entity.serialization.*;
 import dev.creoii.chaos.input.CharacterController;
 import dev.creoii.chaos.inventory.InventoryType;
-import dev.creoii.chaos.inventory.SlotEntry;
+import dev.creoii.chaos.inventory.Slot;
 import dev.creoii.chaos.network.packet.c2s.CharacterJoinC2S;
 import dev.creoii.chaos.network.packet.c2s.CharacterLeaveC2S;
 import dev.creoii.chaos.network.packet.s2c.*;
@@ -21,6 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -56,14 +57,25 @@ public class ClientListener extends Listener {
                     }
                     case CHARACTER -> {
                         CharacterData characterData = (CharacterData) customData;
-                        CharacterEntityRenderData character = new CharacterEntityRenderData(uuid, x, y, 0f, 0f, "wizard", 32f, characterData.baseStats(), characterData.maxStats(), SlotRenderData.fromSlotEntryList(characterData.slots()));
+                        Optional<List<List<Slot>>> slots = characterData.slots();
+                        CharacterEntityRenderData character = new CharacterEntityRenderData(uuid, x, y, 0f, 0f, "wizard", 32f, characterData.baseStats(), characterData.maxStats(), slots.map(Slot::toSlotArray).orElse(Slot.createEmptySlotArray(3, 4, (r, c) -> {
+                            if (r == 2) {
+                                return switch (c) {
+                                    case 0 -> new Slot(r, c, Slot.Type.WEAPON);
+                                    case 1 -> new Slot(r, c, Slot.Type.ABILITY);
+                                    case 2 -> new Slot(r, c, Slot.Type.ARMOR);
+                                    default -> new Slot(r, c, Slot.Type.ACCESSORY);
+                                };
+                            } else return new Slot(r, c);
+                        })));
                         game.setCharacter(character);
                         game.getEntityManager().addEntity(uuid, character);
                         game.getInputManager().addInput(new CharacterController(character));
                     }
                     case LOOT_DROP -> {
                         LootDropData lootDropData = (LootDropData) customData;
-                        game.getEntityManager().addEntity(uuid, new LootDropEntityRenderData(uuid, x, y, 0f, 0f, group.name().toLowerCase(), 32f, SlotRenderData.fromSlotEntryList(lootDropData.slots())));
+                        Optional<List<List<Slot>>> slots = lootDropData.slots();
+                        game.getEntityManager().addEntity(uuid, new LootDropEntityRenderData(uuid, x, y, 0f, 0f, group.name().toLowerCase(), 32f, slots.map(Slot::toSlotArray).orElse(Slot.createEmptySlotArray(2, 4))));
                     }
                     case null, default -> throw new IllegalArgumentException("Unknown EntityGroup: " + (group == null ? "null" : group.name().toLowerCase()));
                 }
@@ -88,10 +100,10 @@ public class ClientListener extends Listener {
             case StatusEffectS2C(UUID uuid, StatusEffect statusEffect) -> {
                 //((LivingEntity) game.getEntityManager().getEntityData(uuid)).addStatusEffect(statusEffect);
             }
-            case InventoryUpdateS2C(InventoryType type, List<SlotEntry> slots) -> {
-                for (SlotEntry entry : slots) {
+            case InventoryUpdateS2C(InventoryType type, List<Slot> slots) -> {
+                for (Slot slot : slots) {
                     if (type == InventoryType.MAIN) {
-                        game.getCharacter().slots[entry.r()][entry.c()].stack = entry.stack();
+                        game.getCharacter().slots[slot.getR()][slot.getC()] = slot;
                     }
                 }
             }
@@ -144,7 +156,7 @@ public class ClientListener extends Listener {
                         zipIn.closeEntry();
                     }
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    System.out.println("[Client] Client failed to sync data: " + e);
                 }
 
                 DataManager.load(cacheRoot);

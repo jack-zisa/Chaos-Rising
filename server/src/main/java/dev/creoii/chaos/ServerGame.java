@@ -63,6 +63,7 @@ public class ServerGame implements Game {
         collisionManager.checkCollisions();
     }
 
+    @Override
     public Server getServer() {
         return server;
     }

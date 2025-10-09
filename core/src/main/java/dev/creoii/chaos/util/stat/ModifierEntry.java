@@ -12,9 +12,9 @@ public record ModifierEntry(Stat.Type type, UUID uuid, int amount, Operation ope
         return instance.group(
             Stat.Type.CODEC.fieldOf("stat_type").forGetter(ModifierEntry::type),
             Codecs.UUID.fieldOf("uuid").forGetter(ModifierEntry::uuid),
-            Codec.INT.fieldOf("amount").forGetter(ModifierEntry::amount),
-            Operation.CODEC.fieldOf("operation").forGetter(ModifierEntry::operation),
-            ModifierType.CODEC.fieldOf("modifier_type").forGetter(ModifierEntry::modifierType)
+            Codec.INT.fieldOf("amount").orElse(0).forGetter(ModifierEntry::amount),
+            Operation.CODEC.fieldOf("operation").orElse(Operation.NONE).forGetter(ModifierEntry::operation),
+            ModifierType.CODEC.fieldOf("modifier_type").orElse(ModifierType.ALL).forGetter(ModifierEntry::modifierType)
         ).apply(instance, ModifierEntry::new);
     });
 

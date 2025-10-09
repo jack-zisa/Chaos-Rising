@@ -28,6 +28,9 @@ public class CommandManager extends InputAdapter {
         String[] elements = command.split(" ");
         String commandType = elements[0].substring(1);
 
+        if (commandType.isEmpty())
+            return;
+
         String[] args = Arrays.copyOfRange(elements, 1, elements.length);
         game.getClient().sendTCP(new ExecuteCommandC2S(game.getCharacter().uuid, commandType, args));
 

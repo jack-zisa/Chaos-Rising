@@ -1,19 +1,21 @@
 package dev.creoii.chaos.util.stat;
 
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public class Stat {
     public static final Codec<Stat> CODEC = RecordCodecBuilder.create(instance -> {
         return instance.group(
             Stat.Type.CODEC.fieldOf("stat_type").forGetter(Stat::type),
-            Codec.INT.fieldOf("amount").forGetter(Stat::base),
-            ModifierEntry.CODEC.listOf().fieldOf("modifiers").forGetter(Stat::getModifiers)
-        ).apply(instance, Stat::new);
+            Codec.INT.fieldOf("amount").orElse(0).forGetter(Stat::base),
+            ModifierEntry.CODEC.listOf().optionalFieldOf("modifiers").forGetter(stat -> stat.modifiers.isEmpty() ? Optional.empty() : Optional.of(stat.modifiers))
+        ).apply(instance, (type, amount, modifiers) -> modifiers.map(modifierEntries -> new Stat(type, amount, modifierEntries)).orElseGet(() -> new Stat(type, amount)));
     });
     private final Type type;
     private int base;

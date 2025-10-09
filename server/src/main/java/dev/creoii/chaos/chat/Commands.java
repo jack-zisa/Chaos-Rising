@@ -9,7 +9,6 @@ import dev.creoii.chaos.effect.StatusEffectTypes;
 import dev.creoii.chaos.entity.*;
 import dev.creoii.chaos.inventory.InventoryType;
 import dev.creoii.chaos.inventory.Slot;
-import dev.creoii.chaos.inventory.SlotEntry;
 import dev.creoii.chaos.item.Item;
 import dev.creoii.chaos.network.packet.s2c.InventoryUpdateS2C;
 import dev.creoii.chaos.network.packet.s2c.LivingStatUpdateS2C;
@@ -160,7 +159,7 @@ public final class Commands {
                             continue;
                         Slot slot;
                         if ((slot = character.getInventory().addItem(item.getDefaultStack().copy())) != null) {
-                            game.getServer().sendToTCP(character.getConnectionId(), new InventoryUpdateS2C(InventoryType.MAIN, List.of(new SlotEntry(slot.getR(), slot.getC(), slot.getType(), slot.getStack(), slot.isActive()))));
+                            game.getServer().sendToTCP(character.getConnectionId(), new InventoryUpdateS2C(InventoryType.MAIN, List.of(slot)));
                         }
                     }
                     return Command.Result.SUCCESS;

@@ -1,14 +1,24 @@
 package dev.creoii.chaos.inventory;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.item.Item;
 import dev.creoii.chaos.item.ItemStack;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
 public class Slot {
+    public static final Codec<Slot> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+        Codec.INT.fieldOf("r").forGetter(Slot::getR),
+        Codec.INT.fieldOf("c").forGetter(Slot::getC),
+        Slot.Type.CODEC.fieldOf("type").orElse(Type.NONE).forGetter(Slot::getType),
+        ItemStack.CODEC.fieldOf("stack").orElse(ItemStack.EMPTY).forGetter(Slot::getStack),
+        Codec.BOOL.fieldOf("active").orElse(true).forGetter(Slot::isActive)
+    ).apply(instance, Slot::new));
     private final int r;
     private final int c;
     private Type type;
@@ -35,18 +45,47 @@ public class Slot {
         this(r, c, Type.NONE);
     }
 
-    public static List<List<SlotEntry>> toSlotEntries(Slot[][] slots) {
-        List<List<SlotEntry>> slotEntries = new ArrayList<>();
+    public static List<List<Slot>> toSlotListArray(Slot[][] slots) {
+        List<List<Slot>> slotEntries = new ArrayList<>();
 
         for (Slot[] slotsArr : slots) {
-            List<SlotEntry> entries = new ArrayList<>();
-            for (Slot slot : slotsArr) {
-                entries.add(new SlotEntry(slot.r, slot.c, slot.type, slot.stack, slot.active));
-            }
+            List<Slot> entries = new ArrayList<>(Arrays.asList(slotsArr));
             slotEntries.add(entries);
         }
 
         return slotEntries;
+    }
+
+    public static Slot[][] toSlotArray(List<List<Slot>> list) {
+        int r = list.size();
+        int c = r > 0 ? list.getFirst().size() : 0;
+
+        Slot[][] array = new Slot[r][c];
+
+        for (int i = 0; i < r; ++i) {
+            for (int j = 0; j < list.get(i).size(); ++j) {
+                array[i][j] = list.get(i).get(j);
+            }
+        }
+
+        return array;
+    }
+
+    public static Slot[][] createEmptySlotArray(int r, int c, BiFunction<Integer, Integer, Slot> creator) {
+        Slot[][] array = new Slot[r][c];
+
+        for (int ri = 0; ri < array.length; ++ri) {
+            Slot[] slots = array[ri];
+            for (int ci = 0; ci < slots.length; ++ci) {
+                slots[ci] = creator.apply(ri, ci);
+            }
+        }
+
+        return array;
+    }
+
+    public static Slot[][] createEmptySlotArray(int r, int c) {
+        return createEmptySlotArray(r, c, Slot::new);
     }
 
     public int getR() {
@@ -75,12 +114,12 @@ public class Slot {
 
     public ItemStack takeStack() {
         ItemStack temp = stack.copy();
-        setStack(null);
+        setStack(ItemStack.EMPTY);
         return temp;
     }
 
     public boolean hasItem() {
-        return stack != null && stack.getItem() != null;
+        return stack != ItemStack.EMPTY && stack.getCount() > 0;
     }
 
     public void setActive(boolean active) {
@@ -92,7 +131,7 @@ public class Slot {
     }
 
     public boolean canAccept(Item item) {
-        return type.itemPredicate.test(item);
+        return item != null && type.itemPredicate.test(item);
     }
 
     public Slot copy() {

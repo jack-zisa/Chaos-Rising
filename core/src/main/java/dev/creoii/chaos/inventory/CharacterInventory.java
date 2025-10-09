@@ -3,6 +3,7 @@ package dev.creoii.chaos.inventory;
 import dev.creoii.chaos.entity.CharacterEntity;
 import dev.creoii.chaos.item.EquipmentItem;
 import dev.creoii.chaos.item.ItemStack;
+import dev.creoii.chaos.network.packet.s2c.InventoryUpdateS2C;
 import dev.creoii.chaos.util.stat.ModifierEntry;
 
 import java.util.List;
@@ -29,35 +30,43 @@ public class CharacterInventory extends Inventory {
 
     @Override
     public void onAddItemToSlot(Slot slot, ItemStack stack) {
-        if (slot.getType() != Slot.Type.NONE && slot.getType().getItemPredicate().test(stack.getItem()) && stack.getItem() instanceof EquipmentItem equipmentItem) {
-            List<ModifierEntry> statBonus = equipmentItem.getStatBonus();
-            statBonus.forEach(modifierEntry -> {
-                switch (modifierEntry.modifierType()) {
-                    case BASE -> modifierEntry.apply(character.getStats());
-                    case MAX -> modifierEntry.apply(character.getMaxStats());
-                    case ALL -> {
-                        modifierEntry.apply(character.getStats());
-                        modifierEntry.apply(character.getMaxStats());
+        if (slot.getType() != Slot.Type.NONE && slot.getType().getItemPredicate().test(stack.getItem())) {
+            if (stack.getItem() instanceof EquipmentItem equipmentItem) {
+                List<ModifierEntry> statBonus = equipmentItem.getStatBonus();
+                statBonus.forEach(modifierEntry -> {
+                    switch (modifierEntry.modifierType()) {
+                        case BASE -> modifierEntry.apply(character.getStats());
+                        case MAX -> modifierEntry.apply(character.getMaxStats());
+                        case ALL -> {
+                            modifierEntry.apply(character.getStats());
+                            modifierEntry.apply(character.getMaxStats());
+                        }
                     }
-                }
-            });
+                });
+            }
+            if (!getCharacter().getGame().isClient())
+                getCharacter().getGame().getServer().sendToTCP(getCharacter().getConnectionId(), new InventoryUpdateS2C(InventoryType.MAIN, List.of(slot)));
         }
     }
 
     @Override
     public void onRemoveItemFromSlot(Slot slot, ItemStack stack) {
-        if (slot.getType() != Slot.Type.NONE && slot.getType().getItemPredicate().test(stack.getItem()) && stack.getItem() instanceof EquipmentItem equipmentItem) {
-            List<ModifierEntry> statBonus = equipmentItem.getStatBonus();
-            statBonus.forEach(modifierEntry -> {
-                switch (modifierEntry.modifierType()) {
-                    case BASE -> modifierEntry.remove(character.getStats());
-                    case MAX -> modifierEntry.remove(character.getMaxStats());
-                    case ALL -> {
-                        modifierEntry.remove(character.getStats());
-                        modifierEntry.remove(character.getMaxStats());
+        if (slot.getType() != Slot.Type.NONE && slot.getType().getItemPredicate().test(stack.getItem())) {
+            if (stack.getItem() instanceof EquipmentItem equipmentItem) {
+                List<ModifierEntry> statBonus = equipmentItem.getStatBonus();
+                statBonus.forEach(modifierEntry -> {
+                    switch (modifierEntry.modifierType()) {
+                        case BASE -> modifierEntry.remove(character.getStats());
+                        case MAX -> modifierEntry.remove(character.getMaxStats());
+                        case ALL -> {
+                            modifierEntry.remove(character.getStats());
+                            modifierEntry.remove(character.getMaxStats());
+                        }
                     }
-                }
-            });
+                });
+            }
+            if (!getCharacter().getGame().isClient())
+                getCharacter().getGame().getServer().sendToTCP(getCharacter().getConnectionId(), new InventoryUpdateS2C(InventoryType.MAIN, List.of(slot)));
         }
     }
 

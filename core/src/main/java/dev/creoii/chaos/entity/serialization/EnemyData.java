@@ -7,8 +7,8 @@ import dev.creoii.chaos.util.stat.StatContainer;
 
 public record EnemyData(StatContainer baseStats, StatContainer maxStats) implements EntityCustomData {
     public static final MapCodec<EnemyData> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-        StatContainer.CODEC.fieldOf("base_stats").forGetter(EnemyData::baseStats),
-        StatContainer.CODEC.fieldOf("max_stats").forGetter(EnemyData::maxStats)
+        StatContainer.STAT_CODEC.fieldOf("base_stats").forGetter(EnemyData::baseStats),
+        StatContainer.STAT_CODEC.fieldOf("max_stats").forGetter(EnemyData::maxStats)
     ).apply(instance, EnemyData::new));
 
     @Override

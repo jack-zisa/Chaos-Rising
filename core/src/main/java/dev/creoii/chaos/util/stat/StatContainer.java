@@ -6,7 +6,7 @@ import com.mojang.serialization.Codec;
 import java.util.*;
 
 public record StatContainer(Stat health, Stat speed, Stat attackSpeed, Stat defense, Stat attack, Stat vitality) {
-    public static final Codec<StatContainer> CODEC = Codec.unboundedMap(Codec.STRING, Stat.CODEC).xmap(map -> new StatContainer(
+    public static final Codec<StatContainer> STAT_CODEC = Codec.unboundedMap(Codec.STRING, Stat.CODEC).xmap(map -> new StatContainer(
         map.getOrDefault(Stat.Type.HEALTH.name().toLowerCase(), new Stat(Stat.Type.HEALTH)),
         map.getOrDefault(Stat.Type.SPEED.name().toLowerCase(), new Stat(Stat.Type.SPEED)),
         map.getOrDefault(Stat.Type.ATTACK_SPEED.name().toLowerCase(), new Stat(Stat.Type.ATTACK_SPEED)),
@@ -21,6 +21,23 @@ public record StatContainer(Stat health, Stat speed, Stat attackSpeed, Stat defe
         map.put(Stat.Type.DEFENSE.name().toLowerCase(), statContainer.defense);
         map.put(Stat.Type.VITALITY.name().toLowerCase(), statContainer.vitality);
         map.put(Stat.Type.ATTACK.name().toLowerCase(), statContainer.attack);
+        return map;
+    });
+    public static final Codec<StatContainer> INT_CODEC = Codec.unboundedMap(Codec.STRING, Codec.INT).xmap(map -> new StatContainer(
+        map.getOrDefault(Stat.Type.HEALTH.name().toLowerCase(), 0),
+        map.getOrDefault(Stat.Type.SPEED.name().toLowerCase(), 0),
+        map.getOrDefault(Stat.Type.ATTACK_SPEED.name().toLowerCase(), 0),
+        map.getOrDefault(Stat.Type.DEFENSE.name().toLowerCase(), 0),
+        map.getOrDefault(Stat.Type.VITALITY.name().toLowerCase(), 0),
+        map.getOrDefault(Stat.Type.ATTACK.name().toLowerCase(), 0)
+    ), statContainer -> {
+        Map<String, Integer> map = new HashMap<>();
+        map.put(Stat.Type.HEALTH.name().toLowerCase(), statContainer.health.value());
+        map.put(Stat.Type.SPEED.name().toLowerCase(), statContainer.speed.value());
+        map.put(Stat.Type.ATTACK_SPEED.name().toLowerCase(), statContainer.attackSpeed.value());
+        map.put(Stat.Type.DEFENSE.name().toLowerCase(), statContainer.defense.value());
+        map.put(Stat.Type.VITALITY.name().toLowerCase(), statContainer.vitality.value());
+        map.put(Stat.Type.ATTACK.name().toLowerCase(), statContainer.attack.value());
         return map;
     });
 

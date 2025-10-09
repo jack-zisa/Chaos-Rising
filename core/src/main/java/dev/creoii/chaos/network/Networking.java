@@ -12,7 +12,6 @@ import dev.creoii.chaos.entity.behavior.phase.Phase;
 import dev.creoii.chaos.entity.serialization.EntityCustomData;
 import dev.creoii.chaos.inventory.InventoryType;
 import dev.creoii.chaos.inventory.Slot;
-import dev.creoii.chaos.inventory.SlotEntry;
 import dev.creoii.chaos.item.Item;
 import dev.creoii.chaos.item.ItemStack;
 import dev.creoii.chaos.network.packet.c2s.*;
@@ -62,7 +61,7 @@ public class Networking {
         kryo.register(EntityGroup.class, CodecSerializer.INSTANCE);
         kryo.register(EntityCustomData.class, CodecSerializer.INSTANCE);
         kryo.register(StatContainer.class, CodecSerializer.INSTANCE);
-        kryo.register(SlotEntry.class, CodecSerializer.INSTANCE);
+        kryo.register(Slot.class, CodecSerializer.INSTANCE);
         kryo.register(Slot.Type.class, CodecSerializer.INSTANCE);
         kryo.register(Rarity.class, CodecSerializer.INSTANCE);
         kryo.register(ModifierEntry.class, CodecSerializer.INSTANCE);
@@ -103,8 +102,8 @@ public class Networking {
         CodecSerializer.registerSchema(InventoryType.class, InventoryType.CODEC);
         CodecSerializer.registerSchema(EntityGroup.class, EntityGroup.CODEC);
         CodecSerializer.registerSchema(EntityCustomData.class, EntityCustomData.CODEC);
-        CodecSerializer.registerSchema(StatContainer.class, StatContainer.CODEC);
-        CodecSerializer.registerSchema(SlotEntry.class, SlotEntry.CODEC);
+        CodecSerializer.registerSchema(StatContainer.class, StatContainer.STAT_CODEC);
+        CodecSerializer.registerSchema(Slot.class, Slot.CODEC);
         CodecSerializer.registerSchema(Slot.Type.class, Slot.Type.CODEC);
         CodecSerializer.registerSchema(Rarity.class, Rarity.CODEC);
         CodecSerializer.registerSchema(Item.class, Item.CODEC);

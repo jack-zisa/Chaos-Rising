@@ -8,6 +8,7 @@ import dev.creoii.chaos.inventory.Inventory;
 import dev.creoii.chaos.item.ItemStack;
 
 import javax.annotation.Nullable;
+import java.util.Optional;
 import java.util.UUID;
 
 public class LootDropEntity extends Entity {
@@ -21,7 +22,7 @@ public class LootDropEntity extends Entity {
     @Nullable
     @Override
     public EntityCustomData getCustomPacketData() {
-        return new LootDropData(inventory.getSlots());
+        return new LootDropData(inventory.isEmpty() ? null : inventory.getSlots());
     }
 
     public Inventory getInventory() {
