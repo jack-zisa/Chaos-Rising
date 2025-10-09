@@ -32,9 +32,7 @@ public abstract class Entity implements Tickable {
     }
 
     @Nullable
-    public EntityCustomData getCustomPacketData() {
-        return null;
-    }
+    public abstract EntityCustomData getCustomPacketData();
 
     public Game getGame() {
         return game;

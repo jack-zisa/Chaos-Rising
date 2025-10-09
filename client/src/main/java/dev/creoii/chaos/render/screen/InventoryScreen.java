@@ -6,9 +6,8 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.ClientGame;
 import dev.creoii.chaos.inventory.Slot;
-import dev.creoii.chaos.render.entity.data.SlotRenderData;
+import dev.creoii.chaos.render.data.SlotRenderData;
 import dev.creoii.chaos.render.screen.widget.InventoryWidget;
-import dev.creoii.chaos.render.screen.widget.LootInventoryWidget;
 import dev.creoii.chaos.render.screen.widget.Widget;
 
 import javax.annotation.Nullable;

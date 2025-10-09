@@ -1,6 +1,7 @@
 package dev.creoii.chaos;
 
 import com.esotericsoftware.kryonet.Server;
+import com.esotericsoftware.minlog.Log;
 import dev.creoii.chaos.inventory.cooldown.CooldownManager;
 import dev.creoii.chaos.network.CreoSerialization;
 import dev.creoii.chaos.network.Networking;
@@ -19,10 +20,13 @@ public class ServerGame implements Game {
     private final CooldownManager cooldownManager;
     private int gametime;
 
-    public ServerGame() throws IOException, URISyntaxException {
+    public ServerGame(int tcpPort, int udpPort) throws IOException, URISyntaxException {
         server = new Server(65536, 65536, new CreoSerialization());
+        Log.NONE();
         server.start();
-        server.bind(54555, 54777);
+        server.bind(tcpPort, udpPort);
+
+        System.out.println("[Server] Server started on ports: TCP " + tcpPort + " | UDP " + udpPort);
 
         Networking.register(server.getKryo());
 

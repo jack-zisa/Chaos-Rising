@@ -8,15 +8,11 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.ClientGame;
 import dev.creoii.chaos.input.InputManager;
-import dev.creoii.chaos.inventory.InventoryType;
 import dev.creoii.chaos.inventory.Slot;
-import dev.creoii.chaos.inventory.SlotEntry;
 import dev.creoii.chaos.item.ItemStack;
-import dev.creoii.chaos.network.packet.c2s.DropSlotItemC2S;
-import dev.creoii.chaos.network.packet.c2s.SlotUpdateC2S;
 import dev.creoii.chaos.render.ItemRenderer;
 import dev.creoii.chaos.render.Renderer;
-import dev.creoii.chaos.render.entity.data.SlotRenderData;
+import dev.creoii.chaos.render.data.SlotRenderData;
 import dev.creoii.chaos.render.screen.InventoryScreen;
 import dev.creoii.chaos.render.screen.Screen;
 

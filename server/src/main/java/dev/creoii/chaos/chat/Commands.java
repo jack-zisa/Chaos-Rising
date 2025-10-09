@@ -36,7 +36,7 @@ public final class Commands {
     }
 
     static {
-        Command.register("set_pos", (game, uuid, args) -> {
+        Command.register("setpos", (game, uuid, args) -> {
             if (args.length > 1) {
                 CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, uuid);
                 if (character != null) {
@@ -49,7 +49,7 @@ public final class Commands {
             return Command.Result.FAIL;
         });
 
-        Command.register("set_stat", (game, uuid, args) -> {
+        Command.register("setstat", (game, uuid, args) -> {
             if (args.length > 1) {
                 CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, uuid);
 
@@ -169,7 +169,7 @@ public final class Commands {
             return Command.Result.FAIL;
         });
 
-        Command.register("set_class", (game, uuid, args) -> {
+        Command.register("setclass", (game, uuid, args) -> {
             if (args.length > 0) {
                 CharacterClass characterClass = DataManager.getCharacterClass(args[0]);
                 if (characterClass != null) {
@@ -183,7 +183,7 @@ public final class Commands {
             return Command.Result.FAIL;
         });
 
-        Command.register("add_effect", (game, uuid, args) -> {
+        Command.register("addeffect", (game, uuid, args) -> {
             int argCount = args.length;
             if (argCount < 1)
                 return Command.Result.FAIL;
@@ -214,13 +214,13 @@ public final class Commands {
             return Command.Result.FAIL;
         });
 
-        Command.register("remove_effect", (game, uuid, args) -> {
+        Command.register("removeeffect", (game, uuid, args) -> {
             if (args.length > 0) {
                 String effectType = args[0];
                 CharacterEntity character = ((CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, uuid));
 
                 if (character != null) {
-                    if ("all".equals(effectType)) {
+                    if ("all".equals(effectType) || "*".equals(effectType)) {
                         character.clearStatusEffects();
                         return Command.Result.FAIL;
                     }

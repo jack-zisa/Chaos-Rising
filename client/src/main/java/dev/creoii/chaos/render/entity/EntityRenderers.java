@@ -1,6 +1,6 @@
 package dev.creoii.chaos.render.entity;
 
-import dev.creoii.chaos.render.entity.data.EntityRenderData;
+import dev.creoii.chaos.render.data.EntityRenderData;
 
 import java.util.HashMap;
 import java.util.Map;

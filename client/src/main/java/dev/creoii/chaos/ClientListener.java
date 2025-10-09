@@ -11,7 +11,7 @@ import dev.creoii.chaos.inventory.SlotEntry;
 import dev.creoii.chaos.network.packet.c2s.CharacterJoinC2S;
 import dev.creoii.chaos.network.packet.c2s.CharacterLeaveC2S;
 import dev.creoii.chaos.network.packet.s2c.*;
-import dev.creoii.chaos.render.entity.data.*;
+import dev.creoii.chaos.render.data.*;
 import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.stat.Stat;
 
@@ -34,7 +34,7 @@ public class ClientListener extends Listener {
 
     @Override
     public void connected(Connection connection) {
-        game.getClient().sendTCP(new CharacterJoinC2S(Constants.TEST_CHARACTER_UUID));
+        game.getClient().sendTCP(new CharacterJoinC2S(UUID.randomUUID()));
     }
 
     @Override
@@ -155,7 +155,9 @@ public class ClientListener extends Listener {
 
     @Override
     public void disconnected(Connection connection) {
-        if (game.getCharacter() != null)
+        if (game.getCharacter() != null) {
             game.getClient().sendTCP(new CharacterLeaveC2S(game.getCharacter().uuid));
+            System.out.println("[Client] Client disconnected: " + connection.getID());
+        }
     }
 }

@@ -1,6 +1,7 @@
 package dev.creoii.chaos;
 
 import com.badlogic.gdx.math.Vector2;
+import dev.creoii.chaos.entity.CharacterEntity;
 import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.entity.EntityType;
 import dev.creoii.chaos.network.packet.s2c.EntityDisplayS2C;
@@ -13,6 +14,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class ServerEntityManager extends EntityManager<Entity> implements Tickable {
+
     public ServerEntityManager(ServerGame game) {
         super(game);
         game.getTickManager().addTickable(this);
@@ -35,12 +37,16 @@ public class ServerEntityManager extends EntityManager<Entity> implements Tickab
         getAllEntities().values().forEach(uuidEntityMap -> uuidEntityMap.values().forEach(entity -> {
             entity.tick(gametime, delta);
 
-            if (entity.getType().group() == EntityGroup.CHARACTER || !entity.canMove())
+            if (!entity.canMove())
                 return;
 
             Vector2 velocity = entity.getVelocity();
             if (velocity.x != 0f || velocity.y != 0f) {
-                ((ServerGame) getGame()).getServer().sendToAllTCP(new EntityMoveS2C(entity.getUuid(), entity.getPos().x, entity.getPos().y, velocity.x, velocity.y));
+                if (entity.getType().group() == EntityGroup.CHARACTER) {
+                    ((ServerGame) getGame()).getServer().sendToAllExceptTCP(((CharacterEntity) entity).getConnectionId(), new EntityMoveS2C(entity.getUuid(), entity.getPos().x, entity.getPos().y, velocity.x, velocity.y));
+                } else {
+                    ((ServerGame) getGame()).getServer().sendToAllTCP(new EntityMoveS2C(entity.getUuid(), entity.getPos().x, entity.getPos().y, velocity.x, velocity.y));
+                }
             }
         }));
     }

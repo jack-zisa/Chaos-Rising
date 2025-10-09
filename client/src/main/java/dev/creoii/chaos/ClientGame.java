@@ -12,7 +12,7 @@ import dev.creoii.chaos.network.CreoSerialization;
 import dev.creoii.chaos.network.Networking;
 import dev.creoii.chaos.render.Renderer;
 import dev.creoii.chaos.render.entity.EntityRenderManager;
-import dev.creoii.chaos.render.entity.data.CharacterEntityRenderData;
+import dev.creoii.chaos.render.data.CharacterEntityRenderData;
 import dev.creoii.chaos.texture.TextureManager;
 
 import java.io.IOException;

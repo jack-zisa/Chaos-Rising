@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import dev.creoii.chaos.CommandManager;
 import dev.creoii.chaos.entity.Entity;
-import dev.creoii.chaos.render.entity.data.CharacterEntityRenderData;
+import dev.creoii.chaos.render.data.CharacterEntityRenderData;
 import dev.creoii.chaos.util.Renderable;
 
 import javax.annotation.Nullable;

@@ -6,8 +6,8 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import dev.creoii.chaos.render.Renderer;
-import dev.creoii.chaos.render.entity.data.EntityRenderData;
-import dev.creoii.chaos.render.entity.data.LivingEntityRenderData;
+import dev.creoii.chaos.render.data.EntityRenderData;
+import dev.creoii.chaos.render.data.LivingEntityRenderData;
 
 import javax.annotation.Nullable;
 

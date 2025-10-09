@@ -1,21 +1,13 @@
 package dev.creoii.chaos.render.screen.widget;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.ClientGame;
 import dev.creoii.chaos.input.InputManager;
-import dev.creoii.chaos.inventory.Inventory;
-import dev.creoii.chaos.inventory.InventoryType;
-import dev.creoii.chaos.inventory.Slot;
-import dev.creoii.chaos.inventory.SlotEntry;
-import dev.creoii.chaos.network.packet.c2s.SlotUpdateC2S;
-import dev.creoii.chaos.render.entity.data.SlotRenderData;
+import dev.creoii.chaos.render.data.SlotRenderData;
 import dev.creoii.chaos.render.screen.InventoryScreen;
 import dev.creoii.chaos.render.screen.Screen;
 
 import javax.annotation.Nullable;
-import java.util.UUID;
 import java.util.function.Predicate;
 
 public class LootInventoryWidget extends InventoryWidget {

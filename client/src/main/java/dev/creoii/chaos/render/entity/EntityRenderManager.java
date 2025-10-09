@@ -10,7 +10,7 @@ import dev.creoii.chaos.ClientGame;
 import dev.creoii.chaos.EntityManager;
 import dev.creoii.chaos.entity.*;
 import dev.creoii.chaos.render.Renderer;
-import dev.creoii.chaos.render.entity.data.*;
+import dev.creoii.chaos.render.data.*;
 import dev.creoii.chaos.util.Renderable;
 
 import javax.annotation.Nullable;

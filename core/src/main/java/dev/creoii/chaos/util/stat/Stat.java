@@ -1,13 +1,20 @@
 package dev.creoii.chaos.util.stat;
 
-import com.badlogic.gdx.utils.JsonValue;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public class Stat {
+    public static final Codec<Stat> CODEC = RecordCodecBuilder.create(instance -> {
+        return instance.group(
+            Stat.Type.CODEC.fieldOf("stat_type").forGetter(Stat::type),
+            Codec.INT.fieldOf("amount").forGetter(Stat::base),
+            ModifierEntry.CODEC.listOf().fieldOf("modifiers").forGetter(Stat::getModifiers)
+        ).apply(instance, Stat::new);
+    });
     private final Type type;
     private int base;
     private final List<ModifierEntry> modifiers = new ArrayList<>();
@@ -17,12 +24,26 @@ public class Stat {
         this.base = base;
     }
 
+    public Stat(Type type) {
+        this(type, 0);
+    }
+
+    public Stat(Type type, int base, List<ModifierEntry> modifiers) {
+        this.type = type;
+        this.base = base;
+        modifiers.forEach(this::addModifier);
+    }
+
     public Type type() {
         return type;
     }
 
     public int base() {
         return base;
+    }
+
+    public List<ModifierEntry> getModifiers() {
+        return modifiers;
     }
 
     public void set(int value) {
@@ -52,19 +73,6 @@ public class Stat {
     @Override
     public String toString() {
         return String.valueOf(value());
-    }
-
-    public static Stat parse(JsonValue jsonValue, Type type) {
-        if (jsonValue != null) {
-            if (jsonValue.isNumber()) {
-                return new Stat(type, jsonValue.asInt());
-            } else if (jsonValue.isObject()) {
-                Stat stat = new Stat(type, jsonValue.getInt("value"));
-                jsonValue.get("entries").forEach(entryValue -> stat.addModifier(ModifierEntry.parse(entryValue)));
-                return stat;
-            }
-        }
-        return new Stat(type, 0);
     }
 
     public enum Type {
