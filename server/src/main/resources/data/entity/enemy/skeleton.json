@@ -2,6 +2,7 @@
   "id": "skeleton",
   "type": "enemy",
   "behavior": {
+    "type": "multi",
     "start_phase": "test0",
     "phases": {
       "test0": {
@@ -12,13 +13,14 @@
         },
         "actions": [
           {
-            "id": "move",
+            "type": "move",
             "movement": "chase",
             "speed": 2
           },
           {
-            "id": "attack",
+            "type": "attack",
             "attack": {
+              "type": "simple",
               "bullet_id": "test",
               "damage": 5,
               "bullet_count": 2,
@@ -36,7 +38,7 @@
         },
         "actions": [
           {
-            "id": "move",
+            "type": "move",
             "movement": "random",
             "speed": 4
           }
@@ -49,13 +51,14 @@
         },
         "actions": [
           {
-            "id": "move",
+            "type": "move",
             "movement": "chase",
             "speed": 5
           },
           {
-            "id": "attack",
+            "type": "attack",
             "attack": {
+              "type": "simple",
               "bullet_id": "test",
               "damage": 5,
               "bullet_count": 3,

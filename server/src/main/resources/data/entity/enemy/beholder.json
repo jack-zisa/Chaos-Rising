@@ -6,16 +6,18 @@
     "health": 50
   },
   "behavior": {
+    "type": "multi",
     "phase": {
       "actions": [
         {
-          "id": "move",
+          "type": "move",
           "movement": "chase",
           "speed": 0.5
         },
         {
-          "id": "attack",
+          "type": "attack",
           "attack": {
+            "type": "simple",
             "bullet_id": "test_big",
             "damage": 20,
             "bullet_count": 6,

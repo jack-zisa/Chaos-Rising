@@ -14,6 +14,7 @@ public interface Behavior {
     Codec<Behavior> CODEC = Behavior.Type.CODEC.dispatch(Behavior::getType, type -> switch (type) {
         case SIMPLE -> SimpleBehavior.CODEC;
         case MULTI -> null;
+        case EMPTY -> EmptyBehavior.CODEC;
     });
 
     Type getType();
@@ -37,7 +38,8 @@ public interface Behavior {
 
     enum Type {
         SIMPLE,
-        MULTI;
+        MULTI,
+        EMPTY;
 
         public static final Codec<Type> CODEC = Codec.STRING.xmap(s -> Type.valueOf(s.toUpperCase()), type -> type.name().toLowerCase());
     }

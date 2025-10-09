@@ -5,7 +5,7 @@ import dev.creoii.chaos.entity.BulletEntity;
 import dev.creoii.chaos.entity.controller.EntityController;
 
 public record EmptyBulletPath() implements BulletPath {
-    private static final EmptyBulletPath INSTANCE = new EmptyBulletPath();
+    public static final EmptyBulletPath INSTANCE = new EmptyBulletPath();
     public static final MapCodec<EmptyBulletPath> CODEC = MapCodec.unit(INSTANCE);
 
     @Override

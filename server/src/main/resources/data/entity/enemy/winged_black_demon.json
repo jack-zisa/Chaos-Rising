@@ -6,16 +6,17 @@
     "health": 300
   },
   "behavior": {
+    "type": "multi",
     "start_phase": "lotus_idle",
     "phases": {
       "lotus_idle": {
         "duration": 600,
         "transition": {
-          "id": "next"
+          "type": "next"
         },
         "actions": [
           {
-            "id": "move",
+            "type": "move",
             "movement": "random",
             "speed": 1
           }
@@ -24,12 +25,13 @@
       "lotus_bloom": {
         "duration": 2000,
         "transition": {
-          "id": "next"
+          "type": "next"
         },
         "actions": [
           {
-            "id": "attack",
+            "type": "attack",
             "attack": {
+              "type": "simple",
               "bullet_id": "test_arc",
               "damage": 8,
               "bullet_count": 12,
@@ -63,8 +65,9 @@
         },
         "actions": [
           {
-            "id": "attack",
+            "type": "attack",
             "attack": {
+              "type": "simple",
               "bullet_id": "test",
               "damage": 15,
               "bullet_count": 8,
@@ -94,8 +97,9 @@
       "lotus_rage": {
         "actions": [
           {
-            "id": "attack",
+            "type": "attack",
             "attack": {
+              "type": "multi",
               "attacks": [
                 {
                   "bullet_id": "test_segment",
@@ -113,7 +117,7 @@
             "cooldown": 30
           },
           {
-            "id": "move",
+            "type": "move",
             "movement": "chase",
             "speed": 2
           }
