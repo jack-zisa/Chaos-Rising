@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import dev.creoii.chaos.CommandManager;
 import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.render.data.CharacterEntityRenderData;
+import dev.creoii.chaos.render.entity.EntityRenderManager;
 import dev.creoii.chaos.util.Renderable;
 
 import javax.annotation.Nullable;
@@ -27,11 +28,7 @@ public class HudRenderer implements Renderable {
             }
 
             if (debug) {
-                CharacterEntityRenderData character = renderer.getGame().getCharacter();
-                String posText = String.format("%.2f, %.2f", character.x / Entity.COORDINATE_SCALE, character.y / Entity.COORDINATE_SCALE);
-                String statsText = character.statContainer.toDebugString(character.maxStatContainer);
-
-                String[] lines = new String[]{Gdx.graphics.getFramesPerSecond() + " FPS", posText, statsText};
+                String[] lines = getDebugText(renderer);
 
                 Viewport viewport = renderer.getViewport();
 
@@ -73,5 +70,14 @@ public class HudRenderer implements Renderable {
             shapeRenderer.rect(x, y, barWidth, barHeight);
             shapeRenderer.end();
         }
+    }
+
+    private static String[] getDebugText(Renderer renderer) {
+        CharacterEntityRenderData character = renderer.getGame().getCharacter();
+        String posText = String.format("%.2f, %.2f", character.x / Entity.COORDINATE_SCALE, character.y / Entity.COORDINATE_SCALE);
+        String statsText = character.statContainer.toDebugString(character.maxStatContainer);
+        EntityRenderManager entityRenderManager = renderer.getGame().getEntityManager();
+        String entitiesText = "E:" + entityRenderManager.getVisibleSize() + "/" + entityRenderManager.getSize();
+        return new String[]{Gdx.graphics.getFramesPerSecond() + " FPS", posText, statsText, entitiesText};
     }
 }

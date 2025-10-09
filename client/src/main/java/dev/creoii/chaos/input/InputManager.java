@@ -6,6 +6,7 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import dev.creoii.chaos.ClientGame;
+import dev.creoii.chaos.render.Renderer;
 import dev.creoii.chaos.render.screen.InventoryScreen;
 import dev.creoii.chaos.util.Inputtable;
 
@@ -96,10 +97,11 @@ public class InputManager extends InputAdapter {
             game.setDebug(!game.isDebug());
             return true;
         } else if (keycode == game.getOptionsManager().INVENTORY_KEY.intValue()) {
-            if (game.getRenderer().getCurrentScreen() == null) {
-                game.getRenderer().setCurrentScreen(new InventoryScreen(game, new Vector2(1084, 400), game.getCharacter().slots));
+            Renderer renderer = game.getRenderer();
+            if (renderer.getCurrentScreen() == null) {
+                renderer.setCurrentScreen(new InventoryScreen(game, new Vector2(1084, 400), game.getCharacter().slots));
             } else
-                game.getRenderer().clearCurrentScreen();
+                renderer.clearCurrentScreen();
             return true;
         }
 

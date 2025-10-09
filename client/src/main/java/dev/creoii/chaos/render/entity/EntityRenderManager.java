@@ -19,6 +19,8 @@ import java.util.UUID;
 public class EntityRenderManager extends EntityManager<EntityRenderData> implements Renderable {
     private static final float RENDER_DISTANCE = 17578.125f * Entity.COORDINATE_SCALE; // sqrt(17578.125 * 32) = 750 units
     private final ObjectMap<UUID, EntityRenderData> visibleEntities;
+    private int size;
+    private int visibleSize;
 
     public EntityRenderManager(ClientGame game) {
         super(game);
@@ -31,8 +33,18 @@ public class EntityRenderManager extends EntityManager<EntityRenderData> impleme
         EntityRenderers.register(CharacterEntityRenderData.class, SimpleEntityRenderer::new);
     }
 
+    @Override
+    public int getSize() {
+        return size;
+    }
+
+    public int getVisibleSize() {
+        return visibleSize;
+    }
+
     public void addEntity(UUID uuid, EntityRenderData entity) {
         visibleEntities.put(uuid, entity);
+        ++size;
         EntityRenderers.getRenderer(entity).init(this);
     }
 
@@ -44,6 +56,7 @@ public class EntityRenderManager extends EntityManager<EntityRenderData> impleme
     @Override
     public boolean removeEntity(UUID uuid) {
         visibleEntities.remove(uuid);
+        --size;
         return true;
     }
 
@@ -55,18 +68,23 @@ public class EntityRenderManager extends EntityManager<EntityRenderData> impleme
 
     @Override
     public void render(Renderer renderer, @Nullable SpriteBatch batch, @Nullable ShapeRenderer shapeRenderer, BitmapFont font, boolean debug) {
+        visibleSize = 0;
         float camX = renderer.getCamera().position.x - renderer.getCamera().viewportWidth / 2;
         float camY = renderer.getCamera().position.y - renderer.getCamera().viewportHeight / 2;
         float camW = renderer.getCamera().viewportWidth;
         float camH = renderer.getCamera().viewportHeight;
         for (EntityRenderData entity : visibleEntities.values()) {
             if (isEntityInView(renderer.getCamera().position, camX, camY, camW, camH, entity)) {
+                ++visibleSize;
                 EntityRenderers.getRenderer(entity).render(entity, renderer, batch, shapeRenderer, font, debug);
             }
         }
     }
 
     private boolean isEntityInView(Vector3 cameraPos, float camX, float camY, float camW, float camH, EntityRenderData entity) {
+        if (entity == null)
+            return false;
+
         float xd = cameraPos.x - entity.x;
         float yd = cameraPos.y - entity.y;
 
