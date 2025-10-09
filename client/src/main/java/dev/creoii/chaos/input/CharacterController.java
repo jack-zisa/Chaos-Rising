@@ -1,7 +1,6 @@
 package dev.creoii.chaos.input;
 
 import dev.creoii.chaos.ClientGame;
-import dev.creoii.chaos.inventory.Slot;
 import dev.creoii.chaos.inventory.SlotEntry;
 import dev.creoii.chaos.item.AbilityItem;
 import dev.creoii.chaos.item.ItemStack;
@@ -33,6 +32,10 @@ public record CharacterController(CharacterEntityRenderData character) implement
                 dy -= 1;
 
             if (dx != 0f || dy != 0f) {
+                float len = (float) Math.sqrt(dx * dx + dy * dy);
+                dx /= len;
+                dy /= len;
+
                 game.getClient().sendTCP(new CharacterMoveC2S(character.uuid, dx, dy));
             }
         }
