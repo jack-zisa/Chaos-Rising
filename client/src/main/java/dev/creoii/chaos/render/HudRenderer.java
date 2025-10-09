@@ -28,7 +28,7 @@ public class HudRenderer implements Renderable {
             if (debug) {
                 CharacterEntityRenderData character = renderer.getGame().getCharacter();
                 String posText = String.format("%.2f, %.2f", character.x / Entity.COORDINATE_SCALE, character.y / Entity.COORDINATE_SCALE);
-                String statsText = "";//character.getStats().toDebugString(character.getMaxStats());
+                String statsText = character.statContainer.toDebugString(character.maxStatContainer);
 
                 String[] lines = new String[]{Gdx.graphics.getFramesPerSecond() + " FPS", posText, statsText};
 

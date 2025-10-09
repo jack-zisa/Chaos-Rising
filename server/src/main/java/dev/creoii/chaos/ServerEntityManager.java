@@ -24,7 +24,7 @@ public class ServerEntityManager extends EntityManager<Entity> implements Tickab
 
         if (getGame() instanceof ServerGame serverGame) {
             serverGame.getTickManager().addTickable(spawned);
-            serverGame.getServer().sendToAllTCP(new EntitySpawnS2C(spawned.getUuid(), spawned.getType().group(), pos.x, pos.y));
+            serverGame.getServer().sendToAllTCP(new EntitySpawnS2C(spawned.getUuid(), pos.x, pos.y, spawned.getCustomPacketData()));
             serverGame.getServer().sendToAllTCP(new EntityDisplayS2C(spawned.getUuid(), type.id(), type.scale()));
         }
         return spawned;
@@ -35,12 +35,12 @@ public class ServerEntityManager extends EntityManager<Entity> implements Tickab
         getAllEntities().values().forEach(uuidEntityMap -> uuidEntityMap.values().forEach(entity -> {
             entity.tick(gametime, delta);
 
-            if (entity.getType().group() == EntityGroup.CHARACTER)
+            if (entity.getType().group() == EntityGroup.CHARACTER || !entity.canMove())
                 return;
 
             Vector2 velocity = entity.getVelocity();
             if (velocity.x != 0f || velocity.y != 0f) {
-                ((ServerGame) getGame()).getServer().sendToAllTCP(new EntityMoveS2C(entity.getUuid(), entity.getPos().x, entity.getPos().y, entity.getPos().x - entity.getPrevPos().x, entity.getPos().y - entity.getPrevPos().y));
+                ((ServerGame) getGame()).getServer().sendToAllTCP(new EntityMoveS2C(entity.getUuid(), entity.getPos().x, entity.getPos().y, velocity.x, velocity.y));
             }
         }));
     }

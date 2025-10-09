@@ -24,4 +24,8 @@ public class EntityRenderData {
         this.textureId = textureId;
         this.scale = scale;
     }
+
+    public boolean canMove() {
+        return false;
+    }
 }

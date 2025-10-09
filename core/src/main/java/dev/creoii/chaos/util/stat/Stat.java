@@ -1,6 +1,7 @@
 package dev.creoii.chaos.util.stat;
 
 import com.badlogic.gdx.utils.JsonValue;
+import com.mojang.serialization.Codec;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,6 +73,8 @@ public class Stat {
         ATTACK_SPEED,
         DEFENSE,
         ATTACK,
-        VITALITY
+        VITALITY;
+
+        public static final Codec<Type> CODEC = Codec.STRING.xmap(s -> Type.valueOf(s.toUpperCase()), type -> type.name().toLowerCase());
     }
 }

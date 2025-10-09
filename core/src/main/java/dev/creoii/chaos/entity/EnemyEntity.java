@@ -4,9 +4,12 @@ import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.DataManager;
 import dev.creoii.chaos.Game;
 import dev.creoii.chaos.entity.controller.EnemyController;
+import dev.creoii.chaos.entity.serialization.EnemyData;
+import dev.creoii.chaos.entity.serialization.EntityCustomData;
 import dev.creoii.chaos.util.LootUtils;
 import dev.creoii.chaos.util.stat.StatContainer;
 
+import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class EnemyEntity extends LivingEntity {
@@ -18,6 +21,12 @@ public class EnemyEntity extends LivingEntity {
             controller = new EnemyController(((EnemyEntityType) type).behavior());
             controller.start(this);
         } else controller = null;
+    }
+
+    @Nullable
+    @Override
+    public EntityCustomData getCustomPacketData() {
+        return new EnemyData(getStats(), getMaxStats());
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.FrameworkMessage;
 import com.esotericsoftware.kryonet.Listener;
 import dev.creoii.chaos.effect.StatusEffect;
+import dev.creoii.chaos.entity.serialization.*;
 import dev.creoii.chaos.input.CharacterController;
 import dev.creoii.chaos.inventory.InventoryType;
 import dev.creoii.chaos.inventory.SlotEntry;
@@ -12,6 +13,7 @@ import dev.creoii.chaos.network.packet.c2s.CharacterLeaveC2S;
 import dev.creoii.chaos.network.packet.s2c.*;
 import dev.creoii.chaos.render.entity.data.*;
 import dev.creoii.chaos.util.EntityGroup;
+import dev.creoii.chaos.util.stat.Stat;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -41,18 +43,29 @@ public class ClientListener extends Listener {
             return;
         }
         switch (object) {
-            case EntitySpawnS2C(UUID uuid, EntityGroup group, float x, float y) -> {
+            case EntitySpawnS2C(UUID uuid, float x, float y, EntityCustomData customData) -> {
+                EntityGroup group = customData.getGroup();
                 switch (group) {
-                    case BULLET -> game.getEntityManager().addEntity(uuid, new BulletEntityRenderData(uuid, x, y, 0f, 0f, group.name().toLowerCase(), 32f, 0f, 0f));
-                    case ENEMY -> game.getEntityManager().addEntity(uuid, new LivingEntityRenderData(uuid, EntityGroup.ENEMY, x, y, 0f, 0f, group.name().toLowerCase(), 32f));
+                    case BULLET -> {
+                        BulletData bulletData = (BulletData) customData;
+                        game.getEntityManager().addEntity(uuid, new BulletEntityRenderData(uuid, x, y, 0f, 0f, group.name().toLowerCase(), 32f, bulletData.xd(), bulletData.yd()));
+                    }
+                    case ENEMY -> {
+                        EnemyData enemyData = (EnemyData) customData;
+                        game.getEntityManager().addEntity(uuid, new LivingEntityRenderData(uuid, EntityGroup.ENEMY, x, y, 0f, 0f, group.name().toLowerCase(), 32f, enemyData.baseStats(), enemyData.maxStats()));
+                    }
                     case CHARACTER -> {
-                        CharacterEntityRenderData character = new CharacterEntityRenderData(uuid, x, y, 0f, 0f, "wizard", 32f, new SlotRenderData[3][4]);
+                        CharacterData characterData = (CharacterData) customData;
+                        CharacterEntityRenderData character = new CharacterEntityRenderData(uuid, x, y, 0f, 0f, "wizard", 32f, characterData.baseStats(), characterData.maxStats(), SlotRenderData.fromSlotEntryList(characterData.slots()));
                         game.setCharacter(character);
                         game.getEntityManager().addEntity(uuid, character);
                         game.getInputManager().addInput(new CharacterController(character));
                     }
-                    case LOOT_DROP -> game.getEntityManager().addEntity(uuid, new LootDropEntityRenderData(uuid, x, y, 0f, 0f, group.name().toLowerCase(), 32f, new SlotRenderData[2][4]));
-                    case null, default -> throw new IllegalArgumentException("Unknown EntityGroup: " + (group == null ? "null" : group.name()));
+                    case LOOT_DROP -> {
+                        LootDropData lootDropData = (LootDropData) customData;
+                        game.getEntityManager().addEntity(uuid, new LootDropEntityRenderData(uuid, x, y, 0f, 0f, group.name().toLowerCase(), 32f, SlotRenderData.fromSlotEntryList(lootDropData.slots())));
+                    }
+                    case null, default -> throw new IllegalArgumentException("Unknown EntityGroup: " + (group == null ? "null" : group.name().toLowerCase()));
                 }
             }
             case EntityDisplayS2C(UUID uuid, String textureId, float scale) -> {
@@ -79,6 +92,35 @@ public class ClientListener extends Listener {
                 for (SlotEntry entry : slots) {
                     if (type == InventoryType.MAIN) {
                         game.getCharacter().slots[entry.r()][entry.c()].stack = entry.stack();
+                    }
+                }
+            }
+            case LivingStatUpdateS2C(Stat.Type statType, int value) -> {
+                CharacterEntityRenderData character = game.getCharacter();
+                switch (statType) {
+                    case HEALTH -> {
+                        character.statContainer.setHealth(value);
+                        character.maxStatContainer.setHealth(value);
+                    }
+                    case SPEED -> {
+                        character.statContainer.setSpeed(value);
+                        character.maxStatContainer.setSpeed(value);
+                    }
+                    case ATTACK_SPEED -> {
+                        character.statContainer.setAttackSpeed(value);
+                        character.maxStatContainer.setAttackSpeed(value);
+                    }
+                    case DEFENSE -> {
+                        character.statContainer.setDefense(value);
+                        character.maxStatContainer.setDefense(value);
+                    }
+                    case ATTACK -> {
+                        character.statContainer.setAttack(value);
+                        character.maxStatContainer.setAttack(value);
+                    }
+                    case VITALITY -> {
+                        character.statContainer.setVitality(value);
+                        character.maxStatContainer.setVitality(value);
                     }
                 }
             }

@@ -12,7 +12,9 @@ import dev.creoii.chaos.inventory.Slot;
 import dev.creoii.chaos.inventory.SlotEntry;
 import dev.creoii.chaos.item.Item;
 import dev.creoii.chaos.network.packet.s2c.InventoryUpdateS2C;
+import dev.creoii.chaos.network.packet.s2c.LivingStatUpdateS2C;
 import dev.creoii.chaos.util.EntityGroup;
+import dev.creoii.chaos.util.stat.Stat;
 
 import java.util.*;
 
@@ -40,39 +42,40 @@ public final class Commands {
 
         Command.register("set_stat", (game, uuid, args) -> {
             if (args.length > 1) {
-                String stat = args[0];
+                Stat.Type statType = Stat.Type.valueOf(args[0].toUpperCase());
                 int value = Integer.parseInt(args[1]);
                 CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, uuid);
-                switch (stat) {
-                    case "health" -> {
-                        character.getStats().health().set(value);
-                        character.getMaxStats().health().set(value);
+                switch (statType) {
+                    case HEALTH -> {
+                        character.getStats().setHealth(value);
+                        character.getMaxStats().setHealth(value);
                     }
-                    case "speed" -> {
-                        character.getStats().speed().set(value);
-                        character.getMaxStats().speed().set(value);
+                    case SPEED -> {
+                        character.getStats().setSpeed(value);
+                        character.getMaxStats().setSpeed(value);
                     }
-                    case "attack_speed" -> {
-                        character.getStats().attackSpeed().set(value);
-                        character.getMaxStats().attackSpeed().set(value);
+                    case ATTACK_SPEED -> {
+                        character.getStats().setAttackSpeed(value);
+                        character.getMaxStats().setAttackSpeed(value);
                     }
-                    case "defense" -> {
-                        character.getStats().defense().set(value);
-                        character.getMaxStats().defense().set(value);
+                    case DEFENSE -> {
+                        character.getStats().setDefense(value);
+                        character.getMaxStats().setDefense(value);
                     }
-                    case "attack" -> {
-                        character.getStats().attack().set(value);
-                        character.getMaxStats().attack().set(value);
+                    case ATTACK -> {
+                        character.getStats().setAttack(value);
+                        character.getMaxStats().setAttack(value);
                     }
-                    case "vitality" -> {
-                        character.getStats().vitality().set(value);
-                        character.getMaxStats().vitality().set(value);
+                    case VITALITY -> {
+                        character.getStats().setVitality(value);
+                        character.getMaxStats().setVitality(value);
                     }
                 }
+                game.getServer().sendToTCP(character.getConnectionId(), new LivingStatUpdateS2C(statType, value));
             }
         });
 
-        Command.register("spawn", (game, uuid, args) -> {
+        Command.register("spawn", (game, _, args) -> {
             int argCount = args.length;
 
             if (argCount < 1 || argCount == 2)
@@ -136,7 +139,7 @@ public final class Commands {
                     CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, uuid);
                     Slot slot;
                     if ((slot = character.getInventory().addItem(item.getDefaultStack().copy())) != null) {
-                        game.getServer().sendToTCP(character.getConnectionId(), new InventoryUpdateS2C(InventoryType.MAIN, List.of(new SlotEntry(slot.getR(), slot.getC(), slot.getStack()))));
+                        game.getServer().sendToTCP(character.getConnectionId(), new InventoryUpdateS2C(InventoryType.MAIN, List.of(new SlotEntry(slot.getR(), slot.getC(), slot.getType(), slot.getStack(), slot.isActive()))));
                     }
                 }
             }

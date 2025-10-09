@@ -2,9 +2,12 @@ package dev.creoii.chaos.entity;
 
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.Game;
+import dev.creoii.chaos.entity.serialization.EntityCustomData;
+import dev.creoii.chaos.entity.serialization.LootDropData;
 import dev.creoii.chaos.inventory.Inventory;
 import dev.creoii.chaos.item.ItemStack;
 
+import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class LootDropEntity extends Entity {
@@ -13,6 +16,12 @@ public class LootDropEntity extends Entity {
     public LootDropEntity(Game game, EntityType<? extends LootDropEntity> type, UUID uuid, Vector2 pos, Inventory inventory) {
         super(game, type, uuid, pos);
         this.inventory = inventory;
+    }
+
+    @Nullable
+    @Override
+    public EntityCustomData getCustomPacketData() {
+        return new LootDropData(inventory.getSlots());
     }
 
     public Inventory getInventory() {

@@ -3,6 +3,8 @@ package dev.creoii.chaos.entity;
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.DataManager;
 import dev.creoii.chaos.Game;
+import dev.creoii.chaos.entity.serialization.CharacterData;
+import dev.creoii.chaos.entity.serialization.EntityCustomData;
 import dev.creoii.chaos.inventory.CharacterInventory;
 import dev.creoii.chaos.item.ItemStack;
 import dev.creoii.chaos.util.Mutable;

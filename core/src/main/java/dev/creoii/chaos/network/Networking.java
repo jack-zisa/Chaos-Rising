@@ -5,16 +5,17 @@ import com.esotericsoftware.kryo.Serializer;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.kryo.serializers.JavaSerializer;
+import dev.creoii.chaos.entity.serialization.EntityCustomData;
 import dev.creoii.chaos.inventory.InventoryType;
+import dev.creoii.chaos.inventory.Slot;
 import dev.creoii.chaos.inventory.SlotEntry;
 import dev.creoii.chaos.network.packet.c2s.*;
 import dev.creoii.chaos.network.packet.s2c.*;
 import dev.creoii.chaos.util.EntityGroup;
+import dev.creoii.chaos.util.Rarity;
 import dev.creoii.chaos.util.stat.ModifierEntry;
+import dev.creoii.chaos.util.stat.StatContainer;
 
-/*
-TODO: Custom serializers
- */
 public class Networking {
     public static void register(Kryo kryo) {
         JavaSerializer serializer = new JavaSerializer();
@@ -33,6 +34,7 @@ public class Networking {
         kryo.register(EntityDisplayS2C.class, new CodecSerializer<>(EntityDisplayS2C.CODEC));
         kryo.register(EntityMoveS2C.class, new CodecSerializer<>(EntityMoveS2C.CODEC));
         kryo.register(InventoryUpdateS2C.class, serializer);
+        kryo.register(LivingStatUpdateS2C.class, new CodecSerializer<>(LivingStatUpdateS2C.CODEC));
         kryo.register(LootDropCloseS2C.class, new CodecSerializer<>(LootDropCloseS2C.CODEC));
         kryo.register(LootDropOpenS2C.class, new CodecSerializer<>(LootDropOpenS2C.CODEC));
         kryo.register(StatusEffectS2C.class, serializer);
@@ -54,6 +56,11 @@ public class Networking {
         kryo.register(InventoryType.class, new CodecSerializer<>(InventoryType.CODEC));
         kryo.register(SlotEntry.class, serializer);
         kryo.register(EntityGroup.class, new CodecSerializer<>(EntityGroup.CODEC));
+        kryo.register(EntityCustomData.class, new CodecSerializer<>(EntityCustomData.CODEC));
+        kryo.register(StatContainer.class, new CodecSerializer<>(StatContainer.CODEC));
+        kryo.register(SlotEntry.class, new CodecSerializer<>(SlotEntry.CODEC));
+        kryo.register(Slot.Type.class, new CodecSerializer<>(Slot.Type.CODEC));
+        kryo.register(Rarity.class, new CodecSerializer<>(Rarity.CODEC));
         kryo.register(ModifierEntry.class, serializer);
     }
 }

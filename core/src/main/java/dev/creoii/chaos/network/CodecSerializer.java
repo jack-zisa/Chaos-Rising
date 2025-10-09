@@ -10,7 +10,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 
 public class CodecSerializer<T> extends Serializer<T> {
     private final Codec<T> codec;
@@ -23,7 +22,7 @@ public class CodecSerializer<T> extends Serializer<T> {
     public void write(Kryo kryo, Output output, T o) {
         JsonElement element = codec.encodeStart(JsonOps.INSTANCE, o).getOrThrow();
         byte[] bytes = element.toString().getBytes(StandardCharsets.UTF_8);
-        System.out.println("write: " + element.toString());
+        System.out.println("write: " + element);
         output.writeInt(bytes.length);
         output.writeBytes(bytes);
     }

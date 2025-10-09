@@ -3,8 +3,11 @@ package dev.creoii.chaos.entity;
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.Game;
 import dev.creoii.chaos.entity.controller.BulletController;
+import dev.creoii.chaos.entity.serialization.BulletData;
+import dev.creoii.chaos.entity.serialization.EntityCustomData;
 import dev.creoii.chaos.util.provider.Provider;
 
+import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class BulletEntity extends Entity {
@@ -25,6 +28,12 @@ public class BulletEntity extends Entity {
         if (!game.isClient()) {
             controller = new BulletController(this);
         } else controller = null;
+    }
+
+    @Nullable
+    @Override
+    public EntityCustomData getCustomPacketData() {
+        return new BulletData(0f, 0f);
     }
 
     public Entity getParent() {
@@ -70,5 +79,10 @@ public class BulletEntity extends Entity {
                 remove();
             }
         }
+    }
+
+    @Override
+    public boolean canMove() {
+        return controller.getPath().speed(controller) > 0f;
     }
 }

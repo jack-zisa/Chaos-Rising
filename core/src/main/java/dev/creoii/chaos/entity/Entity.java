@@ -2,8 +2,10 @@ package dev.creoii.chaos.entity;
 
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.Game;
+import dev.creoii.chaos.entity.serialization.EntityCustomData;
 import dev.creoii.chaos.util.Tickable;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 public abstract class Entity implements Tickable {
@@ -27,6 +29,11 @@ public abstract class Entity implements Tickable {
         spawnTime = game.getGametime();
         collider = new Vector2(type.scale(), type.scale());
         collidingWith = new HashSet<>();
+    }
+
+    @Nullable
+    public EntityCustomData getCustomPacketData() {
+        return null;
     }
 
     public Game getGame() {
@@ -99,6 +106,10 @@ public abstract class Entity implements Tickable {
     }
 
     public void collisionExit(Entity other) {
+    }
+
+    public boolean canMove() {
+        return false;
     }
 
     @Override

@@ -29,6 +29,11 @@ public abstract class LivingEntity extends Entity {
         return maxStatContainer;
     }
 
+    @Override
+    public boolean canMove() {
+        return statContainer.speed().value() > 0;
+    }
+
     public void damage(int amount) {
         if (statContainer.health().value() <= 0 || hasStatusEffect("invulnerable"))
             return;

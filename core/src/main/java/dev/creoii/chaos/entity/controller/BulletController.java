@@ -12,6 +12,10 @@ public class BulletController extends EntityController<BulletEntity> {
         path = ((BulletEntityType) bullet.getType()).path().copy();
     }
 
+    public BulletPath getPath() {
+        return path;
+    }
+
     @Override
     public int getTime() {
         return 0;
