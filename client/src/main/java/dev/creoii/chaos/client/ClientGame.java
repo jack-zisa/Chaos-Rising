@@ -12,6 +12,7 @@ import dev.creoii.chaos.Game;
 import dev.creoii.chaos.OptionsManager;
 import dev.creoii.chaos.client.input.InputManager;
 import dev.creoii.chaos.network.CreoSerialization;
+import dev.creoii.chaos.network.NetworkQueue;
 import dev.creoii.chaos.network.Networking;
 import dev.creoii.chaos.client.render.Renderer;
 import dev.creoii.chaos.client.render.entity.EntityRenderManager;
@@ -24,6 +25,8 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
     public static final int WINDOW_WIDTH = 1280;
     public static final int WINDOW_HEIGHT = 720;
     private final Client client;
+    private final ClientListener listener;
+    protected NetworkQueue<Object> networkQueue;
     private Renderer renderer;
     private TextureManager textureManager;
     private final OptionsManager optionsManager;
@@ -35,6 +38,7 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
 
     public ClientGame() throws IOException {
         client = new Client(32768, 32768, new CreoSerialization());
+        listener = new ClientListener(this);
         optionsManager = new OptionsManager();
         entityManager = new EntityRenderManager(this);
         inputManager = new InputManager(this);
@@ -52,7 +56,7 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
         textureManager = new TextureManager();
 
         Networking.register(client.getKryo());
-        client.addListener(new ClientListener(this));
+        client.addListener(listener);
         client.start();
 
         try {
@@ -75,6 +79,11 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
     public void render() {
         ScreenUtils.clear(Color.BLACK);
 
+        Object packet;
+        while ((packet = networkQueue.queue().poll()) != null) {
+            listener.handlePacket(networkQueue.connection(), packet);
+        }
+
         commandManager.update();
         inputManager.update();
 
@@ -89,6 +98,10 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
 
     public Client getClient() {
         return client;
+    }
+
+    public NetworkQueue<Object> getNetworkQueue() {
+        return networkQueue;
     }
 
     public Renderer getRenderer() {

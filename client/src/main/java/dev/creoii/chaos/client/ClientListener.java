@@ -10,6 +10,7 @@ import dev.creoii.chaos.entity.serialization.*;
 import dev.creoii.chaos.client.input.CharacterController;
 import dev.creoii.chaos.inventory.InventoryType;
 import dev.creoii.chaos.inventory.Slot;
+import dev.creoii.chaos.network.NetworkQueue;
 import dev.creoii.chaos.network.packet.c2s.CharacterJoinC2S;
 import dev.creoii.chaos.network.packet.c2s.CharacterLeaveC2S;
 import dev.creoii.chaos.network.packet.s2c.*;
@@ -36,11 +37,16 @@ public class ClientListener extends Listener {
 
     @Override
     public void connected(Connection connection) {
+        game.networkQueue = new NetworkQueue<>(connection);
         game.getClient().sendTCP(new CharacterJoinC2S(UUID.randomUUID()));
     }
 
     @Override
     public void received(Connection connection, Object object) {
+        game.getNetworkQueue().queue().add(object);
+    }
+
+    public void handlePacket(Connection connection, Object object) {
         if (object instanceof FrameworkMessage.KeepAlive) {
             return;
         }

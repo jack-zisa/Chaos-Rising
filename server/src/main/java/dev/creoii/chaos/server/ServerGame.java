@@ -5,6 +5,7 @@ import com.esotericsoftware.minlog.Log;
 import dev.creoii.chaos.DataManager;
 import dev.creoii.chaos.Game;
 import dev.creoii.chaos.OptionsManager;
+import dev.creoii.chaos.network.NetworkQueue;
 import dev.creoii.chaos.server.inventory.cooldown.CooldownManager;
 import dev.creoii.chaos.network.CreoSerialization;
 import dev.creoii.chaos.network.Networking;
@@ -13,9 +14,12 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ServerGame implements Game {
     private final Server server;
+    private final ServerListener listener;
+    protected NetworkQueue<NetworkQueue.QueuedPacket> networkQueue;
     private final OptionsManager optionsManager;
     private final TickManager tickManager;
     private final CollisionManager collisionManager;
@@ -25,6 +29,7 @@ public class ServerGame implements Game {
 
     public ServerGame(int tcpPort, int udpPort) throws IOException, URISyntaxException {
         server = new Server(65536, 65536, new CreoSerialization());
+        networkQueue = new NetworkQueue<>(null, new ConcurrentLinkedQueue<>());
         Log.NONE();
         server.start();
         server.bind(tcpPort, udpPort);
@@ -33,7 +38,7 @@ public class ServerGame implements Game {
 
         Networking.register(server.getKryo());
 
-        server.addListener(new ServerListener(this));
+        server.addListener(listener = new ServerListener(this));
 
         optionsManager = new OptionsManager();
         tickManager = new TickManager();
@@ -62,6 +67,11 @@ public class ServerGame implements Game {
     public void update() {
         tickManager.tick(++gametime, 1f);
         collisionManager.checkCollisions();
+
+        NetworkQueue.QueuedPacket packet;
+        while ((packet = networkQueue.queue().poll()) != null) {
+            listener.handlePacket(packet.connection(), packet.packet());
+        }
     }
 
     @Override

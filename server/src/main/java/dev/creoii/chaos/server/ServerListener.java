@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import dev.creoii.chaos.DataManager;
+import dev.creoii.chaos.network.NetworkQueue;
 import dev.creoii.chaos.server.chat.Commands;
 import dev.creoii.chaos.entity.CharacterEntity;
 import dev.creoii.chaos.entity.CharacterEntityType;
@@ -79,6 +80,10 @@ public class ServerListener extends Listener {
 
     @Override
     public void received(Connection connection, Object object) {
+        game.networkQueue.queue().add(new NetworkQueue.QueuedPacket(connection, object));
+    }
+
+    public void handlePacket(Connection connection, Object object) {
         if (object instanceof CharacterMoveC2S(UUID uuid, float dx, float dy)) {
             CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, uuid);
             if (character != null) {
@@ -95,14 +100,14 @@ public class ServerListener extends Listener {
                 Slot slot = character.getInventory().getSlot(slotEntry.getR(), slotEntry.getC());
 
                 //if (slot.isActive()) {
-                    ItemStack stack = slot.getStack();
-                    if (stack.getItem() instanceof AbilityItem abilityItem) {
-                        abilityItem.getAttack().attack(new MousePosVecProvider(), new SourcePosVecProvider(), character);
-                        game.getCooldownManager().addCooldown(uuid, slotEntry.getR(), slotEntry.getC(), abilityItem.getCooldown());
-                    } else if (stack.getItem() instanceof WeaponItem weaponItem) {
-                        weaponItem.getAttack().attack(new MousePosVecProvider(), new SourcePosVecProvider(), character);
-                        game.getCooldownManager().addCooldown(uuid, slotEntry.getR(), slotEntry.getC(), Math.max(1, 150 / Math.max(1, character.getStats().attackSpeed().value())));
-                    }
+                ItemStack stack = slot.getStack();
+                if (stack.getItem() instanceof AbilityItem abilityItem) {
+                    abilityItem.getAttack().attack(new MousePosVecProvider(), new SourcePosVecProvider(), character);
+                    game.getCooldownManager().addCooldown(uuid, slotEntry.getR(), slotEntry.getC(), abilityItem.getCooldown());
+                } else if (stack.getItem() instanceof WeaponItem weaponItem) {
+                    weaponItem.getAttack().attack(new MousePosVecProvider(), new SourcePosVecProvider(), character);
+                    game.getCooldownManager().addCooldown(uuid, slotEntry.getR(), slotEntry.getC(), Math.max(1, 150 / Math.max(1, character.getStats().attackSpeed().value())));
+                }
                 //}
             }
         }
