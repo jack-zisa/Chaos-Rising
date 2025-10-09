@@ -2,9 +2,7 @@ package dev.creoii.chaos.util;
 
 import com.mojang.serialization.Codec;
 
-import java.io.Serializable;
-
-public enum EntityGroup implements Serializable {
+public enum EntityGroup {
     CHARACTER,
     ENEMY,
     BULLET,

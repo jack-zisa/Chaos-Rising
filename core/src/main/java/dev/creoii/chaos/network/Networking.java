@@ -27,7 +27,7 @@ public class Networking {
         kryo.register(ExecuteCommandC2S.class, CodecSerializer.INSTANCE);
         kryo.register(LootDropCloseC2S.class, CodecSerializer.INSTANCE);
         kryo.register(SlotUpdateC2S.class, serializer);
-        kryo.register(UseItemC2S.class, serializer);
+        kryo.register(UseItemC2S.class, CodecSerializer.INSTANCE);
 
         kryo.register(EntityRemoveS2C.class, CodecSerializer.INSTANCE);
         kryo.register(EntitySpawnS2C.class, CodecSerializer.INSTANCE);
@@ -35,6 +35,7 @@ public class Networking {
         kryo.register(EntityMoveS2C.class, CodecSerializer.INSTANCE);
         kryo.register(InventoryUpdateS2C.class, serializer);
         kryo.register(LivingStatUpdateS2C.class, CodecSerializer.INSTANCE);
+        kryo.register(LivingStatsUpdateS2C.class, CodecSerializer.INSTANCE);
         kryo.register(LootDropCloseS2C.class, CodecSerializer.INSTANCE);
         kryo.register(LootDropOpenS2C.class, CodecSerializer.INSTANCE);
         kryo.register(StatusEffectS2C.class, serializer);
@@ -72,11 +73,13 @@ public class Networking {
         CodecSerializer.registerSchema(CharacterMoveC2S.class, CharacterMoveC2S.CODEC);
         CodecSerializer.registerSchema(ExecuteCommandC2S.class, ExecuteCommandC2S.CODEC);
         CodecSerializer.registerSchema(LootDropCloseC2S.class, LootDropCloseC2S.CODEC);
+        CodecSerializer.registerSchema(UseItemC2S.class, UseItemC2S.CODEC);
         CodecSerializer.registerSchema(EntityRemoveS2C.class, EntityRemoveS2C.CODEC);
         CodecSerializer.registerSchema(EntitySpawnS2C.class, EntitySpawnS2C.CODEC);
         CodecSerializer.registerSchema(EntityDisplayS2C.class, EntityDisplayS2C.CODEC);
         CodecSerializer.registerSchema(EntityMoveS2C.class, EntityMoveS2C.CODEC);
         CodecSerializer.registerSchema(LivingStatUpdateS2C.class, LivingStatUpdateS2C.CODEC);
+        CodecSerializer.registerSchema(LivingStatsUpdateS2C.class, LivingStatsUpdateS2C.CODEC);
         CodecSerializer.registerSchema(LootDropCloseS2C.class, LootDropCloseS2C.CODEC);
         CodecSerializer.registerSchema(LootDropOpenS2C.class, LootDropOpenS2C.CODEC);
 

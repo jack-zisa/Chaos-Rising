@@ -154,7 +154,7 @@ public class InputManager extends InputAdapter {
 
     public void touchHeld(int screenX, int screenY, int pointer, int button) {
         game.getRenderer().getCamera().unproject(mousePos.set(Gdx.input.getX(), Gdx.input.getY(), 0));
-        forEach(inputtable -> inputtable.touchHeld(this, screenX, screenY, pointer, button));
+        forEach(inputtable -> inputtable.touchHeld(this, Gdx.input.getX(), Gdx.input.getY(), pointer, button));
     }
 
     @Override

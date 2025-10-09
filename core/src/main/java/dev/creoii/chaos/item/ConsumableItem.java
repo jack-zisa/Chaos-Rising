@@ -2,6 +2,9 @@ package dev.creoii.chaos.item;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.Game;
 import dev.creoii.chaos.effect.StatusEffect;
 import dev.creoii.chaos.entity.CharacterEntity;
@@ -15,6 +18,13 @@ import java.util.List;
 import java.util.UUID;
 
 public class ConsumableItem extends Item {
+    public static final MapCodec<ConsumableItem> CODEC = RecordCodecBuilder.mapCodec(instance -> {
+        return instance.group(
+            Codec.STRING.fieldOf("id").forGetter(ConsumableItem::id),
+            Rarity.CODEC.fieldOf("rarity").orElse(Rarity.COMMON).forGetter(ConsumableItem::getRarity),
+            ModifierEntry.CODEC.listOf().fieldOf("stat_bonus").orElse(List.of()).forGetter(ConsumableItem::getStatBonus)
+        ).apply(instance, (id, rarity, statBonus) -> new ConsumableItem(id, rarity, statBonus, List.of()));
+    });
     private final List<ModifierEntry> statBonus;
     private final List<StatusEffect> statusEffects;
 

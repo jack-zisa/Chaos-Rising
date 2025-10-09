@@ -84,7 +84,7 @@ public class Slot {
     }
 
     public void setActive(boolean active) {
-        this.active = true;
+        this.active = active;
     }
 
     public boolean isActive() {

@@ -93,7 +93,7 @@ public class ServerListener extends Listener {
             if (character != null) {
                 Slot slot = character.getInventory().getSlot(slotEntry.r(), slotEntry.c());
 
-                if (slot.isActive()) {
+                //if (slot.isActive()) {
                     ItemStack stack = slot.getStack();
                     if (stack.getItem() instanceof AbilityItem abilityItem) {
                         abilityItem.getAttack().attack(new MousePosVecProvider(), new SourcePosVecProvider(), character);
@@ -103,7 +103,7 @@ public class ServerListener extends Listener {
                         System.out.println("attack");
                         game.getCooldownManager().addCooldown(uuid, slotEntry.r(), slotEntry.c(), Math.max(1, 150 / Math.max(1, character.getStats().attackSpeed().value())));
                     }
-                }
+                //}
             }
         }
 

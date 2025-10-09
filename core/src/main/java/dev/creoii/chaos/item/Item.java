@@ -1,8 +1,8 @@
 package dev.creoii.chaos.item;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.Game;
+import dev.creoii.chaos.entity.*;
 import dev.creoii.chaos.inventory.Slot;
 import dev.creoii.chaos.util.Identifiable;
 import dev.creoii.chaos.util.Rarity;
@@ -11,12 +11,11 @@ import java.io.Serializable;
 import java.util.UUID;
 
 public class Item implements Identifiable, Serializable {
-    public static final Codec<Item> CODEC = RecordCodecBuilder.create(instance -> {
-        return instance.group(
-            Codec.STRING.fieldOf("id").forGetter(Item::id),
-            Codec.STRING.fieldOf("type").forGetter(item -> item.getType().name().toLowerCase()),
-            Rarity.CODEC.fieldOf("rarity").orElse(Rarity.COMMON).forGetter(Item::getRarity)
-        ).apply(instance, (id, type, rarity) -> new Item(id, Item.Type.valueOf(type.toUpperCase()), rarity));
+    public static final Codec<Item> CODEC = Type.CODEC.dispatch(Item::getType, group -> switch (group) {
+        case WEAPON -> WeaponItem.CODEC;
+        case ABILITY -> AbilityItem.CODEC;
+        case ARMOR, ACCESSORY -> EquipmentItem.CODEC;
+        case CONSUMABLE -> ConsumableItem.CODEC;
     });
     protected final String id;
     protected final Type type;
@@ -60,6 +59,8 @@ public class Item implements Identifiable, Serializable {
         ABILITY,
         ARMOR,
         ACCESSORY,
-        CONSUMABLE
+        CONSUMABLE;
+
+        public static final Codec<Type> CODEC = Codec.STRING.xmap(s -> Type.valueOf(s.toUpperCase()), type -> type.name().toLowerCase());
     }
 }
