@@ -14,7 +14,7 @@ public interface NumberProvider extends Provider<Float> {
         case CLAMP -> ClampNumberProvider.CODEC;
         case COMPARISON -> ComparisonNumberProvider.CODEC;
         case CONSTANT -> ConstantNumberProvider.CODEC;
-        case CURVE -> null;
+        case CURVE -> CurveNumberProvider.CODEC;
         case CYCLE -> CycleNumberProvider.CODEC;
         case DISTANCE_2 -> Distance2NumberProvider.CODEC;
         case DISTANCE -> DistanceNumberProvider.CODEC;

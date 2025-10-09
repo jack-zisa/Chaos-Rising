@@ -100,7 +100,6 @@ public class ServerListener extends Listener {
                         game.getCooldownManager().addCooldown(uuid, slotEntry.r(), slotEntry.c(), abilityItem.getCooldown());
                     } else if (stack.getItem() instanceof WeaponItem weaponItem) {
                         weaponItem.getAttack().attack(new MousePosVecProvider(), new SourcePosVecProvider(), character);
-                        System.out.println("attack");
                         game.getCooldownManager().addCooldown(uuid, slotEntry.r(), slotEntry.c(), Math.max(1, 150 / Math.max(1, character.getStats().attackSpeed().value())));
                     }
                 //}
