@@ -1,8 +1,24 @@
 package dev.creoii.chaos.util.provider.numberprovider;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import javax.annotation.Nullable;
 
 public record ClampNumberProvider(NumberProvider value, @Nullable NumberProvider min, @Nullable NumberProvider max) implements NumberProvider {
+    public static final MapCodec<ClampNumberProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
+        return instance.group(
+            NumberProvider.CODEC.fieldOf("value").forGetter(ClampNumberProvider::value),
+            NumberProvider.CODEC.fieldOf("min").forGetter(ClampNumberProvider::min),
+            NumberProvider.CODEC.fieldOf("max").forGetter(ClampNumberProvider::max)
+        ).apply(instance, ClampNumberProvider::new);
+    });
+
+    @Override
+    public Type getType() {
+        return Type.CLAMP;
+    }
+
     @Override
     public Float get(Context context) {
         float value = this.value.get(context);

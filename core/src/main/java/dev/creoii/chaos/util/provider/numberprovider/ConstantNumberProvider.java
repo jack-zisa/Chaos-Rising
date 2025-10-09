@@ -1,6 +1,21 @@
 package dev.creoii.chaos.util.provider.numberprovider;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 public record ConstantNumberProvider(float value) implements NumberProvider {
+    public static final MapCodec<ConstantNumberProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
+        return instance.group(
+            Codec.FLOAT.fieldOf("value").forGetter(ConstantNumberProvider::value)
+        ).apply(instance, ConstantNumberProvider::new);
+    });
+
+    @Override
+    public Type getType() {
+        return Type.CONSTANT;
+    }
+
     @Override
     public Float get(Context context) {
         return value;

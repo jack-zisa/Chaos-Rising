@@ -1,9 +1,21 @@
 package dev.creoii.chaos.util.provider.numberprovider;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.entity.LivingEntity;
 import dev.creoii.chaos.util.stat.Stat;
 
 public record StatNumberProvider(Stat.Type statType) implements NumberProvider {
+    public static final MapCodec<StatNumberProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
+        return instance.group(
+            Stat.Type.CODEC.fieldOf("stat_type").forGetter(StatNumberProvider::statType)
+        ).apply(instance, StatNumberProvider::new);
+    });
+
+    @Override
+    public Type getType() {
+        return Type.STAT;
+    }
 
     @Override
     public Float get(Context context) {

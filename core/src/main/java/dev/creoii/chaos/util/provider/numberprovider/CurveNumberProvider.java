@@ -9,6 +9,11 @@ public class CurveNumberProvider implements NumberProvider {
     private float progress;
 
     @Override
+    public Type getType() {
+        return Type.CURVE;
+    }
+
+    @Override
     public CurveNumberProvider copy() {
         return new CurveNumberProvider(start.copy(), end.copy(), duration.copy(), type);
     }
