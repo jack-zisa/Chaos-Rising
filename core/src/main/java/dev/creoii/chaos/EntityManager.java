@@ -32,6 +32,10 @@ public class EntityManager<T> {
         return size;
     }
 
+    public void setSize(int size) {
+        this.size = size;
+    }
+
     public <E extends Entity, ET extends EntityType<E>> E addEntity(ET type, Vector2 pos) {
         return addEntity(UUID.randomUUID(), type, pos, new HashMap<>());
     }
@@ -72,10 +76,12 @@ public class EntityManager<T> {
     }
 
     public boolean removeEntity(UUID uuid) {
-        if (entities.containsKey(uuid)) {
-            entities.remove(uuid);
-            --size;
-            return true;
+        for (Map.Entry<EntityGroup, Map<UUID, T>> entry : getAllEntities().entrySet()) {
+            if (uuid != null && entry.getValue().containsKey(uuid)) {
+                entry.getValue().remove(uuid);
+                --size;
+                return true;
+            }
         }
         return false;
     }

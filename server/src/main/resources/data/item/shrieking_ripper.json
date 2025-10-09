@@ -4,7 +4,7 @@
   "rarity": "uncommon",
   "attack": {
     "type": "simple",
-    "bullet_id": "test_dec",
+    "bullet_id": "crystal_arrow",
     "damage": 10,
     "bullet_count": 3,
     "arc_gap": 10,

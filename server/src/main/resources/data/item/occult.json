@@ -3,7 +3,7 @@
   "type": "weapon",
   "attack": {
     "type": "simple",
-    "bullet_id": "test_sin",
+    "bullet_id": "dark_magic",
     "damage": 4,
     "bullet_count": 6,
     "arc_gap": 12

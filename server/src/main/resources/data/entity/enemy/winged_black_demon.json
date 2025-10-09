@@ -32,7 +32,7 @@
             "type": "attack",
             "attack": {
               "type": "simple",
-              "bullet_id": "test_arc",
+              "bullet_id": "dark_magic_blade",
               "damage": 8,
               "bullet_count": 12,
               "arc_gap": 30,
@@ -68,7 +68,7 @@
             "type": "attack",
             "attack": {
               "type": "simple",
-              "bullet_id": "test",
+              "bullet_id": "dark_magic_blade",
               "damage": 15,
               "bullet_count": 8,
               "arc_gap": 45,
@@ -102,13 +102,15 @@
               "type": "multi",
               "attacks": [
                 {
-                  "bullet_id": "test_segment",
+                  "type": "simple",
+                  "bullet_id": "dark_magic_blade",
                   "damage": 10,
                   "bullet_count": 3,
                   "arc_gap": 15
                 },
                 {
-                  "bullet_id": "test_sin_acc",
+                  "type": "simple",
+                  "bullet_id": "dark_magic_blade",
                   "damage": 5,
                   "angle_offset": 180
                 }

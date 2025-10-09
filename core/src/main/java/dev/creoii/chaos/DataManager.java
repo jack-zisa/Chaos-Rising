@@ -99,7 +99,6 @@ public class DataManager {
             }
         } catch (Exception e) {
             System.out.println("[DataManager] Error loading data: " + e);
-            e.printStackTrace();
         }
     }
 

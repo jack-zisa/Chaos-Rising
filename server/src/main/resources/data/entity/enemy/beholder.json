@@ -18,7 +18,7 @@
           "type": "attack",
           "attack": {
             "type": "simple",
-            "bullet_id": "test_big",
+            "bullet_id": "fireball",
             "damage": 20,
             "bullet_count": 6,
             "arc_gap": 60,

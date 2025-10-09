@@ -7,7 +7,7 @@
     "attacks": [
       {
         "type": "simple",
-        "bullet_id": "test_sin",
+        "bullet_id": "fireball",
         "damage": 10,
         "source": {
           "type": "relative_to",
@@ -44,7 +44,7 @@
       },
       {
         "type": "simple",
-        "bullet_id": "test_sin",
+        "bullet_id": "fireball",
         "damage": 10,
         "source": {
           "type": "relative_to",
@@ -81,7 +81,7 @@
       },
       {
         "type": "simple",
-        "bullet_id": "test_sin",
+        "bullet_id": "fireball",
         "damage": 10,
         "source": {
           "type": "relative_to",
@@ -118,7 +118,7 @@
       },
       {
         "type": "simple",
-        "bullet_id": "test_sin",
+        "bullet_id": "fireball",
         "damage": 10,
         "source": {
           "type": "relative_to",

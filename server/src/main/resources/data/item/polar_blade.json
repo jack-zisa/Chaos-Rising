@@ -3,7 +3,7 @@
   "type": "weapon",
   "attack": {
     "type": "simple",
-    "bullet_id": "test_segment",
+    "bullet_id": "lightning_bolt",
     "damage": {
       "type": "random",
       "min": 0,

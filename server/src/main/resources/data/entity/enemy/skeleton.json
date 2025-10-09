@@ -21,7 +21,7 @@
             "type": "attack",
             "attack": {
               "type": "simple",
-              "bullet_id": "test",
+              "bullet_id": "dark_magic_blade",
               "damage": 5,
               "bullet_count": 2,
               "arc_gap": 20,
@@ -59,7 +59,7 @@
             "type": "attack",
             "attack": {
               "type": "simple",
-              "bullet_id": "test",
+              "bullet_id": "dark_magic_blade",
               "damage": 5,
               "bullet_count": 3,
               "arc_gap": 120

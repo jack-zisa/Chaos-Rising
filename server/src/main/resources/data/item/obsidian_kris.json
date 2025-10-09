@@ -3,7 +3,7 @@
   "type": "weapon",
   "attack": {
     "type": "simple",
-    "bullet_id": "test_dec",
+    "bullet_id": "dark_magic_blade",
     "damage": 2,
     "bullet_count": 12,
     "arc_gap": 30

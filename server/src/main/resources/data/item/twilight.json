@@ -4,7 +4,7 @@
   "rarity": "legendary",
   "attack": {
     "type": "simple",
-    "bullet_id": "test",
+    "bullet_id": "lightning_bolt",
     "damage": 10,
     "angle_offset": 180
   },

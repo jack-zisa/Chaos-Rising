@@ -7,7 +7,7 @@ import com.esotericsoftware.kryo.io.Output;
 import dev.creoii.chaos.attack.Attack;
 import dev.creoii.chaos.entity.behavior.Behavior;
 import dev.creoii.chaos.entity.behavior.action.Action;
-import dev.creoii.chaos.entity.behavior.bulletpath.BulletPath;
+import dev.creoii.chaos.entity.controller.bulletpath.BulletPath;
 import dev.creoii.chaos.entity.behavior.phase.Phase;
 import dev.creoii.chaos.entity.serialization.EntityCustomData;
 import dev.creoii.chaos.inventory.InventoryType;

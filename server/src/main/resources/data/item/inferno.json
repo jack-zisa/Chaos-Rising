@@ -3,7 +3,7 @@
   "type": "ability",
   "attack": {
     "type": "simple",
-    "bullet_id": "test_dec",
+    "bullet_id": "fireball_blast",
     "damage": 2,
     "bullet_count": 18,
     "arc_gap": 20,
