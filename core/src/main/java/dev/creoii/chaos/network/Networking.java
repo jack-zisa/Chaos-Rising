@@ -20,23 +20,23 @@ public class Networking {
     public static void register(Kryo kryo) {
         JavaSerializer serializer = new JavaSerializer();
 
-        kryo.register(CharacterJoinC2S.class, new CodecSerializer<>(CharacterJoinC2S.CODEC));
-        kryo.register(CharacterLeaveC2S.class, new CodecSerializer<>(CharacterLeaveC2S.CODEC));
-        kryo.register(CharacterMoveC2S.class, new CodecSerializer<>(CharacterMoveC2S.CODEC));
+        kryo.register(CharacterJoinC2S.class, CodecSerializer.INSTANCE);
+        kryo.register(CharacterLeaveC2S.class, CodecSerializer.INSTANCE);
+        kryo.register(CharacterMoveC2S.class, CodecSerializer.INSTANCE);
         kryo.register(DropSlotItemC2S.class, serializer);
-        kryo.register(ExecuteCommandC2S.class, new CodecSerializer<>(ExecuteCommandC2S.CODEC));
-        kryo.register(LootDropCloseC2S.class, new CodecSerializer<>(LootDropCloseC2S.CODEC));
+        kryo.register(ExecuteCommandC2S.class, CodecSerializer.INSTANCE);
+        kryo.register(LootDropCloseC2S.class, CodecSerializer.INSTANCE);
         kryo.register(SlotUpdateC2S.class, serializer);
         kryo.register(UseItemC2S.class, serializer);
 
-        kryo.register(EntityRemoveS2C.class, new CodecSerializer<>(EntityRemoveS2C.CODEC));
-        kryo.register(EntitySpawnS2C.class, new CodecSerializer<>(EntitySpawnS2C.CODEC));
-        kryo.register(EntityDisplayS2C.class, new CodecSerializer<>(EntityDisplayS2C.CODEC));
-        kryo.register(EntityMoveS2C.class, new CodecSerializer<>(EntityMoveS2C.CODEC));
+        kryo.register(EntityRemoveS2C.class, CodecSerializer.INSTANCE);
+        kryo.register(EntitySpawnS2C.class, CodecSerializer.INSTANCE);
+        kryo.register(EntityDisplayS2C.class, CodecSerializer.INSTANCE);
+        kryo.register(EntityMoveS2C.class, CodecSerializer.INSTANCE);
         kryo.register(InventoryUpdateS2C.class, serializer);
-        kryo.register(LivingStatUpdateS2C.class, new CodecSerializer<>(LivingStatUpdateS2C.CODEC));
-        kryo.register(LootDropCloseS2C.class, new CodecSerializer<>(LootDropCloseS2C.CODEC));
-        kryo.register(LootDropOpenS2C.class, new CodecSerializer<>(LootDropOpenS2C.CODEC));
+        kryo.register(LivingStatUpdateS2C.class, CodecSerializer.INSTANCE);
+        kryo.register(LootDropCloseS2C.class, CodecSerializer.INSTANCE);
+        kryo.register(LootDropOpenS2C.class, CodecSerializer.INSTANCE);
         kryo.register(StatusEffectS2C.class, serializer);
         kryo.register(SyncDataS2C.class, new Serializer<SyncDataS2C>() {
             @Override
@@ -53,14 +53,39 @@ public class Networking {
             }
         });
 
-        kryo.register(InventoryType.class, new CodecSerializer<>(InventoryType.CODEC));
+        kryo.register(InventoryType.class, CodecSerializer.INSTANCE);
         kryo.register(SlotEntry.class, serializer);
-        kryo.register(EntityGroup.class, new CodecSerializer<>(EntityGroup.CODEC));
-        kryo.register(EntityCustomData.class, new CodecSerializer<>(EntityCustomData.CODEC));
-        kryo.register(StatContainer.class, new CodecSerializer<>(StatContainer.CODEC));
-        kryo.register(SlotEntry.class, new CodecSerializer<>(SlotEntry.CODEC));
-        kryo.register(Slot.Type.class, new CodecSerializer<>(Slot.Type.CODEC));
-        kryo.register(Rarity.class, new CodecSerializer<>(Rarity.CODEC));
+        kryo.register(EntityGroup.class, CodecSerializer.INSTANCE);
+        kryo.register(EntityCustomData.class, CodecSerializer.INSTANCE);
+        kryo.register(StatContainer.class, CodecSerializer.INSTANCE);
+        kryo.register(SlotEntry.class, CodecSerializer.INSTANCE);
+        kryo.register(Slot.Type.class, CodecSerializer.INSTANCE);
+        kryo.register(Rarity.class, CodecSerializer.INSTANCE);
         kryo.register(ModifierEntry.class, serializer);
+
+        registerCodecSchema();
+    }
+
+    private static void registerCodecSchema() {
+        CodecSerializer.registerSchema(CharacterJoinC2S.class, CharacterJoinC2S.CODEC);
+        CodecSerializer.registerSchema(CharacterLeaveC2S.class, CharacterLeaveC2S.CODEC);
+        CodecSerializer.registerSchema(CharacterMoveC2S.class, CharacterMoveC2S.CODEC);
+        CodecSerializer.registerSchema(ExecuteCommandC2S.class, ExecuteCommandC2S.CODEC);
+        CodecSerializer.registerSchema(LootDropCloseC2S.class, LootDropCloseC2S.CODEC);
+        CodecSerializer.registerSchema(EntityRemoveS2C.class, EntityRemoveS2C.CODEC);
+        CodecSerializer.registerSchema(EntitySpawnS2C.class, EntitySpawnS2C.CODEC);
+        CodecSerializer.registerSchema(EntityDisplayS2C.class, EntityDisplayS2C.CODEC);
+        CodecSerializer.registerSchema(EntityMoveS2C.class, EntityMoveS2C.CODEC);
+        CodecSerializer.registerSchema(LivingStatUpdateS2C.class, LivingStatUpdateS2C.CODEC);
+        CodecSerializer.registerSchema(LootDropCloseS2C.class, LootDropCloseS2C.CODEC);
+        CodecSerializer.registerSchema(LootDropOpenS2C.class, LootDropOpenS2C.CODEC);
+
+        CodecSerializer.registerSchema(InventoryType.class, InventoryType.CODEC);
+        CodecSerializer.registerSchema(EntityGroup.class, EntityGroup.CODEC);
+        CodecSerializer.registerSchema(EntityCustomData.class, EntityCustomData.CODEC);
+        CodecSerializer.registerSchema(StatContainer.class, StatContainer.CODEC);
+        CodecSerializer.registerSchema(SlotEntry.class, SlotEntry.CODEC);
+        CodecSerializer.registerSchema(Slot.Type.class, Slot.Type.CODEC);
+        CodecSerializer.registerSchema(Rarity.class, Rarity.CODEC);
     }
 }

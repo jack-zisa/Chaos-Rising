@@ -10,16 +10,30 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
-public class CodecSerializer<T> extends Serializer<T> {
-    private final Codec<T> codec;
+public class CodecSerializer extends Serializer<Object> {
+    private static final Map<Class<?>, Codec<?>> SCHEMA = new HashMap<>();
+    public static final CodecSerializer INSTANCE = new CodecSerializer();
 
-    public CodecSerializer(Codec<T> codec) {
-        this.codec = codec;
+    public static <T> void registerSchema(Class<T> clazz, Codec<T> codec) {
+        SCHEMA.put(clazz, codec);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> Codec<T> getCodec(Class<T> clazz) {
+        Codec<?> codec = SCHEMA.get(clazz);
+        if (codec == null) {
+            throw new IllegalArgumentException("Unknown class type not present in Codec Serialization Schema: " + clazz.getSimpleName());
+        }
+        return (Codec<T>) codec;
     }
 
     @Override
-    public void write(Kryo kryo, Output output, T o) {
+    @SuppressWarnings("unchecked")
+    public void write(Kryo kryo, Output output, Object o) {
+        Codec<Object> codec = (Codec<Object>) getCodec(o.getClass());
         JsonElement element = codec.encodeStart(JsonOps.INSTANCE, o).getOrThrow();
         byte[] bytes = element.toString().getBytes(StandardCharsets.UTF_8);
         System.out.println("write: " + element);
@@ -28,7 +42,8 @@ public class CodecSerializer<T> extends Serializer<T> {
     }
 
     @Override
-    public T read(Kryo kryo, Input input, Class<T> aClass) {
+    public Object read(Kryo kryo, Input input, Class<Object> aClass) {
+        Codec<?> codec = getCodec(aClass);
         int len = input.readInt();
         byte[] bytes = input.readBytes(len);
         String s = new String(bytes, StandardCharsets.UTF_8);
