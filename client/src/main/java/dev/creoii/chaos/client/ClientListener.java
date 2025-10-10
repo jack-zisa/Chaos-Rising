@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.zip.ZipEntry;
@@ -102,14 +101,6 @@ public class ClientListener extends Listener {
                         entityRenderData.y = unpacked[1];
                         entityRenderData.xv = unpacked[2];
                         entityRenderData.yv = unpacked[3];
-                    } else {
-                        CharacterEntityRenderData character = game.getCharacter();
-                        if (character != null) {
-                            character.x = unpacked[0];
-                            character.y = unpacked[1];
-                            character.xv = unpacked[2];
-                            character.yv = unpacked[3];
-                        }
                     }
                 }
             });

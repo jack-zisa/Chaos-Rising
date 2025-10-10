@@ -1,4 +1,4 @@
-package dev.creoii.chaos.server.chat;
+package dev.creoii.chaos.server.chat.command;
 
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.DataManager;

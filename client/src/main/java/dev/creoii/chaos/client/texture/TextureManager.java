@@ -1,6 +1,7 @@
 package dev.creoii.chaos.client.texture;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -16,9 +17,10 @@ public class TextureManager implements Disposable {
 
     public TextureManager() {
         atlases = new ObjectMap<>();
-        for (String atlasId : ATLAS_IDS) {
-            atlases.put(atlasId, new DynamicTextureAtlas());
-        }
+    }
+
+    public ObjectMap<String, DynamicTextureAtlas> getAtlases() {
+        return atlases;
     }
 
     public Texture getTexture(String atlas, String texture) {
@@ -27,7 +29,7 @@ public class TextureManager implements Disposable {
         return atlases.get(atlas).getTexture(texture).getTexture();
     }
 
-    public void load() {
+    public void load(AssetManager assetManager) {
         FileHandle baseDir = Gdx.files.internal("textures");
 
         if (!baseDir.exists()) {
@@ -36,6 +38,9 @@ public class TextureManager implements Disposable {
         }
 
         for (String atlasId : ATLAS_IDS) {
+            DynamicTextureAtlas atlas = new DynamicTextureAtlas();
+            atlases.put(atlasId, atlas);
+
             FileHandle folderHandle = baseDir.child(atlasId);
             if (!folderHandle.exists()) {
                 Gdx.app.log(TextureManager.class.getSimpleName(), "Folder '" + folderHandle.path() + "' does not exist, skipping.");
@@ -45,11 +50,22 @@ public class TextureManager implements Disposable {
             for (FileHandle file : folderHandle.list("png")) {
                 try {
                     String path = file.path();
-                    atlases.get(atlasId).addTexture(path, path.substring(10 + atlasId.length(), path.length() - 4));
+                    String id = path.substring(10 + atlasId.length(), path.length() - 4);
+
+                    assetManager.load(path, Texture.class);
+                    atlas.addTexture(path, id);
                 } catch (Exception e) {
                     Gdx.app.error(TextureManager.class.getSimpleName(), "Error parsing " + file.name() + " in " + atlasId + ": " + e.getMessage());
                 }
             }
+
+            dev.creoii.chaos.client.AssetManager.LOGGER.info("Created texture atlas '" + atlasId + "' size: " + atlas.getPendingTextures().size);
+        }
+    }
+
+    public void finish(AssetManager assetManager) {
+        for (String atlasId : ATLAS_IDS) {
+            atlases.get(atlasId).bindTextures(assetManager);
         }
     }
 

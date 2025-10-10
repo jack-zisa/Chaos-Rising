@@ -19,7 +19,7 @@ public class ItemRenderer {
     public static void renderItem(ClientGame game, SpriteBatch batch, @Nullable String id, Vector2 pos, float scale) {
         if (id == null || id.isBlank())
             return;
-        Sprite sprite = new Sprite(game.getTextureManager().getTexture("item", id));
+        Sprite sprite = new Sprite(game.getAssetManager().getTextureManager().getTexture("item", id));
         sprite.setPosition(pos.x, pos.y);
         sprite.setSize(scale, scale);
         sprite.draw(batch);

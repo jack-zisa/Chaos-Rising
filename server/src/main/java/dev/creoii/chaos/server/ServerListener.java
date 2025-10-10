@@ -7,7 +7,7 @@ import dev.creoii.chaos.DataManager;
 import dev.creoii.chaos.network.NetworkQueue;
 import dev.creoii.chaos.network.c2s.*;
 import dev.creoii.chaos.network.s2c.*;
-import dev.creoii.chaos.server.chat.Commands;
+import dev.creoii.chaos.server.chat.command.Commands;
 import dev.creoii.chaos.entity.CharacterEntity;
 import dev.creoii.chaos.entity.CharacterEntityType;
 import dev.creoii.chaos.entity.LootDropEntity;
@@ -27,7 +27,6 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -84,8 +83,8 @@ public class ServerListener extends Listener {
         if (object instanceof CharacterMoveC2S(int id, float dx, float dy)) {
             CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id);
             if (character != null) {
-                Vector2 newPos = character.getPos().add(new Vector2(dx, dy).nor().scl(character.getStats().speed().value() / 8f));
                 character.setPrevPos(character.getPos().x, character.getPos().y);
+                Vector2 newPos = character.getPos().add(new Vector2(dx, dy).nor().scl(character.getStats().speed().value() / 8f));
                 character.setPos(newPos.x, newPos.y);
                 game.getServer().sendToTCP(connection.getID(), new MoveCharacterS2C(newPos.x, newPos.y, newPos.x - character.getPrevPos().x, newPos.y - character.getPrevPos().y));
             }

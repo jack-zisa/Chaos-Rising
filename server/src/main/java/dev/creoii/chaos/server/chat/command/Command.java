@@ -1,4 +1,4 @@
-package dev.creoii.chaos.server.chat;
+package dev.creoii.chaos.server.chat.command;
 
 import dev.creoii.chaos.server.ServerGame;
 import dev.creoii.chaos.util.function.TriFunction;

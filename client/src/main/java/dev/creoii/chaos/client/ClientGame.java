@@ -17,7 +17,6 @@ import dev.creoii.chaos.network.Networking;
 import dev.creoii.chaos.client.render.Renderer;
 import dev.creoii.chaos.client.render.entity.EntityRenderManager;
 import dev.creoii.chaos.client.render.entity.data.CharacterEntityRenderData;
-import dev.creoii.chaos.client.texture.TextureManager;
 import dev.creoii.chaos.util.logging.Logger;
 
 import java.io.IOException;
@@ -30,7 +29,7 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
     public static final Logger LOGGER = new Logger(ClientGame.class.getSimpleName());
     protected NetworkQueue<Object> networkQueue;
     private Renderer renderer;
-    private TextureManager textureManager;
+    private AssetManager assetManager;
     private final OptionsManager optionsManager;
     private final EntityRenderManager entityManager;
     private final InputManager inputManager;
@@ -55,7 +54,7 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
     @Override
     public void create() {
         renderer = new Renderer(this);
-        textureManager = new TextureManager();
+        assetManager = new AssetManager();
 
         Networking.register(client.getKryo());
         client.addListener(listener);
@@ -67,7 +66,7 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
             throw new RuntimeException(e);
         }
 
-        textureManager.load();
+        assetManager.load();
 
         Gdx.input.setInputProcessor(new InputMultiplexer(commandManager, inputManager));
     }
@@ -93,9 +92,20 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
     }
 
     @Override
+    public void pause() {
+        super.pause();
+    }
+
+    @Override
+    public void resume() {
+        assetManager.load();
+        super.resume();
+    }
+
+    @Override
     public void dispose() {
         renderer.dispose();
-        textureManager.dispose();
+        assetManager.dispose();
     }
 
     public Client getClient() {
@@ -110,8 +120,8 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
         return renderer;
     }
 
-    public TextureManager getTextureManager() {
-        return textureManager;
+    public AssetManager getAssetManager() {
+        return assetManager;
     }
 
     @Override

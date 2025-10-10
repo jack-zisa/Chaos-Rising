@@ -86,7 +86,8 @@ public class EntityManager<T> {
     public boolean removeEntity(int id) {
         for (Map.Entry<EntityGroup, Map<Integer, T>> entry : getAllEntities().entrySet()) {
             if (id != -1 && entry.getValue().containsKey(id)) {
-                game.getServer().sendToAllTCP(new EntityRemoveS2C(id));
+                if (!game.isClient())
+                    game.getServer().sendToAllTCP(new EntityRemoveS2C(id));
                 entry.getValue().remove(id);
                 --size;
                 free(id);

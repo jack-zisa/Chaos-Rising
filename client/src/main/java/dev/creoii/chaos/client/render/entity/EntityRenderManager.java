@@ -52,7 +52,7 @@ public class EntityRenderManager extends EntityManager<EntityRenderData> impleme
     }
 
     public static Sprite getSprite(ClientGame game, EntityRenderData entity) {
-        Sprite sprite = new Sprite(game.getTextureManager().getTexture(entity.group.name().toLowerCase(), entity.textureId));
+        Sprite sprite = new Sprite(game.getAssetManager().getTextureManager().getTexture(entity.group.name().toLowerCase(), entity.textureId));
         sprite.setSize(entity.scale, entity.scale);
         return sprite;
     }
