@@ -1,0 +1,10 @@
+{
+  "id": "dark_magic",
+  "type": "bullet",
+  "lifetime": 100,
+  "path": {
+    "type": "simple",
+    "speed": 10
+  },
+  "scale": 2
+}

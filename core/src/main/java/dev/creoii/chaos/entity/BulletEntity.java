@@ -1,23 +1,46 @@
 package dev.creoii.chaos.entity;
 
 import com.badlogic.gdx.math.Vector2;
-import dev.creoii.chaos.entity.controller.bullet.BulletController;
-import dev.creoii.chaos.entity.controller.EntityController;
+import dev.creoii.chaos.Game;
+import dev.creoii.chaos.entity.controller.BulletController;
+import dev.creoii.chaos.entity.serialization.BulletData;
+import dev.creoii.chaos.entity.serialization.EntityCustomData;
 import dev.creoii.chaos.util.provider.Provider;
 
-public class BulletEntity extends Entity {
-    private final BulletController controller;
-    private Entity parent;
-    protected Vector2 direction;
-    protected int lifetime;
-    protected int damage;
-    private int index;
+import javax.annotation.Nullable;
 
-    public BulletEntity(BulletEntityType type) {
-        super(type, new Vector2(1, 1), Group.BULLET);
-        controller = new BulletController(this);
-        damage = 0;
-        index = -1;
+public class BulletEntity extends Entity {
+    private Entity parent;
+    private final Vector2 direction;
+    private final int lifetime;
+    private final int damage;
+    private final int index;
+    private final BulletController controller;
+
+    public BulletEntity(Game game, EntityType<? extends BulletEntity> type, int id, Vector2 pos, Vector2 direction, int lifetime, int damage, int index) {
+        super(game, type, id, pos);
+        this.direction = direction;
+        this.lifetime = lifetime;
+        this.damage = damage;
+        this.index = index;
+
+        if (!game.isClient()) {
+            controller = new BulletController(this);
+        } else controller = null;
+    }
+
+    @Nullable
+    @Override
+    public EntityCustomData getCustomPacketData() {
+        return new BulletData(0f, 0f);
+    }
+
+    public Entity getParent() {
+        return parent;
+    }
+
+    public void setParent(Entity parent) {
+        this.parent = parent;
     }
 
     public Vector2 getDirection() {
@@ -28,44 +51,12 @@ public class BulletEntity extends Entity {
         return lifetime;
     }
 
+    public int getDamage() {
+        return damage;
+    }
+
     public int getIndex() {
         return index;
-    }
-
-    public void setIndex(int index) {
-        this.index = index;
-    }
-
-    public void setParent(Entity parent) {
-        this.parent = parent;
-    }
-
-    public Entity getParent() {
-        return parent;
-    }
-
-    @Override
-    public void collisionEnter(Entity other) {
-        if (other instanceof LivingEntity && other.getGroup() != parent.getGroup()) {
-            ((LivingEntity) other).damage(damage);
-            if (!((BulletEntityType) type).piercing().get(Provider.Context.of(this, game.getGametime()))) {
-                remove();
-            }
-        }
-    }
-
-    @Override
-    public void collisionExit(Entity other) {
-
-    }
-
-    @Override
-    public void postSpawn() {
-    }
-
-    @Override
-    public EntityController<?> getController() {
-        return controller;
     }
 
     @Override
@@ -75,5 +66,22 @@ public class BulletEntity extends Entity {
         if (gametime - getSpawnTime() >= lifetime) {
             remove();
         }
+
+        controller.control(gametime, delta);
+    }
+
+    @Override
+    public void collisionEnter(Entity other) {
+        if (other instanceof LivingEntity living && parent != null && other.getType().group() != parent.getType().group()) {
+            living.damage(damage);
+            if (!((BulletEntityType) getType()).piercing().get(Provider.Context.of(this, getGame().getGametime()))) {
+                remove();
+            }
+        }
+    }
+
+    @Override
+    public boolean canMove() {
+        return controller.getPath().speed(controller) > 0f;
     }
 }

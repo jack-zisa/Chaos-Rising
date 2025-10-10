@@ -1,30 +1,65 @@
 package dev.creoii.chaos.util.provider.numberprovider;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 public class CurveNumberProvider implements NumberProvider {
+    public static final MapCodec<CurveNumberProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
+        return instance.group(
+            NumberProvider.CODEC.fieldOf("start").forGetter(CurveNumberProvider::getStart),
+            NumberProvider.CODEC.fieldOf("end").forGetter(CurveNumberProvider::getEnd),
+            NumberProvider.CODEC.fieldOf("duration").forGetter(CurveNumberProvider::getDuration),
+            CurveType.CODEC.fieldOf("max").forGetter(CurveNumberProvider::getCurveType)
+        ).apply(instance, CurveNumberProvider::new);
+    });
     private final NumberProvider start;
     private final NumberProvider end;
     private final NumberProvider duration;
-    private final CurveType type;
+    private final CurveType curveType;
     private Float value = null;
     private float progress;
 
     @Override
+    public Type getType() {
+        return Type.CURVE;
+    }
+
+    public NumberProvider getStart() {
+        return start;
+    }
+
+    public NumberProvider getEnd() {
+        return end;
+    }
+
+    public NumberProvider getDuration() {
+        return duration;
+    }
+
+    public CurveType getCurveType() {
+        return curveType;
+    }
+
+    @Override
     public CurveNumberProvider copy() {
-        return new CurveNumberProvider(start.copy(), end.copy(), duration.copy(), type);
+        return new CurveNumberProvider(start.copy(), end.copy(), duration.copy(), curveType);
     }
 
     public enum CurveType {
         LINEAR,
         EXPONENTIAL,
         EASE_IN,
-        EASE_OUT
+        EASE_OUT;
+
+        public static final Codec<CurveType> CODEC = Codec.STRING.xmap(s -> CurveType.valueOf(s.toUpperCase()), curveType -> curveType.name().toLowerCase());
     }
 
-    public CurveNumberProvider(NumberProvider start, NumberProvider end, NumberProvider duration, CurveType type) {
+    public CurveNumberProvider(NumberProvider start, NumberProvider end, NumberProvider duration, CurveType curveType) {
         this.start = start;
         this.end = end;
         this.duration = duration;
-        this.type = type;
+        this.curveType = curveType;
     }
 
     public CurveNumberProvider init(int startTime) {
@@ -49,7 +84,7 @@ public class CurveNumberProvider implements NumberProvider {
         if (progress > 1f)
             progress = 1f;
 
-        float factor = switch (type) {
+        float factor = switch (curveType) {
             case LINEAR -> progress;
             case EXPONENTIAL -> progress * progress;
             case EASE_IN -> 1f - (float) Math.cos(progress * Math.PI * 0.5f);

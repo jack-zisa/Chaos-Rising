@@ -1,0 +1,18 @@
+{
+  "id": "vulcans_eruption",
+  "type": "consumable",
+  "rarity": "legendary",
+  "stat_bonus": [
+    {
+      "type": "health",
+      "amount": 50
+    }
+  ],
+  "status_effects": [
+    {
+      "id": "invulnerable",
+      "amplifier": 1,
+      "duration": 1200
+    }
+  ]
+}

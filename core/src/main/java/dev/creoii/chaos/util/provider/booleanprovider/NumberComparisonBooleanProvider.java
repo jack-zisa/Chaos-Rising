@@ -1,17 +1,22 @@
 package dev.creoii.chaos.util.provider.booleanprovider;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.util.provider.Comparison;
 import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
 
-public class NumberComparisonBooleanProvider implements BooleanProvider {
-    private final NumberProvider a;
-    private final NumberProvider b;
-    private final Comparison comparison;
+public record NumberComparisonBooleanProvider(NumberProvider a, NumberProvider b, Comparison comparison) implements BooleanProvider {
+    public static final MapCodec<NumberComparisonBooleanProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
+        return instance.group(
+            NumberProvider.CODEC.fieldOf("a").forGetter(NumberComparisonBooleanProvider::a),
+            NumberProvider.CODEC.fieldOf("b").forGetter(NumberComparisonBooleanProvider::b),
+            Comparison.CODEC.fieldOf("comparison").orElse(Comparison.E).forGetter(NumberComparisonBooleanProvider::comparison)
+        ).apply(instance, NumberComparisonBooleanProvider::new);
+    });
 
-    public NumberComparisonBooleanProvider(NumberProvider a, NumberProvider b, Comparison comparison) {
-        this.a = a;
-        this.b = b;
-        this.comparison = comparison;
+    @Override
+    public Type getType() {
+        return Type.NUMBER_COMPARISON;
     }
 
     @Override

@@ -1,14 +1,20 @@
 package dev.creoii.chaos.util.provider.numberprovider;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.util.provider.vecprovider.VecProvider;
 
-public class Distance2NumberProvider implements NumberProvider {
-    private final VecProvider a;
-    private final VecProvider b;
+public record Distance2NumberProvider(VecProvider a, VecProvider b) implements NumberProvider {
+    public static final MapCodec<Distance2NumberProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
+        return instance.group(
+            VecProvider.CODEC.fieldOf("a").forGetter(Distance2NumberProvider::a),
+            VecProvider.CODEC.fieldOf("b").forGetter(Distance2NumberProvider::b)
+        ).apply(instance, Distance2NumberProvider::new);
+    });
 
-    public Distance2NumberProvider(VecProvider a, VecProvider b) {
-        this.a = a;
-        this.b = b;
+    @Override
+    public Type getType() {
+        return Type.DISTANCE_2;
     }
 
     @Override

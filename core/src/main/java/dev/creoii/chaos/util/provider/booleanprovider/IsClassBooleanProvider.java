@@ -1,13 +1,21 @@
 package dev.creoii.chaos.util.provider.booleanprovider;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.chaos.entity.CharacterEntity;
 import dev.creoii.chaos.entity.CharacterEntityType;
-import dev.creoii.chaos.entity.character.CharacterEntity;
 
-public class IsClassBooleanProvider implements BooleanProvider {
-    private final String classId;
+public record IsClassBooleanProvider(String classId) implements BooleanProvider {
+    public static final MapCodec<IsClassBooleanProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
+        return instance.group(
+            Codec.STRING.fieldOf("classId").forGetter(IsClassBooleanProvider::classId)
+        ).apply(instance, IsClassBooleanProvider::new);
+    });
 
-    public IsClassBooleanProvider(String classId) {
-        this.classId = classId;
+    @Override
+    public Type getType() {
+        return Type.IS_CLASS;
     }
 
     @Override

@@ -1,12 +1,19 @@
 package dev.creoii.chaos.util.provider.numberprovider;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.util.provider.vecprovider.VecProvider;
 
-public class Length2NumberProvider implements NumberProvider {
-    private final VecProvider vec;
+public record Length2NumberProvider(VecProvider vec) implements NumberProvider {
+    public static final MapCodec<Length2NumberProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
+        return instance.group(
+            VecProvider.CODEC.fieldOf("vec").forGetter(Length2NumberProvider::vec)
+        ).apply(instance, Length2NumberProvider::new);
+    });
 
-    public Length2NumberProvider(VecProvider vec) {
-        this.vec = vec;
+    @Override
+    public Type getType() {
+        return Type.LENGTH_2;
     }
 
     @Override

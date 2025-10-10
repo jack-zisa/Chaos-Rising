@@ -1,100 +1,117 @@
 package dev.creoii.chaos;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.utils.JsonReader;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
 import dev.creoii.chaos.entity.*;
-import dev.creoii.chaos.entity.character.CharacterClass;
 import dev.creoii.chaos.item.Item;
+import dev.creoii.chaos.loot.LootTable;
+import dev.creoii.chaos.util.Identifiable;
+import dev.creoii.chaos.util.logging.Logger;
 
 import javax.annotation.Nullable;
+import java.io.FileReader;
+import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 public class DataManager {
-    private final Main main;
-    private final Map<String, Parser> schema;
-    private final Map<String, Map<String, Identifiable>> data;
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    public static final Logger LOGGER = new Logger(DataManager.class.getSimpleName());
+    private static final Map<String, Codec<? extends Identifiable>> SCHEMA = new HashMap<>();
+    private static final Map<String, Map<String, Identifiable>> DATA = new HashMap<>();
 
-    public DataManager(Main main) {
-        this.main = main;
+    public static Map<String, Identifiable> getClasses() {
+        return DATA.get("class");
+    }
 
-        schema = new HashMap<>();
-        schema.put("class", fileHandle -> CharacterClass.parse(fileHandle.nameWithoutExtension(), new JsonReader().parse(fileHandle)));
-        schema.put("item", fileHandle -> Item.parse(fileHandle.nameWithoutExtension(), new JsonReader().parse(fileHandle)));
-        schema.put("enemy", fileHandle -> EnemyEntityType.parse(fileHandle.nameWithoutExtension(), new JsonReader().parse(fileHandle)));
-        schema.put("bullet", fileHandle -> BulletEntityType.parse(fileHandle.nameWithoutExtension(), new JsonReader().parse(fileHandle)));
-        schema.put("loot_drop", fileHandle -> LootDropEntityType.parse(fileHandle.nameWithoutExtension(), new JsonReader().parse(fileHandle)));
+    public static Map<String, Identifiable> getItems() {
+        return DATA.get("item");
+    }
 
-        data = new HashMap<>();
-        for (String key : schema.keySet()) {
-            data.put(key, new HashMap<>());
-        }
+    public static Map<String, Identifiable> getEntities() {
+        return DATA.get("entity");
+    }
+
+    public static Map<String, Identifiable> getLootTables() {
+        return DATA.get("loot_table");
     }
 
     @Nullable
-    public CharacterClass getCharacterClass(String id) {
-        return (CharacterClass) data.get("class").getOrDefault(id, null);
+    public static CharacterClass getCharacterClass(String id) {
+        return (CharacterClass) getClasses().getOrDefault(id, null);
     }
 
     @Nullable
-    public EnemyEntityType getEnemy(String id) {
-        return (EnemyEntityType) data.get("enemy").getOrDefault(id, null);
+    public static EnemyEntityType getEnemy(String id) {
+        return (EnemyEntityType) getEntities().getOrDefault(id, null);
     }
 
     @Nullable
-    public BulletEntityType getBullet(String id) {
-        return (BulletEntityType) data.get("bullet").getOrDefault(id, null);
+    public static BulletEntityType getBullet(String id) {
+        return (BulletEntityType) getEntities().getOrDefault(id, null);
     }
 
     @Nullable
-    public LootDropEntityType getLootDrop(String id) {
-        return (LootDropEntityType) data.get("loot_drop").getOrDefault(id, null);
+    public static LootDropEntityType getLootDrop(String id) {
+        return (LootDropEntityType) getEntities().getOrDefault(id, null);
     }
 
     @Nullable
-    public Item getItem(String id) {
-        return (Item) data.get("item").getOrDefault(id, null);
+    public static Item getItem(String id) {
+        return (Item) getItems().getOrDefault(id, null);
     }
 
-    public void load() {
-        FileHandle baseDir = Gdx.files.internal("data");
+    @Nullable
+    public static LootTable getLootTable(String id) {
+        return (LootTable) getLootTables().getOrDefault(id, null);
+    }
 
-        if (!baseDir.exists()) {
-            Gdx.app.log(DataManager.class.getSimpleName(), "Directory 'data/' does not exist.");
-            return;
-        }
+    public static void load(Path path) {
+        try {
+            for (Map.Entry<String, Codec<? extends Identifiable>> entry : SCHEMA.entrySet()) {
+                String folder = entry.getKey();
+                Codec<?> codec = entry.getValue();
 
-        for (Map.Entry<String, Parser> entry : schema.entrySet()) {
-            String folder = entry.getKey();
-            Parser parser = entry.getValue();
-
-            FileHandle folderHandle = baseDir.child(folder);
-            if (!folderHandle.exists()) {
-                Gdx.app.log(DataManager.class.getSimpleName(), "Folder '" + folderHandle.path() + "' does not exist, skipping.");
-                continue;
-            }
-
-            for (FileHandle file : folderHandle.list("json")) {
-                try {
-                    Identifiable obj = parser.parse(file);
-                    obj.onLoad(main);
-                    data.get(folder).put(obj.id(), obj);
-                } catch (Exception e) {
-                    Gdx.app.error(DataManager.class.getSimpleName(), "Error parsing " + file.name() + " in '/" + folder + "': " + e);
+                Path folderPath = path.resolve(folder);
+                if (!Files.exists(folderPath)) {
+                    LOGGER.info("Folder '" + folderPath + "' does not exist, skipping.");
+                    continue;
                 }
+
+                Map<String, Identifiable> data = DATA.get(folder);
+                try (Stream<Path> paths = Files.walk(folderPath)) {
+                    paths.filter(p -> p.toString().endsWith(".json")).forEach(file -> {
+                        try (Reader reader = new FileReader(file.toFile())) {
+                            JsonElement jsonValue = GSON.fromJson(reader, JsonElement.class);
+                            Identifiable obj = (Identifiable) codec.parse(JsonOps.INSTANCE, jsonValue).getOrThrow();
+                            data.put(obj.id(), obj);
+                        } catch (Exception e) {
+                            LOGGER.info("Error parsing " + file.getFileName() + " in '/" + folder + "': " + e);
+                        }
+                    });
+                }
+
+                LOGGER.info("Loaded " + data.size() + " objects for type " + folder);
             }
+        } catch (Exception e) {
+            LOGGER.error("Error loading data: " + e);
         }
     }
 
-    @FunctionalInterface
-    interface Parser {
-        Identifiable parse(FileHandle jsonFile);
-    }
+    static {
+        SCHEMA.put("class", CharacterClass.CODEC);
+        SCHEMA.put("item", Item.CODEC);
+        SCHEMA.put("entity", EntityType.CODEC);
+        SCHEMA.put("loot_table", LootTable.CODEC);
 
-    public interface Identifiable {
-        String id();
-
-        default void onLoad(Main main) {}
+        for (String key : SCHEMA.keySet()) {
+            DATA.put(key, new HashMap<>());
+        }
     }
 }

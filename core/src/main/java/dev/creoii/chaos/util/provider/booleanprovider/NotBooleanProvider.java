@@ -1,11 +1,18 @@
 package dev.creoii.chaos.util.provider.booleanprovider;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-public class NotBooleanProvider implements BooleanProvider {
-    private final BooleanProvider value;
+public record NotBooleanProvider(BooleanProvider value) implements BooleanProvider {
+    public static final MapCodec<NotBooleanProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
+        return instance.group(
+            BooleanProvider.CODEC.fieldOf("value").forGetter(NotBooleanProvider::value)
+        ).apply(instance, NotBooleanProvider::new);
+    });
 
-    public NotBooleanProvider(BooleanProvider value) {
-        this.value = value;
+    @Override
+    public Type getType() {
+        return Type.NOT;
     }
 
     @Override

@@ -1,23 +1,39 @@
 package dev.creoii.chaos.entity.behavior.action;
 
-import com.badlogic.gdx.utils.JsonValue;
-import dev.creoii.chaos.entity.controller.EnemyController;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.chaos.entity.EnemyEntity;
+import dev.creoii.chaos.entity.controller.EntityController;
 
 public class MoveAction extends Action {
+    public static final MapCodec<MoveAction> CODEC = RecordCodecBuilder.mapCodec(instance -> {
+        return instance.group(
+            Codec.STRING.fieldOf("movement").forGetter(MoveAction::getMovementId)
+        ).apply(instance, MoveAction::new);
+    });
     private final String movementId;
 
-    public MoveAction(String movementId, JsonValue data) {
-        super(data);
+    public MoveAction(String movementId) {
         this.movementId = movementId;
     }
 
     @Override
-    public void update(EnemyController controller, int time, float delta) {
-        Movements.MOVEMENTS.get(movementId).accept(controller.getEntity(), delta, getData());
+    public Type getType() {
+        return Type.MOVE;
+    }
+
+    public String getMovementId() {
+        return movementId;
     }
 
     @Override
-    public void reset(EnemyController controller) {
+    public void update(EntityController<? extends EnemyEntity> controller, int time, float delta) {
+        Movements.MOVEMENTS.get(movementId).accept(controller.getEntity(), delta);
+    }
+
+    @Override
+    public void reset(EntityController<? extends EnemyEntity> controller) {
 
     }
 }

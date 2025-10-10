@@ -1,10 +1,21 @@
 package dev.creoii.chaos.util.provider.booleanprovider;
 
-public class ConstantBooleanProvider implements BooleanProvider {
-    private final boolean value;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-    public ConstantBooleanProvider(boolean value) {
-        this.value = value;
+public record ConstantBooleanProvider(boolean value) implements BooleanProvider {
+    public static final ConstantBooleanProvider TRUE = new ConstantBooleanProvider(true);
+    public static final ConstantBooleanProvider FALSE = new ConstantBooleanProvider(false);
+    public static final MapCodec<ConstantBooleanProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
+        return instance.group(
+            Codec.BOOL.fieldOf("value").forGetter(ConstantBooleanProvider::value)
+        ).apply(instance, ConstantBooleanProvider::new);
+    });
+
+    @Override
+    public Type getType() {
+        return Type.CONSTANT;
     }
 
     @Override

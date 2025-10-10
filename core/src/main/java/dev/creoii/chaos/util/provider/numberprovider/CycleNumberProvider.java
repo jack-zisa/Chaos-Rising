@@ -1,12 +1,19 @@
 package dev.creoii.chaos.util.provider.numberprovider;
 
-public class CycleNumberProvider implements NumberProvider {
-    private final NumberProvider value;
-    private final NumberProvider max;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-    public CycleNumberProvider(NumberProvider value, NumberProvider max) {
-        this.value = value;
-        this.max = max;
+public record CycleNumberProvider(NumberProvider value, NumberProvider max) implements NumberProvider {
+    public static final MapCodec<CycleNumberProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
+        return instance.group(
+            NumberProvider.CODEC.fieldOf("value").forGetter(CycleNumberProvider::value),
+            NumberProvider.CODEC.fieldOf("max").forGetter(CycleNumberProvider::max)
+        ).apply(instance, CycleNumberProvider::new);
+    });
+
+    @Override
+    public Type getType() {
+        return Type.CYCLE;
     }
 
     @Override

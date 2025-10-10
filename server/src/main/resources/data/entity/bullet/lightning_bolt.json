@@ -1,0 +1,68 @@
+{
+  "id": "lightning_bolt",
+  "type": "bullet",
+  "lifetime": 150,
+  "path": {
+    "type": "simple",
+    "speed": 5,
+    "offset": {
+      "type": "mul",
+      "a": {
+        "type": "mul",
+        "a": {
+          "type": "perpendicular",
+          "value": {
+            "type": "direction",
+            "from": {
+              "type": "source_pos"
+            },
+            "to": {
+              "type": "target_pos"
+            }
+          }
+        },
+        "b": {
+          "type": "mul",
+          "a": {
+            "type": "cos",
+            "value": {
+              "type": "mul",
+              "a": {
+                "type": "constant",
+                "x": {
+                  "type": "sub",
+                  "a": {
+                    "type": "time"
+                  },
+                  "b": {
+                    "type": "spawn_time"
+                  }
+                },
+                "y": {
+                  "type": "sub",
+                  "a": {
+                    "type": "time"
+                  },
+                  "b": {
+                    "type": "spawn_time"
+                  }
+                }
+              },
+              "b": [0.075, 0.075]
+            }
+          },
+          "b": [4, 4]
+        }
+      },
+      "b": {
+        "type": "constant",
+        "x": {
+          "type": "bullet_index"
+        },
+        "y": {
+          "type": "bullet_index"
+        }
+      }
+    }
+  }
+}

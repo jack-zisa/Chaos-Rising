@@ -1,11 +1,20 @@
 package dev.creoii.chaos.util.provider.vecprovider;
 
 import com.badlogic.gdx.math.Vector2;
+import com.mojang.serialization.MapCodec;
 
-public class TargetPosVecProvider implements VecProvider {
+public record TargetPosVecProvider() implements VecProvider {
+    private static final TargetPosVecProvider INSTANCE = new TargetPosVecProvider();
+    public static final MapCodec<TargetPosVecProvider> CODEC = MapCodec.unit(INSTANCE);
+
+    @Override
+    public Type getType() {
+        return Type.TARGET_POS;
+    }
+
     @Override
     public Vector2 get(Context context) {
-        return context.game().getActiveCharacter().getCenterPos().cpy();
+        return Vector2.Zero;
     }
 
     @Override

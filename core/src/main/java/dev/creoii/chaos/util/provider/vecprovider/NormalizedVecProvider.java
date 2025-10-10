@@ -1,12 +1,19 @@
 package dev.creoii.chaos.util.provider.vecprovider;
 
 import com.badlogic.gdx.math.Vector2;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-public class NormalizedVecProvider implements VecProvider {
-    private final VecProvider value;
+public record NormalizedVecProvider(VecProvider value) implements VecProvider {
+    public static final MapCodec<NormalizedVecProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
+        return instance.group(
+            VecProvider.CODEC.fieldOf("value").forGetter(NormalizedVecProvider::value)
+        ).apply(instance, NormalizedVecProvider::new);
+    });
 
-    public NormalizedVecProvider(VecProvider value) {
-        this.value = value;
+    @Override
+    public Type getType() {
+        return Type.NORMALIZED;
     }
 
     @Override

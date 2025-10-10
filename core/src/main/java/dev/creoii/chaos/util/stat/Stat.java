@@ -1,12 +1,21 @@
 package dev.creoii.chaos.util.stat;
 
-import com.badlogic.gdx.utils.JsonValue;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public class Stat {
+    public static final Codec<Stat> CODEC = RecordCodecBuilder.create(instance -> {
+        return instance.group(
+            Stat.Type.CODEC.fieldOf("stat_type").forGetter(Stat::type),
+            Codec.INT.optionalFieldOf("amount").forGetter(stat -> stat.base == 0 ? Optional.empty() : Optional.of(stat.base)),
+            ModifierEntry.CODEC.listOf().optionalFieldOf("modifiers").forGetter(stat -> stat.modifiers.isEmpty() ? Optional.empty() : Optional.of(stat.modifiers))
+        ).apply(instance, (type, amount, modifiers) -> modifiers.map(modifierEntries -> new Stat(type, amount.orElse(0), modifierEntries)).orElseGet(() -> new Stat(type, amount.orElse(0))));
+    });
     private final Type type;
     private int base;
     private final List<ModifierEntry> modifiers = new ArrayList<>();
@@ -16,12 +25,26 @@ public class Stat {
         this.base = base;
     }
 
+    public Stat(Type type) {
+        this(type, 0);
+    }
+
+    public Stat(Type type, int base, List<ModifierEntry> modifiers) {
+        this.type = type;
+        this.base = base;
+        modifiers.forEach(this::addModifier);
+    }
+
     public Type type() {
         return type;
     }
 
     public int base() {
         return base;
+    }
+
+    public List<ModifierEntry> getModifiers() {
+        return modifiers;
     }
 
     public void set(int value) {
@@ -53,25 +76,14 @@ public class Stat {
         return String.valueOf(value());
     }
 
-    public static Stat parse(JsonValue jsonValue, Type type) {
-        if (jsonValue != null) {
-            if (jsonValue.isNumber()) {
-                return new Stat(type, jsonValue.asInt());
-            } else if (jsonValue.isObject()) {
-                Stat stat = new Stat(type, jsonValue.getInt("value"));
-                jsonValue.get("entries").forEach(entryValue -> stat.addModifier(ModifierEntry.parse(entryValue)));
-                return stat;
-            }
-        }
-        return new Stat(type, 0);
-    }
-
     public enum Type {
         HEALTH,
         SPEED,
         ATTACK_SPEED,
         DEFENSE,
         ATTACK,
-        VITALITY
+        VITALITY;
+
+        public static final Codec<Type> CODEC = Codec.STRING.xmap(s -> Type.valueOf(s.toUpperCase()), type -> type.name().toLowerCase());
     }
 }

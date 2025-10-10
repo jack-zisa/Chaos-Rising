@@ -1,0 +1,15 @@
+{
+  "id": "polar_blade",
+  "type": "weapon",
+  "attack": {
+    "type": "simple",
+    "bullet_id": "lightning_bolt",
+    "damage": {
+      "type": "random",
+      "min": 0,
+      "max": 20
+    },
+    "bullet_count": 3,
+    "arc_gap": 5
+  }
+}

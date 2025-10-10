@@ -1,0 +1,18 @@
+{
+  "id": "obsidian_kris",
+  "type": "weapon",
+  "attack": {
+    "type": "simple",
+    "bullet_id": "dark_magic_blade",
+    "damage": 2,
+    "bullet_count": 12,
+    "arc_gap": 30
+  },
+  "stat_bonus": [
+    {
+      "type": "speed",
+      "amount": -8,
+      "modifier": "max"
+    }
+  ]
+}

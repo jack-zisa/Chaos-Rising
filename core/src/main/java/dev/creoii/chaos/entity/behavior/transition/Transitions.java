@@ -1,7 +1,6 @@
 package dev.creoii.chaos.entity.behavior.transition;
 
 import com.badlogic.gdx.utils.JsonValue;
-import dev.creoii.chaos.entity.behavior.Behavior;
 import dev.creoii.chaos.entity.behavior.MultiBehavior;
 
 import java.util.HashMap;

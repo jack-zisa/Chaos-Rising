@@ -1,0 +1,8 @@
+{
+  "id": "test_obj",
+  "type": "enemy",
+  "scale": 1,
+  "stats": {
+    "health": 100
+  }
+}

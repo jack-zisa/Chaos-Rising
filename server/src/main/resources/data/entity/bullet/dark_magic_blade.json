@@ -1,0 +1,10 @@
+{
+  "id": "dark_magic_blade",
+  "type": "bullet",
+  "lifetime": 100,
+  "path": {
+    "type": "simple",
+    "speed": 10
+  },
+  "piercing": true
+}

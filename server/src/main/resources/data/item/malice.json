@@ -1,0 +1,22 @@
+{
+  "id": "malice",
+  "type": "weapon",
+  "attack": {
+    "type": "simple",
+    "bullet_id": "dark_magic",
+    "damage": 10
+  },
+  "stat_bonus": [
+    {
+      "type": "health",
+      "amount": 100,
+      "modifier": "max"
+    },
+    {
+      "type": "defense",
+      "amount": -5,
+      "operation": "add",
+      "modifier": "max"
+    }
+  ]
+}

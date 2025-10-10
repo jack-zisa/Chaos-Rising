@@ -1,0 +1,16 @@
+{
+  "id": "brilliance_blast",
+  "type": "bullet",
+  "lifetime": 150,
+  "path": {
+    "type": "simple",
+    "speed": 10,
+    "arc_speed": {
+      "type": "curve",
+      "start": 0.05,
+      "end": 0,
+      "duration": 150,
+      "curve": "ease_in"
+    }
+  }
+}

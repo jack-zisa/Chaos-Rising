@@ -1,22 +1,28 @@
 package dev.creoii.chaos.util.provider.vecprovider;
 
 import com.badlogic.gdx.math.Vector2;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.util.provider.Operation;
 
-public class BinaryVecProvider implements VecProvider {
-    private final VecProvider a, b;
-    private final Operation op;
+public record BinaryVecProvider(VecProvider a, VecProvider b, Operation operation) implements VecProvider {
+    public static final MapCodec<BinaryVecProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
+        return instance.group(
+            VecProvider.CODEC.fieldOf("a").forGetter(BinaryVecProvider::a),
+            VecProvider.CODEC.fieldOf("b").forGetter(BinaryVecProvider::b),
+            Operation.CODEC.fieldOf("operation").orElse(Operation.ADD).forGetter(BinaryVecProvider::operation)
+        ).apply(instance, BinaryVecProvider::new);
+    });
 
-    public BinaryVecProvider(VecProvider a, VecProvider b, Operation op) {
-        this.a = a;
-        this.b = b;
-        this.op = op;
+    @Override
+    public Type getType() {
+        return Type.BINARY;
     }
 
     @Override
     public Vector2 get(Context context) {
         Vector2 av = a.get(context), bv = b.get(context);
-        return switch (op) {
+        return switch (operation) {
             case ADD -> av.add(bv);
             case SUB -> av.sub(bv);
             case MUL -> av.scl(bv);
@@ -40,6 +46,6 @@ public class BinaryVecProvider implements VecProvider {
 
     @Override
     public VecProvider copy() {
-        return new BinaryVecProvider(a.copy(), b.copy(), op);
+        return new BinaryVecProvider(a.copy(), b.copy(), operation);
     }
 }

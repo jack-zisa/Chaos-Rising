@@ -1,0 +1,18 @@
+{
+  "id": "twilight",
+  "type": "weapon",
+  "rarity": "legendary",
+  "attack": {
+    "type": "simple",
+    "bullet_id": "lightning_bolt",
+    "damage": 10,
+    "angle_offset": 180
+  },
+  "stat_bonus": [
+    {
+      "type": "health",
+      "amount": 100,
+      "modifier": "max"
+    }
+  ]
+}

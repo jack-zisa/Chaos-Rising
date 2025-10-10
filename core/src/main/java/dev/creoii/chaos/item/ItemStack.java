@@ -1,11 +1,21 @@
 package dev.creoii.chaos.item;
 
-import dev.creoii.chaos.InputManager;
-import dev.creoii.chaos.entity.inventory.Slot;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.chaos.DataManager;
+import dev.creoii.chaos.Game;
+import dev.creoii.chaos.inventory.Slot;
 
 import javax.annotation.Nullable;
+import java.io.Serializable;
 
-public class ItemStack {
+public class ItemStack implements Serializable {
+    public static final Codec<ItemStack> CODEC = RecordCodecBuilder.create(instance -> {
+        return instance.group(
+            Codec.STRING.fieldOf("id").forGetter(stack -> stack.getItem() == null ? "" : stack.getItem().id()),
+            Codec.INT.fieldOf("count").orElse(1).forGetter(ItemStack::getCount)
+        ).apply(instance, (id, count) -> new ItemStack(DataManager.getItem(id), count));
+    });
     public static final ItemStack EMPTY = new ItemStack(null, 0);
     @Nullable
     private Item item;
@@ -44,9 +54,9 @@ public class ItemStack {
     /**
      * @return false to allow dragging, true to disable dragging
      */
-    public boolean clickInSlot(InputManager manager, Slot slot) {
+    public boolean clickInSlot(Game game, int id, Slot slot) {
         if (item == null)
             return false;
-        return item.clickInSlot(manager, slot, this);
+        return item.clickInSlot(game, id, slot, this);
     }
 }

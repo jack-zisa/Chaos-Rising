@@ -7,15 +7,14 @@ buildscript {
     google()
     maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
     maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots/' }
+    maven { url 'http://clojars.org/repo/' }
   }
   dependencies {
-
 
   }
 }
 
 allprojects {
-  apply plugin: 'eclipse'
   apply plugin: 'idea'
 
   // This allows you to "Build and run using IntelliJ IDEA", an option in IDEA's Settings.
@@ -25,11 +24,19 @@ allprojects {
       testOutputDir file('build/classes/java/test')
     }
   }
+
+  configurations {
+    dev {
+      canBeResolved = false
+      canBeConsumed = true
+    }
+  }
 }
 
 configure(subprojects) {
   apply plugin: 'java-library'
-  sourceCompatibility = 21
+  //sourceCompatibility = JavaVersion.VERSION_22
+  //targetCompatibility = JavaVersion.VERSION_22
 
   // From https://lyze.dev/2021/04/29/libGDX-Internal-Assets-List/
   // The article can be helpful when using assets.txt in your project.
@@ -67,7 +74,6 @@ subprojects {
     maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
     maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots/' }
     maven { url 'https://jitpack.io' }
+    maven { url 'https://libraries.minecraft.net' }
   }
 }
-
-eclipse.project.name = 'Chaos-Rising' + '-parent'

@@ -1,16 +1,21 @@
 package dev.creoii.chaos.util.provider.booleanprovider;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.util.provider.BinaryOperation;
 
-public class BinaryBooleanProvider implements BooleanProvider {
-    private final BooleanProvider a;
-    private final BooleanProvider b;
-    private final BinaryOperation operation;
+public record BinaryBooleanProvider(BooleanProvider a, BooleanProvider b, BinaryOperation operation) implements BooleanProvider {
+    public static final MapCodec<BinaryBooleanProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
+        return instance.group(
+            BooleanProvider.CODEC.fieldOf("a").forGetter(BinaryBooleanProvider::a),
+            BooleanProvider.CODEC.fieldOf("b").forGetter(BinaryBooleanProvider::b),
+            BinaryOperation.CODEC.fieldOf("operation").orElse(BinaryOperation.AND).forGetter(BinaryBooleanProvider::operation)
+        ).apply(instance, BinaryBooleanProvider::new);
+    });
 
-    public BinaryBooleanProvider(BooleanProvider a, BooleanProvider b, BinaryOperation operation) {
-        this.a = a;
-        this.b = b;
-        this.operation = operation;
+    @Override
+    public Type getType() {
+        return Type.BINARY;
     }
 
     @Override

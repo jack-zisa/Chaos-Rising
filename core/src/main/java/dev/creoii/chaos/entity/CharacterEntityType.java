@@ -1,58 +1,47 @@
 package dev.creoii.chaos.entity;
 
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.Game;
-import dev.creoii.chaos.Main;
-import dev.creoii.chaos.entity.character.CharacterClass;
-import dev.creoii.chaos.entity.character.CharacterEntity;
+import dev.creoii.chaos.inventory.CharacterInventory;
+import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.Mutable;
 
-import java.util.HashSet;
 import java.util.Map;
-import java.util.UUID;
 
 public record CharacterEntityType(Mutable<CharacterClass> characterClass) implements EntityType<CharacterEntity> {
+    public static final MapCodec<CharacterEntityType> CODEC = RecordCodecBuilder.mapCodec(instance -> {
+        return instance.group(
+            CharacterClass.ID_CODEC.fieldOf("class").forGetter(characterEntityType -> characterEntityType.characterClass().get())
+        ).apply(instance, characterClass -> new CharacterEntityType(new Mutable<>(characterClass)));
+    });
+
     @Override
     public String id() {
-        return "";
+        return characterClass.get().id();
     }
 
     @Override
-    public void onLoad(Main main) {
-        if (main.getGame().getCollisionManager().getCellSize() < characterClass.get().scale())
-            main.getGame().getCollisionManager().setCellSize(characterClass.get().scale());
+    public EntityGroup group() {
+        return EntityGroup.CHARACTER;
     }
 
     @Override
     public float scale() {
-        return characterClass.get().scale();
+        return characterClass.get().scale() * Entity.COORDINATE_SCALE;
     }
 
-    @Override
-    public String textureId() {
-        return characterClass.get().textureId();
-    }
-
-    public CharacterEntity create(Game game, Vector2 pos, Map<String, Object> customData) {
-        CharacterEntity character = new CharacterEntity(this);
-        character.game = game;
-        character.uuid = UUID.randomUUID();
-        character.pos = pos;
-        character.centerPos = new Vector2();
+    public CharacterEntity create(Game game, int id, Vector2 pos, Map<String, Object> customData) {
+        CharacterEntity character = new CharacterEntity(game, this, id, pos.cpy(), (int) customData.get("connection_id"), new CharacterInventory());
+/*        character.centerPos = new Vector2();
         character.colliderRect = new Rectangle();
         character.colliderRect.setPosition(pos);
-        character.colliderRect.setWidth(character.getCollider().x * scale());
-        character.colliderRect.setHeight(character.getCollider().y * scale());
+        character.colliderRect.setSize(scale());
         character.collidingWith = new HashSet<>();
         character.spawnTime = game.getGametime();
-        if (characterClass.get().textureId() != null) {
-            character.sprite = new Sprite(game.getTextureManager().getTexture("class", characterClass.get().textureId()));
-            character.sprite.setSize(scale(), scale());
-            character.getCenterPos();
-        }
-        character.postSpawn();
+        character.getCenterPos();
+        character.postSpawn();*/
         return character;
     }
 }

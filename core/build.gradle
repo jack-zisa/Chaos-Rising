@@ -1,5 +1,4 @@
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
-eclipse.project.name = appName + '-core'
 
 dependencies {
   api "com.badlogicgames.box2dlights:box2dlights:$box2dlightsVersion"
@@ -18,6 +17,8 @@ dependencies {
   api "com.github.tommyettinger:libgdx-utils:$utilsVersion"
 
   implementation "com.google.guava:guava:$guavaVersion"
+  implementation "com.esotericsoftware:kryonet:$kryonetVersion"
+  implementation "com.mojang:datafixerupper:$datafixerupperVersion"
 
   if(enableGraalNative == 'true') {
     implementation "io.github.berstanio:gdx-svmhelper-annotations:$graalHelperVersion"

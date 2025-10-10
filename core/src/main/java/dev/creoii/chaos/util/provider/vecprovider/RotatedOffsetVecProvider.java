@@ -1,16 +1,21 @@
 package dev.creoii.chaos.util.provider.vecprovider;
 
 import com.badlogic.gdx.math.Vector2;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-public class RotatedOffsetVecProvider implements VecProvider {
-    private final VecProvider from;
-    private final VecProvider to;
-    private final VecProvider offset;
+public record RotatedOffsetVecProvider(VecProvider from, VecProvider to, VecProvider offset) implements VecProvider {
+    public static final MapCodec<RotatedOffsetVecProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
+        return instance.group(
+            VecProvider.CODEC.fieldOf("from").forGetter(RotatedOffsetVecProvider::from),
+            VecProvider.CODEC.fieldOf("to").forGetter(RotatedOffsetVecProvider::to),
+            VecProvider.CODEC.fieldOf("offset").forGetter(RotatedOffsetVecProvider::offset)
+        ).apply(instance, RotatedOffsetVecProvider::new);
+    });
 
-    public RotatedOffsetVecProvider(VecProvider from, VecProvider to, VecProvider offset) {
-        this.from = from;
-        this.to = to;
-        this.offset = offset;
+    @Override
+    public Type getType() {
+        return Type.ROTATED_OFFSET;
     }
 
     @Override

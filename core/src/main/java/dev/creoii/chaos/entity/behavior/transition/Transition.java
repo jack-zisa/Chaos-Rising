@@ -3,7 +3,6 @@ package dev.creoii.chaos.entity.behavior.transition;
 import com.badlogic.gdx.utils.JsonValue;
 import dev.creoii.chaos.entity.behavior.MultiBehavior;
 import dev.creoii.chaos.entity.behavior.phase.Phase;
-import dev.creoii.chaos.entity.controller.EnemyController;
 import dev.creoii.chaos.util.function.TriFunction;
 
 import javax.annotation.Nullable;

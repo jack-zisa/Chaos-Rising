@@ -1,0 +1,11 @@
+{
+  "id": "serpent_lake_orb",
+  "type": "weapon",
+  "attack": {
+    "type": "simple",
+    "bullet_id": "brilliance_blast",
+    "damage": 2,
+    "bullet_count": 360,
+    "arc_gap": 1
+  }
+}

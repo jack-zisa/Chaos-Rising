@@ -1,21 +1,27 @@
 package dev.creoii.chaos.util.provider.numberprovider;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.util.provider.Operation;
 
-public class BinaryNumberProvider implements NumberProvider {
-    private final NumberProvider a, b;
-    private final Operation op;
+public record BinaryNumberProvider(NumberProvider a, NumberProvider b, Operation operation) implements NumberProvider {
+    public static final MapCodec<BinaryNumberProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
+        return instance.group(
+            NumberProvider.CODEC.fieldOf("a").forGetter(BinaryNumberProvider::a),
+            NumberProvider.CODEC.fieldOf("b").forGetter(BinaryNumberProvider::b),
+            Operation.CODEC.fieldOf("operation").orElse(Operation.ADD).forGetter(BinaryNumberProvider::operation)
+        ).apply(instance, BinaryNumberProvider::new);
+    });
 
-    public BinaryNumberProvider(NumberProvider a, NumberProvider b, Operation op) {
-        this.a = a;
-        this.b = b;
-        this.op = op;
+    @Override
+    public Type getType() {
+        return Type.BINARY;
     }
 
     @Override
     public Float get(Context context) {
         float av = a.get(context), bv = b.get(context);
-        return switch (op) {
+        return switch (operation) {
             case ADD -> av + bv;
             case SUB -> av - bv;
             case MUL -> av * bv;
@@ -27,7 +33,7 @@ public class BinaryNumberProvider implements NumberProvider {
 
     @Override
     public BinaryNumberProvider copy() {
-        return new BinaryNumberProvider(a.copy(), b.copy(), op);
+        return new BinaryNumberProvider(a.copy(), b.copy(), operation);
     }
 
     @Override

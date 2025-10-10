@@ -1,24 +1,28 @@
 package dev.creoii.chaos.entity;
 
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.JsonValue;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.Game;
-import dev.creoii.chaos.Main;
-import dev.creoii.chaos.texture.TextureManager;
+import dev.creoii.chaos.inventory.Inventory;
+import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.provider.booleanprovider.BooleanProvider;
 
-import javax.annotation.Nullable;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.UUID;
 
-public record LootDropEntityType(String id, float scale, @Nullable String textureId, BooleanProvider removeEmpty) implements EntityType<LootDropEntity> {
+public record LootDropEntityType(String id, float scale, BooleanProvider removeEmpty) implements EntityType<LootDropEntity> {
+    public static final MapCodec<LootDropEntityType> CODEC = RecordCodecBuilder.mapCodec(instance -> {
+        return instance.group(
+            Codec.STRING.fieldOf("id").forGetter(LootDropEntityType::id),
+            Codec.FLOAT.fieldOf("scale").orElse(1f).forGetter(LootDropEntityType::scale),
+            BooleanProvider.CODEC.fieldOf("remove_empty").forGetter(LootDropEntityType::removeEmpty)
+        ).apply(instance, LootDropEntityType::new);
+    });
+
     @Override
-    public void onLoad(Main main) {
-        if (main.getGame().getCollisionManager().getCellSize() < scale())
-            main.getGame().getCollisionManager().setCellSize(scale());
+    public EntityGroup group() {
+        return EntityGroup.LOOT_DROP;
     }
 
     @Override
@@ -26,31 +30,16 @@ public record LootDropEntityType(String id, float scale, @Nullable String textur
         return scale * Entity.COORDINATE_SCALE;
     }
 
-    public LootDropEntity create(Game game, Vector2 pos, Map<String, Object> customData) {
-        LootDropEntity lootDrop = new LootDropEntity(this);
-        lootDrop.game = game;
-        lootDrop.uuid = UUID.randomUUID();
-        lootDrop.pos = pos;
-        lootDrop.centerPos = new Vector2();
+    public LootDropEntity create(Game game, int id, Vector2 pos, Map<String, Object> customData) {
+        LootDropEntity lootDrop = new LootDropEntity(game, this, id, pos, new Inventory(2, 4));
+        /*lootDrop.centerPos = new Vector2();
         lootDrop.colliderRect = new Rectangle();
         lootDrop.colliderRect.setPosition(pos);
-        lootDrop.colliderRect.setWidth(lootDrop.getCollider().x * scale());
-        lootDrop.colliderRect.setHeight(lootDrop.getCollider().y * scale());
+        lootDrop.colliderRect.setSize(scale());
         lootDrop.collidingWith = new HashSet<>();
         lootDrop.spawnTime = game.getGametime();
-        if (textureId != null) {
-            lootDrop.sprite = new Sprite(game.getTextureManager().getTexture("loot_drop", textureId));
-            lootDrop.sprite.setSize(scale(), scale());
-            lootDrop.getCenterPos();
-        }
-        lootDrop.postSpawn();
+        lootDrop.getCenterPos();
+        lootDrop.postSpawn();*/
         return lootDrop;
-    }
-
-    public static LootDropEntityType parse(String id, JsonValue jsonValue) {
-        float scale = jsonValue.getFloat("scale", 1f);
-        String textureId = jsonValue.getString("texture", TextureManager.DEFAULT_TEXTURE_ID);
-        BooleanProvider removeEmpty = BooleanProvider.parse(jsonValue.get("remove_empty"), false);
-        return new LootDropEntityType(id, scale, textureId, removeEmpty);
     }
 }

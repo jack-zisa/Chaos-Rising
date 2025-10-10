@@ -1,30 +1,25 @@
 package dev.creoii.chaos.entity.behavior.action;
 
-import com.badlogic.gdx.utils.JsonValue;
-import dev.creoii.chaos.attack.Attack;
-import dev.creoii.chaos.entity.controller.EnemyController;
+import com.mojang.serialization.Codec;
+import dev.creoii.chaos.entity.EnemyEntity;
+import dev.creoii.chaos.entity.controller.EntityController;
 
 public abstract class Action {
-    private final JsonValue data;
+    public static final Codec<Action> CODEC = Action.Type.CODEC.dispatch(Action::getType, type -> switch (type) {
+        case ATTACK -> AttackAction.CODEC;
+        case MOVE -> MoveAction.CODEC;
+    });
 
-    protected Action(JsonValue data) {
-        this.data = data;
+    public abstract Type getType();
+
+    public abstract void update(EntityController<? extends EnemyEntity> controller, int time, float delta);
+
+    public abstract void reset(EntityController<? extends EnemyEntity> controller);
+
+    public enum Type {
+        ATTACK,
+        MOVE;
+
+        public static final Codec<Type> CODEC = Codec.STRING.xmap(s -> Type.valueOf(s.toUpperCase()), type -> type.name().toLowerCase());
     }
-
-    public JsonValue getData() {
-        return data;
-    }
-
-    public static Action parse(JsonValue jsonValue) {
-        String actionTypeId = jsonValue.getString("id");
-        return switch (actionTypeId) {
-            case "move" -> new MoveAction(jsonValue.getString("movement"), jsonValue);
-            case "attack" -> new AttackAction(Attack.parse(jsonValue.get("attack")), jsonValue);
-            default -> throw new IllegalStateException("Unexpected value: " + actionTypeId);
-        };
-    }
-
-    public abstract void update(EnemyController controller, int time, float delta);
-
-    public abstract void reset(EnemyController controller);
 }

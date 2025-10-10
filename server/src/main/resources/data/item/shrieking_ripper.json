@@ -1,0 +1,25 @@
+{
+  "id": "shrieking_ripper",
+  "type": "weapon",
+  "rarity": "uncommon",
+  "attack": {
+    "type": "simple",
+    "bullet_id": "crystal_arrow",
+    "damage": 10,
+    "bullet_count": 3,
+    "arc_gap": 10,
+    "source": {
+      "type": "mouse_pos"
+    },
+    "target": {
+      "type": "source_pos"
+    }
+  },
+  "stat_bonus": [
+    {
+      "type": "health",
+      "amount": 100,
+      "modifier": "max"
+    }
+  ]
+}

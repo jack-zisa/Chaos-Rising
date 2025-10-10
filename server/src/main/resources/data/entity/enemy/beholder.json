@@ -1,0 +1,49 @@
+{
+  "id": "beholder",
+  "type": "enemy",
+  "scale": 2,
+  "stats": {
+    "health": 50
+  },
+  "behavior": {
+    "type": "multi",
+    "phase": {
+      "actions": [
+        {
+          "type": "move",
+          "movement": "chase",
+          "speed": 0.5
+        },
+        {
+          "type": "attack",
+          "attack": {
+            "type": "simple",
+            "bullet_id": "fireball",
+            "damage": 20,
+            "bullet_count": 6,
+            "arc_gap": 60,
+            "angle_offset": {
+              "type": "cycle",
+              "value": {
+                "type": "binary",
+                "a": {
+                  "type": "time"
+                },
+                "b": 0.33334,
+                "operation": "mul"
+              },
+              "max": 360
+            },
+            "target": {
+              "type": "constant",
+              "x": 0,
+              "y": 0
+            }
+          },
+          "cooldown": 10
+        }
+      ]
+    }
+  },
+  "loot_table": "test_beholder"
+}

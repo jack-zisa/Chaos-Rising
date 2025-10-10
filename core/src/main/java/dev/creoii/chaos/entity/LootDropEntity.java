@@ -1,22 +1,34 @@
 package dev.creoii.chaos.entity;
 
 import com.badlogic.gdx.math.Vector2;
-import dev.creoii.chaos.entity.controller.EntityController;
-import dev.creoii.chaos.entity.inventory.Inventory;
+import dev.creoii.chaos.Game;
+import dev.creoii.chaos.entity.serialization.EntityCustomData;
+import dev.creoii.chaos.entity.serialization.LootDropData;
+import dev.creoii.chaos.inventory.Inventory;
+import dev.creoii.chaos.item.ItemStack;
+
+import javax.annotation.Nullable;
 
 public class LootDropEntity extends Entity {
-    private Inventory inventory;
+    private final Inventory inventory;
 
-    public LootDropEntity(LootDropEntityType type) {
-        super(type, new Vector2(1, 1), Group.OTHER);
+    public LootDropEntity(Game game, EntityType<? extends LootDropEntity> type, int id, Vector2 pos, Inventory inventory) {
+        super(game, type, id, pos);
+        this.inventory = inventory;
+    }
+
+    @Nullable
+    @Override
+    public EntityCustomData getCustomPacketData() {
+        return new LootDropData(inventory.isEmpty() ? null : inventory.getSlots());
     }
 
     public Inventory getInventory() {
         return inventory;
     }
 
-    public void setInventory(Inventory inventory) {
-        this.inventory = inventory;
+    public void addItem(ItemStack stack) {
+        inventory.addItem(stack);
     }
 
     @Override
@@ -25,31 +37,5 @@ public class LootDropEntity extends Entity {
 
         if (gametime - getSpawnTime() >= 2400)
             remove();
-    }
-
-    @Override
-    public EntityController<?> getController() {
-        return null;
-    }
-
-    @Override
-    public void collisionEnter(Entity other) {
-
-    }
-
-    @Override
-    public void collisionExit(Entity other) {
-
-    }
-
-    @Override
-    public void postSpawn() {
-    }
-
-    @Override
-    public void remove() {
-        super.remove();
-        if (game.getActiveCharacter().getLootUuid().equals(uuid))
-            game.getActiveCharacter().clearLootUuid();
     }
 }

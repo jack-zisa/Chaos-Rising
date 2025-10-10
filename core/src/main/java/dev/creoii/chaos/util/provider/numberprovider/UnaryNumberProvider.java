@@ -1,20 +1,26 @@
 package dev.creoii.chaos.util.provider.numberprovider;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.util.provider.UnaryOperation;
 
-public class UnaryNumberProvider implements NumberProvider {
-    private final UnaryOperation function;
-    private final NumberProvider value;
+public record UnaryNumberProvider(UnaryOperation operation, NumberProvider value) implements NumberProvider {
+    public static final MapCodec<UnaryNumberProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
+        return instance.group(
+            UnaryOperation.CODEC.fieldOf("operation").orElse(UnaryOperation.SIN).forGetter(UnaryNumberProvider::operation),
+            NumberProvider.CODEC.fieldOf("value").forGetter(UnaryNumberProvider::value)
+        ).apply(instance, UnaryNumberProvider::new);
+    });
 
-    public UnaryNumberProvider(UnaryOperation function, NumberProvider value) {
-        this.function = function;
-        this.value = value;
+    @Override
+    public Type getType() {
+        return Type.UNARY;
     }
 
     @Override
     public Float get(Context context) {
         float v = value.get(context);
-        return switch (function) {
+        return switch (operation) {
             case SIN -> (float) Math.sin(v);
             case COS -> (float) Math.cos(v);
             case TAN -> (float) Math.tan(v);
@@ -26,7 +32,7 @@ public class UnaryNumberProvider implements NumberProvider {
 
     @Override
     public UnaryNumberProvider copy() {
-        return new UnaryNumberProvider(function, value.copy());
+        return new UnaryNumberProvider(operation, value.copy());
     }
 
     @Override

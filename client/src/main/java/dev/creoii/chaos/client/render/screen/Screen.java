@@ -1,0 +1,139 @@
+package dev.creoii.chaos.client.render.screen;
+
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
+import dev.creoii.chaos.client.ClientGame;
+import dev.creoii.chaos.client.input.InputManager;
+import dev.creoii.chaos.client.render.Renderer;
+import dev.creoii.chaos.client.render.screen.widget.Widget;
+import dev.creoii.chaos.client.util.Inputtable;
+import dev.creoii.chaos.client.util.Renderable;
+
+import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.Map;
+
+public abstract class Screen implements Renderable, Inputtable {
+    private static final NinePatch SCREEN_BACKGROUND = new NinePatch(new Texture("textures/ui/screen_background.png"), 4, 4, 4, 4);
+    private final Map<String, Widget> widgets;
+    private final ClientGame game;
+    private final String title;
+    private final Vector2 pos;
+    private final float titleOffsetY;
+
+    public Screen(ClientGame game, String title, Vector2 pos, float titleOffsetY) {
+        this.game = game;
+        this.title = title;
+        this.pos = pos;
+        this.titleOffsetY = titleOffsetY;
+        widgets = new HashMap<>();
+    }
+
+    public ClientGame getGame() {
+        return game;
+    }
+
+    public Vector2 getPos() {
+        return pos;
+    }
+
+    public void addWidget(String key, Widget widget) {
+        widgets.put(key, widget);
+    }
+
+    public void removeWidget(String key) {
+        widgets.remove(key);
+    }
+
+    public Widget getWidget(String key) {
+        return widgets.get(key);
+    }
+
+    public Map<String, Widget> getWidgets() {
+        return widgets;
+    }
+
+    public void open(ClientGame game) {
+        game.getInputManager().addInput(this);
+    }
+
+    public void close(ClientGame game) {
+        game.getInputManager().removeInput(this);
+    }
+
+    public void render(Renderer renderer, @Nullable SpriteBatch batch, @Nullable ShapeRenderer shapeRenderer, BitmapFont font, float delta, boolean debug) {
+        if (batch == null)
+            return;
+        //SCREEN_BACKGROUND.draw(batch, pos.x, pos.y, 200, 200);
+        font.draw(batch, title, pos.x, pos.y + titleOffsetY);
+
+        widgets.forEach((key, widget) -> widget.render(renderer, batch, shapeRenderer, font, delta, debug));
+    }
+
+    @Override
+    public boolean keyDown(InputManager manager, int keycode) {
+        if (keycode == game.getOptionsManager().BACK_KEY.intValue()) {
+            game.getRenderer().clearCurrentScreen();
+        }
+        widgets.forEach((key, widget) -> widget.keyDown(manager, keycode));
+        return Inputtable.super.keyDown(manager, keycode);
+    }
+
+    @Override
+    public void keyHeld(InputManager manager, int keycode) {
+        widgets.forEach((key, widget) -> widget.keyHeld(manager, keycode));
+        Inputtable.super.keyHeld(manager, keycode);
+    }
+
+    @Override
+    public boolean keyUp(InputManager manager, int keycode) {
+        widgets.forEach((key, widget) -> widget.keyUp(manager, keycode));
+        return Inputtable.super.keyUp(manager, keycode);
+    }
+
+    @Override
+    public boolean keyTyped(InputManager manager, char character) {
+        widgets.forEach((key, widget) -> widget.keyTyped(manager, character));
+        return Inputtable.super.keyTyped(manager, character);
+    }
+
+    @Override
+    public boolean touchDown(InputManager manager, int screenX, int screenY, int pointer, int button) {
+        widgets.forEach((key, widget) -> widget.touchDown(manager, screenX, screenY, pointer, button));
+        return Inputtable.super.touchDown(manager, screenX, screenY, pointer, button);
+    }
+
+    @Override
+    public boolean touchUp(InputManager manager, int screenX, int screenY, int pointer, int button) {
+        widgets.forEach((key, widget) -> widget.touchUp(manager, screenX, screenY, pointer, button));
+        return Inputtable.super.touchUp(manager, screenX, screenY, pointer, button);
+    }
+
+    @Override
+    public boolean touchCancelled(InputManager manager, int screenX, int screenY, int pointer, int button) {
+        widgets.forEach((key, widget) -> widget.touchCancelled(manager, screenX, screenY, pointer, button));
+        return Inputtable.super.touchCancelled(manager, screenX, screenY, pointer, button);
+    }
+
+    @Override
+    public boolean touchDragged(InputManager manager, int screenX, int screenY, int pointer) {
+        widgets.forEach((key, widget) -> widget.touchDragged(manager, screenX, screenY, pointer));
+        return Inputtable.super.touchDragged(manager, screenX, screenY, pointer);
+    }
+
+    @Override
+    public boolean mouseMoved(InputManager manager, int screenX, int screenY) {
+        widgets.forEach((key, widget) -> widget.mouseMoved(manager, screenX, screenY));
+        return Inputtable.super.mouseMoved(manager, screenX, screenY);
+    }
+
+    @Override
+    public boolean scrolled(InputManager manager, float amountX, float amountY) {
+        widgets.forEach((key, widget) -> widget.scrolled(manager, amountX, amountY));
+        return Inputtable.super.scrolled(manager, amountX, amountY);
+    }
+}

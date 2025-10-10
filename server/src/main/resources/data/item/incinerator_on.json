@@ -1,0 +1,16 @@
+{
+  "id": "incinerator_on",
+  "type": "armor",
+  "stat_bonus": [
+    {
+      "type": "health",
+      "amount": 100,
+      "modifier": "max"
+    },
+    {
+      "type": "defense",
+      "amount": 10,
+      "modifier": "max"
+    }
+  ]
+}

@@ -1,20 +1,26 @@
 package dev.creoii.chaos.util.provider.vecprovider;
 
 import com.badlogic.gdx.math.Vector2;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
 
-import javax.annotation.Nullable;
+import java.util.Optional;
 
-public class ClampVecProvider implements VecProvider {
-    private final VecProvider vec;
-    private final @Nullable NumberProvider minX, minY, maxX, maxY;
+public record ClampVecProvider(VecProvider vec, Optional<NumberProvider> minX, Optional<NumberProvider> minY, Optional<NumberProvider> maxX, Optional<NumberProvider> maxY) implements VecProvider {
+    public static final MapCodec<ClampVecProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
+        return instance.group(
+            VecProvider.CODEC.fieldOf("vec").forGetter(ClampVecProvider::vec),
+            NumberProvider.CODEC.optionalFieldOf("minX").forGetter(ClampVecProvider::minX),
+            NumberProvider.CODEC.optionalFieldOf("minY").forGetter(ClampVecProvider::minY),
+            NumberProvider.CODEC.optionalFieldOf("maxX").forGetter(ClampVecProvider::maxX),
+            NumberProvider.CODEC.optionalFieldOf("maxY").forGetter(ClampVecProvider::maxY)
+        ).apply(instance, ClampVecProvider::new);
+    });
 
-    public ClampVecProvider(VecProvider vec, @Nullable NumberProvider minX, @Nullable NumberProvider minY, @Nullable NumberProvider maxX, @Nullable NumberProvider maxY) {
-        this.vec = vec;
-        this.minX = minX;
-        this.minY = minY;
-        this.maxX = maxX;
-        this.maxY = maxY;
+    @Override
+    public Type getType() {
+        return Type.CLAMP;
     }
 
     @Override
@@ -24,19 +30,20 @@ public class ClampVecProvider implements VecProvider {
         float x = v.x;
         float y = v.y;
 
-        if (minX != null)
-            x = Math.max(x, minX.get(context));
-        if (maxX != null)
-            x = Math.min(x, maxX.get(context));
-        if (minY != null)
-            y = Math.max(y, minY.get(context));
-        if (maxY != null)
-            y = Math.min(y, maxY.get(context));
+        if (minX.isPresent())
+            x = Math.max(x, minX.get().get(context));
+        if (maxX.isPresent())
+            x = Math.min(x, maxX.get().get(context));
+        if (minY.isPresent())
+            y = Math.max(y, minY.get().get(context));
+        if (maxY.isPresent())
+            y = Math.min(y, maxY.get().get(context));
 
         return new Vector2(x, y);
     }
 
     @Override
     public VecProvider copy() {
-        return new ClampVecProvider(vec.copy(), minX != null ? minX.copy() : null, minY != null ? minY.copy() : null, maxX != null ? maxX.copy() : null, maxY != null ? maxY.copy() : null);
-    }}
+        return new ClampVecProvider(vec.copy(), minX.map(NumberProvider::copy), minY.map(NumberProvider::copy), maxX.map(NumberProvider::copy), maxY.map(NumberProvider::copy));
+    }
+}

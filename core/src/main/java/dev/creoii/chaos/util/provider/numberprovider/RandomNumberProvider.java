@@ -1,11 +1,19 @@
 package dev.creoii.chaos.util.provider.numberprovider;
 
-public class RandomNumberProvider implements NumberProvider {
-    private final NumberProvider min, max;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-    public RandomNumberProvider(NumberProvider min, NumberProvider max) {
-        this.min = min;
-        this.max = max;
+public record RandomNumberProvider(NumberProvider min, NumberProvider max) implements NumberProvider {
+    public static final MapCodec<RandomNumberProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
+        return instance.group(
+            NumberProvider.CODEC.fieldOf("min").forGetter(RandomNumberProvider::min),
+            NumberProvider.CODEC.fieldOf("max").forGetter(RandomNumberProvider::max)
+        ).apply(instance, RandomNumberProvider::new);
+    });
+
+    @Override
+    public Type getType() {
+        return Type.RANDOM;
     }
 
     @Override

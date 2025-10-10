@@ -1,0 +1,165 @@
+{
+  "id": "cactacid",
+  "type": "weapon",
+  "rarity": "uncommon",
+  "attack": {
+    "type": "multi",
+    "attacks": [
+      {
+        "type": "simple",
+        "bullet_id": "fireball",
+        "damage": 10,
+        "source": {
+          "type": "relative_to",
+          "parent": {
+            "type": "source_pos"
+          },
+          "offset": {
+            "type": "rotated_offset",
+            "from": {
+              "type": "source_pos"
+            },
+            "to": {
+              "type": "mouse_pos"
+            },
+            "offset": [0, -100]
+          }
+        },
+        "target": {
+          "type": "relative_to",
+          "parent": {
+            "type": "mouse_pos"
+          },
+          "offset": {
+            "type": "rotated_offset",
+            "from": {
+              "type": "source_pos"
+            },
+            "to": {
+              "type": "mouse_pos"
+            },
+            "offset": [0, -100]
+          }
+        }
+      },
+      {
+        "type": "simple",
+        "bullet_id": "fireball",
+        "damage": 10,
+        "source": {
+          "type": "relative_to",
+          "parent": {
+            "type": "source_pos"
+          },
+          "offset": {
+            "type": "rotated_offset",
+            "from": {
+              "type": "source_pos"
+            },
+            "to": {
+              "type": "mouse_pos"
+            },
+            "offset": [0, 100]
+          }
+        },
+        "target": {
+          "type": "relative_to",
+          "parent": {
+            "type": "mouse_pos"
+          },
+          "offset": {
+            "type": "rotated_offset",
+            "from": {
+              "type": "source_pos"
+            },
+            "to": {
+              "type": "mouse_pos"
+            },
+            "offset": [0, 100]
+          }
+        }
+      },
+      {
+        "type": "simple",
+        "bullet_id": "fireball",
+        "damage": 10,
+        "source": {
+          "type": "relative_to",
+          "parent": {
+            "type": "source_pos"
+          },
+          "offset": {
+            "type": "rotated_offset",
+            "from": {
+              "type": "source_pos"
+            },
+            "to": {
+              "type": "mouse_pos"
+            },
+            "offset": [-100, 0]
+          }
+        },
+        "target": {
+          "type": "relative_to",
+          "parent": {
+            "type": "mouse_pos"
+          },
+          "offset": {
+            "type": "rotated_offset",
+            "from": {
+              "type": "source_pos"
+            },
+            "to": {
+              "type": "mouse_pos"
+            },
+            "offset": [-100, 0]
+          }
+        }
+      },
+      {
+        "type": "simple",
+        "bullet_id": "fireball",
+        "damage": 10,
+        "source": {
+          "type": "relative_to",
+          "parent": {
+            "type": "source_pos"
+          },
+          "offset": {
+            "type": "rotated_offset",
+            "from": {
+              "type": "source_pos"
+            },
+            "to": {
+              "type": "mouse_pos"
+            },
+            "offset": [100, 0]
+          }
+        },
+        "target": {
+          "type": "relative_to",
+          "parent": {
+            "type": "mouse_pos"
+          },
+          "offset": {
+            "type": "rotated_offset",
+            "from": {
+              "type": "source_pos"
+            },
+            "to": {
+              "type": "mouse_pos"
+            },
+            "offset": [100, 0]
+          }
+        }
+      }
+    ]
+  },
+  "stat_bonus": [
+    {
+      "type": "health",
+      "amount": 100,
+      "modifier": "max"
+    }
+  ]
+}

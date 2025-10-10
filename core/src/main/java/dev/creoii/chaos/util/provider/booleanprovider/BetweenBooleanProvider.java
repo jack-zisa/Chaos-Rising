@@ -1,17 +1,22 @@
 package dev.creoii.chaos.util.provider.booleanprovider;
 
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
 
-public class BetweenBooleanProvider implements BooleanProvider {
-    private final NumberProvider value;
-    private final NumberProvider min;
-    private final NumberProvider max;
+public record BetweenBooleanProvider(NumberProvider value, NumberProvider min, NumberProvider max) implements BooleanProvider {
+    public static final MapCodec<BetweenBooleanProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
+        return instance.group(
+            NumberProvider.CODEC.fieldOf("value").forGetter(BetweenBooleanProvider::value),
+            NumberProvider.CODEC.fieldOf("min").forGetter(BetweenBooleanProvider::min),
+            NumberProvider.CODEC.fieldOf("max").forGetter(BetweenBooleanProvider::max)
+        ).apply(instance, BetweenBooleanProvider::new);
+    });
 
-    public BetweenBooleanProvider(NumberProvider value, NumberProvider min, NumberProvider max) {
-        this.value = value;
-        this.min = min;
-        this.max = max;
+    @Override
+    public Type getType() {
+        return Type.BETWEEN;
     }
 
     @Override

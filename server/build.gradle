@@ -1,0 +1,6 @@
+dependencies {
+  implementation "com.esotericsoftware:kryonet:$kryonetVersion"
+  implementation "com.google.guava:guava:$guavaVersion"
+
+  implementation project(":core")
+}

@@ -1,140 +1,120 @@
 package dev.creoii.chaos.entity;
 
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.Game;
-import dev.creoii.chaos.entity.controller.EntityController;
-import dev.creoii.chaos.util.Positionable;
+import dev.creoii.chaos.entity.serialization.EntityCustomData;
 import dev.creoii.chaos.util.Tickable;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
-public abstract class Entity implements Positionable, Tickable {
+public abstract class Entity implements Tickable {
     public static final float COORDINATE_SCALE = 32f;
-    protected static final Random RANDOM = new Random();
-    protected final EntityType<?> type;
+    public static final Random RANDOM = new Random();
+    private final Game game;
+    private final EntityType<? extends Entity> type;
+    private final int id;
+    private final Vector2 pos;
+    private final Vector2 prevPos;
+    private final int spawnTime;
     private final Vector2 collider;
-    private final Group group;
-    protected long spawnTime;
-    protected Game game;
-    protected Vector2 pos;
-    protected Vector2 centerPos;
-    protected Rectangle colliderRect;
-    protected Set<UUID> collidingWith;
-    protected UUID uuid;
-    protected Sprite sprite;
+    private final Set<Integer> collidingWith;
 
-    public Entity(EntityType<?> type, Vector2 collider, Group group) {
+    public Entity(Game game, EntityType<? extends Entity> type, int id, Vector2 pos) {
+        this.game = game;
         this.type = type;
-        this.collider = collider;
-        this.group = group;
-        spawnTime = -1;
+        this.id = id;
+        this.pos = pos.cpy();
+        prevPos = pos.cpy();
+        spawnTime = game.getGametime();
+        collider = new Vector2(type.scale(), type.scale());
+        collidingWith = new HashSet<>();
     }
 
-    public abstract EntityController<?> getController();
+    @Nullable
+    public abstract EntityCustomData getCustomPacketData();
 
-    public abstract void collisionEnter(Entity other);
-
-    public abstract void collisionExit(Entity other);
-
-    public abstract void postSpawn();
-
-    public void tick(int gametime, float delta) {
-        if (getController() != null) {
-            getController().control(gametime, delta);
-        }
+    public Game getGame() {
+        return game;
     }
 
-    public EntityType<?> getType() {
+    public EntityType<? extends Entity> getType() {
         return type;
     }
 
-    public float getScale() {
-        return type.scale() * COORDINATE_SCALE;
+    public int getId() {
+        return id;
     }
 
-    public String getTextureId() {
-        return type.textureId();
+    public Vector2 getPos() {
+        return pos;
+    }
+
+    public void setPos(float x, float y) {
+        pos.set(x, y);
+    }
+
+    public Vector2 getPrevPos() {
+        return prevPos;
+    }
+
+    public void setPrevPos(float x, float y) {
+        prevPos.set(x, y);
+    }
+
+    public Vector2 getVelocity() {
+        return pos.cpy().sub(prevPos);
+    }
+
+    public int getSpawnTime() {
+        return spawnTime;
+    }
+
+    @Override
+    public void tick(int gametime, float delta) {
+    }
+
+    public void remove() {
+        game.getEntityManager().removeEntity(id);
     }
 
     public Vector2 getCollider() {
         return collider;
     }
 
-    public Sprite getSprite() {
-        return sprite;
+    public boolean collides(Entity other) {
+        return pos.x < other.pos.x + other.collider.x && pos.x + collider.x > other.pos.x && pos.y < other.pos.y + other.collider.y && pos.y + collider.y > other.pos.y;
     }
 
-    public Rectangle getColliderRect() {
-        if (pos == null)
-            return null;
-        colliderRect.setPosition(pos);
-        return colliderRect;
-    }
-
-    public Group getGroup() {
-        return group;
-    }
-
-    public long getSpawnTime() {
-        return spawnTime;
-    }
-
-    public Game getGame() {
-        return game;
-    }
-
-    @Override
-    public Vector2 getPos() {
-        return pos;
-    }
-
-    public Vector2 getCenterPos() {
-        centerPos.set(getPos()).add(COORDINATE_SCALE / 4f, COORDINATE_SCALE / 4f);
-        if (sprite.getX() != centerPos.x || sprite.getY() != centerPos.y)
-            sprite.setCenter(centerPos.x, centerPos.y);
-        return centerPos;
-    }
-
-    public Set<UUID> getCollidingWith() {
+    public Set<Integer> getCollidingWith() {
         return collidingWith;
     }
 
-    public boolean isCollidingWith(UUID uuid) {
-        return collidingWith.contains(uuid);
+    public void setCollidingWith(int id) {
+        if (collidingWith.add(id))
+            collisionEnter((Entity) getGame().getEntityManager().getEntity(id));
     }
 
-    public void setCollidingWith(UUID uuid) {
-        if (collidingWith.add(uuid))
-            collisionEnter(game.getEntityManager().getEntity(uuid));
+    public void removeCollidingWith(int id) {
+        if (collidingWith.remove(id))
+            collisionExit((Entity) getGame().getEntityManager().getEntity(id));
     }
 
-    public void removeCollidingWith(UUID uuid) {
-        if (collidingWith.remove(uuid))
-            collisionExit(game.getEntityManager().getEntity(uuid));
+    public void collisionEnter(Entity other) {
     }
 
-    public UUID getUuid() {
-        return uuid;
+    public void collisionExit(Entity other) {
     }
 
-    public void remove() {
-        game.getEntityManager().removeEntity(this);
+    public boolean canMove() {
+        return false;
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Entity entity) {
-            return entity.getUuid().equals(getUuid());
+            return entity.id == id;
         }
         return false;
-    }
-
-    public enum Group {
-        CHARACTER,
-        ENEMY,
-        BULLET,
-        OTHER
     }
 }

@@ -1,0 +1,18 @@
+{
+  "id": "kingforge_blade",
+  "type": "weapon",
+  "attack": {
+    "type": "simple",
+    "bullet_id": "dark_magic_blade",
+    "damage": 5,
+    "bullet_count": 2,
+    "arc_gap": 20
+  },
+  "stat_bonus": [
+    {
+      "type": "speed",
+      "amount": 5,
+      "modifier": "max"
+    }
+  ]
+}
