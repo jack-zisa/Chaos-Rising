@@ -1,11 +1,9 @@
 package dev.creoii.chaos.network.c2s;
 
 import com.mojang.serialization.Codec;
-import dev.creoii.chaos.util.Codecs;
 
 import java.io.Serializable;
-import java.util.UUID;
 
-public record CharacterLeaveC2S(UUID uuid) implements Serializable {
-    public static final Codec<CharacterLeaveC2S> CODEC = Codecs.UUID.xmap(CharacterLeaveC2S::new, CharacterLeaveC2S::uuid);
+public record CharacterLeaveC2S(int id) implements Serializable {
+    public static final Codec<CharacterLeaveC2S> CODEC = Codec.INT.xmap(CharacterLeaveC2S::new, CharacterLeaveC2S::id);
 }

@@ -37,9 +37,9 @@ public class LootInventoryWidget extends InventoryWidget {
             Slot touched = inventoryScreen.getMouseOverSlot();
             if (touched != null && touched.getStack().getCount() > 0) {
                 ClientGame game = manager.getGame();
-                if (!touched.getStack().clickInSlot(manager.getGame(), manager.getGame().getCharacter().uuid, touched)) {
+                if (!touched.getStack().clickInSlot(manager.getGame(), manager.getGame().getCharacter().id, touched)) {
                     if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
-                        game.getClient().sendTCP(new SlotUpdateC2S(manager.getGame().getCharacter().uuid, SlotUpdateC2S.Action.QUICK_MOVE, InventoryType.LOOT, InventoryType.MAIN, dragSource, touched));
+                        game.getClient().sendTCP(new SlotUpdateC2S(manager.getGame().getCharacter().id, SlotUpdateC2S.Action.QUICK_MOVE, InventoryType.LOOT, InventoryType.MAIN, dragSource, touched));
 
                         /*if (getInventory() != null && getInventory().isEmpty()) {
                             if (game.getCharacter().getLootUuid() != null) {

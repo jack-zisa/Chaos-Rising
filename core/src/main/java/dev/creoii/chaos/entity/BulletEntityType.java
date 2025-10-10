@@ -14,7 +14,6 @@ import dev.creoii.chaos.util.provider.numberprovider.ConstantNumberProvider;
 import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
 
 import java.util.Map;
-import java.util.UUID;
 
 public record BulletEntityType(String id, float scale, int lifetime, NumberProvider angleOffset, BulletPath path, BooleanProvider piercing) implements EntityType<BulletEntity> {
     public static final MapCodec<BulletEntityType> CODEC = RecordCodecBuilder.mapCodec(instance -> {
@@ -38,8 +37,8 @@ public record BulletEntityType(String id, float scale, int lifetime, NumberProvi
         return scale * Entity.COORDINATE_SCALE;
     }
 
-    public BulletEntity create(Game game, UUID uuid, Vector2 pos, Map<String, Object> customData) {
-        BulletEntity bullet = new BulletEntity(game, this, uuid, pos.cpy(), (Vector2) customData.get("direction"), lifetime, (int) customData.get("damage"), (int) customData.get("index"));
+    public BulletEntity create(Game game, int id, Vector2 pos, Map<String, Object> customData) {
+        BulletEntity bullet = new BulletEntity(game, this, id, pos.cpy(), (Vector2) customData.get("direction"), lifetime, (int) customData.get("damage"), (int) customData.get("index"));
         /*bullet.centerPos = new Vector2();
         bullet.colliderRect = new Rectangle();
         bullet.colliderRect.setPosition(pos);

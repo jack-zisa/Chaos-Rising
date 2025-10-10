@@ -4,15 +4,14 @@ import dev.creoii.chaos.server.ServerGame;
 import dev.creoii.chaos.util.function.TriFunction;
 
 import java.util.Arrays;
-import java.util.UUID;
 import java.util.function.BiFunction;
 
-public record Command(TriFunction<ServerGame, UUID, String[], Result> executor) {
-    public Result execute(ServerGame game, UUID uuid, String[] args) {
-        return executor.apply(game, uuid, args);
+public record Command(TriFunction<ServerGame, Integer, String[], Result> executor) {
+    public Result execute(ServerGame game, int id, String[] args) {
+        return executor.apply(game, id, args);
     }
 
-    static void register(String id, TriFunction<ServerGame, UUID, String[], Result> executor) {
+    static void register(String id, TriFunction<ServerGame, Integer, String[], Result> executor) {
         Commands.ALL.put(id, new Command(executor));
     }
 

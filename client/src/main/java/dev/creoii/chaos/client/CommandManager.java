@@ -32,7 +32,7 @@ public class CommandManager extends InputAdapter {
             return;
 
         String[] args = Arrays.copyOfRange(elements, 1, elements.length);
-        game.getClient().sendTCP(new ExecuteCommandC2S(game.getCharacter().uuid, commandType, args));
+        game.getClient().sendTCP(new ExecuteCommandC2S(game.getCharacter().id, commandType, args));
 
         /**
          * FOR /set_class:

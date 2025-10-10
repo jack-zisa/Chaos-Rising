@@ -2,10 +2,8 @@ package dev.creoii.chaos.client.render.entity.data;
 
 import dev.creoii.chaos.util.EntityGroup;
 
-import java.util.UUID;
-
 public class EntityRenderData {
-    public final UUID uuid;
+    public final int id;
     public final EntityGroup group;
     public float x;
     public float y;
@@ -16,8 +14,8 @@ public class EntityRenderData {
     public float renderX;
     public float renderY;
 
-    public EntityRenderData(UUID uuid, EntityGroup group, float x, float y, float xv, float yv, String textureId, float scale) {
-        this.uuid = uuid;
+    public EntityRenderData(int id, EntityGroup group, float x, float y, float xv, float yv, String textureId, float scale) {
+        this.id = id;
         this.group = group;
         this.x = x;
         this.y = y;

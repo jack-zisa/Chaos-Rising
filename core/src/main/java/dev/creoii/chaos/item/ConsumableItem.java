@@ -15,7 +15,6 @@ import dev.creoii.chaos.util.stat.ModifierEntry;
 import dev.creoii.chaos.util.stat.StatContainer;
 
 import java.util.List;
-import java.util.UUID;
 
 public class ConsumableItem extends Item {
     public static final MapCodec<ConsumableItem> CODEC = RecordCodecBuilder.mapCodec(instance -> {
@@ -43,17 +42,17 @@ public class ConsumableItem extends Item {
     }
 
     @Override
-    public boolean clickInSlot(Game game, UUID characterUuid, Slot slot, ItemStack stack) {
+    public boolean clickInSlot(Game game, int characterId, Slot slot, ItemStack stack) {
         if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
-            consume(game, characterUuid, slot, stack);
+            consume(game, characterId, slot, stack);
             return true;
         }
-        return super.clickInSlot(game, characterUuid, slot, stack);
+        return super.clickInSlot(game, characterId, slot, stack);
     }
 
-    public void consume(Game game, UUID characterUuid, Slot slot, ItemStack stack) {
+    public void consume(Game game, int characterId, Slot slot, ItemStack stack) {
         if (!game.isClient()) {
-            CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, characterUuid);
+            CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, characterId);
             if (getStatBonus() != null) {
                 StatContainer stats = character.getStats();
                 getStatBonus().forEach(modifierEntry -> {

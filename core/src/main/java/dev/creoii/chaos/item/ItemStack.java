@@ -8,7 +8,6 @@ import dev.creoii.chaos.inventory.Slot;
 
 import javax.annotation.Nullable;
 import java.io.Serializable;
-import java.util.UUID;
 
 public class ItemStack implements Serializable {
     public static final Codec<ItemStack> CODEC = RecordCodecBuilder.create(instance -> {
@@ -55,9 +54,9 @@ public class ItemStack implements Serializable {
     /**
      * @return false to allow dragging, true to disable dragging
      */
-    public boolean clickInSlot(Game game, UUID uuid, Slot slot) {
+    public boolean clickInSlot(Game game, int id, Slot slot) {
         if (item == null)
             return false;
-        return item.clickInSlot(game, uuid, slot, this);
+        return item.clickInSlot(game, id, slot, this);
     }
 }

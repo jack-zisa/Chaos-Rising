@@ -13,17 +13,17 @@ public abstract class Entity implements Tickable {
     public static final Random RANDOM = new Random();
     private final Game game;
     private final EntityType<? extends Entity> type;
-    private final UUID uuid;
+    private final int id;
     private final Vector2 pos;
     private final Vector2 prevPos;
     private final int spawnTime;
     private final Vector2 collider;
-    private final Set<UUID> collidingWith;
+    private final Set<Integer> collidingWith;
 
-    public Entity(Game game, EntityType<? extends Entity> type, UUID uuid, Vector2 pos) {
+    public Entity(Game game, EntityType<? extends Entity> type, int id, Vector2 pos) {
         this.game = game;
         this.type = type;
-        this.uuid = uuid;
+        this.id = id;
         this.pos = pos.cpy();
         prevPos = pos.cpy();
         spawnTime = game.getGametime();
@@ -42,8 +42,8 @@ public abstract class Entity implements Tickable {
         return type;
     }
 
-    public UUID getUuid() {
-        return uuid;
+    public int getId() {
+        return id;
     }
 
     public Vector2 getPos() {
@@ -75,7 +75,7 @@ public abstract class Entity implements Tickable {
     }
 
     public void remove() {
-        game.getEntityManager().removeEntity(uuid);
+        game.getEntityManager().removeEntity(id);
     }
 
     public Vector2 getCollider() {
@@ -86,18 +86,18 @@ public abstract class Entity implements Tickable {
         return pos.x < other.pos.x + other.collider.x && pos.x + collider.x > other.pos.x && pos.y < other.pos.y + other.collider.y && pos.y + collider.y > other.pos.y;
     }
 
-    public Set<UUID> getCollidingWith() {
+    public Set<Integer> getCollidingWith() {
         return collidingWith;
     }
 
-    public void setCollidingWith(UUID uuid) {
-        if (collidingWith.add(uuid))
-            collisionEnter((Entity) getGame().getEntityManager().getEntity(uuid));
+    public void setCollidingWith(int id) {
+        if (collidingWith.add(id))
+            collisionEnter((Entity) getGame().getEntityManager().getEntity(id));
     }
 
-    public void removeCollidingWith(UUID uuid) {
-        if (collidingWith.remove(uuid))
-            collisionExit((Entity) getGame().getEntityManager().getEntity(uuid));
+    public void removeCollidingWith(int id) {
+        if (collidingWith.remove(id))
+            collisionExit((Entity) getGame().getEntityManager().getEntity(id));
     }
 
     public void collisionEnter(Entity other) {
@@ -113,7 +113,7 @@ public abstract class Entity implements Tickable {
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Entity entity) {
-            return entity.getUuid().equals(getUuid());
+            return entity.id == id;
         }
         return false;
     }

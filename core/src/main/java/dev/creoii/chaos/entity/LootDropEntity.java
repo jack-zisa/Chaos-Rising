@@ -8,14 +8,12 @@ import dev.creoii.chaos.inventory.Inventory;
 import dev.creoii.chaos.item.ItemStack;
 
 import javax.annotation.Nullable;
-import java.util.Optional;
-import java.util.UUID;
 
 public class LootDropEntity extends Entity {
     private final Inventory inventory;
 
-    public LootDropEntity(Game game, EntityType<? extends LootDropEntity> type, UUID uuid, Vector2 pos, Inventory inventory) {
-        super(game, type, uuid, pos);
+    public LootDropEntity(Game game, EntityType<? extends LootDropEntity> type, int id, Vector2 pos, Inventory inventory) {
+        super(game, type, id, pos);
         this.inventory = inventory;
     }
 

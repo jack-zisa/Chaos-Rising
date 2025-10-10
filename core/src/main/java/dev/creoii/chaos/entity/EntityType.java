@@ -7,13 +7,12 @@ import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.Identifiable;
 
 import java.util.Map;
-import java.util.UUID;
 
 public interface EntityType<T extends Entity> extends Identifiable {
     Codec<EntityType<?>> CODEC = EntityGroup.CODEC.dispatch(EntityType::group, group -> switch (group) {
         case CHARACTER -> CharacterEntityType.CODEC;
-        case ENEMY     -> EnemyEntityType.CODEC;
-        case BULLET    -> BulletEntityType.CODEC;
+        case ENEMY -> EnemyEntityType.CODEC;
+        case BULLET -> BulletEntityType.CODEC;
         case LOOT_DROP -> LootDropEntityType.CODEC;
     });
 
@@ -23,5 +22,5 @@ public interface EntityType<T extends Entity> extends Identifiable {
 
     EntityGroup group();
 
-    T create(Game game, UUID uuid, Vector2 pos, Map<String, Object> customData);
+    T create(Game game, int id, Vector2 pos, Map<String, Object> customData);
 }

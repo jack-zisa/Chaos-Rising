@@ -22,9 +22,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -38,7 +38,7 @@ public class ClientListener extends Listener {
     @Override
     public void connected(Connection connection) {
         game.networkQueue = new NetworkQueue<>(connection);
-        game.getClient().sendTCP(new CharacterJoinC2S(UUID.randomUUID()));
+        game.getClient().sendTCP(new CharacterJoinC2S());
     }
 
     @Override
@@ -51,21 +51,21 @@ public class ClientListener extends Listener {
             return;
         }
         switch (object) {
-            case EntitySpawnS2C(UUID uuid, float x, float y, EntityCustomData customData) -> {
+            case EntitySpawnS2C(int id, float x, float y, EntityCustomData customData) -> {
                 EntityGroup group = customData.getGroup();
                 switch (group) {
                     case BULLET -> {
                         BulletData bulletData = (BulletData) customData;
-                        game.getEntityManager().addEntity(uuid, new BulletEntityRenderData(uuid, x, y, 0f, 0f, group.name().toLowerCase(), 32f, bulletData.xd(), bulletData.yd()));
+                        game.getEntityManager().addEntity(id, new BulletEntityRenderData(id, x, y, 0f, 0f, group.name().toLowerCase(), 32f, bulletData.xd(), bulletData.yd()));
                     }
                     case ENEMY -> {
                         EnemyData enemyData = (EnemyData) customData;
-                        game.getEntityManager().addEntity(uuid, new LivingEntityRenderData(uuid, EntityGroup.ENEMY, x, y, 0f, 0f, group.name().toLowerCase(), 32f, enemyData.baseStats(), enemyData.maxStats()));
+                        game.getEntityManager().addEntity(id, new LivingEntityRenderData(id, EntityGroup.ENEMY, x, y, 0f, 0f, group.name().toLowerCase(), 32f, enemyData.baseStats(), enemyData.maxStats()));
                     }
                     case CHARACTER -> {
                         CharacterData characterData = (CharacterData) customData;
                         Optional<List<List<Slot>>> slots = characterData.slots();
-                        CharacterEntityRenderData character = new CharacterEntityRenderData(uuid, x, y, 0f, 0f, "wizard", 32f, characterData.baseStats(), characterData.maxStats(), slots.map(Slot::toSlotArray).orElse(Slot.createEmptySlotArray(3, 4, (r, c) -> {
+                        CharacterEntityRenderData character = new CharacterEntityRenderData(id, x, y, 0f, 0f, "wizard", 32f, characterData.baseStats(), characterData.maxStats(), slots.map(Slot::toSlotArray).orElse(Slot.createEmptySlotArray(3, 4, (r, c) -> {
                             if (r == 2) {
                                 return switch (c) {
                                     case 0 -> new Slot(r, c, Slot.Type.WEAPON);
@@ -77,26 +77,26 @@ public class ClientListener extends Listener {
                         })));
                         game.setCharacter(character);
                         game.getInputManager().addInput(new CharacterController(character));
-                        game.getEntityManager().addEntity(uuid, character);
+                        game.getEntityManager().addEntity(id, character);
                     }
                     case LOOT_DROP -> {
                         LootDropData lootDropData = (LootDropData) customData;
                         Optional<List<List<Slot>>> slots = lootDropData.slots();
-                        game.getEntityManager().addEntity(uuid, new LootDropEntityRenderData(uuid, x, y, 0f, 0f, group.name().toLowerCase(), 32f, slots.map(Slot::toSlotArray).orElse(Slot.createEmptySlotArray(2, 4))));
+                        game.getEntityManager().addEntity(id, new LootDropEntityRenderData(id, x, y, 0f, 0f, group.name().toLowerCase(), 32f, slots.map(Slot::toSlotArray).orElse(Slot.createEmptySlotArray(2, 4))));
                     }
                 };
             }
-            case EntityDisplayS2C(UUID uuid, String textureId, float scale) -> {
-                EntityRenderData entityRenderData = game.getEntityManager().getEntityData(uuid);
+            case EntityDisplayS2C(int id, String textureId, float scale) -> {
+                EntityRenderData entityRenderData = game.getEntityManager().getEntityData(id);
                 if (entityRenderData != null) {
                     entityRenderData.textureId = textureId;
                     entityRenderData.scale = scale;
                 }
             }
             case MoveEntitiesS2C(List<MoveEntitiesS2C.Entry> entries) -> entries.forEach(entry -> {
-                if (entry.uuid() != game.getCharacter().uuid) {
-                    EntityRenderData entityRenderData = game.getEntityManager().getEntityData(entry.uuid());
-                    float[] unpacked = MoveEntitiesS2C.unpack(entry.packed());
+                if (entry.id() != game.getCharacter().id) {
+                    EntityRenderData entityRenderData = game.getEntityManager().getEntityData(entry.id());
+                    float[] unpacked = MoveEntitiesS2C.unpack(entry.data());
                     if (entityRenderData != null) {
                         entityRenderData.x = unpacked[0];
                         entityRenderData.y = unpacked[1];
@@ -113,18 +113,19 @@ public class ClientListener extends Listener {
                     }
                 }
             });
-            case MoveCharacterS2C(long packed) -> {
+            case MoveCharacterS2C(byte[] data) -> {
                 CharacterEntityRenderData character = game.getCharacter();
                 if (character != null) {
-                    float[] unpacked = MoveEntitiesS2C.unpack(packed);
+                    float[] unpacked = MoveEntitiesS2C.unpack(data);
+                    System.out.println(Arrays.toString(unpacked));
                     character.x = unpacked[0];
                     character.y = unpacked[1];
                     character.xv = unpacked[2];
                     character.yv = unpacked[3];
                 }
             }
-            case EntityRemoveS2C(UUID uuid) -> game.getEntityManager().removeEntity(uuid);
-            case StatusEffectS2C(UUID uuid, StatusEffect statusEffect) -> {
+            case EntityRemoveS2C(int id) -> game.getEntityManager().removeEntity(id);
+            case StatusEffectS2C(int id, StatusEffect statusEffect) -> {
                 //((LivingEntity) game.getEntityManager().getEntityData(uuid)).addStatusEffect(statusEffect);
             }
             case InventoryUpdateS2C(InventoryType type, List<Slot> slots) -> {
@@ -195,7 +196,7 @@ public class ClientListener extends Listener {
     @Override
     public void disconnected(Connection connection) {
         if (game.getCharacter() != null) {
-            game.getClient().sendTCP(new CharacterLeaveC2S(game.getCharacter().uuid));
+            game.getClient().sendTCP(new CharacterLeaveC2S(game.getCharacter().id));
             System.out.println("[Client] Client disconnected: " + connection.getID());
         }
     }

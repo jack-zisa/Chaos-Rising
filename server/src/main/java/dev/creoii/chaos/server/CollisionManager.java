@@ -17,7 +17,7 @@ public class CollisionManager {
     public static final int KEY_OFFSET = 32768;
     private final ServerGame game;
     private final ObjectMap<Integer, Array<Entity>> grid;
-    private final Map<UUID, Set<UUID>> collisions;
+    private final Map<Integer, Set<Integer>> collisions;
 
     public CollisionManager(ServerGame game) {
         this.game = game;
@@ -62,11 +62,11 @@ public class CollisionManager {
                 for (int j = i + 1; j < entities.size; ++j) {
                     Entity b = entities.get(j);
                     if (checkMask(a, b) && a.collides(b)) {
-                        collisions.computeIfAbsent(a.getUuid(), k -> new HashSet<>()).add(b.getUuid());
-                        collisions.computeIfAbsent(b.getUuid(), k -> new HashSet<>()).add(a.getUuid());
+                        collisions.computeIfAbsent(a.getId(), k -> new HashSet<>()).add(b.getId());
+                        collisions.computeIfAbsent(b.getId(), k -> new HashSet<>()).add(a.getId());
 
-                        a.setCollidingWith(b.getUuid());
-                        b.setCollidingWith(a.getUuid());
+                        a.setCollidingWith(b.getId());
+                        b.setCollidingWith(a.getId());
                     }
                 }
             }
@@ -89,11 +89,11 @@ public class CollisionManager {
                             continue;
 
                         if (checkMask(a, b) && a.collides(b)) {
-                            collisions.computeIfAbsent(a.getUuid(), k -> new HashSet<>()).add(b.getUuid());
-                            collisions.computeIfAbsent(b.getUuid(), k -> new HashSet<>()).add(a.getUuid());
+                            collisions.computeIfAbsent(a.getId(), k -> new HashSet<>()).add(b.getId());
+                            collisions.computeIfAbsent(b.getId(), k -> new HashSet<>()).add(a.getId());
 
-                            a.setCollidingWith(b.getUuid());
-                            b.setCollidingWith(a.getUuid());
+                            a.setCollidingWith(b.getId());
+                            b.setCollidingWith(a.getId());
 
                             System.out.println("colliding");
                         }
@@ -106,13 +106,13 @@ public class CollisionManager {
         //    System.out.println("collisions size: " + collisions.size());
 
         for (Entity entity : toCollide) {
-            Set<UUID> currentlyColliding = collisions.getOrDefault(entity.getUuid(), Collections.emptySet());
-            Iterator<UUID> it = entity.getCollidingWith().iterator();
+            Set<Integer> currentlyColliding = collisions.getOrDefault(entity.getId(), Collections.emptySet());
+            Iterator<Integer> it = entity.getCollidingWith().iterator();
             while (it.hasNext()) {
-                UUID uuid = it.next();
-                if (!currentlyColliding.contains(uuid)) {
+                int id = it.next();
+                if (!currentlyColliding.contains(id)) {
                     it.remove();
-                    entity.collisionExit(game.getEntityManager().getEntity(uuid));
+                    entity.collisionExit(game.getEntityManager().getEntity(id));
                     System.out.println("stop colliding");
                 }
             }

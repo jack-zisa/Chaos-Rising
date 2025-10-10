@@ -34,14 +34,14 @@ public record CharacterController(CharacterEntityRenderData character) implement
                 dx /= len;
                 dy /= len;
 
-                game.getClient().sendTCP(new CharacterMoveC2S(character.uuid, dx, dy));
+                game.getClient().sendTCP(new CharacterMoveC2S(character.id, dx, dy));
             }
         }
 
         if (keycode == game.getOptionsManager().ABILITY_KEY.intValue()) {
             Slot abilitySlot = character.getAbilitySlot();
             if (abilitySlot.getStack().getItem() instanceof AbilityItem abilityItem) {
-                game.getClient().sendTCP(new UseItemC2S(character.uuid, abilitySlot));
+                game.getClient().sendTCP(new UseItemC2S(character.id, abilitySlot));
             }
         }
     }
@@ -53,7 +53,7 @@ public record CharacterController(CharacterEntityRenderData character) implement
 
         Slot weaponSlot = character.getWeaponSlot();
         if (weaponSlot.getStack().getItem() instanceof WeaponItem weaponItem) {
-            manager.getGame().getClient().sendTCP(new UseItemC2S(character.uuid, weaponSlot));
+            manager.getGame().getClient().sendTCP(new UseItemC2S(character.id, weaponSlot));
         }
     }
 }

@@ -10,7 +10,7 @@ import java.util.*;
 
 public class CooldownManager implements Tickable {
     private final ServerGame game;
-    private final Map<UUID, List<Cooldown>> playerSlotCooldowns;
+    private final Map<Integer, List<Cooldown>> playerSlotCooldowns;
 
     public CooldownManager(ServerGame game) {
         this.game = game;
@@ -22,13 +22,13 @@ public class CooldownManager implements Tickable {
         return game;
     }
 
-    public void addCooldown(UUID uuid, int ri, int ci, int cooldown) {
-        playerSlotCooldowns.computeIfAbsent(uuid, _ -> new ArrayList<>()).add(new Cooldown(ri, ci, new Mutable<>(cooldown)));
+    public void addCooldown(int id, int ri, int ci, int cooldown) {
+        playerSlotCooldowns.computeIfAbsent(id, _ -> new ArrayList<>()).add(new Cooldown(ri, ci, new Mutable<>(cooldown)));
     }
 
     @Override
     public void tick(int gametime, float delta) {
-        playerSlotCooldowns.forEach((uuid, cooldowns) -> {
+        playerSlotCooldowns.forEach((id, cooldowns) -> {
             Iterator<Cooldown> it = cooldowns.iterator();
             while (it.hasNext()) {
                 Cooldown cooldown = it.next();
@@ -36,9 +36,9 @@ public class CooldownManager implements Tickable {
                 cooldown.cooldown.set(cooldown.cooldown.get() - 1);
 
                 if (cooldown.cooldown.get() <= 0) {
-                    ((CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, uuid)).getInventory().getSlot(cooldown.ri, cooldown.ci).setActive(false);
+                    ((CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id)).getInventory().getSlot(cooldown.ri, cooldown.ci).setActive(false);
                     it.remove();
-                } else ((CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, uuid)).getInventory().getSlot(cooldown.ri, cooldown.ci).setActive(true);
+                } else ((CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id)).getInventory().getSlot(cooldown.ri, cooldown.ci).setActive(true);
             }
         });
     }

@@ -14,7 +14,6 @@ import dev.creoii.chaos.util.Tickable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 public class ServerEntityManager extends EntityManager<Entity> implements Tickable {
     public ServerEntityManager(ServerGame game) {
@@ -24,17 +23,17 @@ public class ServerEntityManager extends EntityManager<Entity> implements Tickab
 
     @Override
     public int getTickRate() {
-        return 3;
+        return 2;
     }
 
-    public <E extends Entity, T extends EntityType<E>> E addEntity(UUID uuid, T type, Vector2 pos, Map<String, Object> customData) {
-        E spawned = type.create(getGame(), uuid, pos, customData);
-        getEntities(type.group()).put(spawned.getUuid(), spawned);
+    public <E extends Entity, T extends EntityType<E>> E addEntity(T type, Vector2 pos, Map<String, Object> customData) {
+        E spawned = type.create(getGame(), getNextId(), pos, customData);
+        getEntities(type.group()).put(spawned.getId(), spawned);
 
         if (getGame() instanceof ServerGame serverGame) {
             serverGame.getTickManager().addTickable(spawned);
-            serverGame.getServer().sendToAllTCP(new EntitySpawnS2C(spawned.getUuid(), pos.x, pos.y, spawned.getCustomPacketData()));
-            serverGame.getServer().sendToAllTCP(new EntityDisplayS2C(spawned.getUuid(), type.id(), type.scale()));
+            serverGame.getServer().sendToAllTCP(new EntitySpawnS2C(spawned.getId(), pos.x, pos.y, spawned.getCustomPacketData()));
+            serverGame.getServer().sendToAllTCP(new EntityDisplayS2C(spawned.getId(), type.id(), type.scale()));
         }
 
         setSize(getSize() + 1);
@@ -54,7 +53,7 @@ public class ServerEntityManager extends EntityManager<Entity> implements Tickab
 
             Vector2 velocity = entity.getVelocity();
             if (velocity.x != 0f || velocity.y != 0f) {
-                entries.add(new MoveEntitiesS2C.Entry(entity.getUuid(), entity.getPos().x, entity.getPos().y, velocity.x, velocity.y));
+                entries.add(new MoveEntitiesS2C.Entry(entity.getId(), entity.getPos().x, entity.getPos().y, velocity.x, velocity.y));
             }
         }));
         if (!entries.isEmpty()) {
@@ -65,14 +64,15 @@ public class ServerEntityManager extends EntityManager<Entity> implements Tickab
     }
 
     @Override
-    public boolean removeEntity(UUID uuid) {
-        for (Map.Entry<EntityGroup, Map<UUID, Entity>> entry : getAllEntities().entrySet()) {
-            Map<UUID, Entity> map = entry.getValue();
-            if (map.containsKey(uuid)) {
-                ((ServerGame) getGame()).getTickManager().removeTickable(map.get(uuid));
-                map.remove(uuid);
-                getGame().getServer().sendToAllTCP(new EntityRemoveS2C(uuid));
+    public boolean removeEntity(int id) {
+        for (Map.Entry<EntityGroup, Map<Integer, Entity>> entry : getAllEntities().entrySet()) {
+            Map<Integer, Entity> map = entry.getValue();
+            if (map.containsKey(id)) {
+                ((ServerGame) getGame()).getTickManager().removeTickable(map.get(id));
+                map.remove(id);
+                getGame().getServer().sendToAllTCP(new EntityRemoveS2C(id));
                 setSize(getSize() - 1);
+                free(id);
                 return true;
             }
         }

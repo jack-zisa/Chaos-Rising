@@ -4,15 +4,13 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.inventory.InventoryType;
 import dev.creoii.chaos.inventory.Slot;
-import dev.creoii.chaos.util.Codecs;
 
 import java.io.Serializable;
-import java.util.UUID;
 
-public record SlotUpdateC2S(UUID uuid, Action action, InventoryType from, InventoryType to, Slot fromSlot, Slot toSlot) implements Serializable {
+public record SlotUpdateC2S(int id, Action action, InventoryType from, InventoryType to, Slot fromSlot, Slot toSlot) implements Serializable {
     public static final Codec<SlotUpdateC2S> CODEC = RecordCodecBuilder.create(instance -> {
         return instance.group(
-            Codecs.UUID.fieldOf("uuid").forGetter(SlotUpdateC2S::uuid),
+            Codec.INT.fieldOf("id").forGetter(SlotUpdateC2S::id),
             Action.CODEC.fieldOf("action").forGetter(SlotUpdateC2S::action),
             InventoryType.CODEC.fieldOf("from").forGetter(SlotUpdateC2S::from),
             InventoryType.CODEC.fieldOf("to").forGetter(SlotUpdateC2S::to),

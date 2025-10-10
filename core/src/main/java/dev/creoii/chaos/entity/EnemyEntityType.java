@@ -13,7 +13,6 @@ import dev.creoii.chaos.util.stat.StatContainer;
 
 import javax.annotation.Nullable;
 import java.util.Map;
-import java.util.UUID;
 
 public record EnemyEntityType(String id, float scale, @Nullable LootTable lootTable, @Nullable Behavior behavior, StatContainer stats) implements EntityType<EnemyEntity> {
     public static final StatContainer DEFAULT_STAT_CONTAINER = new StatContainer(10, 1, 1, 0, 1, 1);
@@ -37,8 +36,8 @@ public record EnemyEntityType(String id, float scale, @Nullable LootTable lootTa
         return scale * Entity.COORDINATE_SCALE;
     }
 
-    public EnemyEntity create(Game game, UUID uuid, Vector2 pos, Map<String, Object> customData) {
-        EnemyEntity enemy = new EnemyEntity(game, this, uuid, pos.cpy());
+    public EnemyEntity create(Game game, int id, Vector2 pos, Map<String, Object> customData) {
+        EnemyEntity enemy = new EnemyEntity(game, this, id, pos.cpy());
 /*        enemy.centerPos = new Vector2();
         enemy.colliderRect = new Rectangle();
         enemy.colliderRect.setPosition(pos);

@@ -10,16 +10,14 @@ import dev.creoii.chaos.item.ItemStack;
 import dev.creoii.chaos.util.Mutable;
 
 import javax.annotation.Nullable;
-import java.util.UUID;
 
 public class CharacterEntity extends LivingEntity {
     private final int connectionId;
     private final CharacterInventory inventory;
-    @Nullable
-    private UUID lootUuid;
+    private int lootId = -1;
 
-    public CharacterEntity(Game game, EntityType<? extends CharacterEntity> type, UUID uuid, Vector2 pos, int connectionId, CharacterInventory inventory) {
-        super(game, type, uuid, pos, ((CharacterEntityType) type).characterClass().get().baseStatContainer().copy(), ((CharacterEntityType) type).characterClass().get().baseStatContainer().copy());
+    public CharacterEntity(Game game, EntityType<? extends CharacterEntity> type, int id, Vector2 pos, int connectionId, CharacterInventory inventory) {
+        super(game, type, id, pos, ((CharacterEntityType) type).characterClass().get().baseStatContainer().copy(), ((CharacterEntityType) type).characterClass().get().baseStatContainer().copy());
         this.connectionId = connectionId;
         this.inventory = inventory.withCharacter(this);
     }
@@ -48,13 +46,12 @@ public class CharacterEntity extends LivingEntity {
         return inventory;
     }
 
-    @Nullable
-    public UUID getLootUuid() {
-        return lootUuid;
+    public int getLootId() {
+        return lootId;
     }
 
-    public void setLootUuid(@Nullable UUID lootUuid) {
-        this.lootUuid = lootUuid;
+    public void setLootId(int lootId) {
+        this.lootId = lootId;
     }
 
     public void dropItem(ItemStack stack) {
@@ -62,12 +59,12 @@ public class CharacterEntity extends LivingEntity {
     }
 
     public void dropItem(ItemStack stack, boolean forceDrop) {
-        if (lootUuid == null || forceDrop) {
+        if (lootId == -1 || forceDrop) {
             LootDropEntity lootDropEntity = getGame().getEntityManager().addEntity(DataManager.getLootDrop("bag"), getPos().cpy());
             lootDropEntity.addItem(stack);
-            lootUuid = lootDropEntity.getUuid();
+            lootId = lootDropEntity.getId();
         } else {
-            LootDropEntity lootDropEntity = (LootDropEntity) getGame().getEntityManager().getEntity(lootUuid);
+            LootDropEntity lootDropEntity = (LootDropEntity) getGame().getEntityManager().getEntity(lootId);
             if (lootDropEntity == null || lootDropEntity.getInventory().addItem(stack) == null)
                 dropItem(stack, true);
         }

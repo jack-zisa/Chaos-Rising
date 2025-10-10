@@ -8,7 +8,6 @@ import dev.creoii.chaos.util.Identifiable;
 import dev.creoii.chaos.util.Rarity;
 
 import java.io.Serializable;
-import java.util.UUID;
 
 public class Item implements Identifiable, Serializable {
     public static final Codec<Item> CODEC = Type.CODEC.dispatch(Item::getType, group -> switch (group) {
@@ -50,7 +49,7 @@ public class Item implements Identifiable, Serializable {
         return id + "\n";
     }
 
-    public boolean clickInSlot(Game game, UUID characterUuid, Slot slot, ItemStack stack) {
+    public boolean clickInSlot(Game game, int characterId, Slot slot, ItemStack stack) {
         return false;
     }
 

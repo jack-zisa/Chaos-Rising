@@ -2,53 +2,53 @@ package dev.creoii.chaos.network.s2c;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dev.creoii.chaos.util.Codecs;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.UUID;
+import java.util.stream.IntStream;
 
 public record MoveEntitiesS2C(List<Entry> entries) implements Serializable {
     public static final Codec<MoveEntitiesS2C> CODEC = Entry.CODEC.listOf().xmap(MoveEntitiesS2C::new, MoveEntitiesS2C::entries);
 
-    public record Entry(UUID uuid, long packed) {
-        public Entry(UUID uuid, float x, float y, float xv, float yv) {
-            this(uuid, pack(x, y, xv, yv));
+    public record Entry(int id, byte[] data) {
+        public Entry(int id, float x, float y, float xv, float yv) {
+            this(id, pack(x, y, xv, yv));
         }
 
         public static final Codec<Entry> CODEC = RecordCodecBuilder.create(instance -> {
             return instance.group(
-                Codecs.UUID.fieldOf("uuid").forGetter(Entry::uuid),
-                Codec.LONG.fieldOf("packed").forGetter(Entry::packed)
-            ).apply(instance, Entry::new);
+                Codec.INT.fieldOf("id").forGetter(Entry::id),
+                Codec.BYTE.listOf().fieldOf("data").forGetter(entry -> IntStream.range(0, entry.data.length).mapToObj(i -> entry.data[i]).toList())
+            ).apply(instance, (id, data) -> {
+                byte[] arr = new byte[data.size()];
+                for (int i = 0; i < data.size(); i++) {
+                    arr[i] = data.get(i);
+                }
+                return new Entry(id, arr);
+            });
         });
     }
 
-    public static long pack(float x, float y, float xv, float yv) {
-        int ix = Math.round(x * 10f);
-        int iy = Math.round(y * 10f);
-        int ivx = Math.round(xv * 100f);
-        int ivy = Math.round(yv * 100f);
-
-        long bx = ix + 16384;
-        long by = iy + 16384;
-        long bxv = ivx + 2048;
-        long byv = ivy + 2048;
-
-        return (bx  & 0x7fff) << 49 | (by  & 0x7fff) << 34 | (bxv & 0xfff) << 22 | (byv & 0xfff);
+    public static byte[] pack(float x, float y, float xv, float yv) {
+        byte[] bytes = new byte[16];
+        int i = 0;
+        for (float f : new float[]{x, y, xv, yv}) {
+            int bits = Float.floatToIntBits(f);
+            bytes[i++] = (byte) (bits >>> 24);
+            bytes[i++] = (byte) (bits >>> 16);
+            bytes[i++] = (byte) (bits >>> 8);
+            bytes[i++] = (byte) (bits);
+        }
+        return bytes;
     }
 
-    public static float[] unpack(long packed) {
-        int bx = (int)((packed >> 49) & 0x7fff);
-        int by = (int)((packed >> 34) & 0x7fff);
-        int bxv = (int)((packed >> 22) & 0xfff);
-        int byv = (int)(packed & 0xfff);
-
-        int ix = bx - 16384;
-        int iy = by - 16384;
-        int ivx = bxv - 2048;
-        int ivy = byv - 2048;
-
-        return new float[] {ix / 10f, iy / 10f, ivx / 100f, ivy / 100f};
+    public static float[] unpack(byte[] bytes) {
+        float[] floats = new float[4];
+        for (int i = 0; i < 4; i++) {
+            int base = i * 4;
+            int bits = ((bytes[base] & 0xFF) << 24) | ((bytes[base + 1] & 0xFF) << 16) | ((bytes[base + 2] & 0xFF) << 8) | (bytes[base + 3] & 0xFF);
+            floats[i] = Float.intBitsToFloat(bits);
+        }
+        return floats;
     }
 }

@@ -53,7 +53,7 @@ public record SimpleAttack(String bulletId, NumberProvider damage, int bulletCou
 
             BulletEntityType bulletType = DataManager.getBullet(bulletId);
             if (bulletType != null) {
-                BulletEntity bullet = sourceEntity.getGame().getEntityManager().addEntity(UUID.randomUUID(), bulletType, pos.cpy(), customData);
+                BulletEntity bullet = sourceEntity.getGame().getEntityManager().addEntity(bulletType, pos.cpy(), customData);
                 bullet.setParent(sourceEntity);
             }
         }

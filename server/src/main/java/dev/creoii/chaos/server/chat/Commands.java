@@ -18,10 +18,10 @@ public final class Commands {
     private static final Random RANDOM = new Random();
     static final Map<String, Command> ALL = new HashMap<>();
 
-    public static void tryExecute(ServerGame game, UUID uuid, String commandType, String[] args) {
+    public static void tryExecute(ServerGame game, int id, String commandType, String[] args) {
         if (Commands.ALL.containsKey(commandType)) {
             try {
-                Command.Result result = Commands.ALL.get(commandType).execute(game, uuid, args);
+                Command.Result result = Commands.ALL.get(commandType).execute(game, id, args);
                 System.out.println(result.getResultMessage(commandType, args));
             } catch (Exception e) {
                 System.out.println(Command.Result.FAIL.getResultMessageWithReason(commandType, args, e.toString()));
@@ -32,9 +32,9 @@ public final class Commands {
     }
 
     static {
-        Command.register("setpos", (game, uuid, args) -> {
+        Command.register("setpos", (game, id, args) -> {
             if (args.length > 1) {
-                CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, uuid);
+                CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id);
                 if (character != null) {
                     float x = Integer.parseInt(args[0]) * Entity.COORDINATE_SCALE;
                     float y = Integer.parseInt(args[1]) * Entity.COORDINATE_SCALE;
@@ -45,9 +45,9 @@ public final class Commands {
             return Command.Result.FAIL;
         });
 
-        Command.register("setstat", (game, uuid, args) -> {
+        Command.register("setstat", (game, id, args) -> {
             if (args.length > 1) {
-                CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, uuid);
+                CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id);
 
                 if (character != null) {
                     Stat.Type statType = Stat.Type.valueOf(args[0].toUpperCase());
@@ -145,9 +145,9 @@ public final class Commands {
             return Command.Result.FAIL;
         });
 
-        Command.register("give", (game, uuid, args) -> {
+        Command.register("give", (game, id, args) -> {
             if (args.length > 0) {
-                CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, uuid);
+                CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id);
                 if (character != null) {
                     int count = args.length > 1 ? Integer.parseInt(args[1]) : 1;
                     for (int i = 0; i < count; ++i) {
@@ -162,11 +162,11 @@ public final class Commands {
             return Command.Result.FAIL;
         });
 
-        Command.register("setclass", (game, uuid, args) -> {
+        Command.register("setclass", (game, id, args) -> {
             if (args.length > 0) {
                 CharacterClass characterClass = DataManager.getCharacterClass(args[0]);
                 if (characterClass != null) {
-                    CharacterEntity character = ((CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, uuid));
+                    CharacterEntity character = ((CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id));
                     if (character != null) {
                         character.setCharacterClass(characterClass);
                         return Command.Result.SUCCESS;
@@ -176,7 +176,7 @@ public final class Commands {
             return Command.Result.FAIL;
         });
 
-        Command.register("addeffect", (game, uuid, args) -> {
+        Command.register("addeffect", (game, id, args) -> {
             int argCount = args.length;
             if (argCount < 1)
                 return Command.Result.FAIL;
@@ -187,7 +187,7 @@ public final class Commands {
                 StatusEffectType type = StatusEffectTypes.ALL.get(effectType);
                 if (type == null)
                     return Command.Result.FAIL;
-                CharacterEntity character = ((CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, uuid));
+                CharacterEntity character = ((CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id));
                 if (character != null) {
                     character.addStatusEffect(new StatusEffect(type, 1, 30));
                     return Command.Result.SUCCESS;
@@ -196,7 +196,7 @@ public final class Commands {
                 StatusEffectType type = StatusEffectTypes.ALL.get(effectType);
                 if (type == null)
                     return Command.Result.FAIL;
-                CharacterEntity character = ((CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, uuid));
+                CharacterEntity character = ((CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id));
                 if (character != null) {
                     int amplifier = Integer.parseInt(args[1]);
                     int duration = Integer.parseInt(args[2]);
@@ -207,10 +207,10 @@ public final class Commands {
             return Command.Result.FAIL;
         });
 
-        Command.register("removeeffect", (game, uuid, args) -> {
+        Command.register("removeeffect", (game, id, args) -> {
             if (args.length > 0) {
                 String effectType = args[0];
-                CharacterEntity character = ((CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, uuid));
+                CharacterEntity character = ((CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id));
 
                 if (character != null) {
                     if ("all".equals(effectType) || "*".equals(effectType)) {

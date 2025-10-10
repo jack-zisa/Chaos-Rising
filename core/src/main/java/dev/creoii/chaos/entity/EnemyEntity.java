@@ -10,13 +10,12 @@ import dev.creoii.chaos.util.LootUtils;
 import dev.creoii.chaos.util.stat.StatContainer;
 
 import javax.annotation.Nullable;
-import java.util.UUID;
 
 public class EnemyEntity extends LivingEntity {
     private final EnemyController controller;
 
-    public EnemyEntity(Game game, EntityType<? extends EnemyEntity> type, UUID uuid, Vector2 pos) {
-        super(game, type, uuid, pos, new StatContainer(), new StatContainer());
+    public EnemyEntity(Game game, EntityType<? extends EnemyEntity> type, int id, Vector2 pos) {
+        super(game, type, id, pos, new StatContainer(), new StatContainer());
         if (!game.isClient()) {
             controller = new EnemyController(((EnemyEntityType) type).behavior());
             controller.start(this);

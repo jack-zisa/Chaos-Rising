@@ -14,11 +14,10 @@ import dev.creoii.chaos.client.render.Renderer;
 import dev.creoii.chaos.client.util.Renderable;
 
 import javax.annotation.Nullable;
-import java.util.UUID;
 
 public class EntityRenderManager extends EntityManager<EntityRenderData> implements Renderable {
     private static final float RENDER_DISTANCE = 17578.125f * Entity.COORDINATE_SCALE; // sqrt(17578.125 * 32) = 750 units
-    private final ObjectMap<UUID, EntityRenderData> visibleEntities = new ObjectMap<>(256);
+    private final ObjectMap<Integer, EntityRenderData> visibleEntities = new ObjectMap<>(256);
     private int visibleSize;
 
     public EntityRenderManager(ClientGame game) {
@@ -34,22 +33,22 @@ public class EntityRenderManager extends EntityManager<EntityRenderData> impleme
         return visibleSize;
     }
 
-    public EntityRenderData addEntity(UUID uuid, EntityRenderData entity) {
+    public EntityRenderData addEntity(int id, EntityRenderData entity) {
         setSize(getSize() + 1);
         EntityRenderers.getRenderer(entity).init(this);
-        return visibleEntities.put(uuid, entity);
+        return visibleEntities.put(id, entity);
     }
 
     @Nullable
-    public EntityRenderData getEntityData(UUID uuid) {
-        return visibleEntities.get(uuid);
+    public EntityRenderData getEntityData(int id) {
+        return visibleEntities.get(id);
     }
 
     @Override
-    public boolean removeEntity(UUID uuid) {
-        visibleEntities.remove(uuid);
+    public boolean removeEntity(int id) {
+        visibleEntities.remove(id);
         setSize(getSize() - 1);
-        return super.removeEntity(uuid);
+        return super.removeEntity(id);
     }
 
     public static Sprite getSprite(ClientGame game, EntityRenderData entity) {

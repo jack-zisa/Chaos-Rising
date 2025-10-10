@@ -4,13 +4,11 @@ import dev.creoii.chaos.inventory.Slot;
 import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.stat.StatContainer;
 
-import java.util.UUID;
-
 public class CharacterEntityRenderData extends LivingEntityRenderData {
     public Slot[][] slots;
 
-    public CharacterEntityRenderData(UUID uuid, float x, float y, float xv, float yv, String textureId, float scale, StatContainer statContainer, StatContainer maxStatContainer, Slot[][] slots) {
-        super(uuid, EntityGroup.CHARACTER, x, y, xv, yv, textureId, scale, statContainer, maxStatContainer);
+    public CharacterEntityRenderData(int id, float x, float y, float xv, float yv, String textureId, float scale, StatContainer statContainer, StatContainer maxStatContainer, Slot[][] slots) {
+        super(id, EntityGroup.CHARACTER, x, y, xv, yv, textureId, scale, statContainer, maxStatContainer);
         this.slots = slots;
     }
 

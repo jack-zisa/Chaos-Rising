@@ -8,7 +8,6 @@ import dev.creoii.chaos.entity.serialization.EntityCustomData;
 import dev.creoii.chaos.util.provider.Provider;
 
 import javax.annotation.Nullable;
-import java.util.UUID;
 
 public class BulletEntity extends Entity {
     private Entity parent;
@@ -18,8 +17,8 @@ public class BulletEntity extends Entity {
     private final int index;
     private final BulletController controller;
 
-    public BulletEntity(Game game, EntityType<? extends BulletEntity> type, UUID uuid, Vector2 pos, Vector2 direction, int lifetime, int damage, int index) {
-        super(game, type, uuid, pos);
+    public BulletEntity(Game game, EntityType<? extends BulletEntity> type, int id, Vector2 pos, Vector2 direction, int lifetime, int damage, int index) {
+        super(game, type, id, pos);
         this.direction = direction;
         this.lifetime = lifetime;
         this.damage = damage;

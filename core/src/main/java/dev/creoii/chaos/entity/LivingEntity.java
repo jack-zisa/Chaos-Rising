@@ -7,15 +7,14 @@ import dev.creoii.chaos.util.stat.StatContainer;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public abstract class LivingEntity extends Entity {
     private final StatContainer statContainer;
     private final StatContainer maxStatContainer;
     private final List<StatusEffect> statusEffects;
 
-    public LivingEntity(Game game, EntityType<? extends LivingEntity> type, UUID uuid, Vector2 pos, StatContainer statContainer, StatContainer maxStatContainer) {
-        super(game, type, uuid, pos);
+    public LivingEntity(Game game, EntityType<? extends LivingEntity> type, int id, Vector2 pos, StatContainer statContainer, StatContainer maxStatContainer) {
+        super(game, type, id, pos);
         this.statContainer = statContainer;
         this.maxStatContainer = statContainer;
         statusEffects = new ArrayList<>();

@@ -6,10 +6,7 @@ import com.esotericsoftware.kryonet.Listener;
 import dev.creoii.chaos.DataManager;
 import dev.creoii.chaos.network.NetworkQueue;
 import dev.creoii.chaos.network.c2s.*;
-import dev.creoii.chaos.network.s2c.EntityDisplayS2C;
-import dev.creoii.chaos.network.s2c.EntitySpawnS2C;
-import dev.creoii.chaos.network.s2c.MoveCharacterS2C;
-import dev.creoii.chaos.network.s2c.SyncDataS2C;
+import dev.creoii.chaos.network.s2c.*;
 import dev.creoii.chaos.server.chat.Commands;
 import dev.creoii.chaos.entity.CharacterEntity;
 import dev.creoii.chaos.entity.CharacterEntityType;
@@ -30,9 +27,9 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -84,18 +81,19 @@ public class ServerListener extends Listener {
     }
 
     public void handlePacket(Connection connection, Object object) {
-        if (object instanceof CharacterMoveC2S(UUID uuid, float dx, float dy)) {
-            CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, uuid);
+        if (object instanceof CharacterMoveC2S(int id, float dx, float dy)) {
+            CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id);
             if (character != null) {
                 Vector2 newPos = character.getPos().add(new Vector2(dx, dy).nor().scl(character.getStats().speed().value() / 8f));
                 character.setPrevPos(character.getPos().x, character.getPos().y);
                 character.setPos(newPos.x, newPos.y);
+                System.out.println(Arrays.toString(MoveEntitiesS2C.pack(newPos.x, newPos.y, newPos.x - character.getPrevPos().x, newPos.y - character.getPrevPos().y)));
                 game.getServer().sendToTCP(connection.getID(), new MoveCharacterS2C(newPos.x, newPos.y, newPos.x - character.getPrevPos().x, newPos.y - character.getPrevPos().y));
             }
         }
 
-        else if (object instanceof UseItemC2S(UUID uuid, Slot slotEntry)) {
-            CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, uuid);
+        else if (object instanceof UseItemC2S(int id, Slot slotEntry)) {
+            CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id);
             if (character != null) {
                 Slot slot = character.getInventory().getSlot(slotEntry.getR(), slotEntry.getC());
 
@@ -103,20 +101,20 @@ public class ServerListener extends Listener {
                 ItemStack stack = slot.getStack();
                 if (stack.getItem() instanceof AbilityItem abilityItem) {
                     abilityItem.getAttack().attack(new MousePosVecProvider(), new SourcePosVecProvider(), character);
-                    game.getCooldownManager().addCooldown(uuid, slotEntry.getR(), slotEntry.getC(), abilityItem.getCooldown());
+                    game.getCooldownManager().addCooldown(id, slotEntry.getR(), slotEntry.getC(), abilityItem.getCooldown());
                 } else if (stack.getItem() instanceof WeaponItem weaponItem) {
                     weaponItem.getAttack().attack(new MousePosVecProvider(), new SourcePosVecProvider(), character);
-                    game.getCooldownManager().addCooldown(uuid, slotEntry.getR(), slotEntry.getC(), Math.max(1, 150 / Math.max(1, character.getStats().attackSpeed().value())));
+                    game.getCooldownManager().addCooldown(id, slotEntry.getR(), slotEntry.getC(), Math.max(1, 150 / Math.max(1, character.getStats().attackSpeed().value())));
                 }
                 //}
             }
         }
 
-        else if (object instanceof SlotUpdateC2S(UUID uuid, SlotUpdateC2S.Action action, InventoryType from, InventoryType to, Slot fromSlot, Slot toSlot)) {
-            CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, uuid);
+        else if (object instanceof SlotUpdateC2S(int id, SlotUpdateC2S.Action action, InventoryType from, InventoryType to, Slot fromSlot, Slot toSlot)) {
+            CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id);
 
             if (character != null) {
-                LootDropEntity lootDrop = (LootDropEntity) game.getEntityManager().getEntity(character.getLootUuid());
+                LootDropEntity lootDrop = (LootDropEntity) game.getEntityManager().getEntity(character.getLootId());
 
                 Inventory fromInventory = null;
                 if (from == InventoryType.MAIN) {
@@ -138,14 +136,14 @@ public class ServerListener extends Listener {
             }
         }
 
-        else if (object instanceof LootDropCloseC2S(UUID uuid)) {
-            CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, uuid);
+        else if (object instanceof LootDropCloseC2S(int id)) {
+            CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id);
             if (character != null)
-                character.setLootUuid(null);
+                character.setLootId(-1);
         }
 
-        else if (object instanceof DropSlotItemC2S(UUID uuid, Slot slot)) {
-            CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, uuid);
+        else if (object instanceof DropSlotItemC2S(int id, Slot slot)) {
+            CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id);
             if (character != null) {
                 Slot slot1 = character.getInventory().getSlot(slot.getR(), slot.getC());
                 ItemStack dragCopy = slot1.getStack().copy();
@@ -154,26 +152,26 @@ public class ServerListener extends Listener {
             }
         }
 
-        else if (object instanceof ExecuteCommandC2S(UUID uuid, String commandType, String[] args)) {
-            Commands.tryExecute(game, uuid, commandType, args);
+        else if (object instanceof ExecuteCommandC2S(int id, String commandType, String[] args)) {
+            Commands.tryExecute(game, id, commandType, args);
         }
 
-        else if (object instanceof CharacterJoinC2S(UUID uuid)) {
+        else if (object instanceof CharacterJoinC2S()) {
             game.getEntityManager().getAllEntities().forEach((_, map) -> {
-                map.forEach((uuid1, entity) -> {
-                    game.getServer().sendToTCP(connection.getID(), new EntitySpawnS2C(uuid1, entity.getPos().x, entity.getPos().y, entity.getCustomPacketData()));
-                    game.getServer().sendToAllTCP(new EntityDisplayS2C(uuid1, entity.getType().id(), entity.getType().scale()));
+                map.forEach((id1, entity) -> {
+                    game.getServer().sendToTCP(connection.getID(), new EntitySpawnS2C(id1, entity.getPos().x, entity.getPos().y, entity.getCustomPacketData()));
+                    game.getServer().sendToAllTCP(new EntityDisplayS2C(id1, entity.getType().id(), entity.getType().scale()));
                 });
             });
 
             Map<String, Object> customData = new HashMap<>();
             customData.put("connection_id", connection.getID());
-            game.getEntityManager().addEntity(uuid, new CharacterEntityType(new Mutable<>(DataManager.getCharacterClass("wizard"))), new Vector2(0, 0), customData);
+            game.getEntityManager().addEntity(new CharacterEntityType(new Mutable<>(DataManager.getCharacterClass("wizard"))), new Vector2(0, 0), customData);
         }
 
-        else if (object instanceof CharacterLeaveC2S(UUID uuid)) {
+        else if (object instanceof CharacterLeaveC2S(int id)) {
             System.out.println("character leave");
-            game.getEntityManager().removeEntity(uuid);
+            game.getEntityManager().removeEntity(id);
         }
     }
 
