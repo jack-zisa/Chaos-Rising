@@ -63,7 +63,7 @@ public class InventoryWidget extends Widget {
     }
 
     @Override
-    public void render(Renderer renderer, @Nullable SpriteBatch batch, @Nullable ShapeRenderer shapeRenderer, BitmapFont font, boolean debug) {
+    public void render(Renderer renderer, @Nullable SpriteBatch batch, @Nullable ShapeRenderer shapeRenderer, BitmapFont font, float delta, boolean debug) {
         if (!isActive(renderer.getGame()))
             return;
 

@@ -1,4 +1,4 @@
-package dev.creoii.chaos.client.render.data;
+package dev.creoii.chaos.client.render.entity.data;
 
 
 import dev.creoii.chaos.util.EntityGroup;

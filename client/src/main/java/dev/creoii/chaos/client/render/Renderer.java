@@ -65,7 +65,7 @@ public class Renderer implements Disposable {
         viewport.update(width, height, true);
     }
 
-    public void render(boolean debug) {
+    public void render(float delta, boolean debug) {
         if (game.getCharacter() == null)
             return;
 
@@ -83,27 +83,27 @@ public class Renderer implements Disposable {
         batch.setProjectionMatrix(camera.combined);
 
         batch.begin();
-        worldRenderables.forEach(renderable -> renderable.render(this, batch, null, font, debug));
+        worldRenderables.forEach(renderable -> renderable.render(this, batch, null, font, delta, debug));
         batch.end();
 
-        worldRenderables.forEach(renderable -> renderable.render(this, null, shapeRenderer, font, debug));
+        worldRenderables.forEach(renderable -> renderable.render(this, null, shapeRenderer, font, delta, debug));
 
         viewport.apply();
         batch.setProjectionMatrix(viewport.getCamera().combined);
         shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
 
         batch.begin();
-        screenRenderables.forEach(renderable -> renderable.render(this, batch, null, font, debug));
+        screenRenderables.forEach(renderable -> renderable.render(this, batch, null, font, delta, debug));
         batch.end();
 
-        screenRenderables.forEach(renderable -> renderable.render(this, null, shapeRenderer, font, debug));
+        screenRenderables.forEach(renderable -> renderable.render(this, null, shapeRenderer, font, delta, debug));
 
         if (currentScreen != null) {
             batch.begin();
-            currentScreen.render(this, batch, null, font, debug);
+            currentScreen.render(this, batch, null, font, delta, debug);
             batch.end();
 
-            currentScreen.render(this, null, shapeRenderer, font, debug);
+            currentScreen.render(this, null, shapeRenderer, font, delta, debug);
         }
     }
 

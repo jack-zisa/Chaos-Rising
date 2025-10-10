@@ -8,5 +8,5 @@ import dev.creoii.chaos.client.render.Renderer;
 import javax.annotation.Nullable;
 
 public interface Renderable {
-    void render(Renderer renderer, @Nullable SpriteBatch batch, @Nullable ShapeRenderer shapeRenderer, BitmapFont font, boolean debug);
+    void render(Renderer renderer, @Nullable SpriteBatch batch, @Nullable ShapeRenderer shapeRenderer, BitmapFont font, float delta, boolean debug);
 }

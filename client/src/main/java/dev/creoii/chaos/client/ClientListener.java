@@ -4,7 +4,7 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.FrameworkMessage;
 import com.esotericsoftware.kryonet.Listener;
 import dev.creoii.chaos.DataManager;
-import dev.creoii.chaos.client.render.data.*;
+import dev.creoii.chaos.client.render.entity.data.*;
 import dev.creoii.chaos.effect.StatusEffect;
 import dev.creoii.chaos.entity.serialization.*;
 import dev.creoii.chaos.client.input.CharacterController;
@@ -94,13 +94,32 @@ public class ClientListener extends Listener {
                     entityRenderData.scale = scale;
                 }
             }
-            case EntityMoveS2C(UUID uuid, float x, float y, float xv, float yv) -> {
-                EntityRenderData entityRenderData = game.getEntityManager().getEntityData(uuid);
-                if (entityRenderData != null) {
-                    entityRenderData.x = x;
-                    entityRenderData.y = y;
-                    entityRenderData.xv = xv;
-                    entityRenderData.yv = yv;
+            case MoveEntitiesS2C(List<MoveEntitiesS2C.Entry> entries) -> entries.forEach(entry -> {
+                if (entry.uuid() != game.getCharacter().uuid) {
+                    EntityRenderData entityRenderData = game.getEntityManager().getEntityData(entry.uuid());
+                    if (entityRenderData != null) {
+                        entityRenderData.x = entry.x();
+                        entityRenderData.y = entry.y();
+                        entityRenderData.xv = entry.xv();
+                        entityRenderData.yv = entry.yv();
+                    } else {
+                        CharacterEntityRenderData character = game.getCharacter();
+                        if (character != null) {
+                            character.x = entry.x();
+                            character.y = entry.y();
+                            character.xv = entry.xv();
+                            character.yv = entry.yv();
+                        }
+                    }
+                }
+            });
+            case MoveCharacterS2C(float x, float y, float xv, float yv) -> {
+                CharacterEntityRenderData character = game.getCharacter();
+                if (character != null) {
+                    character.x = x;
+                    character.y = y;
+                    character.xv = xv;
+                    character.yv = yv;
                 }
             }
             case EntityRemoveS2C(UUID uuid) -> game.getEntityManager().removeEntity(uuid);

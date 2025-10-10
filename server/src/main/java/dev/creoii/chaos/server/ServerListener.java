@@ -5,6 +5,7 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import dev.creoii.chaos.DataManager;
 import dev.creoii.chaos.network.NetworkQueue;
+import dev.creoii.chaos.network.packet.s2c.*;
 import dev.creoii.chaos.server.chat.Commands;
 import dev.creoii.chaos.entity.CharacterEntity;
 import dev.creoii.chaos.entity.CharacterEntityType;
@@ -14,10 +15,6 @@ import dev.creoii.chaos.item.AbilityItem;
 import dev.creoii.chaos.item.ItemStack;
 import dev.creoii.chaos.item.WeaponItem;
 import dev.creoii.chaos.network.packet.c2s.*;
-import dev.creoii.chaos.network.packet.s2c.EntityDisplayS2C;
-import dev.creoii.chaos.network.packet.s2c.EntityMoveS2C;
-import dev.creoii.chaos.network.packet.s2c.EntitySpawnS2C;
-import dev.creoii.chaos.network.packet.s2c.SyncDataS2C;
 import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.Mutable;
 import dev.creoii.chaos.util.provider.vecprovider.MousePosVecProvider;
@@ -90,7 +87,7 @@ public class ServerListener extends Listener {
                 Vector2 newPos = character.getPos().add(new Vector2(dx, dy).nor().scl(character.getStats().speed().value() / 8f));
                 character.setPrevPos(character.getPos().x, character.getPos().y);
                 character.setPos(newPos.x, newPos.y);
-                game.getServer().sendToTCP(connection.getID(), new EntityMoveS2C(uuid, newPos.x, newPos.y, newPos.x - character.getPrevPos().x, newPos.y - character.getPrevPos().y));
+                game.getServer().sendToTCP(connection.getID(), new MoveCharacterS2C(newPos.x, newPos.y, newPos.x - character.getPrevPos().x, newPos.y - character.getPrevPos().y));
             }
         }
 

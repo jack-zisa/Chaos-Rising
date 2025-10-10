@@ -1,6 +1,6 @@
 package dev.creoii.chaos.client.render.entity;
 
-import dev.creoii.chaos.client.render.data.BulletEntityRenderData;
+import dev.creoii.chaos.client.render.entity.data.BulletEntityRenderData;
 
 public class BulletEntityRenderer extends SimpleEntityRenderer<BulletEntityRenderData> {
     public BulletEntityRenderer(BulletEntityRenderData entity) {

@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import dev.creoii.chaos.client.CommandManager;
 import dev.creoii.chaos.entity.Entity;
-import dev.creoii.chaos.client.render.data.CharacterEntityRenderData;
+import dev.creoii.chaos.client.render.entity.data.CharacterEntityRenderData;
 import dev.creoii.chaos.client.render.entity.EntityRenderManager;
 import dev.creoii.chaos.client.util.Renderable;
 
@@ -20,7 +20,7 @@ public class HudRenderer implements Renderable {
     public static final GlyphLayout DEBUG_LAYOUT = new GlyphLayout();
 
     @Override
-    public void render(Renderer renderer, @Nullable SpriteBatch batch, @Nullable ShapeRenderer shapeRenderer, BitmapFont font, boolean debug) {
+    public void render(Renderer renderer, @Nullable SpriteBatch batch, @Nullable ShapeRenderer shapeRenderer, BitmapFont font, float delta, boolean debug) {
         if (batch != null) {
             CommandManager commandManager = renderer.getGame().getCommandManager();
             if (commandManager.isActive()) {

@@ -16,7 +16,7 @@ import dev.creoii.chaos.network.NetworkQueue;
 import dev.creoii.chaos.network.Networking;
 import dev.creoii.chaos.client.render.Renderer;
 import dev.creoii.chaos.client.render.entity.EntityRenderManager;
-import dev.creoii.chaos.client.render.data.CharacterEntityRenderData;
+import dev.creoii.chaos.client.render.entity.data.CharacterEntityRenderData;
 import dev.creoii.chaos.client.texture.TextureManager;
 
 import java.io.IOException;
@@ -87,7 +87,7 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
         commandManager.update();
         inputManager.update();
 
-        renderer.render(debug);
+        renderer.render(Gdx.graphics.getDeltaTime(), debug);
     }
 
     @Override

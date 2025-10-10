@@ -6,7 +6,7 @@ import dev.creoii.chaos.item.AbilityItem;
 import dev.creoii.chaos.item.WeaponItem;
 import dev.creoii.chaos.network.packet.c2s.CharacterMoveC2S;
 import dev.creoii.chaos.network.packet.c2s.UseItemC2S;
-import dev.creoii.chaos.client.render.data.CharacterEntityRenderData;
+import dev.creoii.chaos.client.render.entity.data.CharacterEntityRenderData;
 import dev.creoii.chaos.client.util.Inputtable;
 
 public record CharacterController(CharacterEntityRenderData character) implements Inputtable {

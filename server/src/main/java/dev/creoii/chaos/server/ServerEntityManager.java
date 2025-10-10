@@ -2,16 +2,17 @@ package dev.creoii.chaos.server;
 
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.EntityManager;
-import dev.creoii.chaos.entity.CharacterEntity;
 import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.entity.EntityType;
 import dev.creoii.chaos.network.packet.s2c.EntityDisplayS2C;
-import dev.creoii.chaos.network.packet.s2c.EntityMoveS2C;
+import dev.creoii.chaos.network.packet.s2c.MoveEntitiesS2C;
 import dev.creoii.chaos.network.packet.s2c.EntityRemoveS2C;
 import dev.creoii.chaos.network.packet.s2c.EntitySpawnS2C;
 import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.Tickable;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -44,6 +45,7 @@ public class ServerEntityManager extends EntityManager<Entity> implements Tickab
     public void tick(int gametime, float delta) {
         if (getSize() <= 0)
             return;
+        List<MoveEntitiesS2C.Entry> entries = new ArrayList<>();
         getAllEntities().values().forEach(uuidEntityMap -> uuidEntityMap.values().forEach(entity -> {
             entity.tick(gametime, delta);
 
@@ -52,13 +54,14 @@ public class ServerEntityManager extends EntityManager<Entity> implements Tickab
 
             Vector2 velocity = entity.getVelocity();
             if (velocity.x != 0f || velocity.y != 0f) {
-                if (entity.getType().group() == EntityGroup.CHARACTER) {
-                    getGame().getServer().sendToAllExceptTCP(((CharacterEntity) entity).getConnectionId(), new EntityMoveS2C(entity.getUuid(), entity.getPos().x, entity.getPos().y, velocity.x, velocity.y));
-                } else {
-                    getGame().getServer().sendToAllTCP(new EntityMoveS2C(entity.getUuid(), entity.getPos().x, entity.getPos().y, velocity.x, velocity.y));
-                }
+                entries.add(new MoveEntitiesS2C.Entry(entity.getUuid(), velocity.x, velocity.y));
             }
         }));
+        if (!entries.isEmpty()) {
+            for (int i = 0; i < entries.size(); i += 100) {
+                getGame().getServer().sendToAllTCP(new MoveEntitiesS2C(entries.subList(i, Math.min(i + 100, entries.size()))));
+            }
+        }
     }
 
     @Override

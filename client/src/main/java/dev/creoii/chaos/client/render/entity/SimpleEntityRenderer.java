@@ -6,8 +6,8 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import dev.creoii.chaos.client.render.Renderer;
-import dev.creoii.chaos.client.render.data.EntityRenderData;
-import dev.creoii.chaos.client.render.data.LivingEntityRenderData;
+import dev.creoii.chaos.client.render.entity.data.EntityRenderData;
+import dev.creoii.chaos.client.render.entity.data.LivingEntityRenderData;
 
 import javax.annotation.Nullable;
 
@@ -21,10 +21,17 @@ public class SimpleEntityRenderer<T extends EntityRenderData> extends EntityRend
 
     }
 
-    public void render(T entity, Renderer renderer, @Nullable SpriteBatch batch, @Nullable ShapeRenderer shapeRenderer, BitmapFont font, boolean debug) {
+    public void render(T entity, Renderer renderer, @Nullable SpriteBatch batch, @Nullable ShapeRenderer shapeRenderer, BitmapFont font, float delta, boolean debug) {
         Sprite sprite = EntityRenderManager.getSprite(renderer.getGame(), entity);
         if (batch != null) {
-            sprite.setPosition(entity.x, entity.y);
+            float predictedX = entity.x + entity.xv * delta;
+            float predictedY = entity.y + entity.yv * delta;
+
+            float alpha = 1f - (float) Math.pow(.001f, delta);
+            entity.renderX += (predictedX - entity.renderX) * alpha;
+            entity.renderY += (predictedY - entity.renderY) * alpha;
+
+            sprite.setPosition(entity.renderX, entity.renderY);
             sprite.draw(batch);
 
             if (entity instanceof LivingEntityRenderData livingEntity) {
@@ -49,6 +56,8 @@ public class SimpleEntityRenderer<T extends EntityRenderData> extends EntityRend
             shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
             shapeRenderer.setColor(Color.GREEN);
             shapeRenderer.rect(entity.x, entity.y, sprite.getWidth(), sprite.getHeight());
+            shapeRenderer.setColor(Color.BLUE);
+            shapeRenderer.rect(entity.renderX, entity.renderY, sprite.getWidth(), sprite.getHeight());
             shapeRenderer.end();
         }
     }

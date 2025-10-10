@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ObjectMap;
 import dev.creoii.chaos.client.ClientGame;
 import dev.creoii.chaos.EntityManager;
-import dev.creoii.chaos.client.render.data.*;
+import dev.creoii.chaos.client.render.entity.data.*;
 import dev.creoii.chaos.entity.*;
 import dev.creoii.chaos.client.render.Renderer;
 import dev.creoii.chaos.client.util.Renderable;
@@ -61,7 +61,7 @@ public class EntityRenderManager extends EntityManager<EntityRenderData> impleme
     }
 
     @Override
-    public void render(Renderer renderer, @Nullable SpriteBatch batch, @Nullable ShapeRenderer shapeRenderer, BitmapFont font, boolean debug) {
+    public void render(Renderer renderer, @Nullable SpriteBatch batch, @Nullable ShapeRenderer shapeRenderer, BitmapFont font, float delta, boolean debug) {
         visibleSize = 0;
         float camX = renderer.getCamera().position.x - renderer.getCamera().viewportWidth / 2;
         float camY = renderer.getCamera().position.y - renderer.getCamera().viewportHeight / 2;
@@ -70,7 +70,7 @@ public class EntityRenderManager extends EntityManager<EntityRenderData> impleme
         for (EntityRenderData entity : visibleEntities.values()) {
             if (isEntityInView(renderer.getCamera().position, camX, camY, camW, camH, entity)) {
                 ++visibleSize;
-                EntityRenderers.getRenderer(entity).render(entity, renderer, batch, shapeRenderer, font, debug);
+                EntityRenderers.getRenderer(entity).render(entity, renderer, batch, shapeRenderer, font, delta, debug);
             }
         }
     }

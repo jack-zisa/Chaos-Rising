@@ -65,13 +65,13 @@ public abstract class Screen implements Renderable, Inputtable {
         game.getInputManager().removeInput(this);
     }
 
-    public void render(Renderer renderer, @Nullable SpriteBatch batch, @Nullable ShapeRenderer shapeRenderer, BitmapFont font, boolean debug) {
+    public void render(Renderer renderer, @Nullable SpriteBatch batch, @Nullable ShapeRenderer shapeRenderer, BitmapFont font, float delta, boolean debug) {
         if (batch == null)
             return;
         //SCREEN_BACKGROUND.draw(batch, pos.x, pos.y, 200, 200);
         font.draw(batch, title, pos.x, pos.y + titleOffsetY);
 
-        widgets.forEach((key, widget) -> widget.render(renderer, batch, shapeRenderer, font, debug));
+        widgets.forEach((key, widget) -> widget.render(renderer, batch, shapeRenderer, font, delta, debug));
     }
 
     @Override
