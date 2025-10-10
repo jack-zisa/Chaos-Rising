@@ -14,8 +14,8 @@ import javax.annotation.Nullable;
 public class EnemyEntity extends LivingEntity {
     private final EnemyController controller;
 
-    public EnemyEntity(Game game, EntityType<? extends EnemyEntity> type, int id, Vector2 pos) {
-        super(game, type, id, pos, new StatContainer(), new StatContainer());
+    public EnemyEntity(Game game, EntityType<? extends EnemyEntity> type, int id, Vector2 pos, StatContainer stats) {
+        super(game, type, id, pos, stats, stats);
         if (!game.isClient()) {
             controller = new EnemyController(((EnemyEntityType) type).behavior());
             controller.start(this);

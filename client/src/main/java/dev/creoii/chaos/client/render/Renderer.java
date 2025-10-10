@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.ArrayMap;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import dev.creoii.chaos.client.ClientGame;
@@ -24,9 +25,7 @@ public class Renderer implements Disposable {
     private final BitmapFont font;
     private final SpriteBatch batch;
     private final ShapeRenderer shapeRenderer;
-
-    private final List<Renderable> worldRenderables;
-    private final List<Renderable> screenRenderables;
+    private final ArrayMap<RenderSpace, ArrayMap<RenderLayer, List<Renderable>>> renderables;
     private Screen currentScreen = null;
 
     public Renderer(ClientGame game) {
@@ -43,10 +42,22 @@ public class Renderer implements Disposable {
         shapeRenderer = new ShapeRenderer();
         shapeRenderer.setAutoShapeType(true);
 
-        worldRenderables = new ArrayList<>();
-        worldRenderables.add(game.getEntityManager());
-        screenRenderables = new ArrayList<>();
-        screenRenderables.add(new HudRenderer());
+        renderables = new ArrayMap<>(RenderSpace.values().length - 1);
+
+        for (RenderSpace space : RenderSpace.values()) {
+            renderables.put(space, new ArrayMap<>());
+        }
+
+        for (RenderLayer layer : RenderLayer.values()) {
+            renderables.get(layer.getSpace()).put(layer, new ArrayList<>());
+        }
+
+        registerRenderable(RenderLayer.ENTITY, game.getEntityManager());
+        registerRenderable(RenderLayer.HUD, new HudRenderer());
+    }
+
+    public void registerRenderable(RenderLayer renderLayer, Renderable renderable) {
+        renderables.get(renderLayer.getSpace()).get(renderLayer).add(renderable);
     }
 
     public ClientGame getGame() {
@@ -69,6 +80,29 @@ public class Renderer implements Disposable {
         if (game.getCharacter() == null)
             return;
 
+        updateCameraSeek();
+
+        for (RenderSpace space : RenderSpace.values()) {
+            space.setup(viewport, batch, shapeRenderer, camera);
+
+            renderables.get(space).forEach(entry -> entry.value.forEach(renderable -> {
+                batch.begin();
+                renderable.render(this, batch, null, font, delta, debug);
+                batch.end();
+                renderable.render(this, null, shapeRenderer, font, delta, debug);
+            }));
+        }
+
+        if (currentScreen != null) {
+            batch.begin();
+            currentScreen.render(this, batch, null, font, delta, debug);
+            batch.end();
+
+            currentScreen.render(this, null, shapeRenderer, font, delta, debug);
+        }
+    }
+
+    private void updateCameraSeek() {
         Vector3 mousePos = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
 
         Vector2 direction = new Vector2(mousePos.x - game.getCharacter().x, mousePos.y - game.getCharacter().y);
@@ -78,33 +112,6 @@ public class Renderer implements Disposable {
         camera.position.x += ((game.getCharacter().x + direction.x) - camera.position.x) * 0.2f;
         camera.position.y += ((game.getCharacter().y + direction.y) - camera.position.y) * 0.2f;
         camera.update();
-
-        shapeRenderer.setProjectionMatrix(camera.combined);
-        batch.setProjectionMatrix(camera.combined);
-
-        batch.begin();
-        worldRenderables.forEach(renderable -> renderable.render(this, batch, null, font, delta, debug));
-        batch.end();
-
-        worldRenderables.forEach(renderable -> renderable.render(this, null, shapeRenderer, font, delta, debug));
-
-        viewport.apply();
-        batch.setProjectionMatrix(viewport.getCamera().combined);
-        shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
-
-        batch.begin();
-        screenRenderables.forEach(renderable -> renderable.render(this, batch, null, font, delta, debug));
-        batch.end();
-
-        screenRenderables.forEach(renderable -> renderable.render(this, null, shapeRenderer, font, delta, debug));
-
-        if (currentScreen != null) {
-            batch.begin();
-            currentScreen.render(this, batch, null, font, delta, debug);
-            batch.end();
-
-            currentScreen.render(this, null, shapeRenderer, font, delta, debug);
-        }
     }
 
     public Screen getCurrentScreen() {

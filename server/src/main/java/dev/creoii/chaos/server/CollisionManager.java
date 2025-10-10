@@ -26,6 +26,7 @@ public class CollisionManager {
 
         COLLISION_MASKS[EntityGroup.BULLET.ordinal()] = (1 << EntityGroup.ENEMY.ordinal()) | (1 << EntityGroup.CHARACTER.ordinal());
         COLLISION_MASKS[EntityGroup.CHARACTER.ordinal()] = (1 << EntityGroup.BULLET.ordinal()) | (1 << EntityGroup.LOOT_DROP.ordinal());
+        COLLISION_MASKS[EntityGroup.ENEMY.ordinal()] = (1 << EntityGroup.BULLET.ordinal());
         COLLISION_MASKS[EntityGroup.LOOT_DROP.ordinal()] = (1 << EntityGroup.CHARACTER.ordinal());
     }
 
@@ -62,8 +63,8 @@ public class CollisionManager {
                 for (int j = i + 1; j < entities.size; ++j) {
                     Entity b = entities.get(j);
                     if (checkMask(a, b) && a.collides(b)) {
-                        collisions.computeIfAbsent(a.getId(), k -> new HashSet<>()).add(b.getId());
-                        collisions.computeIfAbsent(b.getId(), k -> new HashSet<>()).add(a.getId());
+                        collisions.computeIfAbsent(a.getId(), _ -> new HashSet<>()).add(b.getId());
+                        collisions.computeIfAbsent(b.getId(), _ -> new HashSet<>()).add(a.getId());
 
                         a.setCollidingWith(b.getId());
                         b.setCollidingWith(a.getId());
@@ -79,7 +80,6 @@ public class CollisionManager {
 
                 for (int[] dir : neighborDirs) {
                     int neighborKey = ((x + dir[0] + KEY_OFFSET) << 16) | ((y + dir[1] + KEY_OFFSET) & 0xffff);
-                    //System.out.println("neighborkey: " + neighborKey);
                     Array<Entity> neighbors = grid.get(neighborKey);
                     if (neighbors == null)
                         continue;
@@ -89,21 +89,16 @@ public class CollisionManager {
                             continue;
 
                         if (checkMask(a, b) && a.collides(b)) {
-                            collisions.computeIfAbsent(a.getId(), k -> new HashSet<>()).add(b.getId());
-                            collisions.computeIfAbsent(b.getId(), k -> new HashSet<>()).add(a.getId());
+                            collisions.computeIfAbsent(a.getId(), _ -> new HashSet<>()).add(b.getId());
+                            collisions.computeIfAbsent(b.getId(), _ -> new HashSet<>()).add(a.getId());
 
                             a.setCollidingWith(b.getId());
                             b.setCollidingWith(a.getId());
-
-                            System.out.println("colliding");
                         }
                     }
                 }
             }
         }
-
-        //if (!collisions.isEmpty())
-        //    System.out.println("collisions size: " + collisions.size());
 
         for (Entity entity : toCollide) {
             Set<Integer> currentlyColliding = collisions.getOrDefault(entity.getId(), Collections.emptySet());
@@ -111,9 +106,12 @@ public class CollisionManager {
             while (it.hasNext()) {
                 int id = it.next();
                 if (!currentlyColliding.contains(id)) {
+                    Entity b = game.getEntityManager().getEntity(id);
+                    if (b == null)
+                        continue;
                     it.remove();
-                    entity.collisionExit(game.getEntityManager().getEntity(id));
-                    System.out.println("stop colliding");
+                    entity.removeCollidingWith(id);
+                    b.removeCollidingWith(entity.getId());
                 }
             }
         }
@@ -145,13 +143,5 @@ public class CollisionManager {
 
     private static boolean checkMask(Entity a, Entity b) {
         return (COLLISION_MASKS[a.getType().group().ordinal()] & (1 << b.getType().group().ordinal())) != 0;
-    }
-
-    private static int getDx(int packed) {
-        return packed >> 16;
-    }
-
-    private static int getDy(int packed) {
-        return (short) (packed & 0xffff);
     }
 }

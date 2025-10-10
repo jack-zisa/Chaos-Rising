@@ -37,7 +37,7 @@ public record EnemyEntityType(String id, float scale, @Nullable LootTable lootTa
     }
 
     public EnemyEntity create(Game game, int id, Vector2 pos, Map<String, Object> customData) {
-        EnemyEntity enemy = new EnemyEntity(game, this, id, pos.cpy());
+        EnemyEntity enemy = new EnemyEntity(game, this, id, pos.cpy(), stats);
 /*        enemy.centerPos = new Vector2();
         enemy.colliderRect = new Rectangle();
         enemy.colliderRect.setPosition(pos);

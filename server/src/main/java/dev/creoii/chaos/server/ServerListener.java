@@ -87,7 +87,6 @@ public class ServerListener extends Listener {
                 Vector2 newPos = character.getPos().add(new Vector2(dx, dy).nor().scl(character.getStats().speed().value() / 8f));
                 character.setPrevPos(character.getPos().x, character.getPos().y);
                 character.setPos(newPos.x, newPos.y);
-                System.out.println(Arrays.toString(MoveEntitiesS2C.pack(newPos.x, newPos.y, newPos.x - character.getPrevPos().x, newPos.y - character.getPrevPos().y)));
                 game.getServer().sendToTCP(connection.getID(), new MoveCharacterS2C(newPos.x, newPos.y, newPos.x - character.getPrevPos().x, newPos.y - character.getPrevPos().y));
             }
         }

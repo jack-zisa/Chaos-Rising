@@ -117,7 +117,6 @@ public class ClientListener extends Listener {
                 CharacterEntityRenderData character = game.getCharacter();
                 if (character != null) {
                     float[] unpacked = MoveEntitiesS2C.unpack(data);
-                    System.out.println(Arrays.toString(unpacked));
                     character.x = unpacked[0];
                     character.y = unpacked[1];
                     character.xv = unpacked[2];
