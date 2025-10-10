@@ -8,7 +8,7 @@ import dev.creoii.chaos.effect.StatusEffectType;
 import dev.creoii.chaos.effect.StatusEffectTypes;
 import dev.creoii.chaos.entity.*;
 import dev.creoii.chaos.item.Item;
-import dev.creoii.chaos.network.packet.s2c.LivingStatUpdateS2C;
+import dev.creoii.chaos.network.s2c.LivingStatUpdateS2C;
 import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.stat.Stat;
 

@@ -4,8 +4,8 @@ import dev.creoii.chaos.client.ClientGame;
 import dev.creoii.chaos.inventory.Slot;
 import dev.creoii.chaos.item.AbilityItem;
 import dev.creoii.chaos.item.WeaponItem;
-import dev.creoii.chaos.network.packet.c2s.CharacterMoveC2S;
-import dev.creoii.chaos.network.packet.c2s.UseItemC2S;
+import dev.creoii.chaos.network.c2s.CharacterMoveC2S;
+import dev.creoii.chaos.network.c2s.UseItemC2S;
 import dev.creoii.chaos.client.render.entity.data.CharacterEntityRenderData;
 import dev.creoii.chaos.client.util.Inputtable;
 

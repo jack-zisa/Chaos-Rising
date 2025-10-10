@@ -1,4 +1,4 @@
-package dev.creoii.chaos.network.packet.s2c;
+package dev.creoii.chaos.network.s2c;
 
 import com.mojang.serialization.Codec;
 

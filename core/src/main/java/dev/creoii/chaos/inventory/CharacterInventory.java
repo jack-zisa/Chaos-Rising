@@ -3,7 +3,7 @@ package dev.creoii.chaos.inventory;
 import dev.creoii.chaos.entity.CharacterEntity;
 import dev.creoii.chaos.item.EquipmentItem;
 import dev.creoii.chaos.item.ItemStack;
-import dev.creoii.chaos.network.packet.s2c.InventoryUpdateS2C;
+import dev.creoii.chaos.network.s2c.InventoryUpdateS2C;
 import dev.creoii.chaos.util.stat.ModifierEntry;
 
 import java.util.List;

@@ -11,9 +11,9 @@ import dev.creoii.chaos.client.input.CharacterController;
 import dev.creoii.chaos.inventory.InventoryType;
 import dev.creoii.chaos.inventory.Slot;
 import dev.creoii.chaos.network.NetworkQueue;
-import dev.creoii.chaos.network.packet.c2s.CharacterJoinC2S;
-import dev.creoii.chaos.network.packet.c2s.CharacterLeaveC2S;
-import dev.creoii.chaos.network.packet.s2c.*;
+import dev.creoii.chaos.network.c2s.CharacterJoinC2S;
+import dev.creoii.chaos.network.c2s.CharacterLeaveC2S;
+import dev.creoii.chaos.network.s2c.*;
 import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.stat.Stat;
 
@@ -76,16 +76,15 @@ public class ClientListener extends Listener {
                             } else return new Slot(r, c);
                         })));
                         game.setCharacter(character);
-                        game.getEntityManager().addEntity(uuid, character);
                         game.getInputManager().addInput(new CharacterController(character));
+                        game.getEntityManager().addEntity(uuid, character);
                     }
                     case LOOT_DROP -> {
                         LootDropData lootDropData = (LootDropData) customData;
                         Optional<List<List<Slot>>> slots = lootDropData.slots();
                         game.getEntityManager().addEntity(uuid, new LootDropEntityRenderData(uuid, x, y, 0f, 0f, group.name().toLowerCase(), 32f, slots.map(Slot::toSlotArray).orElse(Slot.createEmptySlotArray(2, 4))));
                     }
-                    case null, default -> throw new IllegalArgumentException("Unknown EntityGroup: " + (group == null ? "null" : group.name().toLowerCase()));
-                }
+                };
             }
             case EntityDisplayS2C(UUID uuid, String textureId, float scale) -> {
                 EntityRenderData entityRenderData = game.getEntityManager().getEntityData(uuid);
@@ -97,29 +96,31 @@ public class ClientListener extends Listener {
             case MoveEntitiesS2C(List<MoveEntitiesS2C.Entry> entries) -> entries.forEach(entry -> {
                 if (entry.uuid() != game.getCharacter().uuid) {
                     EntityRenderData entityRenderData = game.getEntityManager().getEntityData(entry.uuid());
+                    float[] unpacked = MoveEntitiesS2C.unpack(entry.packed());
                     if (entityRenderData != null) {
-                        entityRenderData.x = entry.x();
-                        entityRenderData.y = entry.y();
-                        entityRenderData.xv = entry.xv();
-                        entityRenderData.yv = entry.yv();
+                        entityRenderData.x = unpacked[0];
+                        entityRenderData.y = unpacked[1];
+                        entityRenderData.xv = unpacked[2];
+                        entityRenderData.yv = unpacked[3];
                     } else {
                         CharacterEntityRenderData character = game.getCharacter();
                         if (character != null) {
-                            character.x = entry.x();
-                            character.y = entry.y();
-                            character.xv = entry.xv();
-                            character.yv = entry.yv();
+                            character.x = unpacked[0];
+                            character.y = unpacked[1];
+                            character.xv = unpacked[2];
+                            character.yv = unpacked[3];
                         }
                     }
                 }
             });
-            case MoveCharacterS2C(float x, float y, float xv, float yv) -> {
+            case MoveCharacterS2C(long packed) -> {
                 CharacterEntityRenderData character = game.getCharacter();
                 if (character != null) {
-                    character.x = x;
-                    character.y = y;
-                    character.xv = xv;
-                    character.yv = yv;
+                    float[] unpacked = MoveEntitiesS2C.unpack(packed);
+                    character.x = unpacked[0];
+                    character.y = unpacked[1];
+                    character.xv = unpacked[2];
+                    character.yv = unpacked[3];
                 }
             }
             case EntityRemoveS2C(UUID uuid) -> game.getEntityManager().removeEntity(uuid);

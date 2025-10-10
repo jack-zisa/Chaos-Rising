@@ -7,7 +7,7 @@ import dev.creoii.chaos.client.ClientGame;
 import dev.creoii.chaos.client.input.InputManager;
 import dev.creoii.chaos.inventory.InventoryType;
 import dev.creoii.chaos.inventory.Slot;
-import dev.creoii.chaos.network.packet.c2s.SlotUpdateC2S;
+import dev.creoii.chaos.network.c2s.SlotUpdateC2S;
 import dev.creoii.chaos.client.render.screen.InventoryScreen;
 import dev.creoii.chaos.client.render.screen.Screen;
 

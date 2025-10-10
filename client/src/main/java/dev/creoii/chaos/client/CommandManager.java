@@ -3,7 +3,7 @@ package dev.creoii.chaos.client;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
-import dev.creoii.chaos.network.packet.c2s.ExecuteCommandC2S;
+import dev.creoii.chaos.network.c2s.ExecuteCommandC2S;
 
 import java.util.Arrays;
 

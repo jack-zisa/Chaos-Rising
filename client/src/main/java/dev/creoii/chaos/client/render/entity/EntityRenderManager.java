@@ -18,13 +18,11 @@ import java.util.UUID;
 
 public class EntityRenderManager extends EntityManager<EntityRenderData> implements Renderable {
     private static final float RENDER_DISTANCE = 17578.125f * Entity.COORDINATE_SCALE; // sqrt(17578.125 * 32) = 750 units
-    private final ObjectMap<UUID, EntityRenderData> visibleEntities;
+    private final ObjectMap<UUID, EntityRenderData> visibleEntities = new ObjectMap<>(256);
     private int visibleSize;
 
     public EntityRenderManager(ClientGame game) {
         super(game);
-        visibleEntities = new ObjectMap<>(128);
-
         EntityRenderers.register(EntityRenderData.class, SimpleEntityRenderer::new);
         EntityRenderers.register(LivingEntityRenderData.class, SimpleEntityRenderer::new);
         EntityRenderers.register(BulletEntityRenderData.class, BulletEntityRenderer::new);
@@ -36,10 +34,10 @@ public class EntityRenderManager extends EntityManager<EntityRenderData> impleme
         return visibleSize;
     }
 
-    public void addEntity(UUID uuid, EntityRenderData entity) {
-        visibleEntities.put(uuid, entity);
+    public EntityRenderData addEntity(UUID uuid, EntityRenderData entity) {
         setSize(getSize() + 1);
         EntityRenderers.getRenderer(entity).init(this);
+        return visibleEntities.put(uuid, entity);
     }
 
     @Nullable

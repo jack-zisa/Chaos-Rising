@@ -1,7 +1,7 @@
 package dev.creoii.chaos.inventory;
 
 import dev.creoii.chaos.item.ItemStack;
-import dev.creoii.chaos.network.packet.c2s.SlotUpdateC2S;
+import dev.creoii.chaos.network.c2s.SlotUpdateC2S;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;

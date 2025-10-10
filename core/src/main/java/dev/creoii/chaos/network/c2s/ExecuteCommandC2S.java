@@ -1,4 +1,4 @@
-package dev.creoii.chaos.network.packet.c2s;
+package dev.creoii.chaos.network.c2s;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;

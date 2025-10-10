@@ -4,10 +4,10 @@ import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.EntityManager;
 import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.entity.EntityType;
-import dev.creoii.chaos.network.packet.s2c.EntityDisplayS2C;
-import dev.creoii.chaos.network.packet.s2c.MoveEntitiesS2C;
-import dev.creoii.chaos.network.packet.s2c.EntityRemoveS2C;
-import dev.creoii.chaos.network.packet.s2c.EntitySpawnS2C;
+import dev.creoii.chaos.network.s2c.EntityDisplayS2C;
+import dev.creoii.chaos.network.s2c.MoveEntitiesS2C;
+import dev.creoii.chaos.network.s2c.EntityRemoveS2C;
+import dev.creoii.chaos.network.s2c.EntitySpawnS2C;
 import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.Tickable;
 
@@ -54,7 +54,7 @@ public class ServerEntityManager extends EntityManager<Entity> implements Tickab
 
             Vector2 velocity = entity.getVelocity();
             if (velocity.x != 0f || velocity.y != 0f) {
-                entries.add(new MoveEntitiesS2C.Entry(entity.getUuid(), velocity.x, velocity.y));
+                entries.add(new MoveEntitiesS2C.Entry(entity.getUuid(), entity.getPos().x, entity.getPos().y, velocity.x, velocity.y));
             }
         }));
         if (!entries.isEmpty()) {
