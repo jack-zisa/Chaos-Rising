@@ -184,12 +184,12 @@ public class ClientListener extends Listener {
                         zipIn.closeEntry();
                     }
                 } catch (IOException e) {
-                    System.out.println("[Client] Client failed to sync data: " + e);
+                    ClientGame.LOGGER.error("Client failed to sync data: " + e);
                 }
 
                 DataManager.load(cacheRoot);
             }
-            default -> System.out.println("Unhandled packet type: " + object.getClass().getSimpleName());
+            default -> ClientGame.LOGGER.error("Unhandled packet type: " + object.getClass().getSimpleName());
         }
     }
 
@@ -197,7 +197,7 @@ public class ClientListener extends Listener {
     public void disconnected(Connection connection) {
         if (game.getCharacter() != null) {
             game.getClient().sendTCP(new CharacterLeaveC2S(game.getCharacter().id));
-            System.out.println("[Client] Client disconnected: " + connection.getID());
+            ClientGame.LOGGER.info("Client disconnected: " + connection.getID());
         }
     }
 }

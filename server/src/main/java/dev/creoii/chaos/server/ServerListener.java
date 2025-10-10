@@ -43,7 +43,7 @@ public class ServerListener extends Listener {
 
     @Override
     public void connected(Connection connection) {
-        System.out.println("[Server] Client connected: " + connection.getRemoteAddressTCP());
+        ServerGame.LOGGER.info("Client connected: " + connection.getRemoteAddressTCP());
 
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         URL url = classLoader.getResource("data/");
@@ -177,6 +177,6 @@ public class ServerListener extends Listener {
 
     @Override
     public void disconnected(Connection connection) {
-        System.out.println("[Server] Client disconnected: " + connection.getID());
+        ServerGame.LOGGER.info("Client disconnected: " + connection.getID());
     }
 }

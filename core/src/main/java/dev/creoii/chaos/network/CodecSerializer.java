@@ -36,7 +36,7 @@ public class CodecSerializer extends Serializer<Object> {
         Codec<Object> codec = (Codec<Object>) getCodec(o.getClass());
         JsonElement element = codec.encodeStart(JsonOps.INSTANCE, o).getOrThrow();
         byte[] bytes = element.toString().getBytes(StandardCharsets.UTF_8);
-        System.out.println("[Network] Write " + o.getClass().getSimpleName() + ": " + (element.toString().length() >= 255 ? element.toString().substring(0, 255) + "..." : element));
+        Networking.LOGGER.info("Write " + o.getClass().getSimpleName() + ": " + element, 255);
         output.writeInt(bytes.length);
         output.writeBytes(bytes);
     }
@@ -47,7 +47,7 @@ public class CodecSerializer extends Serializer<Object> {
         int len = input.readInt();
         byte[] bytes = input.readBytes(len);
         String s = new String(bytes, StandardCharsets.UTF_8);
-        System.out.println("[Network] Read " + aClass.getSimpleName() + ": " + (s.length() >= 255 ? s.substring(0, 255) + "..." : s));
+        Networking.LOGGER.info("Read " + aClass.getSimpleName() + ": " + s, 255);
         JsonElement element = JsonParser.parseString(s);
         return codec.parse(JsonOps.INSTANCE, element).getOrThrow();
     }

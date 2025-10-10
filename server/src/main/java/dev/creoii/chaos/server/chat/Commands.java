@@ -10,24 +10,26 @@ import dev.creoii.chaos.entity.*;
 import dev.creoii.chaos.item.Item;
 import dev.creoii.chaos.network.s2c.LivingStatUpdateS2C;
 import dev.creoii.chaos.util.EntityGroup;
+import dev.creoii.chaos.util.logging.Logger;
 import dev.creoii.chaos.util.stat.Stat;
 
 import java.util.*;
 
 public final class Commands {
     private static final Random RANDOM = new Random();
+    public static final Logger LOGGER = new Logger(Commands.class.getSimpleName());
     static final Map<String, Command> ALL = new HashMap<>();
 
     public static void tryExecute(ServerGame game, int id, String commandType, String[] args) {
         if (Commands.ALL.containsKey(commandType)) {
             try {
                 Command.Result result = Commands.ALL.get(commandType).execute(game, id, args);
-                System.out.println(result.getResultMessage(commandType, args));
+                LOGGER.info(result.getResultMessage(commandType, args));
             } catch (Exception e) {
-                System.out.println(Command.Result.FAIL.getResultMessageWithReason(commandType, args, e.toString()));
+                LOGGER.error(Command.Result.FAIL.getResultMessageWithReason(commandType, args, e.toString()));
             }
         } else {
-            System.out.println("[Commands] Command '/" + commandType + "' not found");
+            LOGGER.warn("Command '/" + commandType + "' not found");
         }
     }
 

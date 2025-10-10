@@ -9,6 +9,7 @@ import dev.creoii.chaos.entity.*;
 import dev.creoii.chaos.item.Item;
 import dev.creoii.chaos.loot.LootTable;
 import dev.creoii.chaos.util.Identifiable;
+import dev.creoii.chaos.util.logging.Logger;
 
 import javax.annotation.Nullable;
 import java.io.FileReader;
@@ -21,6 +22,7 @@ import java.util.stream.Stream;
 
 public class DataManager {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    public static final Logger LOGGER = new Logger(DataManager.class.getSimpleName());
     private static final Map<String, Codec<? extends Identifiable>> SCHEMA = new HashMap<>();
     private static final Map<String, Map<String, Identifiable>> DATA = new HashMap<>();
 
@@ -78,7 +80,7 @@ public class DataManager {
 
                 Path folderPath = path.resolve(folder);
                 if (!Files.exists(folderPath)) {
-                    System.out.println("[DataManager] Folder '" + folderPath + "' does not exist, skipping.");
+                    LOGGER.info("Folder '" + folderPath + "' does not exist, skipping.");
                     continue;
                 }
 
@@ -90,15 +92,15 @@ public class DataManager {
                             Identifiable obj = (Identifiable) codec.parse(JsonOps.INSTANCE, jsonValue).getOrThrow();
                             data.put(obj.id(), obj);
                         } catch (Exception e) {
-                            System.out.println("[DataManager] Error parsing " + file.getFileName() + " in '/" + folder + "': " + e);
+                            LOGGER.info("Error parsing " + file.getFileName() + " in '/" + folder + "': " + e);
                         }
                     });
                 }
 
-                System.out.println("[DataManager] Loaded " + data.size() + " objects for type " + folder);
+                LOGGER.info("Loaded " + data.size() + " objects for type " + folder);
             }
         } catch (Exception e) {
-            System.out.println("[DataManager] Error loading data: " + e);
+            LOGGER.error("Error loading data: " + e);
         }
     }
 

@@ -9,6 +9,7 @@ import dev.creoii.chaos.network.NetworkQueue;
 import dev.creoii.chaos.server.inventory.cooldown.CooldownManager;
 import dev.creoii.chaos.network.CreoSerialization;
 import dev.creoii.chaos.network.Networking;
+import dev.creoii.chaos.util.logging.Logger;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -20,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 public class ServerGame implements Game {
     private final Server server;
     private final ServerListener listener;
+    public static final Logger LOGGER = new Logger(ServerGame.class.getSimpleName());
     protected NetworkQueue<NetworkQueue.QueuedPacket> networkQueue;
     private final OptionsManager optionsManager;
     private final TickManager tickManager;
@@ -35,7 +37,7 @@ public class ServerGame implements Game {
         server.start();
         server.bind(tcpPort, udpPort);
 
-        System.out.println("[Server] Server started on ports: TCP " + tcpPort + " | UDP " + udpPort);
+        LOGGER.info("Server started on ports: TCP " + tcpPort + " | UDP " + udpPort);
 
         Networking.register(server.getKryo());
 
@@ -49,7 +51,8 @@ public class ServerGame implements Game {
 
         URL baseUrl = getClass().getClassLoader().getResource("data");
         if (baseUrl == null) {
-            System.out.println("[DataManager] Directory 'data/' does not exist");
+
+            DataManager.LOGGER.error("Directory 'data/' does not exist");
             return;
         }
 
@@ -68,10 +71,10 @@ public class ServerGame implements Game {
                 try {
                     TimeUnit.NANOSECONDS.sleep(sleepNanos);
                 } catch (InterruptedException e) {
-                    System.out.println("[Server] Thread sleep interrupted: " + e);
+                    LOGGER.error("Thread sleep interrupted: " + e);
                 }
             } else {
-                System.out.println("[Server] Falling " + (-sleepNanos) + " ns behind");
+                LOGGER.info("Falling " + (-sleepNanos) + " ns behind");
                 nextTick = System.nanoTime();
             }
         }

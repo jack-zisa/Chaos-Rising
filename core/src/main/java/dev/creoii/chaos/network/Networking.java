@@ -18,10 +18,13 @@ import dev.creoii.chaos.network.c2s.*;
 import dev.creoii.chaos.network.s2c.*;
 import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.Rarity;
+import dev.creoii.chaos.util.logging.Logger;
 import dev.creoii.chaos.util.stat.ModifierEntry;
 import dev.creoii.chaos.util.stat.StatContainer;
 
 public class Networking {
+    public static final Logger LOGGER = new Logger(Networking.class.getSimpleName());
+
     public static void register(Kryo kryo) {
         kryo.register(CharacterJoinC2S.class, CodecSerializer.INSTANCE);
         kryo.register(CharacterLeaveC2S.class, CodecSerializer.INSTANCE);

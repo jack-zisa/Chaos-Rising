@@ -18,6 +18,7 @@ import dev.creoii.chaos.client.render.Renderer;
 import dev.creoii.chaos.client.render.entity.EntityRenderManager;
 import dev.creoii.chaos.client.render.entity.data.CharacterEntityRenderData;
 import dev.creoii.chaos.client.texture.TextureManager;
+import dev.creoii.chaos.util.logging.Logger;
 
 import java.io.IOException;
 
@@ -26,6 +27,7 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
     public static final int WINDOW_HEIGHT = 720;
     private final Client client;
     private final ClientListener listener;
+    public static final Logger LOGGER = new Logger(ClientGame.class.getSimpleName());
     protected NetworkQueue<Object> networkQueue;
     private Renderer renderer;
     private TextureManager textureManager;
