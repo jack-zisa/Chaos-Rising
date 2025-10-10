@@ -2,6 +2,7 @@ package dev.creoii.chaos;
 
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.entity.*;
+import dev.creoii.chaos.network.s2c.EntityRemoveS2C;
 import dev.creoii.chaos.util.EntityGroup;
 
 import javax.annotation.Nullable;
@@ -85,6 +86,7 @@ public class EntityManager<T> {
     public boolean removeEntity(int id) {
         for (Map.Entry<EntityGroup, Map<Integer, T>> entry : getAllEntities().entrySet()) {
             if (id != -1 && entry.getValue().containsKey(id)) {
+                game.getServer().sendToAllTCP(new EntityRemoveS2C(id));
                 entry.getValue().remove(id);
                 --size;
                 free(id);

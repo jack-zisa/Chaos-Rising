@@ -7,15 +7,14 @@ import dev.creoii.chaos.entity.controller.EnemyController;
 import dev.creoii.chaos.entity.serialization.EnemyData;
 import dev.creoii.chaos.entity.serialization.EntityCustomData;
 import dev.creoii.chaos.util.LootUtils;
-import dev.creoii.chaos.util.stat.StatContainer;
 
 import javax.annotation.Nullable;
 
 public class EnemyEntity extends LivingEntity {
     private final EnemyController controller;
 
-    public EnemyEntity(Game game, EntityType<? extends EnemyEntity> type, int id, Vector2 pos, StatContainer stats) {
-        super(game, type, id, pos, stats, stats);
+    public EnemyEntity(Game game, EntityType<? extends EnemyEntity> type, int id, Vector2 pos) {
+        super(game, type, id, pos, ((EnemyEntityType) type).stats().copy(), ((EnemyEntityType) type).stats().copy());
         if (!game.isClient()) {
             controller = new EnemyController(((EnemyEntityType) type).behavior());
             controller.start(this);
@@ -43,5 +42,6 @@ public class EnemyEntity extends LivingEntity {
             LootDropEntity lootDropEntity = getGame().getEntityManager().addEntity(DataManager.getLootDrop("bag"), getPos().cpy());
             LootUtils.fillInventory(getGame(), lootDropEntity.getInventory(), ((EnemyEntityType) getType()).lootTable(), rolls);
         }
+        super.remove();
     }
 }
