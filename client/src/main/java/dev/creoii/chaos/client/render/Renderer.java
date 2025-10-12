@@ -1,6 +1,7 @@
 package dev.creoii.chaos.client.render;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -10,6 +11,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ArrayMap;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import dev.creoii.chaos.client.ClientGame;
 import dev.creoii.chaos.client.render.screen.Screen;
 import dev.creoii.chaos.client.util.Renderable;
@@ -64,11 +66,11 @@ public class Renderer implements Disposable {
         return game;
     }
 
-    public OrthographicCamera getCamera() {
+    public Camera getCamera() {
         return camera;
     }
 
-    public FitViewport getViewport() {
+    public Viewport getViewport() {
         return viewport;
     }
 
@@ -83,12 +85,20 @@ public class Renderer implements Disposable {
         updateCameraSeek();
 
         for (RenderSpace space : RenderSpace.values()) {
-            space.setup(viewport, batch, shapeRenderer, camera);
+            ArrayMap<RenderLayer, List<Renderable>> renderLayers = renderables.get(space);
+            if (renderLayers.isEmpty())
+                continue;
 
-            renderables.get(space).forEach(entry -> entry.value.forEach(renderable -> {
+            space.setup(getViewport(), batch, shapeRenderer, getCamera());
+            renderLayers.forEach(entry -> entry.value.forEach(renderable -> {
                 batch.begin();
+                if (entry.key.isBlending())
+                    batch.enableBlending();
                 renderable.render(this, batch, null, font, delta, debug);
+                if (entry.key.isBlending())
+                    batch.disableBlending();
                 batch.end();
+
                 renderable.render(this, null, shapeRenderer, font, delta, debug);
             }));
         }

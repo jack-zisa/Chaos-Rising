@@ -46,8 +46,8 @@ public class EntityRenderManager extends EntityManager<EntityRenderData> impleme
 
     @Override
     public boolean removeEntity(int id) {
-        visibleEntities.remove(id);
-        return super.removeEntity(id);
+        setSize(getSize() - 1);
+        return visibleEntities.remove(id) != null;
     }
 
     public static Sprite getSprite(ClientGame game, EntityRenderData entity) {

@@ -15,5 +15,6 @@
       "amount": 10,
       "modifier": "max"
     }
-  ]
+  ],
+  "rate_of_fire": 0.5
 }

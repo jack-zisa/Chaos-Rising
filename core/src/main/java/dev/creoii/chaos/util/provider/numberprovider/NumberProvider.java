@@ -10,6 +10,12 @@ public interface NumberProvider extends Provider<Float> {
     Codec<NumberProvider> DISPATCH_CODEC = Type.CODEC.dispatch(NumberProvider::getType, type -> switch (type) {
         case ANGLE -> AngleNumberProvider.CODEC;
         case BINARY -> BinaryNumberProvider.CODEC;
+        case ADD -> BinaryNumberProvider.ADD_CODEC;
+        case SUB -> BinaryNumberProvider.SUB_CODEC;
+        case MUL -> BinaryNumberProvider.MUL_CODEC;
+        case DIV -> BinaryNumberProvider.DIV_CODEC;
+        case POW -> BinaryNumberProvider.POW_CODEC;
+        case MOD -> BinaryNumberProvider.MOD_CODEC;
         case BULLET_INDEX -> BulletIndexNumberProvider.CODEC;
         case CLAMP -> ClampNumberProvider.CODEC;
         case COMPARISON -> ComparisonNumberProvider.CODEC;
@@ -25,6 +31,12 @@ public interface NumberProvider extends Provider<Float> {
         case STAT -> StatNumberProvider.CODEC;
         case TIME -> TimeNumberProvider.CODEC;
         case UNARY -> UnaryNumberProvider.CODEC;
+        case SIN -> UnaryNumberProvider.SIN_CODEC;
+        case COS -> UnaryNumberProvider.COS_CODEC;
+        case TAN -> UnaryNumberProvider.TAN_CODEC;
+        case SQRT -> UnaryNumberProvider.SQRT_CODEC;
+        case CBRT -> UnaryNumberProvider.CBRT_CODEC;
+        case ABS -> UnaryNumberProvider.ABS_CODEC;
     });
 
     Codec<NumberProvider> CODEC = Codec.either(Codec.FLOAT, DISPATCH_CODEC).xmap(
@@ -48,7 +60,7 @@ public interface NumberProvider extends Provider<Float> {
 
     enum Type {
         ANGLE,
-        BINARY,
+        BINARY, ADD, SUB, MUL, DIV, POW, MOD,
         BULLET_INDEX,
         CLAMP,
         COMPARISON,
@@ -63,7 +75,7 @@ public interface NumberProvider extends Provider<Float> {
         SPAWN_TIME,
         STAT,
         TIME,
-        UNARY;
+        UNARY, SIN, COS, TAN, SQRT, CBRT, ABS;
 
         public static final Codec<Type> CODEC = Codec.STRING.xmap(s -> Type.valueOf(s.toUpperCase()), type -> type.name().toLowerCase());
     }

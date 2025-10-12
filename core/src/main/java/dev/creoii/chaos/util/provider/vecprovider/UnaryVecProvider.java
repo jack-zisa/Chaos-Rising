@@ -12,6 +12,36 @@ public record UnaryVecProvider(UnaryOperation operation, VecProvider value) impl
             VecProvider.CODEC.fieldOf("value").forGetter(UnaryVecProvider::value)
         ).apply(instance, UnaryVecProvider::new);
     });
+    public static final MapCodec<UnaryVecProvider> SIN_CODEC = RecordCodecBuilder.mapCodec(instance -> {
+        return instance.group(
+            VecProvider.CODEC.fieldOf("value").forGetter(UnaryVecProvider::value)
+        ).apply(instance, value -> new UnaryVecProvider(UnaryOperation.SIN, value));
+    });
+    public static final MapCodec<UnaryVecProvider> COS_CODEC = RecordCodecBuilder.mapCodec(instance -> {
+        return instance.group(
+            VecProvider.CODEC.fieldOf("value").forGetter(UnaryVecProvider::value)
+        ).apply(instance, value -> new UnaryVecProvider(UnaryOperation.COS, value));
+    });
+    public static final MapCodec<UnaryVecProvider> TAN_CODEC = RecordCodecBuilder.mapCodec(instance -> {
+        return instance.group(
+            VecProvider.CODEC.fieldOf("value").forGetter(UnaryVecProvider::value)
+        ).apply(instance, value -> new UnaryVecProvider(UnaryOperation.TAN, value));
+    });
+    public static final MapCodec<UnaryVecProvider> SQRT_CODEC = RecordCodecBuilder.mapCodec(instance -> {
+        return instance.group(
+            VecProvider.CODEC.fieldOf("value").forGetter(UnaryVecProvider::value)
+        ).apply(instance, value -> new UnaryVecProvider(UnaryOperation.SQRT, value));
+    });
+    public static final MapCodec<UnaryVecProvider> CBRT_CODEC = RecordCodecBuilder.mapCodec(instance -> {
+        return instance.group(
+            VecProvider.CODEC.fieldOf("value").forGetter(UnaryVecProvider::value)
+        ).apply(instance, value -> new UnaryVecProvider(UnaryOperation.CBRT, value));
+    });
+    public static final MapCodec<UnaryVecProvider> ABS_CODEC = RecordCodecBuilder.mapCodec(instance -> {
+        return instance.group(
+            VecProvider.CODEC.fieldOf("value").forGetter(UnaryVecProvider::value)
+        ).apply(instance, value -> new UnaryVecProvider(UnaryOperation.ABS, value));
+    });
 
     @Override
     public Type getType() {

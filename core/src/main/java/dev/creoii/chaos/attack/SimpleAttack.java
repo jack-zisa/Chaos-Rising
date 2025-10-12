@@ -5,10 +5,9 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.DataManager;
-import dev.creoii.chaos.entity.BulletEntity;
-import dev.creoii.chaos.entity.Entity;
-import dev.creoii.chaos.entity.LivingEntity;
-import dev.creoii.chaos.entity.BulletEntityType;
+import dev.creoii.chaos.entity.*;
+import dev.creoii.chaos.item.EquipmentItem;
+import dev.creoii.chaos.item.WeaponItem;
 import dev.creoii.chaos.util.provider.Provider;
 import dev.creoii.chaos.util.provider.numberprovider.ConstantNumberProvider;
 import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
@@ -16,6 +15,7 @@ import dev.creoii.chaos.util.provider.vecprovider.ConstantVecProvider;
 import dev.creoii.chaos.util.provider.vecprovider.SourcePosVecProvider;
 import dev.creoii.chaos.util.provider.vecprovider.VecProvider;
 
+import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.util.*;
 
@@ -38,7 +38,22 @@ public record SimpleAttack(String bulletId, NumberProvider damage, int bulletCou
         return Type.SIMPLE;
     }
 
-    public void attack(VecProvider targetPos, VecProvider sourcePos, Entity sourceEntity) {
+    public void attack(VecProvider targetPos, VecProvider sourcePos, Entity sourceEntity, @Nullable EquipmentItem item) {
+        if (!(sourceEntity instanceof Attacker attacker)) {
+            return;
+        }
+
+        float attackSpeed = attacker.getAttackSpeed();
+        if (attackSpeed <= 0f)
+            return;
+
+        float attacks = 1.5f + 6.5f * (attackSpeed / 75f);
+        if (item instanceof WeaponItem weaponItem)
+            attacks *= weaponItem.getRateOfFire();
+
+        if (!attacker.canAttack(1000f / attacks))
+            return;
+
         Provider.Context context = Provider.Context.of(sourceEntity, sourceEntity.getGame().getGametime());
         Vector2 pos = source.isPresent() ? source.get().get(context) : sourcePos.get(context);
         Vector2 direction = target.isPresent() ? target.get().get(context).sub(pos).nor() : targetPos.get(context).sub(pos).nor();
@@ -59,5 +74,7 @@ public record SimpleAttack(String bulletId, NumberProvider damage, int bulletCou
                 bullet.setParent(sourceEntity);
             }
         }
+
+        attacker.setLastAttackTime(System.currentTimeMillis());
     }
 }

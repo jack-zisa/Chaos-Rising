@@ -28,7 +28,7 @@ public class HudRenderer implements Renderable {
             }
 
             if (debug) {
-                String[] lines = getDebugText(renderer);
+                String[] lines = getDebugText(renderer, batch);
 
                 Viewport viewport = renderer.getViewport();
 
@@ -72,7 +72,7 @@ public class HudRenderer implements Renderable {
         }
     }
 
-    private static String[] getDebugText(Renderer renderer) {
+    private static String[] getDebugText(Renderer renderer, SpriteBatch batch) {
         CharacterEntityRenderData character = renderer.getGame().getCharacter();
         String posText = String.format("%.2f, %.2f", character.x / Entity.COORDINATE_SCALE, character.y / Entity.COORDINATE_SCALE);
         String statsText = character.statContainer.toDebugString(character.maxStatContainer);

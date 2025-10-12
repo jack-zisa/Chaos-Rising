@@ -39,7 +39,7 @@ public class AttackAction extends Action {
     @Override
     public void update(EntityController<? extends EnemyEntity> controller, int time, float delta) {
         if (--attackCooldown <= 0) {
-            attack.attack(new TargetPosVecProvider(), controller.getEntity());
+            attack.attack(new TargetPosVecProvider(), controller.getEntity(), null);
             //attackCooldown = getData().getInt("cooldown");
         }
     }

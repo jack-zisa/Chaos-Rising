@@ -12,15 +12,17 @@ import dev.creoii.chaos.util.Mutable;
 import javax.annotation.Nullable;
 import java.util.Map;
 
-public class CharacterEntity extends LivingEntity {
+public class CharacterEntity extends LivingEntity implements Attacker {
     private int connectionId;
     private CharacterInventory inventory;
+    private long lastAttackTime;
     private int lootId = -1;
 
     public CharacterEntity(Game game, EntityType<? extends CharacterEntity> type, int id, Vector2 pos, int connectionId) {
         super(game, type, id, pos, ((CharacterEntityType) type).characterClass().get().baseStatContainer().copy(), ((CharacterEntityType) type).characterClass().get().baseStatContainer().copy());
         this.connectionId = connectionId;
         this.inventory = new CharacterInventory(this);
+        lastAttackTime = 0L;
     }
 
     @Override
@@ -28,6 +30,22 @@ public class CharacterEntity extends LivingEntity {
         super.reinit(id, pos, data);
         connectionId = (int) data.get("connection_id");
         inventory = new CharacterInventory(this);
+        lastAttackTime = 0;
+    }
+
+    @Override
+    public float getAttackSpeed() {
+        return getStats().attackSpeed().value();
+    }
+
+    @Override
+    public long getLastAttackTime() {
+        return lastAttackTime;
+    }
+
+    @Override
+    public void setLastAttackTime(long attackTime) {
+        lastAttackTime = attackTime;
     }
 
     @Nullable

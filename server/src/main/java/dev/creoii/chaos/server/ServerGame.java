@@ -6,7 +6,6 @@ import dev.creoii.chaos.DataManager;
 import dev.creoii.chaos.Game;
 import dev.creoii.chaos.OptionsManager;
 import dev.creoii.chaos.network.NetworkQueue;
-import dev.creoii.chaos.server.inventory.cooldown.CooldownManager;
 import dev.creoii.chaos.network.CreoSerialization;
 import dev.creoii.chaos.network.Networking;
 import dev.creoii.chaos.util.logging.Logger;
@@ -27,7 +26,6 @@ public class ServerGame implements Game {
     private final TickManager tickManager;
     private final CollisionManager collisionManager;
     private final ServerEntityManager entityManager;
-    private final CooldownManager cooldownManager;
     private int gametime;
 
     public ServerGame(int tcpPort, int udpPort) throws IOException, URISyntaxException {
@@ -47,7 +45,6 @@ public class ServerGame implements Game {
         tickManager = new TickManager();
         collisionManager = new CollisionManager(this);
         entityManager = new ServerEntityManager(this);
-        cooldownManager = new CooldownManager(this);
 
         URL baseUrl = getClass().getClassLoader().getResource("data");
         if (baseUrl == null) {
@@ -59,7 +56,7 @@ public class ServerGame implements Game {
         DataManager.load(Paths.get(baseUrl.toURI()));
 
         long nextTick = System.nanoTime();
-        long tickInterval = 50_000_000L; // 20 TPS
+        long tickInterval = 50_000_000L;
 
         while (true) {
             update();
@@ -116,10 +113,6 @@ public class ServerGame implements Game {
     @Override
     public ServerEntityManager getEntityManager() {
         return entityManager;
-    }
-
-    public CooldownManager getCooldownManager() {
-        return cooldownManager;
     }
 
     @Override

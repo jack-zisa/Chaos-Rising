@@ -12,6 +12,9 @@ public interface BooleanProvider extends Provider<Boolean> {
         type -> switch (type) {
             case BETWEEN -> BetweenBooleanProvider.CODEC;
             case BINARY -> BinaryBooleanProvider.CODEC;
+            case AND -> BinaryBooleanProvider.AND_CODEC;
+            case OR -> BinaryBooleanProvider.OR_CODEC;
+            case XOR -> BinaryBooleanProvider.XOR_CODEC;
             case CONSTANT -> ConstantBooleanProvider.CODEC;
             case HAS_EFFECT -> HasEffectBooleanProvider.CODEC;
             case IS_CLASS -> IsClassBooleanProvider.CODEC;
@@ -38,7 +41,7 @@ public interface BooleanProvider extends Provider<Boolean> {
 
     enum Type {
         BETWEEN,
-        BINARY,
+        BINARY, AND, OR, XOR,
         CONSTANT,
         HAS_EFFECT,
         IS_CLASS,

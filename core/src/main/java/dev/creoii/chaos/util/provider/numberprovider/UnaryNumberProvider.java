@@ -11,6 +11,36 @@ public record UnaryNumberProvider(UnaryOperation operation, NumberProvider value
             NumberProvider.CODEC.fieldOf("value").forGetter(UnaryNumberProvider::value)
         ).apply(instance, UnaryNumberProvider::new);
     });
+    public static final MapCodec<UnaryNumberProvider> SIN_CODEC = RecordCodecBuilder.mapCodec(instance -> {
+        return instance.group(
+            NumberProvider.CODEC.fieldOf("value").forGetter(UnaryNumberProvider::value)
+        ).apply(instance, value -> new UnaryNumberProvider(UnaryOperation.SIN, value));
+    });
+    public static final MapCodec<UnaryNumberProvider> COS_CODEC = RecordCodecBuilder.mapCodec(instance -> {
+        return instance.group(
+            NumberProvider.CODEC.fieldOf("value").forGetter(UnaryNumberProvider::value)
+        ).apply(instance, value -> new UnaryNumberProvider(UnaryOperation.COS, value));
+    });
+    public static final MapCodec<UnaryNumberProvider> TAN_CODEC = RecordCodecBuilder.mapCodec(instance -> {
+        return instance.group(
+            NumberProvider.CODEC.fieldOf("value").forGetter(UnaryNumberProvider::value)
+        ).apply(instance, value -> new UnaryNumberProvider(UnaryOperation.TAN, value));
+    });
+    public static final MapCodec<UnaryNumberProvider> SQRT_CODEC = RecordCodecBuilder.mapCodec(instance -> {
+        return instance.group(
+            NumberProvider.CODEC.fieldOf("value").forGetter(UnaryNumberProvider::value)
+        ).apply(instance, value -> new UnaryNumberProvider(UnaryOperation.SQRT, value));
+    });
+    public static final MapCodec<UnaryNumberProvider> CBRT_CODEC = RecordCodecBuilder.mapCodec(instance -> {
+        return instance.group(
+            NumberProvider.CODEC.fieldOf("value").forGetter(UnaryNumberProvider::value)
+        ).apply(instance, value -> new UnaryNumberProvider(UnaryOperation.CBRT, value));
+    });
+    public static final MapCodec<UnaryNumberProvider> ABS_CODEC = RecordCodecBuilder.mapCodec(instance -> {
+        return instance.group(
+            NumberProvider.CODEC.fieldOf("value").forGetter(UnaryNumberProvider::value)
+        ).apply(instance, value -> new UnaryNumberProvider(UnaryOperation.ABS, value));
+    });
 
     @Override
     public Type getType() {

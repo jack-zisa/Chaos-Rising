@@ -7,5 +7,6 @@
     "damage": 4,
     "bullet_count": 6,
     "arc_gap": 12
-  }
+  },
+  "rate_of_fire": 2
 }

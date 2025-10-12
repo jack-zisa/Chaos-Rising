@@ -22,7 +22,9 @@ public class ItemRenderer {
         Sprite sprite = new Sprite(game.getAssetManager().getTextureManager().getTexture("item", id));
         sprite.setPosition(pos.x, pos.y);
         sprite.setSize(scale, scale);
+        batch.enableBlending();
         sprite.draw(batch);
+        batch.disableBlending();
     }
 
     public static void renderTooltip(@Nullable SpriteBatch batch, @Nullable ShapeRenderer shapeRenderer, @Nullable Item item) {

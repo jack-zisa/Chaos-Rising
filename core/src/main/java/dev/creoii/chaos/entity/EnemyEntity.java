@@ -9,9 +9,11 @@ import dev.creoii.chaos.entity.serialization.EntityCustomData;
 import dev.creoii.chaos.util.LootUtils;
 
 import javax.annotation.Nullable;
+import java.util.Map;
 
-public class EnemyEntity extends LivingEntity {
+public class EnemyEntity extends LivingEntity implements Attacker {
     private final EnemyController controller;
+    private long lastAttackTime;
 
     public EnemyEntity(Game game, EntityType<? extends EnemyEntity> type, int id, Vector2 pos) {
         super(game, type, id, pos, ((EnemyEntityType) type).stats().copy(), ((EnemyEntityType) type).stats().copy());
@@ -19,6 +21,29 @@ public class EnemyEntity extends LivingEntity {
             controller = new EnemyController(((EnemyEntityType) type).behavior());
             controller.start(this);
         } else controller = null;
+
+        lastAttackTime = 0L;
+    }
+
+    @Override
+    public void reinit(int id, Vector2 pos, Map<String, Object> data) {
+        super.reinit(id, pos, data);
+        lastAttackTime = 0;
+    }
+
+    @Override
+    public float getAttackSpeed() {
+        return getStats().attackSpeed().value();
+    }
+
+    @Override
+    public long getLastAttackTime() {
+        return lastAttackTime;
+    }
+
+    @Override
+    public void setLastAttackTime(long attackTime) {
+        lastAttackTime = attackTime;
     }
 
     @Nullable

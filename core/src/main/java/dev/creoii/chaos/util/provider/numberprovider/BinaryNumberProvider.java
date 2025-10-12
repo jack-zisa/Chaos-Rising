@@ -12,6 +12,42 @@ public record BinaryNumberProvider(NumberProvider a, NumberProvider b, Operation
             Operation.CODEC.fieldOf("operation").orElse(Operation.ADD).forGetter(BinaryNumberProvider::operation)
         ).apply(instance, BinaryNumberProvider::new);
     });
+    public static final MapCodec<BinaryNumberProvider> ADD_CODEC = RecordCodecBuilder.mapCodec(instance -> {
+        return instance.group(
+            NumberProvider.CODEC.fieldOf("a").forGetter(BinaryNumberProvider::a),
+            NumberProvider.CODEC.fieldOf("b").forGetter(BinaryNumberProvider::b)
+        ).apply(instance, (a, b) -> new BinaryNumberProvider(a, b, Operation.ADD));
+    });
+    public static final MapCodec<BinaryNumberProvider> SUB_CODEC = RecordCodecBuilder.mapCodec(instance -> {
+        return instance.group(
+            NumberProvider.CODEC.fieldOf("a").forGetter(BinaryNumberProvider::a),
+            NumberProvider.CODEC.fieldOf("b").forGetter(BinaryNumberProvider::b)
+        ).apply(instance, (a, b) -> new BinaryNumberProvider(a, b, Operation.SUB));
+    });
+    public static final MapCodec<BinaryNumberProvider> MUL_CODEC = RecordCodecBuilder.mapCodec(instance -> {
+        return instance.group(
+            NumberProvider.CODEC.fieldOf("a").forGetter(BinaryNumberProvider::a),
+            NumberProvider.CODEC.fieldOf("b").forGetter(BinaryNumberProvider::b)
+        ).apply(instance, (a, b) -> new BinaryNumberProvider(a, b, Operation.MUL));
+    });
+    public static final MapCodec<BinaryNumberProvider> DIV_CODEC = RecordCodecBuilder.mapCodec(instance -> {
+        return instance.group(
+            NumberProvider.CODEC.fieldOf("a").forGetter(BinaryNumberProvider::a),
+            NumberProvider.CODEC.fieldOf("b").forGetter(BinaryNumberProvider::b)
+        ).apply(instance, (a, b) -> new BinaryNumberProvider(a, b, Operation.DIV));
+    });
+    public static final MapCodec<BinaryNumberProvider> MOD_CODEC = RecordCodecBuilder.mapCodec(instance -> {
+        return instance.group(
+            NumberProvider.CODEC.fieldOf("a").forGetter(BinaryNumberProvider::a),
+            NumberProvider.CODEC.fieldOf("b").forGetter(BinaryNumberProvider::b)
+        ).apply(instance, (a, b) -> new BinaryNumberProvider(a, b, Operation.MOD));
+    });
+    public static final MapCodec<BinaryNumberProvider> POW_CODEC = RecordCodecBuilder.mapCodec(instance -> {
+        return instance.group(
+            NumberProvider.CODEC.fieldOf("a").forGetter(BinaryNumberProvider::a),
+            NumberProvider.CODEC.fieldOf("b").forGetter(BinaryNumberProvider::b)
+        ).apply(instance, (a, b) -> new BinaryNumberProvider(a, b, Operation.POW));
+    });
 
     @Override
     public Type getType() {

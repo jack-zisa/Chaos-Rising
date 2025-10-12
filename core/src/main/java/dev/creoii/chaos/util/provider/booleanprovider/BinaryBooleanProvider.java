@@ -12,6 +12,24 @@ public record BinaryBooleanProvider(BooleanProvider a, BooleanProvider b, Binary
             BinaryOperation.CODEC.fieldOf("operation").orElse(BinaryOperation.AND).forGetter(BinaryBooleanProvider::operation)
         ).apply(instance, BinaryBooleanProvider::new);
     });
+    public static final MapCodec<BinaryBooleanProvider> AND_CODEC = RecordCodecBuilder.mapCodec(instance -> {
+        return instance.group(
+            BooleanProvider.CODEC.fieldOf("a").forGetter(BinaryBooleanProvider::a),
+            BooleanProvider.CODEC.fieldOf("b").forGetter(BinaryBooleanProvider::b)
+        ).apply(instance, (a, b) -> new BinaryBooleanProvider(a, b, BinaryOperation.AND));
+    });
+    public static final MapCodec<BinaryBooleanProvider> OR_CODEC = RecordCodecBuilder.mapCodec(instance -> {
+        return instance.group(
+            BooleanProvider.CODEC.fieldOf("a").forGetter(BinaryBooleanProvider::a),
+            BooleanProvider.CODEC.fieldOf("b").forGetter(BinaryBooleanProvider::b)
+        ).apply(instance, (a, b) -> new BinaryBooleanProvider(a, b, BinaryOperation.OR));
+    });
+    public static final MapCodec<BinaryBooleanProvider> XOR_CODEC = RecordCodecBuilder.mapCodec(instance -> {
+        return instance.group(
+            BooleanProvider.CODEC.fieldOf("a").forGetter(BinaryBooleanProvider::a),
+            BooleanProvider.CODEC.fieldOf("b").forGetter(BinaryBooleanProvider::b)
+        ).apply(instance, (a, b) -> new BinaryBooleanProvider(a, b, BinaryOperation.XOR));
+    });
 
     @Override
     public Type getType() {

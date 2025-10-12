@@ -3,8 +3,10 @@ package dev.creoii.chaos.attack;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.entity.Entity;
+import dev.creoii.chaos.item.EquipmentItem;
 import dev.creoii.chaos.util.provider.vecprovider.VecProvider;
 
+import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,7 +26,7 @@ public record MultiAttack(Set<Attack> attacks) implements Attack {
     }
 
     @Override
-    public void attack(VecProvider targetPos, VecProvider sourcePos, Entity sourceEntity) {
-        attacks.forEach(attack -> attack.attack(targetPos, sourcePos, sourceEntity));
+    public void attack(VecProvider targetPos, VecProvider sourcePos, Entity sourceEntity, @Nullable EquipmentItem item) {
+        attacks.forEach(attack -> attack.attack(targetPos, sourcePos, sourceEntity, item));
     }
 }

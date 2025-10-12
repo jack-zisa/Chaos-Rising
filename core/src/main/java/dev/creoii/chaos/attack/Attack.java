@@ -2,8 +2,11 @@ package dev.creoii.chaos.attack;
 
 import com.mojang.serialization.Codec;
 import dev.creoii.chaos.entity.Entity;
+import dev.creoii.chaos.item.EquipmentItem;
 import dev.creoii.chaos.util.provider.vecprovider.SourcePosVecProvider;
 import dev.creoii.chaos.util.provider.vecprovider.VecProvider;
+
+import javax.annotation.Nullable;
 
 public interface Attack {
     Codec<Attack> CODEC = Type.CODEC.dispatch(Attack::getType, type -> switch (type) {
@@ -13,10 +16,13 @@ public interface Attack {
 
     Type getType();
 
-    void attack(VecProvider targetPos, VecProvider sourcePos, Entity sourceEntity);
+    /**
+     * @param item null if attacking from an {@link dev.creoii.chaos.entity.EnemyEntity}.
+     */
+    void attack(VecProvider targetPos, VecProvider sourcePos, Entity sourceEntity, EquipmentItem item);
 
-    default void attack(VecProvider targetPos, Entity sourceEntity) {
-        attack(targetPos, new SourcePosVecProvider(), sourceEntity);
+    default void attack(VecProvider targetPos, Entity sourceEntity, @Nullable EquipmentItem item) {
+        attack(targetPos, new SourcePosVecProvider(), sourceEntity, item);
     }
 
     enum Type {

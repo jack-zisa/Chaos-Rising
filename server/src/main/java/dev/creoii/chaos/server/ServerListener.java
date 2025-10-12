@@ -94,8 +94,7 @@ public class ServerListener extends Listener {
             if (character != null) {
                 ItemStack stack = slot.getStack();
                 if (stack.getItem() instanceof WeaponItem weaponItem) {
-                    weaponItem.getAttack().attack(new ConstantVecProvider(mouseX, mouseY), new SourcePosVecProvider(), character);
-                    game.getCooldownManager().addCooldown(id, slot.getR(), slot.getC(), Math.max(1, 150 / Math.max(1, character.getStats().attackSpeed().value())));
+                    weaponItem.getAttack().attack(new ConstantVecProvider(mouseX, mouseY), new SourcePosVecProvider(), character, weaponItem);
                 }
             }
         }
@@ -103,13 +102,10 @@ public class ServerListener extends Listener {
         else if (object instanceof UseItemC2S(int id, Slot slot)) {
             CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id);
             if (character != null) {
-                //if (slot.isActive()) {
                 ItemStack stack = slot.getStack();
                 if (stack.getItem() instanceof AbilityItem abilityItem) {
-                    abilityItem.getAttack().attack(ConstantVecProvider.ZERO, new SourcePosVecProvider(), character);
-                    game.getCooldownManager().addCooldown(id, slot.getR(), slot.getC(), abilityItem.getCooldown());
+                    abilityItem.getAttack().attack(ConstantVecProvider.ZERO, new SourcePosVecProvider(), character, abilityItem);
                 }
-                //}
             }
         }
 

@@ -15,17 +15,24 @@ public class WeaponItem extends EquipmentItem {
             Codec.STRING.fieldOf("id").forGetter(WeaponItem::id),
             Rarity.CODEC.fieldOf("rarity").orElse(Rarity.COMMON).forGetter(WeaponItem::getRarity),
             Attack.CODEC.fieldOf("attack").forGetter(WeaponItem::getAttack),
+            Codec.FLOAT.fieldOf("rate_of_fire").orElse(1f).forGetter(WeaponItem::getRateOfFire),
             ModifierEntry.CODEC.listOf().fieldOf("stat_bonus").orElse(List.of()).forGetter(WeaponItem::getStatBonus)
         ).apply(instance, WeaponItem::new);
     });
     private final Attack attack;
+    private final float rateOfFire;
 
-    public WeaponItem(String id, Rarity rarity, Attack attack, List<ModifierEntry> statBonus) {
+    public WeaponItem(String id, Rarity rarity, Attack attack, float rateOfFire, List<ModifierEntry> statBonus) {
         super(id, Type.WEAPON, rarity, statBonus);
         this.attack = attack;
+        this.rateOfFire = rateOfFire;
     }
 
     public Attack getAttack() {
         return attack;
+    }
+
+    public float getRateOfFire() {
+        return rateOfFire;
     }
 }

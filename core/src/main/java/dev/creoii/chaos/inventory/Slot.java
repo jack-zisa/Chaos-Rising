@@ -8,6 +8,7 @@ import dev.creoii.chaos.item.ItemStack;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
@@ -15,22 +16,19 @@ public class Slot {
     public static final Codec<Slot> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         Codec.INT.fieldOf("r").forGetter(Slot::getR),
         Codec.INT.fieldOf("c").forGetter(Slot::getC),
-        Slot.Type.CODEC.fieldOf("type").orElse(Type.NONE).forGetter(Slot::getType),
-        ItemStack.CODEC.fieldOf("stack").orElse(ItemStack.EMPTY).forGetter(Slot::getStack),
-        Codec.BOOL.fieldOf("active").orElse(true).forGetter(Slot::isActive)
-    ).apply(instance, Slot::new));
+        Slot.Type.CODEC.optionalFieldOf("type").forGetter(slot -> slot.type == Type.NONE ? Optional.empty() : Optional.of(slot.type)),
+        ItemStack.CODEC.optionalFieldOf("stack").forGetter(slot -> slot.stack == ItemStack.EMPTY ? Optional.empty() : Optional.of(slot.stack))
+    ).apply(instance, (r, c, type, stack) -> new Slot(r, c, type.orElse(Type.NONE), stack.orElse(ItemStack.EMPTY))));
     private final int r;
     private final int c;
     private Type type;
     private ItemStack stack;
-    private boolean active;
 
-    public Slot(int r, int c, Type type, ItemStack stack, boolean active) {
+    public Slot(int r, int c, Type type, ItemStack stack) {
         this.r = r;
         this.c = c;
         this.type = type;
         this.stack = stack;
-        this.active = active;
     }
 
     public Slot(int r, int c, Type type) {
@@ -38,7 +36,6 @@ public class Slot {
         this.c = c;
         this.type = type;
         this.stack = ItemStack.EMPTY;
-        active = false;
     }
 
     public Slot(int r, int c) {
@@ -120,14 +117,6 @@ public class Slot {
 
     public boolean hasItem() {
         return stack != ItemStack.EMPTY && stack.getCount() > 0;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
-    public boolean isActive() {
-        return active;
     }
 
     public boolean canAccept(Item item) {

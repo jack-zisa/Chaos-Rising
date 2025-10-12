@@ -13,6 +13,42 @@ public record BinaryVecProvider(VecProvider a, VecProvider b, Operation operatio
             Operation.CODEC.fieldOf("operation").orElse(Operation.ADD).forGetter(BinaryVecProvider::operation)
         ).apply(instance, BinaryVecProvider::new);
     });
+    public static final MapCodec<BinaryVecProvider> ADD_CODEC = RecordCodecBuilder.mapCodec(instance -> {
+        return instance.group(
+            VecProvider.CODEC.fieldOf("a").forGetter(BinaryVecProvider::a),
+            VecProvider.CODEC.fieldOf("b").forGetter(BinaryVecProvider::b)
+        ).apply(instance, (a, b) -> new BinaryVecProvider(a, b, Operation.ADD));
+    });
+    public static final MapCodec<BinaryVecProvider> SUB_CODEC = RecordCodecBuilder.mapCodec(instance -> {
+        return instance.group(
+            VecProvider.CODEC.fieldOf("a").forGetter(BinaryVecProvider::a),
+            VecProvider.CODEC.fieldOf("b").forGetter(BinaryVecProvider::b)
+        ).apply(instance, (a, b) -> new BinaryVecProvider(a, b, Operation.SUB));
+    });
+    public static final MapCodec<BinaryVecProvider> MUL_CODEC = RecordCodecBuilder.mapCodec(instance -> {
+        return instance.group(
+            VecProvider.CODEC.fieldOf("a").forGetter(BinaryVecProvider::a),
+            VecProvider.CODEC.fieldOf("b").forGetter(BinaryVecProvider::b)
+        ).apply(instance, (a, b) -> new BinaryVecProvider(a, b, Operation.MUL));
+    });
+    public static final MapCodec<BinaryVecProvider> DIV_CODEC = RecordCodecBuilder.mapCodec(instance -> {
+        return instance.group(
+            VecProvider.CODEC.fieldOf("a").forGetter(BinaryVecProvider::a),
+            VecProvider.CODEC.fieldOf("b").forGetter(BinaryVecProvider::b)
+        ).apply(instance, (a, b) -> new BinaryVecProvider(a, b, Operation.DIV));
+    });
+    public static final MapCodec<BinaryVecProvider> MOD_CODEC = RecordCodecBuilder.mapCodec(instance -> {
+        return instance.group(
+            VecProvider.CODEC.fieldOf("a").forGetter(BinaryVecProvider::a),
+            VecProvider.CODEC.fieldOf("b").forGetter(BinaryVecProvider::b)
+        ).apply(instance, (a, b) -> new BinaryVecProvider(a, b, Operation.MOD));
+    });
+    public static final MapCodec<BinaryVecProvider> POW_CODEC = RecordCodecBuilder.mapCodec(instance -> {
+        return instance.group(
+            VecProvider.CODEC.fieldOf("a").forGetter(BinaryVecProvider::a),
+            VecProvider.CODEC.fieldOf("b").forGetter(BinaryVecProvider::b)
+        ).apply(instance, (a, b) -> new BinaryVecProvider(a, b, Operation.POW));
+    });
 
     @Override
     public Type getType() {

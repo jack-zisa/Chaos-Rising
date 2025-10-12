@@ -80,7 +80,7 @@ public class Inventory {
             toSlot.setStack(fromSlot.getStack().copy());
             to.onAddItemToSlot(toSlot, toSlot.getStack());
         } else if (action == SlotUpdateC2S.Action.QUICK_MOVE) {
-            from.onRemoveItemFromSlot(toSlot, toSlot.getStack());
+            from.onRemoveItemFromSlot(fromSlot, fromSlot.getStack());
             to.addItem(toSlot.takeStack());
         }
     }
