@@ -74,7 +74,7 @@ public class ClientListener extends Listener {
                                 };
                             } else return new Slot(r, c);
                         })));
-                        game.setCharacter(character);
+                        game.setCharacterId(id);
                         game.getInputManager().addInput(new CharacterController(character));
                         game.getEntityManager().addEntity(id, character);
                     }
@@ -93,25 +93,23 @@ public class ClientListener extends Listener {
                 }
             }
             case MoveEntitiesS2C(List<MoveEntitiesS2C.Entry> entries) -> entries.forEach(entry -> {
-                if (entry.id() != game.getCharacter().id) {
-                    EntityRenderData entityRenderData = game.getEntityManager().getEntityData(entry.id());
+                EntityRenderData entityRenderData = game.getEntityManager().getEntityData(entry.id());
+                if (entityRenderData != null) {
                     float[] unpacked = MoveEntitiesS2C.unpack(entry.data());
-                    if (entityRenderData != null) {
-                        entityRenderData.x = unpacked[0];
-                        entityRenderData.y = unpacked[1];
-                        entityRenderData.xv = unpacked[2];
-                        entityRenderData.yv = unpacked[3];
-                    }
+                    entityRenderData.x = unpacked[0];
+                    entityRenderData.y = unpacked[1];
+                    entityRenderData.xv = unpacked[2];
+                    entityRenderData.yv = unpacked[3];
                 }
             });
-            case MoveCharacterS2C(byte[] data) -> {
-                CharacterEntityRenderData character = game.getCharacter();
-                if (character != null) {
+            case MoveEntityS2C(int id, byte[] data) -> {
+                EntityRenderData entityRenderData = game.getEntityManager().getEntityData(id);
+                if (entityRenderData != null) {
                     float[] unpacked = MoveEntitiesS2C.unpack(data);
-                    character.x = unpacked[0];
-                    character.y = unpacked[1];
-                    character.xv = unpacked[2];
-                    character.yv = unpacked[3];
+                    entityRenderData.x = unpacked[0];
+                    entityRenderData.y = unpacked[1];
+                    entityRenderData.xv = unpacked[2];
+                    entityRenderData.yv = unpacked[3];
                 }
             }
             case EntityRemoveS2C(int id) -> game.getEntityManager().removeEntity(id);

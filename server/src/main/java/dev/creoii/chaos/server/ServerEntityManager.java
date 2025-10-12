@@ -48,7 +48,7 @@ public class ServerEntityManager extends EntityManager<Entity> implements Tickab
         getAllEntities().values().forEach(uuidEntityMap -> uuidEntityMap.values().forEach(entity -> {
             entity.tick(gametime, delta);
 
-            if (!entity.canMove())
+            if (!entity.canMove() || entity.getType().group() == EntityGroup.CHARACTER)
                 return;
 
             Vector2 velocity = entity.getVelocity();
@@ -57,8 +57,6 @@ public class ServerEntityManager extends EntityManager<Entity> implements Tickab
             }
         }));
         if (!entries.isEmpty()) {
-            if (entries.size() == 1 && getEntity(EntityGroup.CHARACTER, entries.getFirst().id()) != null)
-                return;
             for (int i = 0; i < entries.size(); i += 100) {
                 getGame().getServer().sendToAllTCP(new MoveEntitiesS2C(entries.subList(i, Math.min(i + 100, entries.size()))));
             }

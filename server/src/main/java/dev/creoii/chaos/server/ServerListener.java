@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import dev.creoii.chaos.DataManager;
+import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.network.NetworkQueue;
 import dev.creoii.chaos.network.c2s.*;
 import dev.creoii.chaos.network.s2c.*;
@@ -85,8 +86,7 @@ public class ServerListener extends Listener {
             if (character != null) {
                 character.setPrevPos(character.getPos().x, character.getPos().y);
                 Vector2 newPos = character.getPos().add(new Vector2(dx, dy).nor().scl(character.getStats().speed().value() / 8f));
-                character.setPos(newPos.x, newPos.y);
-                game.getServer().sendToTCP(connection.getID(), new MoveCharacterS2C(newPos.x, newPos.y, newPos.x - character.getPrevPos().x, newPos.y - character.getPrevPos().y));
+                game.getServer().sendToAllExceptTCP(connection.getID(), new MoveEntityS2C(id, newPos.x, newPos.y, newPos.x - character.getPrevPos().x, newPos.y - character.getPrevPos().y));
             }
         }
 
@@ -155,12 +155,10 @@ public class ServerListener extends Listener {
         }
 
         else if (object instanceof CharacterJoinC2S()) {
-            game.getEntityManager().getAllEntities().forEach((_, map) -> {
-                map.forEach((id1, entity) -> {
-                    game.getServer().sendToTCP(connection.getID(), new EntitySpawnS2C(id1, entity.getPos().x, entity.getPos().y, entity.getCustomPacketData()));
-                    game.getServer().sendToAllTCP(new EntityDisplayS2C(id1, entity.getType().id(), entity.getType().scale()));
-                });
-            });
+            game.getEntityManager().getAllEntities().forEach((_, map) -> map.forEach((id1, entity) -> {
+                game.getServer().sendToTCP(connection.getID(), new EntitySpawnS2C(id1, entity.getPos().x, entity.getPos().y, entity.getCustomPacketData()));
+                game.getServer().sendToTCP(connection.getID(), new EntityDisplayS2C(id1, entity.getType().id(), entity.getType().scale()));
+            }));
 
             Map<String, Object> customData = new HashMap<>();
             customData.put("connection_id", connection.getID());

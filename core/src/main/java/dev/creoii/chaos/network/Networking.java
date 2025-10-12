@@ -39,7 +39,7 @@ public class Networking {
         kryo.register(EntitySpawnS2C.class, CodecSerializer.INSTANCE);
         kryo.register(EntityDisplayS2C.class, CodecSerializer.INSTANCE);
         kryo.register(MoveEntitiesS2C.class, CodecSerializer.INSTANCE);
-        kryo.register(MoveCharacterS2C.class, CodecSerializer.INSTANCE);
+        kryo.register(MoveEntityS2C.class, CodecSerializer.INSTANCE);
         kryo.register(InventoryUpdateS2C.class, CodecSerializer.INSTANCE);
         kryo.register(LivingStatUpdateS2C.class, CodecSerializer.INSTANCE);
         kryo.register(LivingStatsUpdateS2C.class, CodecSerializer.INSTANCE);
@@ -97,7 +97,7 @@ public class Networking {
         CodecSerializer.registerSchema(EntitySpawnS2C.class, EntitySpawnS2C.CODEC);
         CodecSerializer.registerSchema(EntityDisplayS2C.class, EntityDisplayS2C.CODEC);
         CodecSerializer.registerSchema(MoveEntitiesS2C.class, MoveEntitiesS2C.CODEC);
-        CodecSerializer.registerSchema(MoveCharacterS2C.class, MoveCharacterS2C.CODEC);
+        CodecSerializer.registerSchema(MoveEntityS2C.class, MoveEntityS2C.CODEC);
         CodecSerializer.registerSchema(InventoryUpdateS2C.class, InventoryUpdateS2C.CODEC);
         CodecSerializer.registerSchema(LivingStatUpdateS2C.class, LivingStatUpdateS2C.CODEC);
         CodecSerializer.registerSchema(LivingStatsUpdateS2C.class, LivingStatsUpdateS2C.CODEC);

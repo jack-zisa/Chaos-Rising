@@ -17,7 +17,7 @@ public record Logger(String id) {
         switch (level) {
             case INFO, DEBUG -> System.out.println("[" + level.name() + "] [" + id + "]: " + timestamp() + ": " + message);
             case WARN -> System.out.println("[" + level.name() + "] [" + id + "]: " + timestamp() + ": \u001B[33m" + YELLOW + message + "\u001B[0m");
-            case ERROR -> System.out.println("[" + level.name() + "] [" + id + "]: " + timestamp() + ": \u001B[31m" + message + "\u001B[0m");
+            case ERROR -> System.out.println("[" + level.name() + "] [" + id + "]: " + timestamp() + ": \u001B[31m" + RED + message + "\u001B[0m");
         }
     }
 
@@ -38,19 +38,19 @@ public record Logger(String id) {
     }
 
     public void info(String message, int maxLength) {
-        log(Level.INFO, message.length() > maxLength ? message + "..." : message);
+        log(Level.INFO, message.length() > maxLength ? message.substring(0, maxLength) + "..." : message);
     }
 
     public void warn(String message, int maxLength) {
-        log(Level.WARN, message.length() > maxLength ? message + "..." : message);
+        log(Level.WARN, message.length() > maxLength ? message.substring(0, maxLength) + "..." : message);
     }
 
     public void error(String message, int maxLength) {
-        log(Level.ERROR, message.length() > maxLength ? message + "..." : message);
+        log(Level.ERROR, message.length() > maxLength ? message.substring(0, maxLength) + "..." : message);
     }
 
     public void debug(String message, int maxLength) {
-        log(Level.DEBUG, message.length() > maxLength ? message + "..." : message);
+        log(Level.DEBUG, message.length() > maxLength ? message.substring(0, maxLength) + "..." : message);
     }
 
     public enum Level {

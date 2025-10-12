@@ -33,10 +33,10 @@ public class EntityRenderManager extends EntityManager<EntityRenderData> impleme
         return visibleSize;
     }
 
-    public EntityRenderData addEntity(int id, EntityRenderData entity) {
+    public void addEntity(int id, EntityRenderData entity) {
         setSize(getSize() + 1);
         EntityRenderers.getRenderer(entity).init(this);
-        return visibleEntities.put(id, entity);
+        visibleEntities.put(id, entity);
     }
 
     @Nullable
@@ -47,7 +47,6 @@ public class EntityRenderManager extends EntityManager<EntityRenderData> impleme
     @Override
     public boolean removeEntity(int id) {
         visibleEntities.remove(id);
-        setSize(getSize() - 1);
         return super.removeEntity(id);
     }
 

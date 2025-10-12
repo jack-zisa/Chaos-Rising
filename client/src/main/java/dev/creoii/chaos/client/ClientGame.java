@@ -34,7 +34,7 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
     private final EntityRenderManager entityManager;
     private final InputManager inputManager;
     private final CommandManager commandManager;
-    private CharacterEntityRenderData character;
+    private int characterId;
     private boolean debug;
 
     public ClientGame() throws IOException {
@@ -142,11 +142,15 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
     }
 
     public CharacterEntityRenderData getCharacter() {
-        return character;
+        return (CharacterEntityRenderData) getEntityManager().getEntityData(characterId);
     }
 
-    public void setCharacter(CharacterEntityRenderData character) {
-        this.character = character;
+    public int getCharacterId() {
+        return characterId;
+    }
+
+    public void setCharacterId(int characterId) {
+        this.characterId = characterId;
     }
 
     @Override
