@@ -9,19 +9,15 @@ import dev.creoii.chaos.util.stat.ModifierEntry;
 import java.util.List;
 
 public class CharacterInventory extends Inventory {
-    private CharacterEntity character;
+    private final CharacterEntity character;
 
-    public CharacterInventory() {
+    public CharacterInventory(CharacterEntity character) {
         super(3, 4);
+        this.character = character;
         getWeaponSlot().setType(Slot.Type.WEAPON);
         getAbilitySlot().setType(Slot.Type.ABILITY);
         getArmorSlot().setType(Slot.Type.ARMOR);
         getAccessorySlot().setType(Slot.Type.ACCESSORY);
-    }
-
-    public CharacterInventory withCharacter(CharacterEntity character) {
-        this.character = character;
-        return this;
     }
 
     public CharacterEntity getCharacter() {

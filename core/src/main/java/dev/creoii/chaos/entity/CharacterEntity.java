@@ -10,16 +10,24 @@ import dev.creoii.chaos.item.ItemStack;
 import dev.creoii.chaos.util.Mutable;
 
 import javax.annotation.Nullable;
+import java.util.Map;
 
 public class CharacterEntity extends LivingEntity {
-    private final int connectionId;
-    private final CharacterInventory inventory;
+    private int connectionId;
+    private CharacterInventory inventory;
     private int lootId = -1;
 
-    public CharacterEntity(Game game, EntityType<? extends CharacterEntity> type, int id, Vector2 pos, int connectionId, CharacterInventory inventory) {
+    public CharacterEntity(Game game, EntityType<? extends CharacterEntity> type, int id, Vector2 pos, int connectionId) {
         super(game, type, id, pos, ((CharacterEntityType) type).characterClass().get().baseStatContainer().copy(), ((CharacterEntityType) type).characterClass().get().baseStatContainer().copy());
         this.connectionId = connectionId;
-        this.inventory = inventory.withCharacter(this);
+        this.inventory = new CharacterInventory(this);
+    }
+
+    @Override
+    public void reinit(int id, Vector2 pos, Map<String, Object> data) {
+        super.reinit(id, pos, data);
+        connectionId = (int) data.get("connection_id");
+        inventory = new CharacterInventory(this);
     }
 
     @Nullable

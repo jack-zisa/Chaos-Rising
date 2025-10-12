@@ -4,7 +4,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import dev.creoii.chaos.DataManager;
-import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.network.NetworkQueue;
 import dev.creoii.chaos.network.c2s.*;
 import dev.creoii.chaos.network.s2c.*;
@@ -18,7 +17,7 @@ import dev.creoii.chaos.item.ItemStack;
 import dev.creoii.chaos.item.WeaponItem;
 import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.Mutable;
-import dev.creoii.chaos.util.provider.vecprovider.MousePosVecProvider;
+import dev.creoii.chaos.util.provider.vecprovider.ConstantVecProvider;
 import dev.creoii.chaos.util.provider.vecprovider.SourcePosVecProvider;
 
 import java.io.ByteArrayOutputStream;
@@ -86,23 +85,29 @@ public class ServerListener extends Listener {
             if (character != null) {
                 character.setPrevPos(character.getPos().x, character.getPos().y);
                 Vector2 newPos = character.getPos().add(new Vector2(dx, dy).nor().scl(character.getStats().speed().value() / 8f));
-                game.getServer().sendToAllExceptTCP(connection.getID(), new MoveEntityS2C(id, newPos.x, newPos.y, newPos.x - character.getPrevPos().x, newPos.y - character.getPrevPos().y));
+                game.getServer().sendToAllTCP(new MoveEntityS2C(id, newPos.x, newPos.y, newPos.x - character.getPrevPos().x, newPos.y - character.getPrevPos().y));
             }
         }
 
-        else if (object instanceof UseItemC2S(int id, Slot slotEntry)) {
+        else if (object instanceof AttackC2S(int id, Slot slot, float mouseX, float mouseY)) {
             CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id);
             if (character != null) {
-                Slot slot = character.getInventory().getSlot(slotEntry.getR(), slotEntry.getC());
+                ItemStack stack = slot.getStack();
+                if (stack.getItem() instanceof WeaponItem weaponItem) {
+                    weaponItem.getAttack().attack(new ConstantVecProvider(mouseX, mouseY), new SourcePosVecProvider(), character);
+                    game.getCooldownManager().addCooldown(id, slot.getR(), slot.getC(), Math.max(1, 150 / Math.max(1, character.getStats().attackSpeed().value())));
+                }
+            }
+        }
 
+        else if (object instanceof UseItemC2S(int id, Slot slot)) {
+            CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id);
+            if (character != null) {
                 //if (slot.isActive()) {
                 ItemStack stack = slot.getStack();
                 if (stack.getItem() instanceof AbilityItem abilityItem) {
-                    abilityItem.getAttack().attack(new MousePosVecProvider(), new SourcePosVecProvider(), character);
-                    game.getCooldownManager().addCooldown(id, slotEntry.getR(), slotEntry.getC(), abilityItem.getCooldown());
-                } else if (stack.getItem() instanceof WeaponItem weaponItem) {
-                    weaponItem.getAttack().attack(new MousePosVecProvider(), new SourcePosVecProvider(), character);
-                    game.getCooldownManager().addCooldown(id, slotEntry.getR(), slotEntry.getC(), Math.max(1, 150 / Math.max(1, character.getStats().attackSpeed().value())));
+                    abilityItem.getAttack().attack(ConstantVecProvider.ZERO, new SourcePosVecProvider(), character);
+                    game.getCooldownManager().addCooldown(id, slot.getR(), slot.getC(), abilityItem.getCooldown());
                 }
                 //}
             }

@@ -8,13 +8,20 @@ import dev.creoii.chaos.inventory.Inventory;
 import dev.creoii.chaos.item.ItemStack;
 
 import javax.annotation.Nullable;
+import java.util.Map;
 
 public class LootDropEntity extends Entity {
-    private final Inventory inventory;
+    private Inventory inventory;
 
     public LootDropEntity(Game game, EntityType<? extends LootDropEntity> type, int id, Vector2 pos, Inventory inventory) {
         super(game, type, id, pos);
         this.inventory = inventory;
+    }
+
+    @Override
+    public void reinit(int id, Vector2 pos, Map<String, Object> data) {
+        super.reinit(id, pos, data);
+        inventory = new Inventory(2, 4);
     }
 
     @Nullable

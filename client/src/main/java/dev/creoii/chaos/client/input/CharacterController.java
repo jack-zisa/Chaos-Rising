@@ -1,9 +1,12 @@
 package dev.creoii.chaos.client.input;
 
+import com.badlogic.gdx.math.Vector3;
 import dev.creoii.chaos.client.ClientGame;
+import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.inventory.Slot;
 import dev.creoii.chaos.item.AbilityItem;
 import dev.creoii.chaos.item.WeaponItem;
+import dev.creoii.chaos.network.c2s.AttackC2S;
 import dev.creoii.chaos.network.c2s.CharacterMoveC2S;
 import dev.creoii.chaos.network.c2s.UseItemC2S;
 import dev.creoii.chaos.client.render.entity.data.CharacterEntityRenderData;
@@ -53,7 +56,8 @@ public record CharacterController(CharacterEntityRenderData character) implement
 
         Slot weaponSlot = character.getWeaponSlot();
         if (weaponSlot.getStack().getItem() instanceof WeaponItem weaponItem) {
-            manager.getGame().getClient().sendTCP(new UseItemC2S(character.id, weaponSlot));
+            Vector3 mousePos = manager.getGame().getInputManager().getMousePos();
+            manager.getGame().getClient().sendTCP(new AttackC2S(character.id, weaponSlot, mousePos.x - (Entity.COORDINATE_SCALE / 2f), mousePos.y - (Entity.COORDINATE_SCALE / 2f)));
         }
     }
 }

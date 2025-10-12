@@ -26,11 +26,11 @@ public record ConstantVecProvider(NumberProvider x, NumberProvider y) implements
         this(new ConstantNumberProvider(vector2.x), new ConstantNumberProvider(vector2.y));
     }
 
-    public ConstantVecProvider(int x, int y) {
+    public ConstantVecProvider(float x, float y) {
         this(new ConstantNumberProvider(x), new ConstantNumberProvider(y));
     }
 
-    public ConstantVecProvider(int num) {
+    public ConstantVecProvider(float num) {
         this(num, num);
     }
 

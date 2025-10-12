@@ -34,6 +34,7 @@ public class Networking {
         kryo.register(LootDropCloseC2S.class, CodecSerializer.INSTANCE);
         kryo.register(SlotUpdateC2S.class, CodecSerializer.INSTANCE);
         kryo.register(UseItemC2S.class, CodecSerializer.INSTANCE);
+        kryo.register(AttackC2S.class, CodecSerializer.INSTANCE);
 
         kryo.register(EntityRemoveS2C.class, CodecSerializer.INSTANCE);
         kryo.register(EntitySpawnS2C.class, CodecSerializer.INSTANCE);
@@ -93,6 +94,7 @@ public class Networking {
         CodecSerializer.registerSchema(LootDropCloseC2S.class, LootDropCloseC2S.CODEC);
         CodecSerializer.registerSchema(SlotUpdateC2S.class, SlotUpdateC2S.CODEC);
         CodecSerializer.registerSchema(UseItemC2S.class, UseItemC2S.CODEC);
+        CodecSerializer.registerSchema(AttackC2S.class, AttackC2S.CODEC);
         CodecSerializer.registerSchema(EntityRemoveS2C.class, EntityRemoveS2C.CODEC);
         CodecSerializer.registerSchema(EntitySpawnS2C.class, EntitySpawnS2C.CODEC);
         CodecSerializer.registerSchema(EntityDisplayS2C.class, EntityDisplayS2C.CODEC);

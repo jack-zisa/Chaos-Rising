@@ -8,13 +8,14 @@ import dev.creoii.chaos.entity.serialization.EntityCustomData;
 import dev.creoii.chaos.util.provider.Provider;
 
 import javax.annotation.Nullable;
+import java.util.Map;
 
 public class BulletEntity extends Entity {
     private Entity parent;
-    private final Vector2 direction;
-    private final int lifetime;
-    private final int damage;
-    private final int index;
+    private Vector2 direction;
+    private int lifetime;
+    private int damage;
+    private int index;
     private final BulletController controller;
 
     public BulletEntity(Game game, EntityType<? extends BulletEntity> type, int id, Vector2 pos, Vector2 direction, int lifetime, int damage, int index) {
@@ -27,6 +28,15 @@ public class BulletEntity extends Entity {
         if (!game.isClient()) {
             controller = new BulletController(this);
         } else controller = null;
+    }
+
+    @Override
+    public void reinit(int id, Vector2 pos, Map<String, Object> data) {
+        super.reinit(id, pos, data);
+        direction = (Vector2) data.get("direction");
+        lifetime = (int) data.getOrDefault("lifetime", 0);
+        damage = (int) data.getOrDefault("damage", 0);
+        index = (int) data.getOrDefault("index", 0);
     }
 
     @Nullable

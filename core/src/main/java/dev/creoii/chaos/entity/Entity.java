@@ -13,7 +13,7 @@ public abstract class Entity implements Tickable {
     public static final Random RANDOM = new Random();
     private final Game game;
     private final EntityType<? extends Entity> type;
-    private final int id;
+    private int id;
     private final Vector2 pos;
     private final Vector2 prevPos;
     private final int spawnTime;
@@ -33,6 +33,11 @@ public abstract class Entity implements Tickable {
 
     @Nullable
     public abstract EntityCustomData getCustomPacketData();
+
+    public void reinit(int id, Vector2 pos, Map<String, Object> data) {
+        this.id = id;
+        this.pos.set(pos);
+    }
 
     public Game getGame() {
         return game;

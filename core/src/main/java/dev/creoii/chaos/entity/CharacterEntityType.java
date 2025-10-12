@@ -33,7 +33,7 @@ public record CharacterEntityType(Mutable<CharacterClass> characterClass) implem
     }
 
     public CharacterEntity create(Game game, int id, Vector2 pos, Map<String, Object> customData) {
-        CharacterEntity character = new CharacterEntity(game, this, id, pos.cpy(), (int) customData.get("connection_id"), new CharacterInventory());
+        CharacterEntity character = new CharacterEntity(game, this, id, pos.cpy(), (int) customData.get("connection_id"));
 /*        character.centerPos = new Vector2();
         character.colliderRect = new Rectangle();
         character.colliderRect.setPosition(pos);

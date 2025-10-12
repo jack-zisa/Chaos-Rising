@@ -17,7 +17,6 @@ public interface VecProvider extends Provider<Vector2> {
         case COMPARISON -> ComparisonVecProvider.CODEC;
         case CONSTANT -> ConstantVecProvider.CODEC;
         case DIRECTION -> DirectionVecProvider.CODEC;
-        case MOUSE_POS -> MousePosVecProvider.CODEC;
         case NORMALIZED -> NormalizedVecProvider.CODEC;
         case PERPENDICULAR -> PerpendicularVecProvider.CODEC;
         case RELATIVE_TO -> RelativeToVecProvider.CODEC;
@@ -51,7 +50,6 @@ public interface VecProvider extends Provider<Vector2> {
         COMPARISON,
         CONSTANT,
         DIRECTION,
-        MOUSE_POS,
         NORMALIZED,
         PERPENDICULAR,
         RELATIVE_TO,
