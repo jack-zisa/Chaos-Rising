@@ -167,11 +167,6 @@ public class ServerListener extends Listener {
         }
 
         else if (object instanceof CharacterJoinC2S()) {
-            /*game.getEntityManager().getAllEntities().forEach((_, map) -> map.forEach((id1, entity) -> {
-                game.getServer().sendToTCP(connection.getID(), new EntitySpawnS2C(id1, entity.getPos().x, entity.getPos().y, entity.getCustomPacketData()));
-                game.getServer().sendToTCP(connection.getID(), new EntityDisplayS2C(id1, entity.getType().id(), entity.getType().scale()));
-            }));*/
-
             List<SpawnEntitiesS2C.Entry> spawnEntries = new ArrayList<>();
             List<DisplayEntitiesS2C.Entry> displayEntries = new ArrayList<>();
             game.getEntityManager().getAllEntities().values().forEach(uuidEntityMap -> uuidEntityMap.values().forEach(entity -> {
@@ -184,7 +179,7 @@ public class ServerListener extends Listener {
 
             if (!spawnEntries.isEmpty()) {
                 if (spawnEntries.size() != displayEntries.size())
-                    ServerGame.LOGGER.info("Length of SpawnEntities entries should equal DisplayEntities entries: " + spawnEntries.size() + " != " + displayEntries.size());
+                    ServerGame.LOGGER.error("Length of SpawnEntities entries should equal DisplayEntities entries: " + spawnEntries.size() + " != " + displayEntries.size());
 
                 for (int i = 0; i < spawnEntries.size(); i += 50) {
                     game.getServer().sendToTCP(connection.getID(), new SpawnEntitiesS2C(spawnEntries.subList(i, Math.min(i + 50, spawnEntries.size()))));

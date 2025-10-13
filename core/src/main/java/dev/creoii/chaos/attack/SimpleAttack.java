@@ -70,6 +70,7 @@ public record SimpleAttack(String bulletId, NumberProvider damage, int bulletCou
 
             BulletEntityType bulletType = DataManager.getBullet(bulletId);
             if (bulletType != null) {
+                // use addEntities when implemented
                 BulletEntity bullet = sourceEntity.getGame().getEntityManager().addEntity(bulletType, pos.cpy(), customData);
                 bullet.setParent(sourceEntity);
             }
