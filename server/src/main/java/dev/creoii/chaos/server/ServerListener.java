@@ -4,9 +4,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import dev.creoii.chaos.DataManager;
+import dev.creoii.chaos.chat.Message;
 import dev.creoii.chaos.network.NetworkQueue;
 import dev.creoii.chaos.network.c2s.*;
 import dev.creoii.chaos.network.s2c.*;
+import dev.creoii.chaos.server.chat.command.Command;
 import dev.creoii.chaos.server.chat.command.Commands;
 import dev.creoii.chaos.entity.CharacterEntity;
 import dev.creoii.chaos.entity.CharacterEntityType;
@@ -27,7 +29,9 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
@@ -109,6 +113,10 @@ public class ServerListener extends Listener {
             }
         }
 
+        else if (object instanceof ChatMessageSendC2S(Message message)) {
+            game.getServer().sendToAllExceptTCP(connection.getID(), new ChatMessageReceiveS2C(message));
+        }
+
         else if (object instanceof SlotUpdateC2S(int id, SlotUpdateC2S.Action action, InventoryType from, InventoryType to, Slot fromSlot, Slot toSlot)) {
             CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id);
 
@@ -152,14 +160,37 @@ public class ServerListener extends Listener {
         }
 
         else if (object instanceof ExecuteCommandC2S(int id, String commandType, String[] args)) {
-            Commands.tryExecute(game, id, commandType, args);
+            Command.Result result = Commands.tryExecute(game, id, commandType, args);
+            if (result != null) {
+                game.getServer().sendToAllTCP(new ChatMessageReceiveS2C(new Message(result.getResultMessage(commandType, args), Command.Result.getChatMessageColor(result))));
+            }
         }
 
         else if (object instanceof CharacterJoinC2S()) {
-            game.getEntityManager().getAllEntities().forEach((_, map) -> map.forEach((id1, entity) -> {
+            /*game.getEntityManager().getAllEntities().forEach((_, map) -> map.forEach((id1, entity) -> {
                 game.getServer().sendToTCP(connection.getID(), new EntitySpawnS2C(id1, entity.getPos().x, entity.getPos().y, entity.getCustomPacketData()));
                 game.getServer().sendToTCP(connection.getID(), new EntityDisplayS2C(id1, entity.getType().id(), entity.getType().scale()));
+            }));*/
+
+            List<SpawnEntitiesS2C.Entry> spawnEntries = new ArrayList<>();
+            List<DisplayEntitiesS2C.Entry> displayEntries = new ArrayList<>();
+            game.getEntityManager().getAllEntities().values().forEach(uuidEntityMap -> uuidEntityMap.values().forEach(entity -> {
+                if (entity.getType().group() == EntityGroup.CHARACTER)
+                    return;
+
+                spawnEntries.add(new SpawnEntitiesS2C.Entry(entity.getId(), entity.getPos().x, entity.getPos().y, entity.getCustomPacketData()));
+                displayEntries.add(new DisplayEntitiesS2C.Entry(entity.getId(), entity.getType().id(), entity.getType().scale()));
             }));
+
+            if (!spawnEntries.isEmpty()) {
+                if (spawnEntries.size() != displayEntries.size())
+                    ServerGame.LOGGER.info("Length of SpawnEntities entries should equal DisplayEntities entries: " + spawnEntries.size() + " != " + displayEntries.size());
+
+                for (int i = 0; i < spawnEntries.size(); i += 50) {
+                    game.getServer().sendToTCP(connection.getID(), new SpawnEntitiesS2C(spawnEntries.subList(i, Math.min(i + 50, spawnEntries.size()))));
+                    game.getServer().sendToTCP(connection.getID(), new DisplayEntitiesS2C(displayEntries.subList(i, Math.min(i + 50, displayEntries.size()))));
+                }
+            }
 
             Map<String, Object> customData = new HashMap<>();
             customData.put("connection_id", connection.getID());

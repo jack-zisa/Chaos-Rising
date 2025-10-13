@@ -100,6 +100,10 @@ public class EntityManager<T> {
         return null;
     }
 
+    public Map<EntityGroup, Pool<Entity>> getPools() {
+        return pools;
+    }
+
     public boolean removeEntity(int id) {
         for (Map.Entry<EntityGroup, Map<Integer, T>> entry : getAllEntities().entrySet()) {
             if (id != -1 && entry.getValue().containsKey(id)) {

@@ -16,7 +16,7 @@ public record CharacterController(CharacterEntityRenderData character) implement
     @Override
     public void keyHeld(InputManager manager, int keycode) {
         ClientGame game = manager.getGame();
-        if (game.getCommandManager().isActive())
+        if (game.getChatManager().isActive())
             return;
 
         if (game.getCharacter().canMove()) {
@@ -51,7 +51,7 @@ public record CharacterController(CharacterEntityRenderData character) implement
 
     @Override
     public void touchHeld(InputManager manager, int screenX, int screenY, int pointer, int button) {
-        if (manager.getGame().getCommandManager().isActive())
+        if (manager.getGame().getChatManager().isActive())
             return;
 
         Slot weaponSlot = character.getWeaponSlot();

@@ -10,6 +10,7 @@ import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Server;
 import dev.creoii.chaos.Game;
 import dev.creoii.chaos.OptionsManager;
+import dev.creoii.chaos.client.chat.ChatManager;
 import dev.creoii.chaos.client.input.InputManager;
 import dev.creoii.chaos.network.CreoSerialization;
 import dev.creoii.chaos.network.NetworkQueue;
@@ -33,7 +34,7 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
     private final OptionsManager optionsManager;
     private final EntityRenderManager entityManager;
     private final InputManager inputManager;
-    private final CommandManager commandManager;
+    private final ChatManager chatManager;
     private int characterId;
     private boolean debug;
 
@@ -43,7 +44,7 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
         optionsManager = new OptionsManager();
         entityManager = new EntityRenderManager(this);
         inputManager = new InputManager(this);
-        commandManager = new CommandManager(this);
+        chatManager = new ChatManager(this);
     }
 
     @Override
@@ -68,7 +69,7 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
 
         assetManager.load();
 
-        Gdx.input.setInputProcessor(new InputMultiplexer(commandManager, inputManager));
+        Gdx.input.setInputProcessor(new InputMultiplexer(chatManager, inputManager));
     }
 
     @Override
@@ -85,7 +86,7 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
             listener.handlePacket(networkQueue.connection(), packet);
         }
 
-        commandManager.update();
+        chatManager.update();
         inputManager.update();
 
         renderer.render(Gdx.graphics.getDeltaTime(), debug);
@@ -137,8 +138,8 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
         return inputManager;
     }
 
-    public CommandManager getCommandManager() {
-        return commandManager;
+    public ChatManager getChatManager() {
+        return chatManager;
     }
 
     public CharacterEntityRenderData getCharacter() {

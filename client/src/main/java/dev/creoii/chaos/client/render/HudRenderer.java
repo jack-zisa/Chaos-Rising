@@ -7,25 +7,25 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import dev.creoii.chaos.client.CommandManager;
+import dev.creoii.chaos.client.chat.ChatManager;
+import dev.creoii.chaos.chat.Message;
 import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.client.render.entity.data.CharacterEntityRenderData;
 import dev.creoii.chaos.client.render.entity.EntityRenderManager;
 import dev.creoii.chaos.client.util.Renderable;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 public class HudRenderer implements Renderable {
     public static final int TEXT_PADDING = 10;
+    public static final GlyphLayout CHAT_LAYOUT = new GlyphLayout();
     public static final GlyphLayout DEBUG_LAYOUT = new GlyphLayout();
 
     @Override
     public void render(Renderer renderer, @Nullable SpriteBatch batch, @Nullable ShapeRenderer shapeRenderer, BitmapFont font, float delta, boolean debug) {
         if (batch != null) {
-            CommandManager commandManager = renderer.getGame().getCommandManager();
-            if (commandManager.isActive()) {
-                font.draw(batch, "> " + commandManager.getCommand() + ((System.currentTimeMillis() / 400) % 2 == 0 ? "_" : ""), TEXT_PADDING, font.getCapHeight() + TEXT_PADDING);
-            }
+            renderChat(renderer, batch, font);
 
             if (debug) {
                 String[] lines = getDebugText(renderer, batch);
@@ -70,6 +70,41 @@ public class HudRenderer implements Renderable {
             shapeRenderer.rect(x, y, barWidth, barHeight);
             shapeRenderer.end();
         }
+    }
+
+    private static void renderChat(Renderer renderer, SpriteBatch batch, BitmapFont font) {
+        font.getData().setScale(1.5f);
+
+        ChatManager chatManager = renderer.getGame().getChatManager();
+        if (chatManager.isActive()) {
+            font.setColor(Color.WHITE);
+            font.draw(batch, "> " + chatManager.getInput() + ((System.currentTimeMillis() / 400) % 2 == 0 ? "_" : ""), TEXT_PADDING, font.getCapHeight() + TEXT_PADDING);
+            font.setColor(Color.LIGHT_GRAY);
+        }
+
+        List<Message> messages = chatManager.getMessages();
+        int count = Math.min(20, messages.size());
+
+        for (int i = count - 1; i >= 0; --i) {
+            Message message = messages.get(messages.size() - 1 - i);
+            String sender = "[" + (message.getSenderId() == -1 ? "Server" : message.getSenderId()) + "]: ";
+
+            float x = TEXT_PADDING;
+            float y = 25 + TEXT_PADDING + (i + 1) * 29;
+
+            font.setColor(Color.YELLOW);
+            CHAT_LAYOUT.setText(font, sender);
+            font.draw(batch, CHAT_LAYOUT, x, y);
+
+            float offsetX = CHAT_LAYOUT.width;
+
+            font.setColor(message.getColor());
+            CHAT_LAYOUT.setText(font, message.getText());
+            font.draw(batch, CHAT_LAYOUT, x + offsetX, y);
+        }
+
+        font.setColor(Color.WHITE);
+        font.getData().setScale(2f);
     }
 
     private static String[] getDebugText(Renderer renderer, SpriteBatch batch) {

@@ -4,10 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.EntityManager;
 import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.entity.EntityType;
-import dev.creoii.chaos.network.s2c.EntityDisplayS2C;
-import dev.creoii.chaos.network.s2c.MoveEntitiesS2C;
-import dev.creoii.chaos.network.s2c.EntityRemoveS2C;
-import dev.creoii.chaos.network.s2c.EntitySpawnS2C;
+import dev.creoii.chaos.network.s2c.*;
 import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.Tickable;
 
@@ -57,8 +54,8 @@ public class ServerEntityManager extends EntityManager<Entity> implements Tickab
             }
         }));
         if (!entries.isEmpty()) {
-            for (int i = 0; i < entries.size(); i += 100) {
-                getGame().getServer().sendToAllTCP(new MoveEntitiesS2C(entries.subList(i, Math.min(i + 100, entries.size()))));
+            for (int i = 0; i < entries.size(); i += 50) {
+                getGame().getServer().sendToAllTCP(new MoveEntitiesS2C(entries.subList(i, Math.min(i + 50, entries.size()))));
             }
         }
     }

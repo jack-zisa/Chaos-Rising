@@ -2,6 +2,8 @@ package dev.creoii.chaos.server.chat.command;
 
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.DataManager;
+import dev.creoii.chaos.chat.Message;
+import dev.creoii.chaos.network.s2c.ChatMessageReceiveS2C;
 import dev.creoii.chaos.server.ServerGame;
 import dev.creoii.chaos.effect.StatusEffect;
 import dev.creoii.chaos.effect.StatusEffectType;
@@ -13,6 +15,7 @@ import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.logging.Logger;
 import dev.creoii.chaos.util.stat.Stat;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 public final class Commands {
@@ -20,17 +23,20 @@ public final class Commands {
     public static final Logger LOGGER = new Logger(Commands.class.getSimpleName());
     static final Map<String, Command> ALL = new HashMap<>();
 
-    public static void tryExecute(ServerGame game, int id, String commandType, String[] args) {
+    @Nullable
+    public static Command.Result tryExecute(ServerGame game, int id, String commandType, String[] args) {
         if (Commands.ALL.containsKey(commandType)) {
             try {
                 Command.Result result = Commands.ALL.get(commandType).execute(game, id, args);
                 LOGGER.info(result.getResultMessage(commandType, args));
+                return result;
             } catch (Exception e) {
                 LOGGER.error(Command.Result.FAIL.getResultMessageWithReason(commandType, args, e.toString()));
             }
         } else {
             LOGGER.warn("Command '/" + commandType + "' not found");
         }
+        return null;
     }
 
     static {
@@ -164,6 +170,11 @@ public final class Commands {
             return Command.Result.FAIL;
         });
 
+        /**
+         * FOR /setclass:
+         *         sprite = new Sprite(game.getTextureManager().getTexture("class", getTextureId()));
+         *         sprite.setSize(getScale(), getScale());
+         */
         Command.register("setclass", (game, id, args) -> {
             if (args.length > 0) {
                 CharacterClass characterClass = DataManager.getCharacterClass(args[0]);
@@ -174,6 +185,15 @@ public final class Commands {
                         return Command.Result.SUCCESS;
                     }
                 }
+            }
+            return Command.Result.FAIL;
+        });
+
+        Command.register("say", (game, _, args) -> {
+            if (args.length > 0) {
+                String message = args[0];
+                game.getServer().sendToAllTCP(new ChatMessageReceiveS2C(new Message(message)));
+                return Command.Result.SUCCESS;
             }
             return Command.Result.FAIL;
         });

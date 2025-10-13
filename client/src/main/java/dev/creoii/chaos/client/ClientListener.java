@@ -4,6 +4,7 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.FrameworkMessage;
 import com.esotericsoftware.kryonet.Listener;
 import dev.creoii.chaos.DataManager;
+import dev.creoii.chaos.chat.Message;
 import dev.creoii.chaos.client.render.entity.data.*;
 import dev.creoii.chaos.effect.StatusEffect;
 import dev.creoii.chaos.entity.serialization.*;
@@ -83,8 +84,50 @@ public class ClientListener extends Listener {
                         Optional<List<List<Slot>>> slots = lootDropData.slots();
                         game.getEntityManager().addEntity(id, new LootDropEntityRenderData(id, x, y, 0f, 0f, group.name().toLowerCase(), 32f, slots.map(Slot::toSlotArray).orElse(Slot.createEmptySlotArray(2, 4))));
                     }
-                };
+                }
             }
+            case SpawnEntitiesS2C(List<SpawnEntitiesS2C.Entry> entries) -> entries.forEach(entry -> {
+                int id = entry.id();
+                EntityRenderData renderData = game.getEntityManager().getEntityData(id);
+                if (renderData != null) {
+                    float[] unpacked = SpawnEntitiesS2C.unpack(entry.data());
+                    float x = unpacked[0];
+                    float y = unpacked[1];
+                    EntityGroup group = entry.customData().getGroup();
+                    switch (group) {
+                        case BULLET -> {
+                            BulletData bulletData = (BulletData) entry.customData();
+                            game.getEntityManager().addEntity(id, new BulletEntityRenderData(id, x, y, 0f, 0f, group.name().toLowerCase(), 32f, bulletData.xd(), bulletData.yd()));
+                        }
+                        case ENEMY -> {
+                            EnemyData enemyData = (EnemyData) entry.customData();
+                            game.getEntityManager().addEntity(id, new LivingEntityRenderData(id, EntityGroup.ENEMY, x, y, 0f, 0f, group.name().toLowerCase(), 32f, enemyData.baseStats(), enemyData.maxStats()));
+                        }
+                        case CHARACTER -> {
+                            CharacterData characterData = (CharacterData) entry.customData();
+                            Optional<List<List<Slot>>> slots = characterData.slots();
+                            CharacterEntityRenderData character = new CharacterEntityRenderData(id, x, y, 0f, 0f, "wizard", 32f, characterData.baseStats(), characterData.maxStats(), slots.map(Slot::toSlotArray).orElse(Slot.createEmptySlotArray(3, 4, (r, c) -> {
+                                if (r == 2) {
+                                    return switch (c) {
+                                        case 0 -> new Slot(r, c, Slot.Type.WEAPON);
+                                        case 1 -> new Slot(r, c, Slot.Type.ABILITY);
+                                        case 2 -> new Slot(r, c, Slot.Type.ARMOR);
+                                        default -> new Slot(r, c, Slot.Type.ACCESSORY);
+                                    };
+                                } else return new Slot(r, c);
+                            })));
+                            game.setCharacterId(id);
+                            game.getInputManager().addInput(new CharacterController(character));
+                            game.getEntityManager().addEntity(id, character);
+                        }
+                        case LOOT_DROP -> {
+                            LootDropData lootDropData = (LootDropData) entry.customData();
+                            Optional<List<List<Slot>>> slots = lootDropData.slots();
+                            game.getEntityManager().addEntity(id, new LootDropEntityRenderData(id, x, y, 0f, 0f, group.name().toLowerCase(), 32f, slots.map(Slot::toSlotArray).orElse(Slot.createEmptySlotArray(2, 4))));
+                        }
+                    }
+                }
+            });
             case EntityDisplayS2C(int id, String textureId, float scale) -> {
                 EntityRenderData entityRenderData = game.getEntityManager().getEntityData(id);
                 if (entityRenderData != null) {
@@ -92,6 +135,13 @@ public class ClientListener extends Listener {
                     entityRenderData.scale = scale;
                 }
             }
+            case DisplayEntitiesS2C(List<DisplayEntitiesS2C.Entry> entries) -> entries.forEach(entry -> {
+                EntityRenderData entityRenderData = game.getEntityManager().getEntityData(entry.id());
+                if (entityRenderData != null) {
+                    entityRenderData.textureId = entry.textureId();
+                    entityRenderData.scale = entry.scale();
+                }
+            });
             case MoveEntitiesS2C(List<MoveEntitiesS2C.Entry> entries) -> entries.forEach(entry -> {
                 EntityRenderData entityRenderData = game.getEntityManager().getEntityData(entry.id());
                 if (entityRenderData != null) {
@@ -112,6 +162,7 @@ public class ClientListener extends Listener {
                     entityRenderData.yv = unpacked[3];
                 }
             }
+            case ChatMessageReceiveS2C(Message message) -> game.getChatManager().getMessages().add(message);
             case EntityRemoveS2C(int id) -> game.getEntityManager().removeEntity(id);
             case StatusEffectS2C(int id, StatusEffect statusEffect) -> {
                 //((LivingEntity) game.getEntityManager().getEntityData(uuid)).addStatusEffect(statusEffect);

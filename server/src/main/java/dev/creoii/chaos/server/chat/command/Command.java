@@ -1,5 +1,6 @@
 package dev.creoii.chaos.server.chat.command;
 
+import com.badlogic.gdx.graphics.Color;
 import dev.creoii.chaos.server.ServerGame;
 import dev.creoii.chaos.util.function.TriFunction;
 
@@ -16,8 +17,8 @@ public record Command(TriFunction<ServerGame, Integer, String[], Result> executo
     }
 
     public enum Result {
-        SUCCESS((commandType, args) -> "[Commands] Successfully executed '/" + commandType + "' with args " + Arrays.toString(args)),
-        FAIL((commandType, args) -> "[Commands] Execution '/" + commandType + "' with args " + Arrays.toString(args) + " failed");
+        SUCCESS((commandType, args) -> "[Commands] Successfully executed '/" + commandType + "' with args '" + Arrays.toString(args) + "'"),
+        FAIL((commandType, args) -> "[Commands] Execution '/" + commandType + "' with args '" + Arrays.toString(args) + "' failed");
 
         private final BiFunction<String, String[], String> message;
 
@@ -31,6 +32,10 @@ public record Command(TriFunction<ServerGame, Integer, String[], Result> executo
 
         public String getResultMessageWithReason(String commandType, String[] args, String reason) {
             return message.apply(commandType, args) + ": " + reason;
+        }
+
+        public static Color getChatMessageColor(Result result) {
+            return result == SUCCESS ? Color.WHITE : Color.RED;
         }
     }
 }
