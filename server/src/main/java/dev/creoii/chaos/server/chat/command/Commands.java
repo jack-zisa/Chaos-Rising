@@ -86,7 +86,7 @@ public final class Commands {
                             character.getMaxStats().setVitality(value);
                         }
                     }
-                    game.getServer().sendToTCP(character.getConnectionId(), new LivingStatUpdateS2C(statType, value));
+                    game.getServer().sendToTCP(character.getConnectionId(), new LivingStatUpdateS2C(new Stat(statType, value)));
                     return Command.Result.SUCCESS;
                 }
             }

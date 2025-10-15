@@ -8,6 +8,8 @@ import dev.creoii.chaos.chat.Message;
 import dev.creoii.chaos.inventory.Slot;
 import dev.creoii.chaos.item.Item;
 import dev.creoii.chaos.item.ItemStack;
+import dev.creoii.chaos.util.stat.Stat;
+import dev.creoii.chaos.util.stat.StatContainer;
 
 public final class PacketUtils {
     public static Item readItem(Input input) {
@@ -68,5 +70,40 @@ public final class PacketUtils {
         output.writeInt(slot.getC());
         writeEnum(output, slot.getType());
         writeItemStack(output, slot.getStack());
+    }
+
+    public static Stat readStat(Input input) {
+        return new Stat(readEnum(Stat.Type.class, input), input.readInt());
+    }
+
+    public static void writeStat(Output output, Stat stat) {
+        writeEnum(output, stat.type());
+        output.writeInt(stat.value());
+    }
+
+    public static void writeStatContainer(Output output, StatContainer container) {
+        writeStat(output, container.health());
+        writeStat(output, container.speed());
+        writeStat(output, container.attackSpeed());
+        writeStat(output, container.defense());
+        writeStat(output, container.attack());
+        writeStat(output, container.vitality());
+    }
+
+    public static StatContainer readStatContainer(Input input) {
+        return new StatContainer(readStat(input), readStat(input), readStat(input), readStat(input), readStat(input), readStat(input));
+    }
+
+    public static void writeStatContainerFast(Output output, StatContainer container) {
+        output.writeInt(container.health().value());
+        output.writeInt(container.speed().value());
+        output.writeInt(container.attackSpeed().value());
+        output.writeInt(container.defense().value());
+        output.writeInt(container.attack().value());
+        output.writeInt(container.vitality().value());
+    }
+
+    public static StatContainer readStatContainerFast(Input input) {
+        return new StatContainer(input.readInt(), input.readInt(), input.readInt(), input.readInt(), input.readInt(), input.readInt());
     }
 }

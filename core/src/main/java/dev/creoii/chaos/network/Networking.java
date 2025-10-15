@@ -48,7 +48,7 @@ public class Networking {
         kryo.register(MoveEntityS2C.class, PacketSerializer.INSTANCE);
         kryo.register(InventoryUpdateS2C.class, PacketSerializer.INSTANCE);
         kryo.register(LivingStatUpdateS2C.class, PacketSerializer.INSTANCE);
-        kryo.register(LivingStatsUpdateS2C.class, LegacyCodecSerializer.INSTANCE);
+        kryo.register(LivingStatsUpdateS2C.class, PacketSerializer.INSTANCE);
         kryo.register(LootDropCloseS2C.class, PacketSerializer.INSTANCE);
         kryo.register(LootDropOpenS2C.class, PacketSerializer.INSTANCE);
         kryo.register(ChatMessageReceiveS2C.class, PacketSerializer.INSTANCE);
@@ -102,7 +102,7 @@ public class Networking {
         PacketSerializer.INSTANCE.register(MoveEntityS2C.class, MoveEntityS2C::write, MoveEntityS2C::read);
         PacketSerializer.INSTANCE.register(InventoryUpdateS2C.class, InventoryUpdateS2C::write, InventoryUpdateS2C::read);
         PacketSerializer.INSTANCE.register(LivingStatUpdateS2C.class, LivingStatUpdateS2C::write, LivingStatUpdateS2C::read);
-        LegacyCodecSerializer.registerSchema(LivingStatsUpdateS2C.class, LivingStatsUpdateS2C.CODEC);
+        PacketSerializer.INSTANCE.register(LivingStatsUpdateS2C.class, LivingStatsUpdateS2C::write, LivingStatsUpdateS2C::read);
         PacketSerializer.INSTANCE.register(LootDropCloseS2C.class, LootDropCloseS2C::write, LootDropCloseS2C::read);
         PacketSerializer.INSTANCE.register(LootDropOpenS2C.class, LootDropOpenS2C::write, LootDropOpenS2C::read);
         PacketSerializer.INSTANCE.register(ChatMessageReceiveS2C.class, ChatMessageReceiveS2C::write, ChatMessageReceiveS2C::read);

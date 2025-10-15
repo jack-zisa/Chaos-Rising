@@ -172,32 +172,32 @@ public class ClientListener extends Listener {
                     }
                 }
             }
-            case LivingStatUpdateS2C(Stat.Type statType, int value) -> {
+            case LivingStatUpdateS2C(Stat stat) -> {
                 CharacterEntityRenderData character = game.getCharacter();
-                switch (statType) {
+                switch (stat.type()) {
                     case HEALTH -> {
-                        character.statContainer.setHealth(value);
-                        character.maxStatContainer.setHealth(value);
+                        character.statContainer.setHealth(stat.value());
+                        character.maxStatContainer.setHealth(stat.value());
                     }
                     case SPEED -> {
-                        character.statContainer.setSpeed(value);
-                        character.maxStatContainer.setSpeed(value);
+                        character.statContainer.setSpeed(stat.value());
+                        character.maxStatContainer.setSpeed(stat.value());
                     }
                     case ATTACK_SPEED -> {
-                        character.statContainer.setAttackSpeed(value);
-                        character.maxStatContainer.setAttackSpeed(value);
+                        character.statContainer.setAttackSpeed(stat.value());
+                        character.maxStatContainer.setAttackSpeed(stat.value());
                     }
                     case DEFENSE -> {
-                        character.statContainer.setDefense(value);
-                        character.maxStatContainer.setDefense(value);
+                        character.statContainer.setDefense(stat.value());
+                        character.maxStatContainer.setDefense(stat.value());
                     }
                     case ATTACK -> {
-                        character.statContainer.setAttack(value);
-                        character.maxStatContainer.setAttack(value);
+                        character.statContainer.setAttack(stat.value());
+                        character.maxStatContainer.setAttack(stat.value());
                     }
                     case VITALITY -> {
-                        character.statContainer.setVitality(value);
-                        character.maxStatContainer.setVitality(value);
+                        character.statContainer.setVitality(stat.value());
+                        character.maxStatContainer.setVitality(stat.value());
                     }
                 }
             }
