@@ -7,10 +7,9 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.entity.serialization.EntityCustomData;
 import dev.creoii.chaos.network.PacketUtils;
 
-import java.io.Serializable;
 import java.util.Optional;
 
-public record EntitySpawnS2C(int id, float x, float y, EntityCustomData customData) implements Serializable {
+public record EntitySpawnS2C(int id, float x, float y, EntityCustomData customData) {
     public static final Codec<EntitySpawnS2C> CODEC = RecordCodecBuilder.create(instance -> {
         return instance.group(
             Codec.INT.fieldOf("id").forGetter(EntitySpawnS2C::id),

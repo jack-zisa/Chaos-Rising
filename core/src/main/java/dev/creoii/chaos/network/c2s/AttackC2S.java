@@ -7,9 +7,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.inventory.Slot;
 import dev.creoii.chaos.network.PacketUtils;
 
-import java.io.Serializable;
-
-public record AttackC2S(int id, Slot slot, float mouseX, float mouseY) implements Serializable {
+public record AttackC2S(int id, Slot slot, float mouseX, float mouseY) {
     public static final Codec<AttackC2S> CODEC = RecordCodecBuilder.create(instance -> {
         return instance.group(
             Codec.INT.fieldOf("id").forGetter(AttackC2S::id),

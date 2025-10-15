@@ -33,6 +33,7 @@ public class EquipmentItem extends Item {
     public String getTooltip() {
         List<String> lines = new ArrayList<>();
         lines.add(id);
+        lines.add(rarity.name());
         lines.add(type.name().toLowerCase());
         if (statBonus != null) {
             lines.add(StatContainer.getTooltip(statBonus));

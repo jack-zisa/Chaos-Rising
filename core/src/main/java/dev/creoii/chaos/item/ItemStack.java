@@ -7,9 +7,8 @@ import dev.creoii.chaos.Game;
 import dev.creoii.chaos.inventory.Slot;
 
 import javax.annotation.Nullable;
-import java.io.Serializable;
 
-public class ItemStack implements Serializable {
+public class ItemStack {
     public static final Codec<ItemStack> CODEC = RecordCodecBuilder.create(instance -> {
         return instance.group(
             Codec.STRING.fieldOf("id").forGetter(stack -> stack.getItem() == null ? "" : stack.getItem().id()),

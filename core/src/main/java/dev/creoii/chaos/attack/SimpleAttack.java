@@ -16,10 +16,9 @@ import dev.creoii.chaos.util.provider.vecprovider.SourcePosVecProvider;
 import dev.creoii.chaos.util.provider.vecprovider.VecProvider;
 
 import javax.annotation.Nullable;
-import java.io.Serializable;
 import java.util.*;
 
-public record SimpleAttack(String bulletId, NumberProvider damage, int bulletCount, int arcGap, float predictability, NumberProvider angleOffset, Optional<VecProvider> source, Optional<VecProvider> target) implements Attack, Serializable {
+public record SimpleAttack(String bulletId, NumberProvider damage, int bulletCount, int arcGap, float predictability, NumberProvider angleOffset, Optional<VecProvider> source, Optional<VecProvider> target) implements Attack {
     public static final MapCodec<SimpleAttack> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(
             Codec.STRING.fieldOf("bullet_id").forGetter(SimpleAttack::bulletId),

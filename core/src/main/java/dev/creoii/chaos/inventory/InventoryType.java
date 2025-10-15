@@ -2,9 +2,7 @@ package dev.creoii.chaos.inventory;
 
 import com.mojang.serialization.Codec;
 
-import java.io.Serializable;
-
-public enum InventoryType implements Serializable {
+public enum InventoryType {
     MAIN,
     LOOT;
 

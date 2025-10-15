@@ -5,11 +5,10 @@ import com.esotericsoftware.kryo.io.Output;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public record MoveEntitiesS2C(List<Entry> entries) implements Serializable {
+public record MoveEntitiesS2C(List<Entry> entries) {
     public static final Codec<MoveEntitiesS2C> CODEC = Entry.CODEC.listOf().xmap(MoveEntitiesS2C::new, MoveEntitiesS2C::entries);
 
     public record Entry(int id, float x, float y, float xv, float yv) {

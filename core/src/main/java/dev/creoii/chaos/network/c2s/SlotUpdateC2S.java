@@ -8,9 +8,7 @@ import dev.creoii.chaos.inventory.InventoryType;
 import dev.creoii.chaos.inventory.Slot;
 import dev.creoii.chaos.network.PacketUtils;
 
-import java.io.Serializable;
-
-public record SlotUpdateC2S(int id, Action action, InventoryType from, InventoryType to, Slot fromSlot, Slot toSlot) implements Serializable {
+public record SlotUpdateC2S(int id, Action action, InventoryType from, InventoryType to, Slot fromSlot, Slot toSlot) {
     public static final Codec<SlotUpdateC2S> CODEC = RecordCodecBuilder.create(instance -> {
         return instance.group(
             Codec.INT.fieldOf("id").forGetter(SlotUpdateC2S::id),

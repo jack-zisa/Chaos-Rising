@@ -1,6 +1,7 @@
 package dev.creoii.chaos.client.render;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -14,7 +15,10 @@ import javax.annotation.Nullable;
 
 public class ItemRenderer {
     private static final float TOOLTIP_OFFSCREEN_PADDING = 4f;
-    private static final BitmapFont FONT = new BitmapFont();
+    private static final BitmapFont TITLE_FONT = new BitmapFont();
+    private static final BitmapFont DESCRIPTION_FONT = new BitmapFont();
+    private static final GlyphLayout TITLE_LAYOUT = new GlyphLayout();
+    private static final GlyphLayout DESCRIPTION_LAYOUT = new GlyphLayout();
 
     public static void renderItem(ClientGame game, SpriteBatch batch, @Nullable String id, Vector2 pos, float scale) {
         if (id == null || id.isBlank())
@@ -31,15 +35,15 @@ public class ItemRenderer {
         if (item == null)
             return;
 
-        FONT.setColor(item.getRarity().getColor());
-
         String tooltip = item.getTooltip();
-        GlyphLayout layout = new GlyphLayout(FONT, tooltip);
+        int splitIndex = tooltip.indexOf('\n');
+        TITLE_LAYOUT.setText(TITLE_FONT, tooltip.substring(0, splitIndex));
+        DESCRIPTION_LAYOUT.setText(DESCRIPTION_FONT, tooltip.substring(splitIndex));
 
         Vector2 mousePos = new Vector2(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
 
-        float tooltipWidth = layout.width + 2 * TOOLTIP_OFFSCREEN_PADDING;
-        float tooltipHeight = layout.height + 2 * TOOLTIP_OFFSCREEN_PADDING;
+        float tooltipWidth = Math.max(TITLE_LAYOUT.width, DESCRIPTION_LAYOUT.width) + 2 * TOOLTIP_OFFSCREEN_PADDING;
+        float tooltipHeight = TITLE_LAYOUT.height + DESCRIPTION_LAYOUT.height + 3 * TOOLTIP_OFFSCREEN_PADDING;
 
         float x = mousePos.x + TOOLTIP_OFFSCREEN_PADDING;
         float y = mousePos.y + tooltipHeight;
@@ -50,12 +54,16 @@ public class ItemRenderer {
             y = Gdx.graphics.getHeight();
 
         if (batch != null) {
-            FONT.draw(batch, layout, x + TOOLTIP_OFFSCREEN_PADDING, y - TOOLTIP_OFFSCREEN_PADDING);
+            TITLE_FONT.setColor(item.getRarity().getColor());
+            TITLE_FONT.draw(batch, TITLE_LAYOUT, x + TOOLTIP_OFFSCREEN_PADDING, y - TOOLTIP_OFFSCREEN_PADDING);
+            DESCRIPTION_FONT.draw(batch, DESCRIPTION_LAYOUT, x + TOOLTIP_OFFSCREEN_PADDING, y - TOOLTIP_OFFSCREEN_PADDING);
         }
     }
 
     static {
-        FONT.setUseIntegerPositions(false);
-        FONT.getData().setScale(1.5f);
+        TITLE_FONT.setUseIntegerPositions(false);
+        TITLE_FONT.getData().setScale(1.5f);
+        DESCRIPTION_FONT.setUseIntegerPositions(false);
+        DESCRIPTION_FONT.setColor(Color.LIGHT_GRAY);
     }
 }

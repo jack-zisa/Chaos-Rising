@@ -4,10 +4,9 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.util.Codecs;
 
-import java.io.Serializable;
 import java.util.UUID;
 
-public record ModifierEntry(Stat.Type type, UUID uuid, int amount, Operation operation, ModifierType modifierType) implements Serializable {
+public record ModifierEntry(Stat.Type type, UUID uuid, int amount, Operation operation, ModifierType modifierType) {
     public static final Codec<ModifierEntry> CODEC = RecordCodecBuilder.create(instance -> {
         return instance.group(
             Stat.Type.CODEC.fieldOf("stat_type").forGetter(ModifierEntry::type),

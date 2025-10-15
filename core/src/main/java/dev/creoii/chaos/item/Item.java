@@ -7,9 +7,7 @@ import dev.creoii.chaos.inventory.Slot;
 import dev.creoii.chaos.util.Identifiable;
 import dev.creoii.chaos.util.Rarity;
 
-import java.io.Serializable;
-
-public class Item implements Identifiable, Serializable {
+public class Item implements Identifiable {
     public static final Codec<Item> CODEC = Type.CODEC.dispatch(Item::getType, group -> switch (group) {
         case WEAPON -> WeaponItem.CODEC;
         case ABILITY -> AbilityItem.CODEC;
@@ -46,7 +44,7 @@ public class Item implements Identifiable, Serializable {
     }
 
     public String getTooltip() {
-        return id + "\n";
+        return id + "\n" + rarity.name() + "\n";
     }
 
     public boolean clickInSlot(Game game, int characterId, Slot slot, ItemStack stack) {

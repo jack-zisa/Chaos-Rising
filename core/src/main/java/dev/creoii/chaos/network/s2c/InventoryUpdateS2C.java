@@ -8,11 +8,10 @@ import dev.creoii.chaos.inventory.InventoryType;
 import dev.creoii.chaos.inventory.Slot;
 import dev.creoii.chaos.network.PacketUtils;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public record InventoryUpdateS2C(InventoryType type, List<Slot> slots) implements Serializable {
+public record InventoryUpdateS2C(InventoryType type, List<Slot> slots) {
     public static final Codec<InventoryUpdateS2C> CODEC = RecordCodecBuilder.create(instance -> {
         return instance.group(
             InventoryType.CODEC.fieldOf("type").forGetter(InventoryUpdateS2C::type),
