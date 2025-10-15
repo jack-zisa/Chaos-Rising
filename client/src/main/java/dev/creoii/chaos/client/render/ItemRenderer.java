@@ -17,8 +17,7 @@ public class ItemRenderer {
     private static final float TOOLTIP_OFFSCREEN_PADDING = 4f;
     private static final BitmapFont TITLE_FONT = new BitmapFont();
     private static final BitmapFont DESCRIPTION_FONT = new BitmapFont();
-    private static final GlyphLayout TITLE_LAYOUT = new GlyphLayout();
-    private static final GlyphLayout DESCRIPTION_LAYOUT = new GlyphLayout();
+    private static final GlyphLayout LAYOUT = new GlyphLayout();
 
     public static void renderItem(ClientGame game, SpriteBatch batch, @Nullable String id, Vector2 pos, float scale) {
         if (id == null || id.isBlank())
@@ -37,13 +36,12 @@ public class ItemRenderer {
 
         String tooltip = item.getTooltip();
         int splitIndex = tooltip.indexOf('\n');
-        TITLE_LAYOUT.setText(TITLE_FONT, tooltip.substring(0, splitIndex));
-        DESCRIPTION_LAYOUT.setText(DESCRIPTION_FONT, tooltip.substring(splitIndex));
+        LAYOUT.setText(TITLE_FONT, tooltip.substring(0, splitIndex));
 
         Vector2 mousePos = new Vector2(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
 
-        float tooltipWidth = Math.max(TITLE_LAYOUT.width, DESCRIPTION_LAYOUT.width) + 2 * TOOLTIP_OFFSCREEN_PADDING;
-        float tooltipHeight = TITLE_LAYOUT.height + DESCRIPTION_LAYOUT.height + 3 * TOOLTIP_OFFSCREEN_PADDING;
+        float tooltipWidth = LAYOUT.width + 2 * TOOLTIP_OFFSCREEN_PADDING;
+        float tooltipHeight = LAYOUT.height + 2 * TOOLTIP_OFFSCREEN_PADDING;
 
         float x = mousePos.x + TOOLTIP_OFFSCREEN_PADDING;
         float y = mousePos.y + tooltipHeight;
@@ -55,8 +53,9 @@ public class ItemRenderer {
 
         if (batch != null) {
             TITLE_FONT.setColor(item.getRarity().getColor());
-            TITLE_FONT.draw(batch, TITLE_LAYOUT, x + TOOLTIP_OFFSCREEN_PADDING, y - TOOLTIP_OFFSCREEN_PADDING);
-            DESCRIPTION_FONT.draw(batch, DESCRIPTION_LAYOUT, x + TOOLTIP_OFFSCREEN_PADDING, y - TOOLTIP_OFFSCREEN_PADDING);
+            TITLE_FONT.draw(batch, LAYOUT, x + TOOLTIP_OFFSCREEN_PADDING, y - TOOLTIP_OFFSCREEN_PADDING);
+            LAYOUT.setText(DESCRIPTION_FONT, tooltip.substring(splitIndex));
+            DESCRIPTION_FONT.draw(batch, LAYOUT, x + TOOLTIP_OFFSCREEN_PADDING, y - TOOLTIP_OFFSCREEN_PADDING);
         }
     }
 
