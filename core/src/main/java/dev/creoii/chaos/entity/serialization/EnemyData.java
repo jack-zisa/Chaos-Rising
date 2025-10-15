@@ -1,8 +1,11 @@
 package dev.creoii.chaos.entity.serialization;
 
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.entity.EnemyEntityType;
+import dev.creoii.chaos.network.PacketUtils;
 import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.stat.StatContainer;
 
@@ -22,5 +25,14 @@ public record EnemyData(StatContainer baseStats, StatContainer maxStats) impleme
     @Override
     public MapCodec<EnemyData> getCodec() {
         return CODEC;
+    }
+
+    @Override
+    public void write(Output output) {
+
+    }
+
+    public static EnemyData read(Input input) {
+        return new EnemyData(PacketUtils.readStatContainer(input), PacketUtils.readStatContainer(input));
     }
 }

@@ -1,5 +1,6 @@
 package dev.creoii.chaos.entity.serialization;
 
+import com.esotericsoftware.kryo.io.Output;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import dev.creoii.chaos.util.EntityGroup;
@@ -15,4 +16,6 @@ public sealed interface EntityCustomData permits BulletData, CharacterData, Enem
     EntityGroup getGroup();
 
     MapCodec<? extends EntityCustomData> getCodec();
+
+    void write(Output output);
 }

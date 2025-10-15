@@ -1,56 +1,45 @@
 package dev.creoii.chaos.network.s2c;
 
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.entity.serialization.EntityCustomData;
+import dev.creoii.chaos.network.PacketUtils;
 
-import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.IntStream;
 
-public record SpawnEntitiesS2C(List<Entry> entries) implements Serializable {
+public record SpawnEntitiesS2C(List<Entry> entries) {
     public static final Codec<SpawnEntitiesS2C> CODEC = Entry.CODEC.listOf().xmap(SpawnEntitiesS2C::new, SpawnEntitiesS2C::entries);
 
-    public record Entry(int id, byte[] data, EntityCustomData customData) {
-        public Entry(int id, float x, float y, EntityCustomData customData) {
-            this(id, pack(x, y), customData);
+    public static void write(Output output, SpawnEntitiesS2C o) {
+        output.writeInt(o.entries().size());
+        for (Entry entry : o.entries) {
+            output.writeInt(entry.id);
+            output.writeFloat(entry.x);
+            output.writeFloat(entry.y);
+            PacketUtils.writeCustomEntityData(output, entry.customData);
         }
+    }
 
+    public static SpawnEntitiesS2C read(Input input) {
+        int count = input.readInt();
+        List<Entry> entries = new ArrayList<>(count);
+        for (int i = 0; i < count; i++) {
+            entries.add(new Entry(input.readInt(), input.readFloat(), input.readFloat(), PacketUtils.readCustomEntityData(input)));
+        }
+        return new SpawnEntitiesS2C(entries);
+    }
+
+    public record Entry(int id, float x, float y, EntityCustomData customData) {
         public static final Codec<Entry> CODEC = RecordCodecBuilder.create(instance -> {
             return instance.group(
                 Codec.INT.fieldOf("id").forGetter(Entry::id),
-                Codec.BYTE.listOf().fieldOf("data").forGetter(entry -> IntStream.range(0, entry.data.length).mapToObj(i -> entry.data[i]).toList()),
+                Codec.FLOAT.fieldOf("x").forGetter(Entry::x),
+                Codec.FLOAT.fieldOf("y").forGetter(Entry::y),
                 EntityCustomData.CODEC.fieldOf("custom_data").forGetter(Entry::customData)
-            ).apply(instance, (id, data, customData) -> {
-                byte[] arr = new byte[data.size()];
-                for (int i = 0; i < data.size(); i++) {
-                    arr[i] = data.get(i);
-                }
-                return new Entry(id, arr, customData);
-            });
+            ).apply(instance, Entry::new);
         });
-    }
-
-    public static byte[] pack(float x, float y) {
-        byte[] bytes = new byte[16];
-        int i = 0;
-        for (float f : new float[]{x, y}) {
-            int bits = Float.floatToIntBits(f);
-            bytes[i++] = (byte) (bits >>> 24);
-            bytes[i++] = (byte) (bits >>> 16);
-            bytes[i++] = (byte) (bits >>> 8);
-            bytes[i++] = (byte) (bits);
-        }
-        return bytes;
-    }
-
-    public static float[] unpack(byte[] bytes) {
-        float[] floats = new float[4];
-        for (int i = 0; i < 4; i++) {
-            int base = i * 4;
-            int bits = ((bytes[base] & 0xff) << 24) | ((bytes[base + 1] & 0xff) << 16) | ((bytes[base + 2] & 0xff) << 8) | (bytes[base + 3] & 0xff);
-            floats[i] = Float.intBitsToFloat(bits);
-        }
-        return floats;
     }
 }

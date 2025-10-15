@@ -5,9 +5,11 @@ import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import dev.creoii.chaos.DataManager;
 import dev.creoii.chaos.chat.Message;
+import dev.creoii.chaos.entity.serialization.*;
 import dev.creoii.chaos.inventory.Slot;
 import dev.creoii.chaos.item.Item;
 import dev.creoii.chaos.item.ItemStack;
+import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.stat.Stat;
 import dev.creoii.chaos.util.stat.StatContainer;
 
@@ -105,5 +107,20 @@ public final class PacketUtils {
 
     public static StatContainer readStatContainerFast(Input input) {
         return new StatContainer(input.readInt(), input.readInt(), input.readInt(), input.readInt(), input.readInt(), input.readInt());
+    }
+
+    public static void writeCustomEntityData(Output output, EntityCustomData customData) {
+        writeEnum(output, customData.getGroup());
+        customData.write(output);
+    }
+
+    public static EntityCustomData readCustomEntityData(Input input) {
+        EntityGroup group = readEnum(EntityGroup.class, input);
+        return switch (group) {
+            case CHARACTER -> CharacterData.read(input);
+            case ENEMY -> EnemyData.read(input);
+            case BULLET -> BulletData.read(input);
+            case LOOT_DROP -> LootDropData.read(input);
+        };
     }
 }

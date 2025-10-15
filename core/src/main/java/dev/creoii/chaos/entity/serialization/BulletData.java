@@ -1,5 +1,7 @@
 package dev.creoii.chaos.entity.serialization;
 
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -19,5 +21,15 @@ public record BulletData(float xd, float yd) implements EntityCustomData {
     @Override
     public MapCodec<BulletData> getCodec() {
         return CODEC;
+    }
+
+    @Override
+    public void write(Output output) {
+        output.writeFloat(xd);
+        output.writeFloat(yd);
+    }
+
+    public static BulletData read(Input input) {
+        return new BulletData(input.readFloat(), input.readFloat());
     }
 }

@@ -1,8 +1,11 @@
 package dev.creoii.chaos.entity.serialization;
 
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.inventory.Slot;
+import dev.creoii.chaos.network.PacketUtils;
 import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.stat.StatContainer;
 
@@ -28,5 +31,14 @@ public record CharacterData(StatContainer baseStats, StatContainer maxStats, Opt
     @Override
     public MapCodec<CharacterData> getCodec() {
         return CODEC;
+    }
+
+    @Override
+    public void write(Output output) {
+
+    }
+
+    public static CharacterData read(Input input) {
+        return new CharacterData(PacketUtils.readStatContainer(input), PacketUtils.readStatContainer(input), Optional.empty());
     }
 }

@@ -90,9 +90,8 @@ public class ClientListener extends Listener {
                 int id = entry.id();
                 EntityRenderData renderData = game.getEntityManager().getEntityData(id);
                 if (renderData != null) {
-                    float[] unpacked = SpawnEntitiesS2C.unpack(entry.data());
-                    float x = unpacked[0];
-                    float y = unpacked[1];
+                    float x = entry.x();
+                    float y = entry.y();
                     EntityGroup group = entry.customData().getGroup();
                     switch (group) {
                         case BULLET -> {
