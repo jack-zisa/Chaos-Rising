@@ -9,6 +9,7 @@ import dev.creoii.chaos.Game;
 import dev.creoii.chaos.effect.StatusEffect;
 import dev.creoii.chaos.entity.CharacterEntity;
 import dev.creoii.chaos.inventory.Slot;
+import dev.creoii.chaos.item.tooltip.Tooltip;
 import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.Rarity;
 import dev.creoii.chaos.util.stat.ModifierEntry;
@@ -77,5 +78,13 @@ public class ConsumableItem extends Item {
             }
         }
         slot.setStack(ItemStack.EMPTY);
+    }
+
+    @Override
+    public void buildTooltip(Tooltip tooltip) {
+        super.buildTooltip(tooltip);
+        if (statBonus != null) {
+            tooltip.addSection(Tooltip.Section.STATS, StatContainer.getTooltip(statBonus));
+        }
     }
 }

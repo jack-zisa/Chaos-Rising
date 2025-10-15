@@ -10,14 +10,17 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.client.ClientGame;
 import dev.creoii.chaos.item.Item;
+import dev.creoii.chaos.item.tooltip.Tooltip;
 
 import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ItemRenderer {
     private static final float TOOLTIP_OFFSCREEN_PADDING = 4f;
-    private static final BitmapFont TITLE_FONT = new BitmapFont();
-    private static final BitmapFont DESCRIPTION_FONT = new BitmapFont();
-    private static final GlyphLayout LAYOUT = new GlyphLayout();
+    private static final BitmapFont SECTION_FONT = new BitmapFont();
+    private static final Map<Tooltip.Section, BitmapFont> FONTS = new HashMap<>();
 
     public static void renderItem(ClientGame game, SpriteBatch batch, @Nullable String id, Vector2 pos, float scale) {
         if (id == null || id.isBlank())
@@ -34,35 +37,74 @@ public class ItemRenderer {
         if (item == null)
             return;
 
-        String tooltip = item.getTooltip();
-        int splitIndex = tooltip.indexOf('\n');
-        LAYOUT.setText(TITLE_FONT, tooltip.substring(0, splitIndex));
+        Tooltip tooltip = item.getTooltip();
 
         Vector2 mousePos = new Vector2(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
 
-        float tooltipWidth = LAYOUT.width + 2 * TOOLTIP_OFFSCREEN_PADDING;
-        float tooltipHeight = LAYOUT.height + 2 * TOOLTIP_OFFSCREEN_PADDING;
-
         float x = mousePos.x + TOOLTIP_OFFSCREEN_PADDING;
-        float y = mousePos.y + tooltipHeight;
+        float y = mousePos.y + TOOLTIP_OFFSCREEN_PADDING;
+
+        float maxWidth = 0f;
+        float totalHeight = 0f;
+
+        for (Map.Entry<Tooltip.Section, List<String>> entry : tooltip.sections().entrySet()) {
+            Tooltip.Section section = entry.getKey();
+            List<String> lines = entry.getValue();
+
+            GlyphLayout layout = new GlyphLayout(SECTION_FONT, section.name());
+            maxWidth = Math.max(maxWidth, layout.width);
+            totalHeight += layout.height + 6f;
+
+            for (String line : lines) {
+                layout.setText(FONTS.get(section), line);
+                maxWidth = Math.max(maxWidth, layout.width);
+                totalHeight += layout.height + 2f;
+            }
+
+            totalHeight += 8f;
+        }
+
+        float tooltipWidth = maxWidth + 2 * TOOLTIP_OFFSCREEN_PADDING;
+        float tooltipHeight = totalHeight + 2 * TOOLTIP_OFFSCREEN_PADDING;
 
         if (x + tooltipWidth > Gdx.graphics.getWidth())
             x = Gdx.graphics.getWidth() - tooltipWidth;
-        if (y > Gdx.graphics.getHeight())
-            y = Gdx.graphics.getHeight();
+        if (y + tooltipHeight > Gdx.graphics.getHeight())
+            y = Gdx.graphics.getHeight() - tooltipHeight;
 
         if (batch != null) {
-            TITLE_FONT.setColor(item.getRarity().getColor());
-            TITLE_FONT.draw(batch, LAYOUT, x + TOOLTIP_OFFSCREEN_PADDING, y - TOOLTIP_OFFSCREEN_PADDING);
-            LAYOUT.setText(DESCRIPTION_FONT, tooltip.substring(splitIndex));
-            DESCRIPTION_FONT.draw(batch, LAYOUT, x + TOOLTIP_OFFSCREEN_PADDING, y - TOOLTIP_OFFSCREEN_PADDING);
+            float drawY = y + tooltipHeight - TOOLTIP_OFFSCREEN_PADDING;
+
+            for (Map.Entry<Tooltip.Section, List<String>> entry : tooltip.sections().entrySet()) {
+                Tooltip.Section section = entry.getKey();
+                BitmapFont font = FONTS.get(section);
+                List<String> lines = entry.getValue();
+
+                GlyphLayout layout = new GlyphLayout(SECTION_FONT, section.name());
+                SECTION_FONT.draw(batch, layout, x + TOOLTIP_OFFSCREEN_PADDING, drawY);
+                drawY -= layout.height + 6f;
+
+                for (String line : lines) {
+                    font.setColor(switch (section) {
+                        case NAME, RARITY -> item.getRarity().getColor();
+                        default -> Color.LIGHT_GRAY;
+                    });
+                    layout.setText(font, line);
+                    font.draw(batch, layout, x + TOOLTIP_OFFSCREEN_PADDING, drawY);
+                    drawY -= layout.height + 2f;
+                }
+
+                drawY -= 8f;
+            }
         }
     }
 
     static {
-        TITLE_FONT.setUseIntegerPositions(false);
-        TITLE_FONT.getData().setScale(1.5f);
-        DESCRIPTION_FONT.setUseIntegerPositions(false);
-        DESCRIPTION_FONT.setColor(Color.LIGHT_GRAY);
+        SECTION_FONT.getData().setScale(.8f);
+        SECTION_FONT.setColor(Color.DARK_GRAY);
+
+        for (Tooltip.Section section : Tooltip.Section.values()) {
+            FONTS.put(section, new BitmapFont());
+        }
     }
 }

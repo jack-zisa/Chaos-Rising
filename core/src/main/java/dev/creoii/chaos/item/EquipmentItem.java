@@ -3,11 +3,11 @@ package dev.creoii.chaos.item;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.chaos.item.tooltip.Tooltip;
 import dev.creoii.chaos.util.Rarity;
 import dev.creoii.chaos.util.stat.ModifierEntry;
 import dev.creoii.chaos.util.stat.StatContainer;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class EquipmentItem extends Item {
@@ -30,14 +30,11 @@ public class EquipmentItem extends Item {
         return statBonus;
     }
 
-    public String getTooltip() {
-        List<String> lines = new ArrayList<>();
-        lines.add(id);
-        lines.add(rarity.name());
-        lines.add(type.name().toLowerCase());
+    @Override
+    public void buildTooltip(Tooltip tooltip) {
+        super.buildTooltip(tooltip);
         if (statBonus != null) {
-            lines.add(StatContainer.getTooltip(statBonus));
+            tooltip.addSection(Tooltip.Section.STATS, StatContainer.getTooltip(statBonus));
         }
-        return String.join("\n", lines);
     }
 }

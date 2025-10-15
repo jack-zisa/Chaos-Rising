@@ -4,8 +4,10 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.attack.Attack;
+import dev.creoii.chaos.item.tooltip.Tooltip;
 import dev.creoii.chaos.util.Rarity;
 import dev.creoii.chaos.util.stat.ModifierEntry;
+import dev.creoii.chaos.util.stat.StatContainer;
 
 import java.util.List;
 
@@ -34,5 +36,11 @@ public class WeaponItem extends EquipmentItem {
 
     public float getRateOfFire() {
         return rateOfFire;
+    }
+
+    @Override
+    public void buildTooltip(Tooltip tooltip) {
+        super.buildTooltip(tooltip);
+        tooltip.addLine(Tooltip.Section.STATS, String.valueOf(rateOfFire));
     }
 }

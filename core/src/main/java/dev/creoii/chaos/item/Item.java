@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import dev.creoii.chaos.Game;
 import dev.creoii.chaos.entity.*;
 import dev.creoii.chaos.inventory.Slot;
+import dev.creoii.chaos.item.tooltip.Tooltip;
 import dev.creoii.chaos.util.Identifiable;
 import dev.creoii.chaos.util.Rarity;
 
@@ -18,12 +19,17 @@ public class Item implements Identifiable {
     protected final Type type;
     protected final Rarity rarity;
     protected final ItemStack defaultStack;
+    protected Tooltip tooltip;
 
     public Item(String id, Type type, Rarity rarity) {
         this.id = id;
         this.type = type;
         this.rarity = rarity;
         defaultStack = new ItemStack(this);
+
+        tooltip = new Tooltip();
+        buildTooltip(tooltip);
+        tooltip = tooltip.order();
     }
 
     @Override
@@ -43,8 +49,14 @@ public class Item implements Identifiable {
         return defaultStack;
     }
 
-    public String getTooltip() {
-        return id + "\n" + rarity.name() + "\n";
+    public void buildTooltip(Tooltip tooltip) {
+        tooltip.addSection(Tooltip.Section.NAME, id);
+        tooltip.addSection(Tooltip.Section.TYPE, type.name());
+        tooltip.addSection(Tooltip.Section.RARITY, rarity.name());
+    }
+
+    public Tooltip getTooltip() {
+        return tooltip;
     }
 
     public boolean clickInSlot(Game game, int characterId, Slot slot, ItemStack stack) {

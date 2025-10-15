@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.attack.Attack;
+import dev.creoii.chaos.item.tooltip.Tooltip;
 import dev.creoii.chaos.util.Rarity;
 import dev.creoii.chaos.util.stat.ModifierEntry;
 
@@ -34,5 +35,11 @@ public class AbilityItem extends EquipmentItem {
 
     public int getCooldown() {
         return cooldown;
+    }
+
+    @Override
+    public void buildTooltip(Tooltip tooltip) {
+        super.buildTooltip(tooltip);
+        tooltip.addLine(Tooltip.Section.STATS, String.valueOf(cooldown));
     }
 }
