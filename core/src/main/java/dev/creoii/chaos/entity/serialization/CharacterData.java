@@ -9,6 +9,7 @@ import dev.creoii.chaos.network.PacketUtils;
 import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.stat.StatContainer;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,10 +36,46 @@ public record CharacterData(StatContainer baseStats, StatContainer maxStats, Opt
 
     @Override
     public void write(Output output) {
+        PacketUtils.writeStatContainer(output, baseStats);
+        PacketUtils.writeStatContainer(output, maxStats);
+        if (slots.isPresent()) {
+            output.writeBoolean(true);
+            List<List<Slot>> outerList = slots.get();
 
+            output.writeInt(outerList.size());
+
+            for (List<Slot> innerList : outerList) {
+                output.writeInt(innerList.size());
+                for (Slot slot : innerList) {
+                    PacketUtils.writeSlot(output, slot);
+                }
+            }
+        } else output.writeBoolean(false);
     }
 
     public static CharacterData read(Input input) {
-        return new CharacterData(PacketUtils.readStatContainer(input), PacketUtils.readStatContainer(input), Optional.empty());
+        StatContainer base = PacketUtils.readStatContainer(input);
+        StatContainer max = PacketUtils.readStatContainer(input);
+        boolean hasSlots = input.readBoolean();
+
+        if (!hasSlots) {
+            return new CharacterData(base, max, (Slot[][]) null);
+        }
+
+        int outerSize = input.readInt();
+        List<List<Slot>> outerList = new ArrayList<>(outerSize);
+
+        for (int i = 0; i < outerSize; i++) {
+            int innerSize = input.readInt();
+            List<Slot> innerList = new ArrayList<>(innerSize);
+
+            for (int j = 0; j < innerSize; j++) {
+                innerList.add(PacketUtils.readSlot(input));
+            }
+
+            outerList.add(innerList);
+        }
+
+        return new CharacterData(base, max, Optional.of(outerList));
     }
 }

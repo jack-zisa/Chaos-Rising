@@ -29,7 +29,8 @@ public record EnemyData(StatContainer baseStats, StatContainer maxStats) impleme
 
     @Override
     public void write(Output output) {
-
+        PacketUtils.writeStatContainer(output, baseStats);
+        PacketUtils.writeStatContainer(output, maxStats);
     }
 
     public static EnemyData read(Input input) {
