@@ -13,9 +13,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CodecSerializer extends Serializer<Object> {
+public class LegacyCodecSerializer extends Serializer<Object> {
     private static final Map<Class<?>, Codec<?>> SCHEMA = new HashMap<>();
-    public static final CodecSerializer INSTANCE = new CodecSerializer();
+    public static final LegacyCodecSerializer INSTANCE = new LegacyCodecSerializer();
 
     public static <T> void registerSchema(Class<T> clazz, Codec<T> codec) {
         SCHEMA.put(clazz, codec);

@@ -8,6 +8,7 @@ buildscript {
     maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
     maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots/' }
     maven { url 'http://clojars.org/repo/' }
+    maven { url 'https://artifactory.nimblygames.com/artifactory/ng-public-release/' }
   }
   dependencies {
 
@@ -75,5 +76,10 @@ subprojects {
     maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots/' }
     maven { url 'https://jitpack.io' }
     maven { url 'https://libraries.minecraft.net' }
+    maven { url 'https://artifactory.nimblygames.com/artifactory/ng-public-release/' }
+  }
+
+  dependencies {
+    implementation 'org.apache.commons:commons-compress:1.28.0'
   }
 }

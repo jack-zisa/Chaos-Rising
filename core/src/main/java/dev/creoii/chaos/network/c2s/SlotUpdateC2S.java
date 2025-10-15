@@ -1,9 +1,12 @@
 package dev.creoii.chaos.network.c2s;
 
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.inventory.InventoryType;
 import dev.creoii.chaos.inventory.Slot;
+import dev.creoii.chaos.network.PacketUtils;
 
 import java.io.Serializable;
 
@@ -18,6 +21,19 @@ public record SlotUpdateC2S(int id, Action action, InventoryType from, Inventory
             Slot.CODEC.fieldOf("to_slot").forGetter(SlotUpdateC2S::toSlot)
         ).apply(instance, SlotUpdateC2S::new);
     });
+
+    public static void write(Output output, SlotUpdateC2S o) {
+        output.writeInt(o.id);
+        PacketUtils.writeEnum(output, o.action);
+        PacketUtils.writeEnum(output, o.from);
+        PacketUtils.writeEnum(output, o.to);
+        PacketUtils.writeSlot(output, o.fromSlot);
+        PacketUtils.writeSlot(output, o.toSlot);
+    }
+
+    public static SlotUpdateC2S read(Input input) {
+        return new SlotUpdateC2S(input.readInt(), PacketUtils.readEnum(Action.class, input), PacketUtils.readEnum(InventoryType.class, input), PacketUtils.readEnum(InventoryType.class, input), PacketUtils.readSlot(input), PacketUtils.readSlot(input));
+    }
 
     public enum Action {
         MOVE,

@@ -1,5 +1,6 @@
 dependencies {
   implementation "com.esotericsoftware:kryonet:$kryonetVersion"
+  implementation "com.badlogicgames.packr:packr:$packrVersion"
 
   implementation project(":core")
 }

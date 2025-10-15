@@ -145,21 +145,19 @@ public class ClientListener extends Listener {
             case MoveEntitiesS2C(List<MoveEntitiesS2C.Entry> entries) -> entries.forEach(entry -> {
                 EntityRenderData entityRenderData = game.getEntityManager().getEntityData(entry.id());
                 if (entityRenderData != null) {
-                    float[] unpacked = MoveEntitiesS2C.unpack(entry.data());
-                    entityRenderData.x = unpacked[0];
-                    entityRenderData.y = unpacked[1];
-                    entityRenderData.xv = unpacked[2];
-                    entityRenderData.yv = unpacked[3];
+                    entityRenderData.x = entry.x();
+                    entityRenderData.y = entry.y();
+                    entityRenderData.xv = entry.xv();
+                    entityRenderData.yv = entry.yv();
                 }
             });
-            case MoveEntityS2C(int id, byte[] data) -> {
+            case MoveEntityS2C(int id, float x, float y, float xv, float yv) -> {
                 EntityRenderData entityRenderData = game.getEntityManager().getEntityData(id);
                 if (entityRenderData != null) {
-                    float[] unpacked = MoveEntitiesS2C.unpack(data);
-                    entityRenderData.x = unpacked[0];
-                    entityRenderData.y = unpacked[1];
-                    entityRenderData.xv = unpacked[2];
-                    entityRenderData.yv = unpacked[3];
+                    entityRenderData.x = x;
+                    entityRenderData.y = y;
+                    entityRenderData.xv = xv;
+                    entityRenderData.yv = yv;
                 }
             }
             case ChatMessageReceiveS2C(Message message) -> game.getChatManager().getMessages().add(message);

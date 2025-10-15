@@ -1,0 +1,10 @@
+plugins {
+  id 'java'
+}
+
+group = 'dev.creoii.chaos'
+version = 'unspecified'
+
+dependencies {
+  implementation("com.badlogicgames.packr:packr:$packrVersion")
+}
