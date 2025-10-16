@@ -1,6 +1,5 @@
 package dev.creoii.chaos.client.render.entity;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -53,12 +52,7 @@ public class SimpleEntityRenderer<T extends EntityRenderData> extends EntityRend
         }
 
         if (debug && shapeRenderer != null) {
-            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-            shapeRenderer.setColor(Color.GREEN);
-            shapeRenderer.rect(entity.x, entity.y, sprite.getWidth(), sprite.getHeight());
-            shapeRenderer.setColor(Color.BLUE);
-            shapeRenderer.rect(entity.renderX, entity.renderY, sprite.getWidth(), sprite.getHeight());
-            shapeRenderer.end();
+            EntityRenderer.renderDebugCollisionBox(shapeRenderer, entity, sprite);
         }
     }
 }

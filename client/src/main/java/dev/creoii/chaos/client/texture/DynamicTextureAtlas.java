@@ -23,9 +23,6 @@ public class DynamicTextureAtlas {
 
     public void addTexture(String path, String id) {
         pendingTextures.put(path, id);
-        /*TextureRegion region = new TextureRegion(new Texture(path));
-        textureAtlas.addRegion(id, region);
-        textures.put(id, region);*/
     }
 
     public void bindTextures(AssetManager assetManager) {

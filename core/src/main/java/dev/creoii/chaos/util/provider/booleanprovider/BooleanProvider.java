@@ -20,6 +20,7 @@ public interface BooleanProvider extends Provider<Boolean> {
             case IS_CLASS -> IsClassBooleanProvider.CODEC;
             case NOT -> NotBooleanProvider.CODEC;
             case NUMBER_COMPARISON -> NumberComparisonBooleanProvider.CODEC;
+            case IN_RANGE -> InRangeBooleanProvider.CODEC;
             case RANDOM -> RandomBooleanProvider.CODEC;
         }
     );
@@ -47,6 +48,7 @@ public interface BooleanProvider extends Provider<Boolean> {
         IS_CLASS,
         NOT,
         NUMBER_COMPARISON,
+        IN_RANGE,
         RANDOM;
 
         public static final Codec<Type> CODEC = Codec.STRING.xmap(s -> Type.valueOf(s.toUpperCase()), type -> type.name().toLowerCase());

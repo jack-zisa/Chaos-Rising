@@ -169,6 +169,7 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
 
     @Override
     public Server getServer() {
+        LOGGER.error("Attempted to access server on client.");
         return null;
     }
 }

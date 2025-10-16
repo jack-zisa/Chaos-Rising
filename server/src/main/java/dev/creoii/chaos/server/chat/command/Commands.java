@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.DataManager;
 import dev.creoii.chaos.chat.Message;
 import dev.creoii.chaos.network.s2c.ChatMessageReceiveS2C;
+import dev.creoii.chaos.network.s2c.MoveEntityS2C;
 import dev.creoii.chaos.server.ServerGame;
 import dev.creoii.chaos.effect.StatusEffect;
 import dev.creoii.chaos.effect.StatusEffectType;
@@ -47,6 +48,7 @@ public final class Commands {
                     float x = Integer.parseInt(args[0]) * Entity.COORDINATE_SCALE;
                     float y = Integer.parseInt(args[1]) * Entity.COORDINATE_SCALE;
                     character.setPos(x, y);
+                    game.getServer().sendToAllTCP(new MoveEntityS2C(character.getId(), x, y, 0f, 0f));
                     return Command.Result.SUCCESS;
                 }
             }
@@ -157,11 +159,12 @@ public final class Commands {
             if (args.length > 0) {
                 CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id);
                 if (character != null) {
+                    Item item = DataManager.getItem(args[0]);
+                    if (item == null)
+                        return Command.Result.FAIL;
+
                     int count = args.length > 1 ? Integer.parseInt(args[1]) : 1;
                     for (int i = 0; i < count; ++i) {
-                        Item item = DataManager.getItem(args[0]);
-                        if (item == null)
-                            continue;
                         character.getInventory().addItem(item.getDefaultStack().copy());
                     }
                     return Command.Result.SUCCESS;
