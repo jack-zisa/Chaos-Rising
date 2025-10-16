@@ -4,7 +4,6 @@ import com.esotericsoftware.kryonet.Server;
 import com.esotericsoftware.minlog.Log;
 import dev.creoii.chaos.DataManager;
 import dev.creoii.chaos.Game;
-import dev.creoii.chaos.OptionsManager;
 import dev.creoii.chaos.network.NetworkQueue;
 import dev.creoii.chaos.network.CreoSerialization;
 import dev.creoii.chaos.network.Networking;
@@ -22,7 +21,6 @@ public class ServerGame implements Game {
     private final ServerListener listener;
     public static final Logger LOGGER = new Logger(ServerGame.class.getSimpleName());
     protected NetworkQueue<NetworkQueue.QueuedPacket> networkQueue;
-    private final OptionsManager optionsManager;
     private final TickManager tickManager;
     private final CollisionManager collisionManager;
     private final ServerEntityManager entityManager;
@@ -41,7 +39,6 @@ public class ServerGame implements Game {
 
         server.addListener(listener = new ServerListener(this));
 
-        optionsManager = new OptionsManager();
         tickManager = new TickManager();
         collisionManager = new CollisionManager(this);
         entityManager = new ServerEntityManager(this);
@@ -94,11 +91,6 @@ public class ServerGame implements Game {
     @Override
     public Server getServer() {
         return server;
-    }
-
-    @Override
-    public OptionsManager getOptionsManager() {
-        return optionsManager;
     }
 
     public TickManager getTickManager() {

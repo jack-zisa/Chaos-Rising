@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import dev.creoii.chaos.OptionsManager;
 import dev.creoii.chaos.client.ClientGame;
 import dev.creoii.chaos.client.input.InputManager;
 import dev.creoii.chaos.client.render.Renderer;
@@ -76,7 +77,7 @@ public abstract class Screen implements Renderable, Inputtable {
 
     @Override
     public boolean keyDown(InputManager manager, int keycode) {
-        if (keycode == game.getOptionsManager().BACK_KEY.intValue()) {
+        if (keycode == OptionsManager.BACK_KEY.intValue()) {
             game.getRenderer().clearCurrentScreen();
         }
         widgets.forEach((key, widget) -> widget.keyDown(manager, keycode));

@@ -1,6 +1,7 @@
 package dev.creoii.chaos.client.input;
 
 import com.badlogic.gdx.math.Vector3;
+import dev.creoii.chaos.OptionsManager;
 import dev.creoii.chaos.client.ClientGame;
 import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.inventory.Slot;
@@ -23,13 +24,13 @@ public record CharacterController(CharacterEntityRenderData character) implement
             float dx = 0f;
             float dy = 0f;
 
-            if (keycode == game.getOptionsManager().LEFT_KEY.intValue())
+            if (keycode == OptionsManager.LEFT_KEY.intValue())
                 dx -= 1;
-            if (keycode == game.getOptionsManager().RIGHT_KEY.intValue())
+            if (keycode == OptionsManager.RIGHT_KEY.intValue())
                 dx += 1;
-            if (keycode == game.getOptionsManager().FORWARDS_KEY.intValue())
+            if (keycode == OptionsManager.FORWARDS_KEY.intValue())
                 dy += 1;
-            if (keycode == game.getOptionsManager().BACKWARDS_KEY.intValue())
+            if (keycode == OptionsManager.BACKWARDS_KEY.intValue())
                 dy -= 1;
 
             if (dx != 0f || dy != 0f) {
@@ -41,7 +42,7 @@ public record CharacterController(CharacterEntityRenderData character) implement
             }
         }
 
-        if (keycode == game.getOptionsManager().ABILITY_KEY.intValue()) {
+        if (keycode == OptionsManager.ABILITY_KEY.intValue()) {
             Slot abilitySlot = character.getAbilitySlot();
             if (abilitySlot.getStack().getItem() instanceof AbilityItem abilityItem) {
                 game.getClient().sendTCP(new UseItemC2S(character.id, abilitySlot));

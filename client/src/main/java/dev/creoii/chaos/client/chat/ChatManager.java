@@ -2,6 +2,7 @@ package dev.creoii.chaos.client.chat;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
+import dev.creoii.chaos.OptionsManager;
 import dev.creoii.chaos.chat.Message;
 import dev.creoii.chaos.client.ClientGame;
 import dev.creoii.chaos.network.c2s.ChatMessageSendC2S;
@@ -60,13 +61,13 @@ public class ChatManager extends InputAdapter {
     @Override
     public boolean keyDown(int keycode) {
         if (!active) {
-            if (keycode == game.getOptionsManager().COMMAND_KEY.intValue()) {
+            if (keycode == OptionsManager.COMMAND_KEY.intValue()) {
                 active = true;
                 input.setLength(0);
                 input.append('/');
                 suppressNextChar = true;
                 return true;
-            } else if (keycode == game.getOptionsManager().CHAT_KEY.intValue()) {
+            } else if (keycode == OptionsManager.CHAT_KEY.intValue()) {
                 active = true;
                 input.setLength(0);
                 suppressNextChar = true;
