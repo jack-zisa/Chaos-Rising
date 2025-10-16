@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Disposable;
 import dev.creoii.chaos.client.ClientGame;
 import dev.creoii.chaos.item.Item;
 import dev.creoii.chaos.item.tooltip.Tooltip;
@@ -17,7 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ItemRenderer {
+public class ItemRenderer implements Disposable {
     private static final float TOOLTIP_OFFSCREEN_PADDING = 4f;
     private static final BitmapFont SECTION_FONT = new BitmapFont();
     private static final Map<Tooltip.Section, BitmapFont> FONTS = new HashMap<>();
@@ -96,6 +97,15 @@ public class ItemRenderer {
 
                 drawY -= 8f;
             }
+        }
+    }
+
+    @Override
+    public void dispose() {
+        SECTION_FONT.dispose();
+
+        for (BitmapFont font : FONTS.values()) {
+            font.dispose();
         }
     }
 

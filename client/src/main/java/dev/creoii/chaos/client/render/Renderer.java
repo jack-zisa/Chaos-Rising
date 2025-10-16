@@ -27,6 +27,7 @@ public class Renderer implements Disposable {
     private final BitmapFont font;
     private final SpriteBatch batch;
     private final ShapeRenderer shapeRenderer;
+    private final StatusTextManager statusTextManager;
     private final ArrayMap<RenderSpace, ArrayMap<RenderLayer, List<Renderable>>> renderables;
     private Screen currentScreen = null;
 
@@ -44,6 +45,8 @@ public class Renderer implements Disposable {
         shapeRenderer = new ShapeRenderer();
         shapeRenderer.setAutoShapeType(true);
 
+        statusTextManager = new StatusTextManager();
+
         renderables = new ArrayMap<>(RenderSpace.values().length - 1);
 
         for (RenderSpace space : RenderSpace.values()) {
@@ -55,6 +58,7 @@ public class Renderer implements Disposable {
         }
 
         registerRenderable(RenderLayer.ENTITY, game.getEntityManager());
+        registerRenderable(RenderLayer.ENTITY, statusTextManager);
         registerRenderable(RenderLayer.HUD, new HudRenderer());
     }
 
@@ -138,10 +142,15 @@ public class Renderer implements Disposable {
         currentScreen = null;
     }
 
+    public StatusTextManager getStatusTextManager() {
+        return statusTextManager;
+    }
+
     @Override
     public void dispose() {
         batch.dispose();
         font.dispose();
         shapeRenderer.dispose();
+        statusTextManager.dispose();
     }
 }

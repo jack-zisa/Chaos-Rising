@@ -1,5 +1,6 @@
 package dev.creoii.chaos.client;
 
+import com.badlogic.gdx.graphics.Color;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.FrameworkMessage;
 import com.esotericsoftware.kryonet.Listener;
@@ -157,6 +158,12 @@ public class ClientListener extends Listener {
                     entityRenderData.y = y;
                     entityRenderData.xv = xv;
                     entityRenderData.yv = yv;
+                }
+            }
+            case EntityDamageS2C(int id, float amount) -> {
+                EntityRenderData entityRenderData = game.getEntityManager().getEntityData(id);
+                if (entityRenderData != null) {
+                    game.getRenderer().getStatusTextManager().addStatusText(String.valueOf(amount), entityRenderData.x + (entityRenderData.scale / 2f), entityRenderData.y + entityRenderData.scale, 20, Color.RED);
                 }
             }
             case ChatMessageReceiveS2C(Message message) -> game.getChatManager().getMessages().add(message);
