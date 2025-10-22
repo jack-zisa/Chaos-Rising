@@ -18,7 +18,7 @@ public record Command(TriFunction<ServerGame, Integer, String[], Result> executo
 
     public enum Result {
         SUCCESS((commandType, args) -> "[Commands] Successfully executed '/" + commandType + "' with args '" + Arrays.toString(args) + "'"),
-        FAIL((commandType, args) -> "[Commands] Execution '/" + commandType + "' with args '" + Arrays.toString(args) + "' failed");
+        FAIL((commandType, args) -> "[Commands] Execution of '/" + commandType + "' with args '" + Arrays.toString(args) + "' failed");
 
         private final BiFunction<String, String[], String> message;
 
