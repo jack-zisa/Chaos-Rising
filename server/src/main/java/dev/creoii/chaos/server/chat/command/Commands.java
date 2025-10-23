@@ -28,9 +28,14 @@ public final class Commands {
     public static Command.Result tryExecute(ServerGame game, int id, String commandType, String[] args) {
         if (Commands.ALL.containsKey(commandType)) {
             try {
-                Command.Result result = Commands.ALL.get(commandType).execute(game, id, args);
-                LOGGER.info(result.getResultMessage(commandType, args));
-                return result;
+                Command command = Commands.ALL.get(commandType);
+                if (args.length > command.minArgs() - 1) {
+                    Command.Result result = command.execute(game, id, args);
+                    LOGGER.info(result.getResultMessage(commandType, args));
+                    return result;
+                } else {
+                    LOGGER.error("Command '/ " + commandType + "' failed to execute: Not enough arguments.");
+                }
             } catch (Exception e) {
                 LOGGER.error(Command.Result.FAIL.getResultMessageWithReason(commandType, args, e.toString()));
             }
@@ -41,61 +46,57 @@ public final class Commands {
     }
 
     static {
-        Command.register("setpos", (game, id, args) -> {
-            if (args.length > 1) {
-                CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id);
-                if (character != null) {
-                    float x = Integer.parseInt(args[0]) * Entity.COORDINATE_SCALE;
-                    float y = Integer.parseInt(args[1]) * Entity.COORDINATE_SCALE;
-                    character.setPos(x, y);
-                    game.getServer().sendToAllTCP(new MoveEntityS2C(character.getId(), x, y, 0f, 0f));
-                    return Command.Result.SUCCESS;
-                }
+        Command.register("setpos", 2, (game, id, args) -> {
+            CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id);
+            if (character != null) {
+                float x = Integer.parseInt(args[0]) * Entity.COORDINATE_SCALE;
+                float y = Integer.parseInt(args[1]) * Entity.COORDINATE_SCALE;
+                character.setPos(x, y);
+                game.getServer().sendToAllTCP(new MoveEntityS2C(character.getId(), x, y, 0f, 0f));
+                return Command.Result.SUCCESS;
             }
             return Command.Result.FAIL;
         });
 
-        Command.register("setstat", (game, id, args) -> {
-            if (args.length > 1) {
-                CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id);
+        Command.register("setstat", 2, (game, id, args) -> {
+            CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id);
 
-                if (character != null) {
-                    Stat.Type statType = Stat.Type.valueOf(args[0].toUpperCase());
-                    int value = Integer.parseInt(args[1]);
-                    switch (statType) {
-                        case HEALTH -> {
-                            character.getStats().setHealth(value);
-                            character.getMaxStats().setHealth(value);
-                        }
-                        case SPEED -> {
-                            character.getStats().setSpeed(value);
-                            character.getMaxStats().setSpeed(value);
-                        }
-                        case ATTACK_SPEED -> {
-                            character.getStats().setAttackSpeed(value);
-                            character.getMaxStats().setAttackSpeed(value);
-                        }
-                        case DEFENSE -> {
-                            character.getStats().setDefense(value);
-                            character.getMaxStats().setDefense(value);
-                        }
-                        case ATTACK -> {
-                            character.getStats().setAttack(value);
-                            character.getMaxStats().setAttack(value);
-                        }
-                        case VITALITY -> {
-                            character.getStats().setVitality(value);
-                            character.getMaxStats().setVitality(value);
-                        }
+            if (character != null) {
+                Stat.Type statType = Stat.Type.valueOf(args[0].toUpperCase());
+                int value = Integer.parseInt(args[1]);
+                switch (statType) {
+                    case HEALTH -> {
+                        character.getStats().setHealth(value);
+                        character.getMaxStats().setHealth(value);
                     }
-                    game.getServer().sendToTCP(character.getConnectionId(), new LivingStatUpdateS2C(new Stat(statType, value)));
-                    return Command.Result.SUCCESS;
+                    case SPEED -> {
+                        character.getStats().setSpeed(value);
+                        character.getMaxStats().setSpeed(value);
+                    }
+                    case ATTACK_SPEED -> {
+                        character.getStats().setAttackSpeed(value);
+                        character.getMaxStats().setAttackSpeed(value);
+                    }
+                    case DEFENSE -> {
+                        character.getStats().setDefense(value);
+                        character.getMaxStats().setDefense(value);
+                    }
+                    case ATTACK -> {
+                        character.getStats().setAttack(value);
+                        character.getMaxStats().setAttack(value);
+                    }
+                    case VITALITY -> {
+                        character.getStats().setVitality(value);
+                        character.getMaxStats().setVitality(value);
+                    }
                 }
+                game.getServer().sendToTCP(character.getConnectionId(), new LivingStatUpdateS2C(new Stat(statType, value)));
+                return Command.Result.SUCCESS;
             }
             return Command.Result.FAIL;
         });
 
-        Command.register("spawn", (game, _, args) -> {
+        Command.register("spawn", 1, (game, _, args) -> {
             int argCount = args.length;
 
             if (argCount < 1 || argCount == 2)
@@ -155,20 +156,18 @@ public final class Commands {
             return Command.Result.FAIL;
         });
 
-        Command.register("give", (game, id, args) -> {
-            if (args.length > 0) {
-                CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id);
-                if (character != null) {
-                    Item item = DataManager.getItem(args[0]);
-                    if (item == null)
-                        return Command.Result.FAIL;
+        Command.register("give", 1, (game, id, args) -> {
+            CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id);
+            if (character != null) {
+                Item item = DataManager.getItem(args[0]);
+                if (item == null)
+                    return Command.Result.FAIL;
 
-                    int count = args.length > 1 ? Integer.parseInt(args[1]) : 1;
-                    for (int i = 0; i < count; ++i) {
-                        character.getInventory().addItem(item.getDefaultStack().copy());
-                    }
-                    return Command.Result.SUCCESS;
+                int count = args.length > 1 ? Integer.parseInt(args[1]) : 1;
+                for (int i = 0; i < count; ++i) {
+                    character.getInventory().addItem(item.getDefaultStack().copy());
                 }
+                return Command.Result.SUCCESS;
             }
             return Command.Result.FAIL;
         });
@@ -178,30 +177,25 @@ public final class Commands {
          *         sprite = new Sprite(game.getTextureManager().getTexture("class", getTextureId()));
          *         sprite.setSize(getScale(), getScale());
          */
-        Command.register("setclass", (game, id, args) -> {
-            if (args.length > 0) {
-                CharacterClass characterClass = DataManager.getCharacterClass(args[0]);
-                if (characterClass != null) {
-                    CharacterEntity character = ((CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id));
-                    if (character != null) {
-                        character.setCharacterClass(characterClass);
-                        return Command.Result.SUCCESS;
-                    }
+        Command.register("setclass", 1, (game, id, args) -> {
+            CharacterClass characterClass = DataManager.getCharacterClass(args[0]);
+            if (characterClass != null) {
+                CharacterEntity character = ((CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id));
+                if (character != null) {
+                    character.setCharacterClass(characterClass);
+                    return Command.Result.SUCCESS;
                 }
             }
             return Command.Result.FAIL;
         });
 
-        Command.register("say", (game, _, args) -> {
-            if (args.length > 0) {
-                String message = args[0];
-                game.getServer().sendToAllTCP(new ChatMessageReceiveS2C(new Message(message)));
-                return Command.Result.SUCCESS;
-            }
-            return Command.Result.FAIL;
+        Command.register("say", 1, (game, _, args) -> {
+            String message = args[0];
+            game.getServer().sendToAllTCP(new ChatMessageReceiveS2C(new Message(message)));
+            return Command.Result.SUCCESS;
         });
 
-        Command.register("addeffect", (game, id, args) -> {
+        Command.register("addeffect", 2, (game, id, args) -> {
             int argCount = args.length;
             if (argCount < 1)
                 return Command.Result.FAIL;
@@ -232,23 +226,37 @@ public final class Commands {
             return Command.Result.FAIL;
         });
 
-        Command.register("removeeffect", (game, id, args) -> {
-            if (args.length > 0) {
-                String effectType = args[0];
-                CharacterEntity character = ((CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id));
+        Command.register("removeeffect", 1, (game, id, args) -> {
+            String effectType = args[0];
+            CharacterEntity character = ((CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id));
 
-                if (character != null) {
-                    if ("all".equals(effectType) || "*".equals(effectType)) {
-                        character.clearStatusEffects();
-                        return Command.Result.FAIL;
-                    }
-
-                    for (int i = character.getStatusEffects().size() - 1; i >= 0; --i) {
-                        if (character.getStatusEffects().get(i).getType().id().equals(effectType))
-                            character.getStatusEffects().remove(i);
-                    }
-                    return Command.Result.SUCCESS;
+            if (character != null) {
+                if ("all".equals(effectType) || "*".equals(effectType)) {
+                    character.clearStatusEffects();
+                    return Command.Result.FAIL;
                 }
+
+                for (int i = character.getStatusEffects().size() - 1; i >= 0; --i) {
+                    if (character.getStatusEffects().get(i).getType().id().equals(effectType))
+                        character.getStatusEffects().remove(i);
+                }
+                return Command.Result.SUCCESS;
+            }
+            return Command.Result.FAIL;
+        });
+
+        Command.register("damage", 1, (game, id, args) -> {
+            try {
+                int damage = Integer.parseInt(args[0]);
+                if (damage > 0) {
+                    CharacterEntity character = ((CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id));
+                    if (character != null) {
+                        character.damage(damage);
+                        return Command.Result.SUCCESS;
+                    }
+                }
+            } catch (NumberFormatException e) {
+                return Command.Result.FAIL;
             }
             return Command.Result.FAIL;
         });

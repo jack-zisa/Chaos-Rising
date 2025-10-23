@@ -5,6 +5,7 @@ public enum RenderLayer {
     ENTITY(RenderSpace.WORLD),
     OBJECT(RenderSpace.WORLD),
     HUD(RenderSpace.SCREEN),
+    HUD_STAGE(RenderSpace.STAGE),
     GUI(RenderSpace.SCREEN, false);
 
     private final RenderSpace space;

@@ -10,9 +10,6 @@ import dev.creoii.chaos.network.Networking;
 import dev.creoii.chaos.util.logging.Logger;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Paths;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -26,7 +23,7 @@ public class ServerGame implements Game {
     private final ServerEntityManager entityManager;
     private int gametime;
 
-    public ServerGame(int tcpPort, int udpPort) throws IOException, URISyntaxException {
+    public ServerGame(int tcpPort, int udpPort) throws IOException {
         server = new Server(65536, 65536, new CreoSerialization());
         networkQueue = new NetworkQueue<>(null, new ConcurrentLinkedQueue<>());
         Log.NONE();
@@ -43,13 +40,7 @@ public class ServerGame implements Game {
         collisionManager = new CollisionManager(this);
         entityManager = new ServerEntityManager(this);
 
-        URL baseUrl = getClass().getClassLoader().getResource("data");
-        if (baseUrl == null) {
-            DataManager.LOGGER.error("Directory 'data/' does not exist");
-            return;
-        }
-
-        DataManager.load(Paths.get(baseUrl.toURI()));
+        DataManager.load();
 
         long nextTick = System.nanoTime();
         long tickInterval = 50_000_000L;

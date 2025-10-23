@@ -14,8 +14,11 @@ import dev.creoii.chaos.util.logging.Logger;
 import javax.annotation.Nullable;
 import java.io.FileReader;
 import java.io.Reader;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -23,23 +26,23 @@ import java.util.stream.Stream;
 public class DataManager {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     public static final Logger LOGGER = new Logger(DataManager.class.getSimpleName());
-    private static final Map<String, Codec<? extends Identifiable>> SCHEMA = new HashMap<>();
-    private static final Map<String, Map<String, Identifiable>> DATA = new HashMap<>();
+    private static final Map<SchemaType, Codec<? extends Identifiable>> SCHEMA = new HashMap<>();
+    private static final Map<SchemaType, Map<String, Identifiable>> DATA = new HashMap<>();
 
     public static Map<String, Identifiable> getClasses() {
-        return DATA.get("class");
+        return DATA.get(SchemaType.CLASS);
     }
 
     public static Map<String, Identifiable> getItems() {
-        return DATA.get("item");
+        return DATA.get(SchemaType.ITEM);
     }
 
     public static Map<String, Identifiable> getEntities() {
-        return DATA.get("entity");
+        return DATA.get(SchemaType.ENTITY_TYPE);
     }
 
     public static Map<String, Identifiable> getLootTables() {
-        return DATA.get("loot_table");
+        return DATA.get(SchemaType.LOOT_TABLE);
     }
 
     @Nullable
@@ -74,8 +77,8 @@ public class DataManager {
 
     public static void load(Path path) {
         try {
-            for (Map.Entry<String, Codec<? extends Identifiable>> entry : SCHEMA.entrySet()) {
-                String folder = entry.getKey();
+            for (Map.Entry<SchemaType, Codec<? extends Identifiable>> entry : SCHEMA.entrySet()) {
+                String folder = entry.getKey().name().toLowerCase();
                 Codec<?> codec = entry.getValue();
 
                 Path folderPath = path.resolve(folder);
@@ -84,7 +87,7 @@ public class DataManager {
                     continue;
                 }
 
-                Map<String, Identifiable> data = DATA.get(folder);
+                Map<String, Identifiable> data = DATA.get(entry.getKey());
                 try (Stream<Path> paths = Files.walk(folderPath)) {
                     paths.filter(p -> p.toString().endsWith(".json")).forEach(file -> {
                         try (Reader reader = new FileReader(file.toFile())) {
@@ -104,14 +107,40 @@ public class DataManager {
         }
     }
 
-    static {
-        SCHEMA.put("class", CharacterClass.CODEC);
-        SCHEMA.put("item", Item.CODEC);
-        SCHEMA.put("entity", EntityType.CODEC);
-        SCHEMA.put("loot_table", LootTable.CODEC);
+    public static void load() {
+        URL baseUrl = DataManager.class.getClassLoader().getResource("data");
+        if (baseUrl == null) {
+            DataManager.LOGGER.error("Directory 'data/' does not exist");
+            return;
+        }
 
-        for (String key : SCHEMA.keySet()) {
-            DATA.put(key, new HashMap<>());
+        Path path = null;
+
+        try {
+            path = Paths.get(baseUrl.toURI());
+        } catch (URISyntaxException e) {
+            LOGGER.info("Folder '" + path + "' does not exist, skipping.");
+            return;
+        }
+
+        load(path);
+    }
+
+    public enum SchemaType {
+        CLASS,
+        ITEM,
+        ENTITY_TYPE,
+        LOOT_TABLE
+    }
+
+    static {
+        SCHEMA.put(SchemaType.CLASS, CharacterClass.CODEC);
+        SCHEMA.put(SchemaType.ITEM, Item.CODEC);
+        SCHEMA.put(SchemaType.ENTITY_TYPE, EntityType.CODEC);
+        SCHEMA.put(SchemaType.LOOT_TABLE, LootTable.CODEC);
+
+        for (SchemaType schemaType : SCHEMA.keySet()) {
+            DATA.put(schemaType, new HashMap<>());
         }
     }
 }

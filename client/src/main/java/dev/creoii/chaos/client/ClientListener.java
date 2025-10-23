@@ -7,6 +7,7 @@ import com.esotericsoftware.kryonet.Listener;
 import dev.creoii.chaos.DataManager;
 import dev.creoii.chaos.chat.Message;
 import dev.creoii.chaos.client.render.entity.data.*;
+import dev.creoii.chaos.client.render.event.PacketListener;
 import dev.creoii.chaos.effect.StatusEffect;
 import dev.creoii.chaos.entity.serialization.*;
 import dev.creoii.chaos.client.input.CharacterController;
@@ -51,6 +52,7 @@ public class ClientListener extends Listener {
         if (object instanceof FrameworkMessage.KeepAlive) {
             return;
         }
+
         switch (object) {
             case EntitySpawnS2C(int id, float x, float y, EntityCustomData customData) -> {
                 EntityGroup group = customData.getGroup();
@@ -163,11 +165,15 @@ public class ClientListener extends Listener {
             case EntityDamageS2C(int id, float amount) -> {
                 EntityRenderData entityRenderData = game.getEntityManager().getEntityData(id);
                 if (entityRenderData != null) {
+                    if (entityRenderData instanceof LivingEntityRenderData livingEntityRenderData) {
+                        livingEntityRenderData.statContainer.setHealth((int) (livingEntityRenderData.statContainer.health().value() - amount));
+                    }
                     game.getRenderer().getStatusTextManager().addStatusText(String.valueOf(amount), entityRenderData.x + (entityRenderData.scale / 2f), entityRenderData.y + entityRenderData.scale, 20, Color.RED);
                 }
             }
             case ChatMessageReceiveS2C(Message message) -> game.getChatManager().getMessages().add(message);
             case EntityRemoveS2C(int id) -> game.getEntityManager().removeEntity(id);
+            case RemoveEntitiesS2C(List<Integer> ids) -> ids.forEach(integer -> game.getEntityManager().removeEntity(integer));
             case StatusEffectS2C(int id, StatusEffect statusEffect) -> {
                 //((LivingEntity) game.getEntityManager().getEntityData(uuid)).addStatusEffect(statusEffect);
             }
@@ -234,6 +240,14 @@ public class ClientListener extends Listener {
             }
             default -> ClientGame.LOGGER.error("Unhandled packet type: " + object.getClass().getSimpleName());
         }
+
+        game.getRenderer().getStage().getActors().forEach(actor -> actor.getListeners().forEach(eventListener -> {
+            if (eventListener instanceof PacketListener packetListener) {
+                PacketListener.PacketEvent event = new PacketListener.PacketEvent();
+                event.setPacket(object);
+                packetListener.handle(event);
+            }
+        }));
     }
 
     @Override

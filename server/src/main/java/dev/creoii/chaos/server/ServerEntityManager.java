@@ -8,19 +8,15 @@ import dev.creoii.chaos.network.s2c.*;
 import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.Tickable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ServerEntityManager extends EntityManager<Entity> implements Tickable {
+    private final List<Integer> killedEntities;
+
     public ServerEntityManager(ServerGame game) {
         super(game);
+        killedEntities = new ArrayList<>();
         game.getTickManager().addTickable(this);
-    }
-
-    @Override
-    public int getTickRate() {
-        return 2;
     }
 
     public <E extends Entity, T extends EntityType<E>> E addEntity(T type, Vector2 pos, Map<String, Object> customData) {
@@ -39,7 +35,12 @@ public class ServerEntityManager extends EntityManager<Entity> implements Tickab
 
     @Override
     public void tick(int gametime, float delta) {
-        if (getSize() <= 0)
+        if (!killedEntities.isEmpty()) {
+            getGame().getServer().sendToAllTCP(new RemoveEntitiesS2C(killedEntities));
+            killedEntities.clear();
+        }
+
+        if (getSize() <= 0 || gametime % 2 == 0)
             return;
         List<MoveEntitiesS2C.Entry> entries = new ArrayList<>();
         getAllEntities().values().forEach(uuidEntityMap -> uuidEntityMap.values().forEach(entity -> {
@@ -67,9 +68,9 @@ public class ServerEntityManager extends EntityManager<Entity> implements Tickab
             if (map.containsKey(id)) {
                 ((ServerGame) getGame()).getTickManager().removeTickable(map.get(id));
                 map.remove(id);
-                getGame().getServer().sendToAllTCP(new EntityRemoveS2C(id));
                 setSize(getSize() - 1);
                 free(id);
+                killedEntities.add(id);
                 return true;
             }
         }

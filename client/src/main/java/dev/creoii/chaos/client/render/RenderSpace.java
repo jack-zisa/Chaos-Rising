@@ -15,7 +15,8 @@ public enum RenderSpace {
         viewport.apply();
         shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
         spriteBatch.setProjectionMatrix(viewport.getCamera().combined);
-    });
+    }),
+    STAGE((_, _, _, _) -> {});
 
     private final QuadConsumer<Viewport, SpriteBatch, ShapeRenderer, Camera> setupConsumer;
 

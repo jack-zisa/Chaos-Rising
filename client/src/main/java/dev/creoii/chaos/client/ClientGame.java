@@ -66,7 +66,7 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
 
         assetManager.load();
 
-        Gdx.input.setInputProcessor(new InputMultiplexer(chatManager, inputManager));
+        Gdx.input.setInputProcessor(new InputMultiplexer(chatManager, inputManager, renderer.getStage()));
     }
 
     @Override
