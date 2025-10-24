@@ -23,7 +23,7 @@ import java.util.function.Predicate;
 
 public class InventoryWidget extends Widget {
     public static final float SLOT_SIZE = 49f;
-    private static final float ITEM_SCALE = 42f;
+    private static final float ITEM_SCALE = 36f;
     private final Slot[][] slots;
     private final Predicate<ClientGame> activePredicate;
 
@@ -83,7 +83,7 @@ public class InventoryWidget extends Widget {
                     sprite.setPosition(getPos().x + (c * SLOT_SIZE), getPos().y + (r * SLOT_SIZE));
                     sprite.draw(batch);
                     if (slot.hasItem()) {
-                        ItemRenderer.renderItem(renderer.getGame(), batch, slot.getStack().getItem().id(), new Vector2(getPos().x + (c * SLOT_SIZE) + 3, getPos().y + (r * SLOT_SIZE) + 3), ITEM_SCALE);
+                        ItemRenderer.renderItem(renderer.getGame(), batch, slot.getStack().getItem().id(), new Vector2(getPos().x + (c * SLOT_SIZE) + 6, getPos().y + (r * SLOT_SIZE) + 6), ITEM_SCALE);
                     }
                 }
             }

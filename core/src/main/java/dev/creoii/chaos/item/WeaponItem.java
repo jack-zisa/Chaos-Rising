@@ -7,7 +7,6 @@ import dev.creoii.chaos.attack.Attack;
 import dev.creoii.chaos.item.tooltip.Tooltip;
 import dev.creoii.chaos.util.Rarity;
 import dev.creoii.chaos.util.stat.ModifierEntry;
-import dev.creoii.chaos.util.stat.StatContainer;
 
 import java.util.List;
 

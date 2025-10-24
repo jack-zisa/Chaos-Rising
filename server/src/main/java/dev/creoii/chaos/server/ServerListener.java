@@ -169,12 +169,13 @@ public class ServerListener extends Listener {
         }
 
         else if (object instanceof CharacterJoinC2S()) {
+            Map<String, Object> customData = new HashMap<>();
+            customData.put("connection_id", connection.getID());
+            game.getEntityManager().addEntity(new CharacterEntityType(new Mutable<>(DataManager.getCharacterClass("wizard"))), new Vector2(0, 0), customData);
+
             List<SpawnEntitiesS2C.Entry> spawnEntries = new ArrayList<>();
             List<DisplayEntitiesS2C.Entry> displayEntries = new ArrayList<>();
             game.getEntityManager().getAllEntities().values().forEach(uuidEntityMap -> uuidEntityMap.values().forEach(entity -> {
-                if (entity.getType().group() == EntityGroup.CHARACTER)
-                    return;
-
                 spawnEntries.add(new SpawnEntitiesS2C.Entry(entity.getId(), entity.getPos().x, entity.getPos().y, entity.getCustomPacketData()));
                 displayEntries.add(new DisplayEntitiesS2C.Entry(entity.getId(), entity.getType().id(), entity.getType().scale()));
             }));
@@ -188,10 +189,6 @@ public class ServerListener extends Listener {
                     game.getServer().sendToTCP(connection.getID(), new DisplayEntitiesS2C(displayEntries.subList(i, Math.min(i + 50, displayEntries.size()))));
                 }
             }
-
-            Map<String, Object> customData = new HashMap<>();
-            customData.put("connection_id", connection.getID());
-            game.getEntityManager().addEntity(new CharacterEntityType(new Mutable<>(DataManager.getCharacterClass("wizard"))), new Vector2(0, 0), customData);
         }
 
         else if (object instanceof CharacterLeaveC2S(int id)) {

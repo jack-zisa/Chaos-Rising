@@ -83,7 +83,7 @@ public class ConsumableItem extends Item {
     @Override
     public void buildTooltip(Tooltip tooltip) {
         super.buildTooltip(tooltip);
-        if (statBonus != null) {
+        if (statBonus != null && !statBonus.isEmpty()) {
             tooltip.addSection(Tooltip.Section.STATS, StatContainer.getTooltip(statBonus));
         }
     }
