@@ -1,7 +1,15 @@
+plugins {
+  id "com.gradleup.shadow" version "9.2.2"
+}
+
 dependencies {
   implementation "com.esotericsoftware:kryonet:$kryonetVersion"
   implementation "com.google.guava:guava:$guavaVersion"
   implementation "com.badlogicgames.packr:packr:$packrVersion"
 
   implementation project(":core")
+}
+
+shadowJar {
+  from(project(":core").sourceSets.main.output)
 }

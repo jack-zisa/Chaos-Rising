@@ -12,6 +12,7 @@ import dev.creoii.chaos.client.render.entity.data.*;
 import dev.creoii.chaos.entity.*;
 import dev.creoii.chaos.client.render.Renderer;
 import dev.creoii.chaos.client.util.Renderable;
+import dev.creoii.chaos.util.event.SpawnEntityEvent;
 
 import javax.annotation.Nullable;
 
@@ -37,6 +38,7 @@ public class EntityRenderManager extends EntityManager<EntityRenderData> impleme
         setSize(getSize() + 1);
         EntityRenderers.getRenderer(entity).init(this);
         visibleEntities.put(id, entity);
+        SpawnEntityEvent.EVENT.invoker().onSpawnEntity(getGame(), id);
     }
 
     @Nullable

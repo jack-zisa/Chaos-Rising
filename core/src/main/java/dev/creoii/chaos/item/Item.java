@@ -19,7 +19,7 @@ public class Item implements Identifiable {
     protected final Type type;
     protected final Rarity rarity;
     protected final ItemStack defaultStack;
-    protected Tooltip tooltip;
+    protected final Tooltip tooltip;
 
     public Item(String id, Type type, Rarity rarity) {
         this.id = id;
@@ -27,9 +27,10 @@ public class Item implements Identifiable {
         this.rarity = rarity;
         defaultStack = new ItemStack(this);
 
-        tooltip = new Tooltip();
-        buildTooltip(tooltip);
-        tooltip = tooltip.order();
+        Tooltip tooltip1 = new Tooltip();
+        buildTooltip(tooltip1);
+        tooltip1 = tooltip1.order();
+        tooltip = tooltip1;
     }
 
     @Override

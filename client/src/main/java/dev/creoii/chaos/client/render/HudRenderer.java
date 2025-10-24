@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -17,16 +16,15 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import dev.creoii.chaos.client.chat.ChatManager;
 import dev.creoii.chaos.chat.Message;
-import dev.creoii.chaos.client.render.event.PacketListener;
+import dev.creoii.chaos.client.render.entity.data.EntityRenderData;
 import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.client.render.entity.data.CharacterEntityRenderData;
 import dev.creoii.chaos.client.render.entity.EntityRenderManager;
 import dev.creoii.chaos.client.util.Renderable;
-import dev.creoii.chaos.network.s2c.EntityDamageS2C;
-import dev.creoii.chaos.network.s2c.EntitySpawnS2C;
-import dev.creoii.chaos.network.s2c.LivingStatUpdateS2C;
-import dev.creoii.chaos.network.s2c.LivingStatsUpdateS2C;
-import dev.creoii.chaos.util.EntityGroup;
+import dev.creoii.chaos.util.event.ChangeStatEvent;
+import dev.creoii.chaos.util.event.DamageEntityEvent;
+import dev.creoii.chaos.util.event.SpawnEntityEvent;
+import dev.creoii.chaos.util.stat.Stat;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -67,79 +65,87 @@ public class HudRenderer implements Renderable {
     public void setupStage(Renderer renderer, Stage stage, Skin skin, boolean debug) {
         healthBar = new ProgressBar(0f, 100f, 1f, false, skin);
 
-        CharacterEntityRenderData character = renderer.getGame().getCharacter();
-        if (character != null) {
-            int health = character.statContainer.health().value();
-            int maxHealth = character.maxStatContainer.health().value();
+        SpawnEntityEvent.EVENT.register((_, entity) -> {
+            if (entity == renderer.getGame().getCharacterId()) {
+                EntityRenderData entityData = renderer.getGame().getEntityManager().getEntityData(entity);
+                if (entityData instanceof CharacterEntityRenderData characterEntityRenderData) {
+                    int health = characterEntityRenderData.statContainer.health().value();
+                    int maxHealth = characterEntityRenderData.maxStatContainer.health().value();
 
-            Viewport viewport = renderer.getViewport();
-            float screenWidth = viewport.getWorldWidth();
+                    Viewport viewport = renderer.getViewport();
+                    float screenWidth = viewport.getWorldWidth();
 
-            float maxBarWidth = screenWidth * .5f;
-            float barHeight = 15f;
-            float healthPercentage = (float) health / maxHealth;
-            float barWidth = maxBarWidth * healthPercentage;
+                    float maxBarWidth = screenWidth * .5f;
+                    float barHeight = 20f;
+                    float healthPercentage = (float) health / maxHealth;
+                    float barWidth = maxBarWidth * healthPercentage;
 
-            float x = (screenWidth / 2f) - (barWidth / 2f);
-            float y = viewport.getWorldHeight() - barHeight - 10f;
+                    float x = (screenWidth / 2f) - (barWidth / 2f);
+                    float y = viewport.getWorldHeight() - barHeight - 10f;
 
-            healthBar.setColor(Color.GREEN);
-            healthBar.setPosition(x, y);
-            healthBar.setSize(barWidth, barHeight);
-            healthBar.setValue(100f);
-        }
-
-        healthBar.addListener(new PacketListener() {
-            @Override
-            public void received(PacketEvent event, Actor actor) {
-                if (event.getPacket() instanceof EntitySpawnS2C entitySpawnS2C && entitySpawnS2C.customData().getGroup() == EntityGroup.CHARACTER) {
-                    CharacterEntityRenderData character = renderer.getGame().getCharacter();
-                    if (character != null) {
-                        int health = character.statContainer.health().value();
-                        int maxHealth = character.maxStatContainer.health().value();
-
-                        Viewport viewport = renderer.getViewport();
-                        float screenWidth = viewport.getWorldWidth();
-
-                        float maxBarWidth = screenWidth * .5f;
-                        float barHeight = 20f;
-                        float healthPercentage = (float) health / maxHealth;
-                        float barWidth = maxBarWidth * healthPercentage;
-
-                        float x = (screenWidth / 2f) - (barWidth / 2f);
-                        float y = viewport.getWorldHeight() - barHeight - 10f;
-
-                        healthBar.setPosition(x, y);
-                        healthBar.setSize(barWidth, barHeight);
-                        healthBar.setValue(100f);
-                    }
-                } else if (event.getPacket() instanceof EntityDamageS2C || event.getPacket() instanceof LivingStatUpdateS2C || event.getPacket() instanceof LivingStatsUpdateS2C) {
-                    CharacterEntityRenderData character = renderer.getGame().getCharacter();
-                    if (character != null) {
-                        int health = character.statContainer.health().value();
-                        int maxHealth = character.maxStatContainer.health().value();
-
-                        float healthPercentage = (float) health / maxHealth;
-
-                        if (healthPercentage < .25f) {
-                            Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-                            pixmap.setColor(Color.RED);
-                            pixmap.fill();
-                            healthBar.getStyle().knobBefore = new TextureRegionDrawable(new TextureRegion(new Texture(pixmap)));
-                            healthBar.getStyle().knobBefore.setMinHeight(20f);
-                        } else if (healthPercentage < .5f) {
-                            Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-                            pixmap.setColor(Color.ORANGE);
-                            pixmap.fill();
-                            healthBar.getStyle().knobBefore = new TextureRegionDrawable(new TextureRegion(new Texture(pixmap)));
-                            healthBar.getStyle().knobBefore.setMinHeight(20f);
-                        }
-
-                        healthBar.setValue(healthPercentage * 100f);
-                    }
+                    healthBar.setPosition(x, y);
+                    healthBar.setSize(barWidth, barHeight);
+                    healthBar.setValue(100f);
                 }
             }
         });
+
+        DamageEntityEvent.EVENT.register((_, _, entity, _) -> {
+            if (entity == renderer.getGame().getCharacterId()) {
+                EntityRenderData entityData = renderer.getGame().getEntityManager().getEntityData(entity);
+                if (entityData instanceof CharacterEntityRenderData characterEntityRenderData) {
+                    int health = characterEntityRenderData.statContainer.health().value();
+                    int maxHealth = characterEntityRenderData.maxStatContainer.health().value();
+
+                    float healthPercentage = (float) health / maxHealth;
+
+                    if (healthPercentage < .25f) {
+                        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+                        pixmap.setColor(Color.RED);
+                        pixmap.fill();
+                        healthBar.getStyle().knobBefore = new TextureRegionDrawable(new TextureRegion(new Texture(pixmap)));
+                        healthBar.getStyle().knobBefore.setMinHeight(20f);
+                    } else if (healthPercentage < .5f) {
+                        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+                        pixmap.setColor(Color.ORANGE);
+                        pixmap.fill();
+                        healthBar.getStyle().knobBefore = new TextureRegionDrawable(new TextureRegion(new Texture(pixmap)));
+                        healthBar.getStyle().knobBefore.setMinHeight(20f);
+                    }
+
+                    healthBar.setValue(healthPercentage * 100f);
+                }
+            }
+        });
+
+        ChangeStatEvent.EVENT.register((_, entity, stat) -> {
+            if (stat.type() == Stat.Type.HEALTH && entity == renderer.getGame().getCharacterId()) {
+                EntityRenderData entityData = renderer.getGame().getEntityManager().getEntityData(entity);
+                if (entityData instanceof CharacterEntityRenderData characterEntityRenderData) {
+                    int health = characterEntityRenderData.statContainer.health().value();
+                    int maxHealth = characterEntityRenderData.maxStatContainer.health().value();
+
+                    float healthPercentage = (float) health / maxHealth;
+
+                    if (healthPercentage < .25f) {
+                        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+                        pixmap.setColor(Color.RED);
+                        pixmap.fill();
+                        healthBar.getStyle().knobBefore = new TextureRegionDrawable(new TextureRegion(new Texture(pixmap)));
+                        healthBar.getStyle().knobBefore.setMinHeight(20f);
+                    } else if (healthPercentage < .5f) {
+                        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+                        pixmap.setColor(Color.ORANGE);
+                        pixmap.fill();
+                        healthBar.getStyle().knobBefore = new TextureRegionDrawable(new TextureRegion(new Texture(pixmap)));
+                        healthBar.getStyle().knobBefore.setMinHeight(20f);
+                    }
+
+                    healthBar.setValue(healthPercentage * 100f);
+                }
+            }
+        });
+
         stage.addActor(healthBar);
     }
 

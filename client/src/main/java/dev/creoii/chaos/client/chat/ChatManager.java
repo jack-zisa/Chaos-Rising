@@ -7,6 +7,7 @@ import dev.creoii.chaos.chat.Message;
 import dev.creoii.chaos.client.ClientGame;
 import dev.creoii.chaos.network.c2s.ChatMessageSendC2S;
 import dev.creoii.chaos.network.c2s.ExecuteCommandC2S;
+import dev.creoii.chaos.util.event.ExecuteCommandEvent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,6 +46,7 @@ public class ChatManager extends InputAdapter {
             return;
 
         String[] args = Arrays.copyOfRange(elements, 1, elements.length);
+        ExecuteCommandEvent.EVENT.invoker().onExecuteCommand(game, game.getCharacterId(), command, args);
         game.getClient().sendTCP(new ExecuteCommandC2S(game.getCharacter().id, commandType, args));
     }
 

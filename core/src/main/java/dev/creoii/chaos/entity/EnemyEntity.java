@@ -62,10 +62,10 @@ public class EnemyEntity extends LivingEntity implements Attacker {
     public void remove() {
         if (((EnemyEntityType) getType()).lootTable() != null) {
             int rolls = RANDOM.nextInt(4);
-            if (rolls == 0)
-                return;
-            LootDropEntity lootDropEntity = getGame().getEntityManager().addEntity(DataManager.getLootDrop("bag"), getPos().cpy());
-            LootUtils.fillInventory(getGame(), lootDropEntity.getInventory(), ((EnemyEntityType) getType()).lootTable(), rolls);
+            if (rolls > 0) {
+                LootDropEntity lootDropEntity = getGame().getEntityManager().addEntity(DataManager.getLootDrop("bag"), getPos().cpy());
+                LootUtils.fillInventory(getGame(), lootDropEntity.getInventory(), ((EnemyEntityType) getType()).lootTable(), rolls);
+            }
         }
         super.remove();
     }

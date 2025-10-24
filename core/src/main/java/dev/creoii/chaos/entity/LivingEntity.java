@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.Game;
 import dev.creoii.chaos.effect.StatusEffect;
 import dev.creoii.chaos.network.s2c.EntityDamageS2C;
+import dev.creoii.chaos.util.event.DamageEntityEvent;
 import dev.creoii.chaos.util.stat.StatContainer;
 
 import java.util.ArrayList;
@@ -40,12 +41,12 @@ public abstract class LivingEntity extends Entity {
         amount = Math.max(0, amount - statContainer.defense().value());
         statContainer.health().set(Math.max(0, statContainer.health().value() - amount));
 
-        if (!getGame().isClient()) {
-            getGame().getServer().sendToAllTCP(new EntityDamageS2C(getId(), amount));
-        }
+        DamageEntityEvent.EVENT.invoker().onDamageEntity(getGame(), amount, getId(), -1);
 
         if (statContainer.health().value() <= 0) {
             remove();
+        } else if (!getGame().isClient()) {
+            getGame().getServer().sendToAllTCP(new EntityDamageS2C(getId(), amount));
         }
     }
 

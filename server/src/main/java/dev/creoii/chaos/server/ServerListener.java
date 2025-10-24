@@ -19,6 +19,7 @@ import dev.creoii.chaos.item.ItemStack;
 import dev.creoii.chaos.item.WeaponItem;
 import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.Mutable;
+import dev.creoii.chaos.util.event.ExecuteCommandEvent;
 import dev.creoii.chaos.util.provider.vecprovider.ConstantVecProvider;
 import dev.creoii.chaos.util.provider.vecprovider.SourcePosVecProvider;
 
@@ -160,6 +161,7 @@ public class ServerListener extends Listener {
         }
 
         else if (object instanceof ExecuteCommandC2S(int id, String commandType, String[] args)) {
+            ExecuteCommandEvent.EVENT.invoker().onExecuteCommand(game, id, commandType, args);
             Command.Result result = Commands.tryExecute(game, id, commandType, args);
             if (result != null) {
                 game.getServer().sendToAllTCP(new ChatMessageReceiveS2C(new Message(result.getResultMessage(commandType, args), Command.Result.getChatMessageColor(result))));

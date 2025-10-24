@@ -7,7 +7,6 @@ import com.esotericsoftware.kryonet.Listener;
 import dev.creoii.chaos.DataManager;
 import dev.creoii.chaos.chat.Message;
 import dev.creoii.chaos.client.render.entity.data.*;
-import dev.creoii.chaos.client.render.event.PacketListener;
 import dev.creoii.chaos.effect.StatusEffect;
 import dev.creoii.chaos.entity.serialization.*;
 import dev.creoii.chaos.client.input.CharacterController;
@@ -18,6 +17,8 @@ import dev.creoii.chaos.network.c2s.CharacterJoinC2S;
 import dev.creoii.chaos.network.c2s.CharacterLeaveC2S;
 import dev.creoii.chaos.network.s2c.*;
 import dev.creoii.chaos.util.EntityGroup;
+import dev.creoii.chaos.util.event.ChangeStatEvent;
+import dev.creoii.chaos.util.event.DamageEntityEvent;
 import dev.creoii.chaos.util.stat.Stat;
 
 import java.io.ByteArrayInputStream;
@@ -168,6 +169,7 @@ public class ClientListener extends Listener {
                     if (entityRenderData instanceof LivingEntityRenderData livingEntityRenderData) {
                         livingEntityRenderData.statContainer.setHealth((int) (livingEntityRenderData.statContainer.health().value() - amount));
                     }
+                    DamageEntityEvent.EVENT.invoker().onDamageEntity(game, amount, id, -1);
                     game.getRenderer().getStatusTextManager().addStatusText(String.valueOf(amount), entityRenderData.x + (entityRenderData.scale / 2f), entityRenderData.y + entityRenderData.scale, 20, Color.RED);
                 }
             }
@@ -184,33 +186,37 @@ public class ClientListener extends Listener {
                     }
                 }
             }
-            case LivingStatUpdateS2C(Stat stat) -> {
-                CharacterEntityRenderData character = game.getCharacter();
-                switch (stat.type()) {
-                    case HEALTH -> {
-                        character.statContainer.setHealth(stat.value());
-                        character.maxStatContainer.setHealth(stat.value());
+            case LivingStatUpdateS2C(int id, Stat stat) -> {
+                EntityRenderData renderData = game.getEntityManager().getEntityData(id);
+                if (renderData instanceof LivingEntityRenderData livingEntityRenderData) {
+                    switch (stat.type()) {
+                        case HEALTH -> {
+                            livingEntityRenderData.statContainer.setHealth(stat.value());
+                            livingEntityRenderData.maxStatContainer.setHealth(stat.value());
+                        }
+                        case SPEED -> {
+                            livingEntityRenderData.statContainer.setSpeed(stat.value());
+                            livingEntityRenderData.maxStatContainer.setSpeed(stat.value());
+                        }
+                        case ATTACK_SPEED -> {
+                            livingEntityRenderData.statContainer.setAttackSpeed(stat.value());
+                            livingEntityRenderData.maxStatContainer.setAttackSpeed(stat.value());
+                        }
+                        case DEFENSE -> {
+                            livingEntityRenderData.statContainer.setDefense(stat.value());
+                            livingEntityRenderData.maxStatContainer.setDefense(stat.value());
+                        }
+                        case ATTACK -> {
+                            livingEntityRenderData.statContainer.setAttack(stat.value());
+                            livingEntityRenderData.maxStatContainer.setAttack(stat.value());
+                        }
+                        case VITALITY -> {
+                            livingEntityRenderData.statContainer.setVitality(stat.value());
+                            livingEntityRenderData.maxStatContainer.setVitality(stat.value());
+                        }
                     }
-                    case SPEED -> {
-                        character.statContainer.setSpeed(stat.value());
-                        character.maxStatContainer.setSpeed(stat.value());
-                    }
-                    case ATTACK_SPEED -> {
-                        character.statContainer.setAttackSpeed(stat.value());
-                        character.maxStatContainer.setAttackSpeed(stat.value());
-                    }
-                    case DEFENSE -> {
-                        character.statContainer.setDefense(stat.value());
-                        character.maxStatContainer.setDefense(stat.value());
-                    }
-                    case ATTACK -> {
-                        character.statContainer.setAttack(stat.value());
-                        character.maxStatContainer.setAttack(stat.value());
-                    }
-                    case VITALITY -> {
-                        character.statContainer.setVitality(stat.value());
-                        character.maxStatContainer.setVitality(stat.value());
-                    }
+
+                    ChangeStatEvent.EVENT.invoker().onChangeStat(game, id, stat);
                 }
             }
 
@@ -240,14 +246,6 @@ public class ClientListener extends Listener {
             }
             default -> ClientGame.LOGGER.error("Unhandled packet type: " + object.getClass().getSimpleName());
         }
-
-        game.getRenderer().getStage().getActors().forEach(actor -> actor.getListeners().forEach(eventListener -> {
-            if (eventListener instanceof PacketListener packetListener) {
-                PacketListener.PacketEvent event = new PacketListener.PacketEvent();
-                event.setPacket(object);
-                packetListener.handle(event);
-            }
-        }));
     }
 
     @Override

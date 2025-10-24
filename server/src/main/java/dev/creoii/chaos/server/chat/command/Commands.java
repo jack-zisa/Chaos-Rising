@@ -90,16 +90,16 @@ public final class Commands {
                         character.getMaxStats().setVitality(value);
                     }
                 }
-                game.getServer().sendToTCP(character.getConnectionId(), new LivingStatUpdateS2C(new Stat(statType, value)));
+                game.getServer().sendToTCP(character.getConnectionId(), new LivingStatUpdateS2C(character.getId(), new Stat(statType, value)));
                 return Command.Result.SUCCESS;
             }
             return Command.Result.FAIL;
         });
 
-        Command.register("spawn", 1, (game, _, args) -> {
+        Command.register("spawn", 1, (game, id, args) -> {
             int argCount = args.length;
 
-            if (argCount < 1 || argCount == 2)
+            if (argCount == 2)
                 return Command.Result.FAIL;
 
             EnemyEntityType enemy = DataManager.getEnemy(args[0]);
@@ -108,7 +108,9 @@ public final class Commands {
                 return Command.Result.FAIL;
 
             if (argCount == 1) {
-                game.getEntityManager().addEntity(enemy, new Vector2(0, 0));
+                Entity entity = game.getEntityManager().getEntity(id);
+                Vector2 pos = entity == null ? Vector2.Zero.cpy() : entity.getPos().cpy();
+                game.getEntityManager().addEntity(enemy, pos);
                 return Command.Result.SUCCESS;
             } else if (argCount == 3) {
                 float x = Float.parseFloat(args[1]) * Entity.COORDINATE_SCALE;
