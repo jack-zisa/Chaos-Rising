@@ -11,19 +11,17 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.ArrayMap;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import dev.creoii.chaos.client.ClientGame;
 import dev.creoii.chaos.client.render.screen.Screen;
 import dev.creoii.chaos.client.util.Renderable;
-
-import java.util.ArrayList;
-import java.util.List;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectList;
 
 public class Renderer implements Disposable {
     private static final float CAMERA_LOOK_OFFSET = 10f;
@@ -36,7 +34,7 @@ public class Renderer implements Disposable {
     private final BitmapFont font;
     private final ShapeRenderer shapeRenderer;
     private final StatusTextManager statusTextManager;
-    private final ArrayMap<RenderSpace, ArrayMap<RenderLayer, List<Renderable>>> renderables;
+    private final ObjectMap<RenderSpace, ObjectMap<RenderLayer, ObjectList<Renderable>>> renderables;
     private Screen currentScreen = null;
 
     public Renderer(ClientGame game) {
@@ -57,14 +55,14 @@ public class Renderer implements Disposable {
 
         statusTextManager = new StatusTextManager();
 
-        renderables = new ArrayMap<>(RenderSpace.values().length - 1);
+        renderables = new ObjectMap<>(RenderSpace.values().length - 1);
 
         for (RenderSpace space : RenderSpace.values()) {
-            renderables.put(space, new ArrayMap<>());
+            renderables.put(space, new ObjectMap<>());
         }
 
         for (RenderLayer layer : RenderLayer.values()) {
-            renderables.get(layer.getSpace()).put(layer, new ArrayList<>());
+            renderables.get(layer.getSpace()).put(layer, new ObjectArrayList<>());
         }
 
         HudRenderer hudRenderer = new HudRenderer();
@@ -134,24 +132,27 @@ public class Renderer implements Disposable {
         updateCameraSeek();
 
         for (RenderSpace space : RenderSpace.values()) {
-            ArrayMap<RenderLayer, List<Renderable>> renderLayers = renderables.get(space);
+            ObjectMap<RenderLayer, ObjectList<Renderable>> renderLayers = renderables.get(space);
             if (renderLayers.isEmpty())
                 continue;
 
             space.setup(getViewport(), batch, shapeRenderer, getCamera());
-            renderLayers.forEach(entry -> entry.value.forEach(renderable -> {
-                if (entry.key.getSpace() != RenderSpace.STAGE) {
-                    batch.begin();
-                    if (entry.key.isBlending())
-                        batch.enableBlending();
-                    renderable.render(this, batch, null, font, delta, debug);
-                    if (entry.key.isBlending())
-                        batch.disableBlending();
-                    batch.end();
+            for (RenderLayer renderLayer : renderLayers.keys()) {
+                ObjectList<Renderable> renderables = renderLayers.get(renderLayer);
+                for (Renderable renderable : renderables) {
+                    if (renderLayer.getSpace() != RenderSpace.STAGE) {
+                        batch.begin();
+                        if (renderLayer.isBlending())
+                            batch.enableBlending();
+                        renderable.render(this, batch, null, font, delta, debug);
+                        if (renderLayer.isBlending())
+                            batch.disableBlending();
+                        batch.end();
 
-                    renderable.render(this, null, shapeRenderer, font, delta, debug);
+                        renderable.render(this, null, shapeRenderer, font, delta, debug);
+                    }
                 }
-            }));
+            }
         }
 
         stage.act(delta);

@@ -1,7 +1,6 @@
 package dev.creoii.chaos.entity.behavior.phase;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.entity.EnemyEntity;
 import dev.creoii.chaos.entity.behavior.transition.Transitions;
@@ -19,7 +18,7 @@ public class Phase {
             Codec.STRING.fieldOf("id").forGetter(Phase::getId),
             Codec.INT.fieldOf("duration").orElse(-1).forGetter(Phase::getDuration),
             Action.CODEC.listOf().fieldOf("actions").forGetter(Phase::getActions)
-        ).apply(instance, (id, duration, actions) -> new Phase(id, duration, Transitions.ALL.get("next"), actions));
+        ).apply(instance, (id, duration, actions) -> new Phase(id, duration, Transitions.ALL.get(Transitions.Key.NEXT.ordinal()), actions));
     });
 
     private final String id;

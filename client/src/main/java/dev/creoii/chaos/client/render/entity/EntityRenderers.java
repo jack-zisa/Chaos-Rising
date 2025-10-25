@@ -1,13 +1,12 @@
 package dev.creoii.chaos.client.render.entity;
 
 import dev.creoii.chaos.client.render.entity.data.EntityRenderData;
+import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Function;
 
 public class EntityRenderers {
-    private static final Map<Class<? extends EntityRenderData>, Function<?, ?>> RENDERERS = new HashMap<>();
+    private static final Object2ObjectArrayMap<Class<? extends EntityRenderData>, Function<?, ?>> RENDERERS = new Object2ObjectArrayMap<>();
 
     @SuppressWarnings("unchecked")
     public static <T extends EntityRenderData> EntityRenderer<T> getRenderer(T entity) {

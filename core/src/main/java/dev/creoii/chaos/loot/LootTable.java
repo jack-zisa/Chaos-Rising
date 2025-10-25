@@ -6,6 +6,8 @@ import dev.creoii.chaos.DataManager;
 import dev.creoii.chaos.Game;
 import dev.creoii.chaos.item.ItemStack;
 import dev.creoii.chaos.util.Identifiable;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +26,7 @@ public class LootTable implements Identifiable {
     });
     public static final Codec<LootTable> ID_CODEC = Codec.STRING.xmap(DataManager::getLootTable, lootTable -> lootTable.id);
     private final String id;
-    private final List<LootEntry> entries = new ArrayList<>();
+    private final ObjectList<LootEntry> entries = new ObjectArrayList<>();
 
     public LootTable(String id) {
         this.id = id;

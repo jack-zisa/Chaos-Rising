@@ -5,27 +5,28 @@ import com.badlogic.gdx.utils.Pool;
 import dev.creoii.chaos.entity.*;
 import dev.creoii.chaos.network.s2c.EntityRemoveS2C;
 import dev.creoii.chaos.util.EntityGroup;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 
 import javax.annotation.Nullable;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class EntityManager<T> {
     private static int NEXT_ID = 0;
     private final Game game;
     private final Deque<Integer> freeIds;
-    private final Map<EntityGroup, Map<Integer, T>> entities;
+    private final Object2ObjectArrayMap<EntityGroup, Int2ObjectOpenHashMap<T>> entities;
     private final Map<EntityGroup, Pool<Entity>> pools;
     private int size;
 
     public EntityManager(Game game) {
         this.game = game;
         this.freeIds = new ArrayDeque<>();
-        entities = new HashMap<>();
+        entities = new Object2ObjectArrayMap<>();
 
         pools = new EnumMap<>(EntityGroup.class);
         for (EntityGroup group : EntityGroup.values()) {
-            entities.put(group, new ConcurrentHashMap<>());
+            entities.put(group, new Int2ObjectOpenHashMap<>());
 
             pools.put(group, new Pool<>(group.getPoolSize()) {
                 @Override
@@ -77,7 +78,7 @@ public class EntityManager<T> {
         return spawned;
     }
 
-    public Map<EntityGroup, Map<Integer, T>> getAllEntities() {
+    public Map<EntityGroup, Int2ObjectOpenHashMap<T>> getAllEntities() {
         return entities;
     }
 
@@ -92,7 +93,7 @@ public class EntityManager<T> {
 
     @Nullable
     public T getEntity(int id) {
-        for (Map.Entry<EntityGroup, Map<Integer, T>> entry : getAllEntities().entrySet()) {
+        for (Map.Entry<EntityGroup, Int2ObjectOpenHashMap<T>> entry : getAllEntities().entrySet()) {
             if (id != -1 && entry.getValue().containsKey(id)) {
                 return entry.getValue().get(id);
             }
@@ -105,7 +106,7 @@ public class EntityManager<T> {
     }
 
     public boolean removeEntity(int id) {
-        for (Map.Entry<EntityGroup, Map<Integer, T>> entry : getAllEntities().entrySet()) {
+        for (Map.Entry<EntityGroup, Int2ObjectOpenHashMap<T>> entry : getAllEntities().entrySet()) {
             if (id != -1 && entry.getValue().containsKey(id)) {
                 Entity entity = (Entity) entry.getValue().remove(id);
                 if (entity != null) {

@@ -1,10 +1,9 @@
 package dev.creoii.chaos.server;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 
 public class ServerLauncher {
-    public static void main(String[] args) throws IOException, URISyntaxException {
+    public static void main(String[] args) throws IOException {
         int tcpPort = 54555;
         int udpPort = 54777;
 

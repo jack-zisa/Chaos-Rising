@@ -5,20 +5,21 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.ObjectMap;
 import dev.creoii.chaos.client.ClientGame;
 import dev.creoii.chaos.EntityManager;
 import dev.creoii.chaos.client.render.entity.data.*;
+import dev.creoii.chaos.client.texture.TextureManager;
 import dev.creoii.chaos.entity.*;
 import dev.creoii.chaos.client.render.Renderer;
 import dev.creoii.chaos.client.util.Renderable;
 import dev.creoii.chaos.util.event.SpawnEntityEvent;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 
 import javax.annotation.Nullable;
 
 public class EntityRenderManager extends EntityManager<EntityRenderData> implements Renderable {
     private static final float RENDER_DISTANCE = 17578.125f * Entity.COORDINATE_SCALE; // sqrt(17578.125 * 32) = 750 units
-    private final ObjectMap<Integer, EntityRenderData> visibleEntities = new ObjectMap<>(256);
+    private final Int2ObjectOpenHashMap<EntityRenderData> visibleEntities = new Int2ObjectOpenHashMap<>(256);
     private int visibleSize;
 
     public EntityRenderManager(ClientGame game) {
@@ -53,7 +54,7 @@ public class EntityRenderManager extends EntityManager<EntityRenderData> impleme
     }
 
     public static Sprite getSprite(ClientGame game, EntityRenderData entity) {
-        Sprite sprite = new Sprite(game.getAssetManager().getTextureManager().getTexture(entity.group.name().toLowerCase(), entity.textureId));
+        Sprite sprite = new Sprite(game.getAssetManager().getTextureManager().getTexture(TextureManager.AtlasKey.fromEntityGroup(entity.group), entity.textureId));
         sprite.setSize(entity.scale, entity.scale);
         return sprite;
     }

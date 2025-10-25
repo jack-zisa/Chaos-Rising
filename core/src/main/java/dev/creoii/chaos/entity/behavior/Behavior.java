@@ -1,14 +1,12 @@
 package dev.creoii.chaos.entity.behavior;
 
 import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import com.mojang.serialization.Codec;
 import dev.creoii.chaos.entity.EnemyEntity;
 import dev.creoii.chaos.entity.behavior.phase.Phase;
 import dev.creoii.chaos.entity.behavior.phase.PhaseKey;
 import dev.creoii.chaos.entity.controller.EnemyController;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public interface Behavior {
     Codec<Behavior> CODEC = Behavior.Type.CODEC.dispatch(Behavior::getType, type -> switch (type) {
@@ -26,7 +24,7 @@ public interface Behavior {
     static Behavior copy(Behavior behavior) {
         if (behavior instanceof MultiBehavior multiBehavior) {
             BiMap<Integer, String> phaseKeys = multiBehavior.getPhaseKeys().inverse();
-            Map<PhaseKey, Phase> phases = new HashMap<>();
+            HashBiMap<PhaseKey, Phase> phases = HashBiMap.create();
             for (int i = 0; i < multiBehavior.getPhases().length; ++i) {
                 phases.put(new PhaseKey(phaseKeys.get(i), i), multiBehavior.getPhases()[i]);
             }

@@ -8,11 +8,11 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Pool;
 import dev.creoii.chaos.client.render.entity.StatusText;
 import dev.creoii.chaos.client.util.Renderable;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectList;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 public class StatusTextManager implements Renderable, Disposable {
     public static final BitmapFont FONT = new BitmapFont();
@@ -22,7 +22,7 @@ public class StatusTextManager implements Renderable, Disposable {
             return new StatusText();
         }
     };
-    public static final List<StatusText> ACTIVE_STATUS_TEXTS = new ArrayList<>();
+    public static final ObjectList<StatusText> ACTIVE_STATUS_TEXTS = new ObjectArrayList<>();
 
     public void addStatusText(String text, float x, float y, float lifetime) {
         addStatusText(text, x, y, lifetime, Color.WHITE);

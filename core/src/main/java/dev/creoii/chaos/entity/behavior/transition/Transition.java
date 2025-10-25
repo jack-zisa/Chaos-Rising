@@ -5,8 +5,6 @@ import dev.creoii.chaos.entity.behavior.MultiBehavior;
 import dev.creoii.chaos.entity.behavior.phase.Phase;
 import dev.creoii.chaos.util.function.TriFunction;
 
-import javax.annotation.Nullable;
-
 public class Transition {
     private final TriFunction<MultiBehavior, Phase, JsonValue, Phase> function;
     private JsonValue data;
@@ -27,16 +25,7 @@ public class Transition {
         this.data = data;
     }
 
-    static void register(String id, TriFunction<MultiBehavior, Phase, JsonValue, Phase> function) {
-        Transitions.ALL.put(id, new Transition(function));
-    }
-
-    @Nullable
-    public static Transition parse(JsonValue jsonValue) {
-        if (jsonValue == null)
-            return null;
-        Transition transition = Transitions.ALL.get(jsonValue.getString("id"));
-        transition.setData(jsonValue);
-        return transition;
+    static void register(Transitions.Key key, TriFunction<MultiBehavior, Phase, JsonValue, Phase> function) {
+        Transitions.ALL.put(key.ordinal(), new Transition(function));
     }
 }

@@ -1,6 +1,7 @@
 package dev.creoii.chaos.server.chat.command;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.ObjectMap;
 import dev.creoii.chaos.DataManager;
 import dev.creoii.chaos.chat.Message;
 import dev.creoii.chaos.network.s2c.ChatMessageReceiveS2C;
@@ -22,7 +23,7 @@ import java.util.*;
 public final class Commands {
     private static final Random RANDOM = new Random();
     public static final Logger LOGGER = new Logger(Commands.class.getSimpleName());
-    static final Map<String, Command> ALL = new HashMap<>();
+    static final ObjectMap<String, Command> ALL = new ObjectMap<>();
 
     @Nullable
     public static Command.Result tryExecute(ServerGame game, int id, String commandType, String[] args) {

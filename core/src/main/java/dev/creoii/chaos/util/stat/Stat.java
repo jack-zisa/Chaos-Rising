@@ -2,9 +2,9 @@ package dev.creoii.chaos.util.stat;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectList;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -14,11 +14,11 @@ public class Stat {
             Stat.Type.CODEC.fieldOf("stat_type").forGetter(Stat::type),
             Codec.INT.optionalFieldOf("amount").forGetter(stat -> stat.base == 0 ? Optional.empty() : Optional.of(stat.base)),
             ModifierEntry.CODEC.listOf().optionalFieldOf("modifiers").forGetter(stat -> stat.modifiers.isEmpty() ? Optional.empty() : Optional.of(stat.modifiers))
-        ).apply(instance, (type, amount, modifiers) -> modifiers.map(modifierEntries -> new Stat(type, amount.orElse(0), modifierEntries)).orElseGet(() -> new Stat(type, amount.orElse(0))));
+        ).apply(instance, (type, amount, modifiers) -> modifiers.map(modifierEntries -> new Stat(type, amount.orElse(0), new ObjectArrayList<>(modifierEntries))).orElseGet(() -> new Stat(type, amount.orElse(0))));
     });
     private final Type type;
     private int base;
-    private final List<ModifierEntry> modifiers = new ArrayList<>();
+    private final ObjectList<ModifierEntry> modifiers = new ObjectArrayList<>();
 
     public Stat(Type type, int base) {
         this.type = type;
@@ -29,7 +29,7 @@ public class Stat {
         this(type, 0);
     }
 
-    public Stat(Type type, int base, List<ModifierEntry> modifiers) {
+    public Stat(Type type, int base, ObjectList<ModifierEntry> modifiers) {
         this.type = type;
         this.base = base;
         modifiers.forEach(this::addModifier);
@@ -43,7 +43,7 @@ public class Stat {
         return base;
     }
 
-    public List<ModifierEntry> getModifiers() {
+    public ObjectList<ModifierEntry> getModifiers() {
         return modifiers;
     }
 

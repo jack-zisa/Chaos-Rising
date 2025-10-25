@@ -79,7 +79,7 @@ public class InventoryWidget extends Widget {
             for (int r = 0; r < getInventory().length; ++r) {
                 for (int c = 0; c < getInventory()[r].length; ++c) {
                     Slot slot = getInventory()[r][c];
-                    Sprite sprite = slot.hasItem() ? InventoryScreen.SLOT_SPRITES.get(Slot.Type.NONE) : InventoryScreen.SLOT_SPRITES.get(slot.getType());
+                    Sprite sprite = slot.hasItem() ? InventoryScreen.SLOT_SPRITES.get(Slot.Type.NONE.ordinal()) : InventoryScreen.SLOT_SPRITES.get(slot.getType().ordinal());
                     sprite.setPosition(getPos().x + (c * SLOT_SIZE), getPos().y + (r * SLOT_SIZE));
                     sprite.draw(batch);
                     if (slot.hasItem()) {

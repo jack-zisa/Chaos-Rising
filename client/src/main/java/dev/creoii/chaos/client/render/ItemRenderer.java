@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
 import dev.creoii.chaos.client.ClientGame;
+import dev.creoii.chaos.client.texture.TextureManager;
 import dev.creoii.chaos.item.Item;
 import dev.creoii.chaos.item.tooltip.Tooltip;
 
@@ -26,7 +27,7 @@ public class ItemRenderer implements Disposable {
     public static void renderItem(ClientGame game, SpriteBatch batch, @Nullable String id, Vector2 pos, float scale) {
         if (id == null || id.isBlank())
             return;
-        Sprite sprite = new Sprite(game.getAssetManager().getTextureManager().getTexture("item", id));
+        Sprite sprite = new Sprite(game.getAssetManager().getTextureManager().getTexture(TextureManager.AtlasKey.ITEM, id));
         sprite.setPosition(pos.x, pos.y);
         sprite.setSize(scale, scale);
         batch.enableBlending();

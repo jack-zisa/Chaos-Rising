@@ -22,6 +22,9 @@ import dev.creoii.chaos.util.Mutable;
 import dev.creoii.chaos.util.event.ExecuteCommandEvent;
 import dev.creoii.chaos.util.provider.vecprovider.ConstantVecProvider;
 import dev.creoii.chaos.util.provider.vecprovider.SourcePosVecProvider;
+import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectList;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -30,10 +33,6 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -169,12 +168,12 @@ public class ServerListener extends Listener {
         }
 
         else if (object instanceof CharacterJoinC2S()) {
-            Map<String, Object> customData = new HashMap<>();
+            Object2ObjectArrayMap<String, Object> customData = new Object2ObjectArrayMap<>();
             customData.put("connection_id", connection.getID());
             game.getEntityManager().addEntity(new CharacterEntityType(new Mutable<>(DataManager.getCharacterClass("wizard"))), new Vector2(0, 0), customData);
 
-            List<SpawnEntitiesS2C.Entry> spawnEntries = new ArrayList<>();
-            List<DisplayEntitiesS2C.Entry> displayEntries = new ArrayList<>();
+            ObjectList<SpawnEntitiesS2C.Entry> spawnEntries = new ObjectArrayList<>();
+            ObjectList<DisplayEntitiesS2C.Entry> displayEntries = new ObjectArrayList<>();
             game.getEntityManager().getAllEntities().values().forEach(uuidEntityMap -> uuidEntityMap.values().forEach(entity -> {
                 spawnEntries.add(new SpawnEntitiesS2C.Entry(entity.getId(), entity.getPos().x, entity.getPos().y, entity.getCustomPacketData()));
                 displayEntries.add(new DisplayEntitiesS2C.Entry(entity.getId(), entity.getType().id(), entity.getType().scale()));

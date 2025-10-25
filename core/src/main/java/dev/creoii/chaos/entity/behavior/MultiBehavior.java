@@ -11,8 +11,6 @@ import dev.creoii.chaos.entity.behavior.phase.PhaseKey;
 import dev.creoii.chaos.entity.controller.EnemyController;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 
 public class MultiBehavior implements Behavior {
@@ -22,7 +20,7 @@ public class MultiBehavior implements Behavior {
             Phase.CODEC.listOf().fieldOf("phases").forGetter(multiBehavior -> Arrays.stream(multiBehavior.getPhases()).toList()),
             Codec.STRING.fieldOf("start_phase").forGetter(MultiBehavior::getStartPhaseKey)
         ).apply(instance, (phases, s) -> {
-            Map<PhaseKey, Phase> map = new HashMap<>();
+            HashBiMap<PhaseKey, Phase> map = HashBiMap.create();
             for (int i = 0; i < phases.size(); ++i) {
                 Phase phase = phases.get(i);
                 map.put(new PhaseKey(phase.getId(), i), phase);
@@ -35,7 +33,7 @@ public class MultiBehavior implements Behavior {
     private final String startPhaseKey;
     private Phase currentPhase;
 
-    public MultiBehavior(Map<PhaseKey, Phase> phases, String startPhaseKey) {
+    public MultiBehavior(HashBiMap<PhaseKey, Phase> phases, String startPhaseKey) {
         this.startPhaseKey = startPhaseKey;
         phaseKeys = HashBiMap.create();
         phases.keySet().forEach(key -> phaseKeys.put(key.name(), key.index()));

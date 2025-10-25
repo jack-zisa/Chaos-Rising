@@ -2,10 +2,14 @@ package dev.creoii.chaos.server;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.ObjectMap;
 import dev.creoii.chaos.entity.BulletEntity;
 import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.util.EntityGroup;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArraySet;
+import it.unimi.dsi.fastutil.objects.ObjectList;
+import it.unimi.dsi.fastutil.objects.ObjectSet;
 
 import java.util.*;
 
@@ -16,13 +20,13 @@ public class CollisionManager {
     private static final int[] COLLISION_MASKS = new int[EntityGroup.values().length];
     public static final int KEY_OFFSET = 32768;
     private final ServerGame game;
-    private final ObjectMap<Integer, Array<Entity>> grid;
-    private final Map<Integer, Set<Integer>> collisions;
+    private final Int2ObjectOpenHashMap<ObjectList<Entity>> grid;
+    private final Int2ObjectOpenHashMap<ObjectSet<Integer>> collisions;
 
     public CollisionManager(ServerGame game) {
         this.game = game;
-        grid = new ObjectMap<>();
-        collisions = new HashMap<>();
+        grid = new Int2ObjectOpenHashMap<>();
+        collisions = new Int2ObjectOpenHashMap<>();
 
         COLLISION_MASKS[EntityGroup.BULLET.ordinal()] = (1 << EntityGroup.ENEMY.ordinal()) | (1 << EntityGroup.CHARACTER.ordinal());
         COLLISION_MASKS[EntityGroup.CHARACTER.ordinal()] = (1 << EntityGroup.BULLET.ordinal()) | (1 << EntityGroup.LOOT_DROP.ordinal());
@@ -34,7 +38,7 @@ public class CollisionManager {
         if (game.getEntityManager().getSize() <= 1)
             return;
 
-        for (Array<Entity> cellEntities : grid.values()) {
+        for (ObjectList<Entity> cellEntities : grid.values()) {
             cellEntities.clear();
         }
         grid.clear();
@@ -47,24 +51,24 @@ public class CollisionManager {
             int y = Math.round(entity.getPos().y / Entity.COORDINATE_SCALE);
 
             int key = ((x + KEY_OFFSET) << 16) | ((y + KEY_OFFSET) & 0xffff);
-            Array<Entity> entities = grid.get(key);
+            ObjectList<Entity> entities = grid.get(key);
             if (entities == null) {
-                entities = new Array<>();
+                entities = new ObjectArrayList<>();
                 grid.put(key, entities);
             }
             entities.add(entity);
         }
 
-        for (ObjectMap.Entry<Integer, Array<Entity>> entry : grid.entries()) {
-            Array<Entity> entities = entry.value;
+        for (Map.Entry<Integer, ObjectList<Entity>> entry : grid.int2ObjectEntrySet()) {
+            ObjectList<Entity> entities = entry.getValue();
 
-            for (int i = 0; i < entities.size; ++i) {
+            for (int i = 0; i < entities.size(); ++i) {
                 Entity a = entities.get(i);
-                for (int j = i + 1; j < entities.size; ++j) {
+                for (int j = i + 1; j < entities.size(); ++j) {
                     Entity b = entities.get(j);
                     if (checkMask(a, b) && a.collides(b)) {
-                        collisions.computeIfAbsent(a.getId(), _ -> new HashSet<>()).add(b.getId());
-                        collisions.computeIfAbsent(b.getId(), _ -> new HashSet<>()).add(a.getId());
+                        collisions.computeIfAbsent(a.getId(), _ -> new ObjectArraySet<>()).add(b.getId());
+                        collisions.computeIfAbsent(b.getId(), _ -> new ObjectArraySet<>()).add(a.getId());
 
                         a.setCollidingWith(b.getId());
                         b.setCollidingWith(a.getId());
@@ -72,15 +76,15 @@ public class CollisionManager {
                 }
             }
 
-            int x = (entry.key >> 16) - KEY_OFFSET;
-            int y = (entry.key & 0xffff) - KEY_OFFSET;
+            int x = (entry.getKey() >> 16) - KEY_OFFSET;
+            int y = (entry.getKey() & 0xffff) - KEY_OFFSET;
 
             for (Entity a : entities) {
                 int[][] neighborDirs = a instanceof BulletEntity bullet ? getBulletForwardNeighbors(bullet) : FORWARD_NEIGHBORS;
 
                 for (int[] dir : neighborDirs) {
                     int neighborKey = ((x + dir[0] + KEY_OFFSET) << 16) | ((y + dir[1] + KEY_OFFSET) & 0xffff);
-                    Array<Entity> neighbors = grid.get(neighborKey);
+                    ObjectList<Entity> neighbors = grid.get(neighborKey);
                     if (neighbors == null)
                         continue;
 
@@ -89,8 +93,8 @@ public class CollisionManager {
                             continue;
 
                         if (checkMask(a, b) && a.collides(b)) {
-                            collisions.computeIfAbsent(a.getId(), _ -> new HashSet<>()).add(b.getId());
-                            collisions.computeIfAbsent(b.getId(), _ -> new HashSet<>()).add(a.getId());
+                            collisions.computeIfAbsent(a.getId(), _ -> new ObjectArraySet<>()).add(b.getId());
+                            collisions.computeIfAbsent(b.getId(), _ -> new ObjectArraySet<>()).add(a.getId());
 
                             a.setCollidingWith(b.getId());
                             b.setCollidingWith(a.getId());
@@ -101,7 +105,7 @@ public class CollisionManager {
         }
 
         for (Entity entity : toCollide) {
-            Set<Integer> currentlyColliding = collisions.getOrDefault(entity.getId(), Collections.emptySet());
+            Set<Integer> currentlyColliding = collisions.getOrDefault(entity.getId(), new ObjectArraySet<>());
             Iterator<Integer> it = entity.getCollidingWith().iterator();
             while (it.hasNext()) {
                 int id = it.next();

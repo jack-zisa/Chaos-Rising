@@ -19,6 +19,7 @@ dependencies {
   implementation "com.google.guava:guava:$guavaVersion"
   implementation "com.esotericsoftware:kryonet:$kryonetVersion"
   implementation "com.mojang:datafixerupper:$datafixerupperVersion"
+  implementation "it.unimi.dsi:fastutil:$fastUtilVersion"
 
   if(enableGraalNative == 'true') {
     implementation "io.github.berstanio:gdx-svmhelper-annotations:$graalHelperVersion"

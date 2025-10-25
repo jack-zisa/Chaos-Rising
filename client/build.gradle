@@ -3,8 +3,10 @@ plugins {
 }
 
 dependencies {
+  implementation "com.google.guava:guava:$guavaVersion"
   implementation "com.esotericsoftware:kryonet:$kryonetVersion"
   implementation "com.badlogicgames.packr:packr:$packrVersion"
+  implementation "it.unimi.dsi:fastutil:$fastUtilVersion"
 
   implementation project(":core")
 }

@@ -10,6 +10,7 @@ import dev.creoii.chaos.item.Item;
 import dev.creoii.chaos.loot.LootTable;
 import dev.creoii.chaos.util.Identifiable;
 import dev.creoii.chaos.util.logging.Logger;
+import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 
 import javax.annotation.Nullable;
 import java.io.FileReader;
@@ -19,6 +20,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -26,22 +28,22 @@ import java.util.stream.Stream;
 public class DataManager {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     public static final Logger LOGGER = new Logger(DataManager.class.getSimpleName());
-    private static final Map<SchemaType, Codec<? extends Identifiable>> SCHEMA = new HashMap<>();
-    private static final Map<SchemaType, Map<String, Identifiable>> DATA = new HashMap<>();
+    private static final EnumMap<SchemaType, Codec<? extends Identifiable>> SCHEMA = new EnumMap<>(SchemaType.class);
+    private static final EnumMap<SchemaType, Object2ObjectArrayMap<String, Identifiable>> DATA = new EnumMap<>(SchemaType.class);
 
-    public static Map<String, Identifiable> getClasses() {
+    public static Object2ObjectArrayMap<String, Identifiable> getClasses() {
         return DATA.get(SchemaType.CLASS);
     }
 
-    public static Map<String, Identifiable> getItems() {
+    public static Object2ObjectArrayMap<String, Identifiable> getItems() {
         return DATA.get(SchemaType.ITEM);
     }
 
-    public static Map<String, Identifiable> getEntities() {
+    public static Object2ObjectArrayMap<String, Identifiable> getEntities() {
         return DATA.get(SchemaType.ENTITY_TYPE);
     }
 
-    public static Map<String, Identifiable> getLootTables() {
+    public static Object2ObjectArrayMap<String, Identifiable> getLootTables() {
         return DATA.get(SchemaType.LOOT_TABLE);
     }
 
@@ -87,7 +89,7 @@ public class DataManager {
                     continue;
                 }
 
-                Map<String, Identifiable> data = DATA.get(entry.getKey());
+                Object2ObjectArrayMap<String, Identifiable> data = DATA.get(entry.getKey());
                 try (Stream<Path> paths = Files.walk(folderPath)) {
                     paths.filter(p -> p.toString().endsWith(".json")).forEach(file -> {
                         try (Reader reader = new FileReader(file.toFile())) {
@@ -140,7 +142,7 @@ public class DataManager {
         SCHEMA.put(SchemaType.LOOT_TABLE, LootTable.CODEC);
 
         for (SchemaType schemaType : SCHEMA.keySet()) {
-            DATA.put(schemaType, new HashMap<>());
+            DATA.put(schemaType, new Object2ObjectArrayMap<>());
         }
     }
 }

@@ -4,6 +4,8 @@ import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.Game;
 import dev.creoii.chaos.entity.serialization.EntityCustomData;
 import dev.creoii.chaos.util.Tickable;
+import it.unimi.dsi.fastutil.ints.IntArraySet;
+import it.unimi.dsi.fastutil.ints.IntSet;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -18,7 +20,7 @@ public abstract class Entity implements Tickable {
     private final Vector2 prevPos;
     private final int spawnTime;
     private final Vector2 collider;
-    private final Set<Integer> collidingWith;
+    private final IntSet collidingWith;
 
     public Entity(Game game, EntityType<? extends Entity> type, int id, Vector2 pos) {
         this.game = game;
@@ -28,7 +30,7 @@ public abstract class Entity implements Tickable {
         prevPos = pos.cpy();
         spawnTime = game.getGametime();
         collider = new Vector2(type.scale(), type.scale());
-        collidingWith = new HashSet<>();
+        collidingWith = new IntArraySet();
     }
 
     @Nullable
@@ -91,7 +93,7 @@ public abstract class Entity implements Tickable {
         return pos.x < other.pos.x + other.collider.x && pos.x + collider.x > other.pos.x && pos.y < other.pos.y + other.collider.y && pos.y + collider.y > other.pos.y;
     }
 
-    public Set<Integer> getCollidingWith() {
+    public IntSet getCollidingWith() {
         return collidingWith;
     }
 

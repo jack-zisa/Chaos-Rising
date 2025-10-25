@@ -3,20 +3,23 @@ package dev.creoii.chaos.item.tooltip;
 import com.mojang.serialization.Codec;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
-public record Tooltip(Map<Section, List<String>> sections) {
+public record Tooltip(EnumMap<Section, List<String>> sections) {
     public static final Tooltip EMPTY = new Tooltip();
     public static final Codec<Tooltip> CODEC = Codec.unboundedMap(Section.CODEC, Codec.STRING.listOf()).xmap(map -> {
-        return map.isEmpty() ? EMPTY : new Tooltip(map);
+        return map.isEmpty() ? EMPTY : new Tooltip(new EnumMap<>(map));
     }, Tooltip::sections);
 
     public Tooltip() {
-        this(new HashMap<>());
+        this(new EnumMap<>(Section.class));
     }
 
     public Tooltip order() {
-        return new Tooltip(sections.entrySet().stream().sorted(Comparator.comparingInt(entry -> entry.getKey().ordinal())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, _) -> a, LinkedHashMap::new)));
+        EnumMap<Section, List<String>> ordered = new EnumMap<>(Section.class);
+        sections.entrySet().stream()
+            .sorted(Comparator.comparingInt(entry -> entry.getKey().ordinal()))
+            .forEach(entry -> ordered.put(entry.getKey(), entry.getValue()));
+        return new Tooltip(ordered);
     }
 
     public List<String> getSection(Section section) {

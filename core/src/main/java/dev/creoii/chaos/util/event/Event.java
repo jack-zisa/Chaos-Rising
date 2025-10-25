@@ -1,12 +1,13 @@
 package dev.creoii.chaos.util.event;
 
+import it.unimi.dsi.fastutil.objects.ObjectArraySet;
+import it.unimi.dsi.fastutil.objects.ObjectSet;
+
 import java.lang.reflect.Array;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.function.Function;
 
 public class Event<T> {
-    private final Set<T> listeners = new HashSet<>();
+    private final ObjectSet<T> listeners = new ObjectArraySet<>();
     private final Function<T[], T> invokerFactory;
     private final Class<T> type;
     private volatile T invoker;
