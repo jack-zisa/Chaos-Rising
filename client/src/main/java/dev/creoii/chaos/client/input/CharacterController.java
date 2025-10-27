@@ -10,10 +10,9 @@ import dev.creoii.chaos.item.WeaponItem;
 import dev.creoii.chaos.network.c2s.AttackC2S;
 import dev.creoii.chaos.network.c2s.CharacterMoveC2S;
 import dev.creoii.chaos.network.c2s.UseItemC2S;
-import dev.creoii.chaos.client.render.entity.data.CharacterEntityRenderData;
 import dev.creoii.chaos.client.util.Inputtable;
 
-public record CharacterController(CharacterEntityRenderData character) implements Inputtable {
+public record CharacterController() implements Inputtable {
     @Override
     public void keyHeld(InputManager manager, int keycode) {
         ClientGame game = manager.getGame();
@@ -38,27 +37,28 @@ public record CharacterController(CharacterEntityRenderData character) implement
                 dx /= len;
                 dy /= len;
 
-                game.getClient().sendTCP(new CharacterMoveC2S(character.id, dx, dy));
+                game.getClient().sendTCP(new CharacterMoveC2S(game.getCharacter().id, dx, dy));
             }
         }
 
         if (keycode == OptionsManager.ABILITY_KEY.intValue()) {
-            Slot abilitySlot = character.getAbilitySlot();
+            Slot abilitySlot = game.getCharacter().getAbilitySlot();
             if (abilitySlot.getStack().getItem() instanceof AbilityItem abilityItem) {
-                game.getClient().sendTCP(new UseItemC2S(character.id, abilitySlot));
+                game.getClient().sendTCP(new UseItemC2S(game.getCharacter().id, abilitySlot));
             }
         }
     }
 
     @Override
     public void touchHeld(InputManager manager, int screenX, int screenY, int pointer, int button) {
-        if (manager.getGame().getChatManager().isActive())
+        ClientGame game = manager.getGame();
+        if (game.getChatManager().isActive())
             return;
 
-        Slot weaponSlot = character.getWeaponSlot();
+        Slot weaponSlot = game.getCharacter().getWeaponSlot();
         if (weaponSlot.getStack().getItem() instanceof WeaponItem weaponItem) {
-            Vector3 mousePos = manager.getGame().getInputManager().getMousePos();
-            manager.getGame().getClient().sendTCP(new AttackC2S(character.id, weaponSlot, mousePos.x - (Entity.COORDINATE_SCALE / 2f), mousePos.y - (Entity.COORDINATE_SCALE / 2f)));
+            Vector3 mousePos = game.getInputManager().getMousePos();
+            game.getClient().sendTCP(new AttackC2S(game.getCharacter().id, weaponSlot, mousePos.x - (Entity.COORDINATE_SCALE / 2f), mousePos.y - (Entity.COORDINATE_SCALE / 2f)));
         }
     }
 }

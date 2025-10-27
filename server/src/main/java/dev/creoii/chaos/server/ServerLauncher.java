@@ -11,7 +11,7 @@ public class ServerLauncher {
             try {
                 tcpPort = Integer.parseInt(args[0]);
             } catch (NumberFormatException e) {
-                System.err.println("Invalid TCP port. Using default: " + tcpPort);
+                ServerGame.LOGGER.error("Invalid TCP port. Using default: " + tcpPort);
             }
         }
 
@@ -19,7 +19,7 @@ public class ServerLauncher {
             try {
                 udpPort = Integer.parseInt(args[0]);
             } catch (NumberFormatException e) {
-                System.err.println("Invalid UDP port. Using default: " + udpPort);
+                ServerGame.LOGGER.error("Invalid UDP port. Using default: " + udpPort);
             }
         }
 

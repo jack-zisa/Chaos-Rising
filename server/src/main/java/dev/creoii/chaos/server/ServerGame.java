@@ -10,12 +10,15 @@ import dev.creoii.chaos.network.Networking;
 import dev.creoii.chaos.util.logging.Logger;
 
 import java.io.IOException;
+import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
 public class ServerGame implements Game {
     private final Server server;
     private final ServerListener listener;
+    private static final Random RANDOM = new Random();
     public static final Logger LOGGER = new Logger(ServerGame.class.getSimpleName());
     protected NetworkQueue<NetworkQueue.QueuedPacket> networkQueue;
     private final TickManager tickManager;
@@ -39,6 +42,10 @@ public class ServerGame implements Game {
         tickManager = new TickManager();
         collisionManager = new CollisionManager(this);
         entityManager = new ServerEntityManager(this);
+
+        Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
+        LOGGER.info("Active Threads:");
+        threadSet.forEach(thread -> LOGGER.info("    " + thread.getName()));
 
         DataManager.load();
 
@@ -77,6 +84,11 @@ public class ServerGame implements Game {
         while ((packet = networkQueue.queue().poll()) != null) {
             listener.handlePacket(packet.connection(), packet.packet());
         }
+    }
+
+    @Override
+    public Random getRandom() {
+        return RANDOM;
     }
 
     @Override

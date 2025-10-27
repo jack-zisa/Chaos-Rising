@@ -77,6 +77,10 @@ public abstract class Entity implements Tickable {
         return spawnTime;
     }
 
+    public boolean isMoving() {
+        return !pos.epsilonEquals(prevPos, .001f);
+    }
+
     @Override
     public void tick(int gametime, float delta) {
     }

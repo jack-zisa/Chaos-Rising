@@ -20,12 +20,15 @@ import dev.creoii.chaos.client.render.entity.data.CharacterEntityRenderData;
 import dev.creoii.chaos.util.logging.Logger;
 
 import java.io.IOException;
+import java.util.Random;
+import java.util.Set;
 
 public class ClientGame extends ApplicationAdapter implements Game, Disposable {
     public static final int WINDOW_WIDTH = 1280;
     public static final int WINDOW_HEIGHT = 720;
     private final Client client;
     private final ClientListener listener;
+    private static final Random RANDOM = new Random();
     public static final Logger LOGGER = new Logger(ClientGame.class.getSimpleName());
     protected NetworkQueue<Object> networkQueue;
     private Renderer renderer;
@@ -42,6 +45,7 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
         entityManager = new EntityRenderManager(this);
         inputManager = new InputManager(this);
         chatManager = new ChatManager(this);
+        characterId = -1;
     }
 
     @Override
@@ -63,6 +67,10 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
+        LOGGER.info("Active Threads:");
+        threadSet.forEach(thread -> LOGGER.info("    " + thread.getName()));
 
         assetManager.load();
 
@@ -108,6 +116,11 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
 
     public Client getClient() {
         return client;
+    }
+
+    @Override
+    public Random getRandom() {
+        return RANDOM;
     }
 
     public NetworkQueue<Object> getNetworkQueue() {

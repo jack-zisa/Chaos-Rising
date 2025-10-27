@@ -21,7 +21,8 @@ public class MultiBehavior implements Behavior {
             Codec.STRING.fieldOf("start_phase").forGetter(MultiBehavior::getStartPhaseKey)
         ).apply(instance, (phases, s) -> {
             HashBiMap<PhaseKey, Phase> map = HashBiMap.create();
-            for (int i = 0; i < phases.size(); ++i) {
+            int size = phases.size();
+            for (int i = 0; i < size; ++i) {
                 Phase phase = phases.get(i);
                 map.put(new PhaseKey(phase.getId(), i), phase);
             }

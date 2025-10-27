@@ -4,7 +4,7 @@
   "attack": {
     "type": "simple",
     "bullet_id": "dark_magic_blade",
-    "damage": 2,
+    "damage": 4,
     "bullet_count": 12,
     "arc_gap": 30
   },

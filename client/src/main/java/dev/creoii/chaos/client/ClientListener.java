@@ -8,6 +8,7 @@ import dev.creoii.chaos.DataManager;
 import dev.creoii.chaos.chat.Message;
 import dev.creoii.chaos.client.render.entity.data.*;
 import dev.creoii.chaos.effect.StatusEffect;
+import dev.creoii.chaos.entity.BulletEntityType;
 import dev.creoii.chaos.entity.serialization.*;
 import dev.creoii.chaos.client.input.CharacterController;
 import dev.creoii.chaos.inventory.InventoryType;
@@ -19,6 +20,8 @@ import dev.creoii.chaos.network.s2c.*;
 import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.event.ChangeStatEvent;
 import dev.creoii.chaos.util.event.DamageEntityEvent;
+import dev.creoii.chaos.util.provider.numberprovider.ConstantNumberProvider;
+import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
 import dev.creoii.chaos.util.stat.Stat;
 
 import java.io.ByteArrayInputStream;
@@ -60,11 +63,19 @@ public class ClientListener extends Listener {
                 switch (group) {
                     case BULLET -> {
                         BulletData bulletData = (BulletData) customData;
-                        game.getEntityManager().addEntity(id, new BulletEntityRenderData(id, x, y, 0f, 0f, group.name().toLowerCase(), 32f, bulletData.xd(), bulletData.yd()));
+
+                        NumberProvider angleOffset;
+
+                        BulletEntityType bulletEntityType = DataManager.getBullet(bulletData.textureId());
+                        if (bulletEntityType != null) {
+                            angleOffset = bulletEntityType.angleOffset();
+                        } else angleOffset = ConstantNumberProvider.ZERO;
+
+                        game.getEntityManager().addEntity(id, new BulletEntityRenderData(id, x, y, 0f, 0f, bulletData.textureId(), 32f, bulletData.xd(), bulletData.yd(), angleOffset));
                     }
                     case ENEMY -> {
                         EnemyData enemyData = (EnemyData) customData;
-                        game.getEntityManager().addEntity(id, new LivingEntityRenderData(id, EntityGroup.ENEMY, x, y, 0f, 0f, group.name().toLowerCase(), 32f, enemyData.baseStats(), enemyData.maxStats()));
+                        game.getEntityManager().addEntity(id, new LivingEntityRenderData(id, EntityGroup.ENEMY, x, y, 0f, 0f, enemyData.textureId(), 32f, enemyData.baseStats(), enemyData.maxStats()));
                     }
                     case CHARACTER -> {
                         CharacterData characterData = (CharacterData) customData;
@@ -79,14 +90,12 @@ public class ClientListener extends Listener {
                                 };
                             } else return new Slot(r, c);
                         })));
-                        game.setCharacterId(id);
-                        game.getInputManager().addInput(new CharacterController(character));
                         game.getEntityManager().addEntity(id, character);
                     }
                     case LOOT_DROP -> {
                         LootDropData lootDropData = (LootDropData) customData;
                         Optional<List<List<Slot>>> slots = lootDropData.slots();
-                        game.getEntityManager().addEntity(id, new LootDropEntityRenderData(id, x, y, 0f, 0f, group.name().toLowerCase(), 32f, slots.map(Slot::toSlotArray).orElse(Slot.createEmptySlotArray(2, 4))));
+                        game.getEntityManager().addEntity(id, new LootDropEntityRenderData(id, x, y, 0f, 0f, lootDropData.textureId(), 32f, slots.map(Slot::toSlotArray).orElse(Slot.createEmptySlotArray(2, 4))));
                     }
                 }
             }
@@ -98,11 +107,19 @@ public class ClientListener extends Listener {
                 switch (group) {
                     case BULLET -> {
                         BulletData bulletData = (BulletData) entry.customData();
-                        game.getEntityManager().addEntity(id, new BulletEntityRenderData(id, x, y, 0f, 0f, group.name().toLowerCase(), 32f, bulletData.xd(), bulletData.yd()));
+
+                        NumberProvider angleOffset;
+
+                        BulletEntityType bulletEntityType = DataManager.getBullet(bulletData.textureId());
+                        if (bulletEntityType != null) {
+                            angleOffset = bulletEntityType.angleOffset();
+                        } else angleOffset = ConstantNumberProvider.ZERO;
+
+                        game.getEntityManager().addEntity(id, new BulletEntityRenderData(id, x, y, 0f, 0f, bulletData.textureId(), 32f, bulletData.xd(), bulletData.yd(), angleOffset));
                     }
                     case ENEMY -> {
                         EnemyData enemyData = (EnemyData) entry.customData();
-                        game.getEntityManager().addEntity(id, new LivingEntityRenderData(id, EntityGroup.ENEMY, x, y, 0f, 0f, group.name().toLowerCase(), 32f, enemyData.baseStats(), enemyData.maxStats()));
+                        game.getEntityManager().addEntity(id, new LivingEntityRenderData(id, EntityGroup.ENEMY, x, y, 0f, 0f, enemyData.textureId(), 32f, enemyData.baseStats(), enemyData.maxStats()));
                     }
                     case CHARACTER -> {
                         CharacterData characterData = (CharacterData) entry.customData();
@@ -117,14 +134,12 @@ public class ClientListener extends Listener {
                                 };
                             } else return new Slot(r, c);
                         })));
-                        game.setCharacterId(id);
-                        game.getInputManager().addInput(new CharacterController(character));
                         game.getEntityManager().addEntity(id, character);
                     }
                     case LOOT_DROP -> {
                         LootDropData lootDropData = (LootDropData) entry.customData();
                         Optional<List<List<Slot>>> slots = lootDropData.slots();
-                        game.getEntityManager().addEntity(id, new LootDropEntityRenderData(id, x, y, 0f, 0f, group.name().toLowerCase(), 32f, slots.map(Slot::toSlotArray).orElse(Slot.createEmptySlotArray(2, 4))));
+                        game.getEntityManager().addEntity(id, new LootDropEntityRenderData(id, x, y, 0f, 0f, lootDropData.textureId(), 32f, slots.map(Slot::toSlotArray).orElse(Slot.createEmptySlotArray(2, 4))));
                     }
                 }
             });
@@ -224,6 +239,28 @@ public class ClientListener extends Listener {
         else if (object instanceof LootDropCloseS2C()) {
             game.getCharacter().setLootUuid(null);
         }*/
+            case CharacterJoinS2C(int id, float x, float y, EntityCustomData customData) -> {
+                EntityGroup group = customData.getGroup();
+                if (group == EntityGroup.CHARACTER) {
+                    CharacterData characterData = (CharacterData) customData;
+                    Optional<List<List<Slot>>> slots = characterData.slots();
+                    CharacterEntityRenderData character = new CharacterEntityRenderData(id, x, y, 0f, 0f, "wizard", 32f, characterData.baseStats(), characterData.maxStats(), slots.map(Slot::toSlotArray).orElse(Slot.createEmptySlotArray(3, 4, (r, c) -> {
+                        if (r == 2) {
+                            return switch (c) {
+                                case 0 -> new Slot(r, c, Slot.Type.WEAPON);
+                                case 1 -> new Slot(r, c, Slot.Type.ABILITY);
+                                case 2 -> new Slot(r, c, Slot.Type.ARMOR);
+                                default -> new Slot(r, c, Slot.Type.ACCESSORY);
+                            };
+                        } else return new Slot(r, c);
+                    })));
+                    game.getEntityManager().addEntity(id, character);
+                    if (game.getCharacterId() == -1) {
+                        game.setCharacterId(id);
+                        game.getInputManager().addInput(new CharacterController());
+                    }
+                }
+            }
             case SyncDataS2C(byte[] data) -> {
                 Path cacheRoot = Paths.get(System.getProperty("user.dir"), "cache", "data");
 

@@ -2,6 +2,7 @@ package dev.creoii.chaos.entity.serialization;
 
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.inventory.Slot;
@@ -13,13 +14,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public record LootDropData(Optional<List<List<Slot>>> slots) implements EntityCustomData {
+public record LootDropData(String textureId, Optional<List<List<Slot>>> slots) implements EntityCustomData {
     public static final MapCodec<LootDropData> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+        Codec.STRING.fieldOf("texture_id").forGetter(LootDropData::textureId),
         Slot.CODEC.listOf().listOf().optionalFieldOf("slots").forGetter(LootDropData::slots)
     ).apply(instance, LootDropData::new));
 
-    public LootDropData(@Nullable Slot[][] slots) {
-        this(slots == null ? Optional.empty() : Optional.of(Slot.toSlotListArray(slots)));
+    public LootDropData(String textureId, @Nullable Slot[][] slots) {
+        this(textureId, slots == null ? Optional.empty() : Optional.of(Slot.toSlotListArray(slots)));
     }
 
     @Override
@@ -34,6 +36,7 @@ public record LootDropData(Optional<List<List<Slot>>> slots) implements EntityCu
 
     @Override
     public void write(Output output) {
+        output.writeString(textureId);
         if (slots.isPresent()) {
             output.writeBoolean(true);
             List<List<Slot>> outerList = slots.get();
@@ -50,10 +53,11 @@ public record LootDropData(Optional<List<List<Slot>>> slots) implements EntityCu
     }
 
     public static LootDropData read(Input input) {
+        String textureId = input.readString();
         boolean hasSlots = input.readBoolean();
 
         if (!hasSlots) {
-            return new LootDropData((Slot[][]) null);
+            return new LootDropData(textureId, (Slot[][]) null);
         }
 
         int outerSize = input.readInt();
@@ -70,6 +74,6 @@ public record LootDropData(Optional<List<List<Slot>>> slots) implements EntityCu
             outerList.add(innerList);
         }
 
-        return new LootDropData(Optional.of(outerList));
+        return new LootDropData(textureId, Optional.of(outerList));
     }
 }

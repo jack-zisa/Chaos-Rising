@@ -27,11 +27,16 @@ public class LootDropEntity extends Entity {
     @Nullable
     @Override
     public EntityCustomData getCustomPacketData() {
-        return new LootDropData(inventory.isEmpty() ? null : inventory.getSlots());
+        return new LootDropData(getType().id(), inventory.isEmpty() ? null : inventory.getSlots());
     }
 
     public Inventory getInventory() {
         return inventory;
+    }
+
+    @Override
+    public boolean isMoving() {
+        return false;
     }
 
     public void addItem(ItemStack stack) {

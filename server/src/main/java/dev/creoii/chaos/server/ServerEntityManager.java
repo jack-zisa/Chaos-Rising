@@ -41,6 +41,21 @@ public class ServerEntityManager extends EntityManager<Entity> implements Tickab
         return spawned;
     }
 
+    public <E extends Entity, T extends EntityType<E>> E addCharacter(int connectionId, T type, Vector2 pos, Map<String, Object> customData) {
+        E spawned = type.create(getGame(), getNextId(), pos, customData);
+        getEntities(type.group()).put(spawned.getId(), spawned);
+
+        ((ServerGame) getGame()).getTickManager().addTickable(spawned);
+        getGame().getServer().sendToTCP(connectionId, new CharacterJoinS2C(spawned.getId(), pos.x, pos.y, spawned.getCustomPacketData()));
+        getGame().getServer().sendToAllExceptTCP(connectionId, new EntitySpawnS2C(spawned.getId(), pos.x, pos.y, spawned.getCustomPacketData()));
+        getGame().getServer().sendToAllTCP(new EntityDisplayS2C(spawned.getId(), type.id(), type.scale()));
+
+        SpawnEntityEvent.EVENT.invoker().onSpawnEntity(getGame(), spawned.getId());
+
+        setSize(getSize() + 1);
+        return spawned;
+    }
+
     @Override
     public void tick(int gametime, float delta) {
         if (!removedEntities.isEmpty()) {
@@ -64,7 +79,8 @@ public class ServerEntityManager extends EntityManager<Entity> implements Tickab
             }
         }
         if (!moveEntries.isEmpty()) {
-            for (int i = 0; i < moveEntries.size(); i += 50) {
+            int size = moveEntries.size();
+            for (int i = 0; i < size; i += 50) {
                 getGame().getServer().sendToAllTCP(new MoveEntitiesS2C(moveEntries.subList(i, Math.min(i + 50, moveEntries.size()))));
             }
         }

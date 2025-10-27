@@ -49,7 +49,7 @@ public class EnemyEntity extends LivingEntity implements Attacker {
     @Nullable
     @Override
     public EntityCustomData getCustomPacketData() {
-        return new EnemyData(getStats(), getMaxStats());
+        return new EnemyData(getType().id(), getStats(), getMaxStats());
     }
 
     @Override

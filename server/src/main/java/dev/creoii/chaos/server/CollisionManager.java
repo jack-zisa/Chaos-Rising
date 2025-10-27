@@ -1,22 +1,24 @@
 package dev.creoii.chaos.server;
 
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
 import dev.creoii.chaos.entity.BulletEntity;
 import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.util.EntityGroup;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectArrayMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectArraySet;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 
 import java.util.*;
+import java.util.function.BiFunction;
 
 public class CollisionManager {
     private static final int[][] FORWARD_NEIGHBORS = {
         {1, 0}, {1, 1}, {0, 1}, {-1, 1}
     };
+    private static final Long2ObjectArrayMap<int[][]> DIRECTION_OFFSETS = createDirectionOffsets();
     private static final int[] COLLISION_MASKS = new int[EntityGroup.values().length];
     public static final int KEY_OFFSET = 32768;
     private final ServerGame game;
@@ -44,7 +46,9 @@ public class CollisionManager {
         grid.clear();
 
         List<Entity> toCollide = new ArrayList<>();
-        game.getEntityManager().getAllEntities().values().forEach(uuidEntityMap -> toCollide.addAll(uuidEntityMap.values()));
+        for (Int2ObjectOpenHashMap<Entity> entityMap : game.getEntityManager().getAllEntities().values()) {
+            toCollide.addAll(entityMap.values());
+        }
 
         for (Entity entity : toCollide) {
             int x = Math.round(entity.getPos().x / Entity.COORDINATE_SCALE);
@@ -62,10 +66,15 @@ public class CollisionManager {
         for (Map.Entry<Integer, ObjectList<Entity>> entry : grid.int2ObjectEntrySet()) {
             ObjectList<Entity> entities = entry.getValue();
 
-            for (int i = 0; i < entities.size(); ++i) {
+            int size = entities.size();
+            for (int i = 0; i < size; ++i) {
                 Entity a = entities.get(i);
-                for (int j = i + 1; j < entities.size(); ++j) {
+                for (int j = i + 1; j < size; ++j) {
                     Entity b = entities.get(j);
+
+                    if (!a.isMoving() && !b.isMoving())
+                        continue;
+
                     if (checkMask(a, b) && a.collides(b)) {
                         collisions.computeIfAbsent(a.getId(), _ -> new ObjectArraySet<>()).add(b.getId());
                         collisions.computeIfAbsent(b.getId(), _ -> new ObjectArraySet<>()).add(a.getId());
@@ -90,6 +99,9 @@ public class CollisionManager {
 
                     for (Entity b : neighbors) {
                         if (a == b)
+                            continue;
+
+                        if (!a.isMoving() && !b.isMoving())
                             continue;
 
                         if (checkMask(a, b) && a.collides(b)) {
@@ -128,21 +140,29 @@ public class CollisionManager {
         if (dir.isZero())
             return new int[0][0];
 
-        dir = dir.cpy().nor();
-
         int dx = Math.round(dir.x);
         int dy = Math.round(dir.y);
 
-        Array<int[]> offsets = new Array<>();
+        long key = ((long) (dx + 1) << 2) | (dy + 1);
+        return DIRECTION_OFFSETS.getOrDefault(key, new int[0][0]);
+    }
 
-        offsets.add(new int[]{dx, dy});
 
-        if (dx != 0)
-            offsets.add(new int[]{dx, 0});
-        if (dy != 0)
-            offsets.add(new int[]{0, dy});
+    private static Long2ObjectArrayMap<int[][]> createDirectionOffsets() {
+        Long2ObjectArrayMap<int[][]> map = new Long2ObjectArrayMap<>();
 
-        return offsets.toArray(int[].class);
+        BiFunction<Integer, Integer, Long> key = (x, y) -> ((long) (x + 1) << 2) | (y + 1);
+
+        map.put((long) key.apply(1, 0),  new int[][]{{1, 0}, {1, 0}});     // East
+        map.put((long) key.apply(-1, 0), new int[][]{{-1, 0}, {-1, 0}});   // West
+        map.put((long) key.apply(0, 1),  new int[][]{{0, 1}, {0, 1}});     // North
+        map.put((long) key.apply(0, -1), new int[][]{{0, -1}, {0, -1}});   // South
+        map.put((long) key.apply(1, 1),  new int[][]{{1, 1}, {1, 0}, {0, 1}});     // NE
+        map.put((long) key.apply(-1, 1), new int[][]{{-1, 1}, {-1, 0}, {0, 1}});   // NW
+        map.put((long) key.apply(1, -1), new int[][]{{1, -1}, {1, 0}, {0, -1}});   // SE
+        map.put((long) key.apply(-1, -1), new int[][]{{-1, -1}, {-1, 0}, {0, -1}});// SW
+
+        return map;
     }
 
     private static boolean checkMask(Entity a, Entity b) {

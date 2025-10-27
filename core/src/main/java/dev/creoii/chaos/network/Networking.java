@@ -23,6 +23,7 @@ public class Networking {
         kryo.register(EntityRemoveS2C.class, PacketSerializer.INSTANCE);
         kryo.register(RemoveEntitiesS2C.class, PacketSerializer.INSTANCE);
         kryo.register(EntitySpawnS2C.class, PacketSerializer.INSTANCE);
+        kryo.register(CharacterJoinS2C.class, PacketSerializer.INSTANCE);
         kryo.register(SpawnEntitiesS2C.class, PacketSerializer.INSTANCE);
         kryo.register(EntityDisplayS2C.class, PacketSerializer.INSTANCE);
         kryo.register(DisplayEntitiesS2C.class, PacketSerializer.INSTANCE);
@@ -56,6 +57,7 @@ public class Networking {
         PacketSerializer.INSTANCE.register(EntityRemoveS2C.class, EntityRemoveS2C::write, EntityRemoveS2C::read);
         PacketSerializer.INSTANCE.register(RemoveEntitiesS2C.class, RemoveEntitiesS2C::write, RemoveEntitiesS2C::read);
         PacketSerializer.INSTANCE.register(EntitySpawnS2C.class, EntitySpawnS2C::write, EntitySpawnS2C::read);
+        PacketSerializer.INSTANCE.register(CharacterJoinS2C.class, CharacterJoinS2C::write, CharacterJoinS2C::read);
         PacketSerializer.INSTANCE.register(SpawnEntitiesS2C.class, SpawnEntitiesS2C::write, SpawnEntitiesS2C::read);
         PacketSerializer.INSTANCE.register(EntityDisplayS2C.class, EntityDisplayS2C::write, EntityDisplayS2C::read);
         PacketSerializer.INSTANCE.register(DisplayEntitiesS2C.class, DisplayEntitiesS2C::write, DisplayEntitiesS2C::read);

@@ -60,7 +60,8 @@ public class Slot {
         Slot[][] array = new Slot[r][c];
 
         for (int i = 0; i < r; ++i) {
-            for (int j = 0; j < list.get(i).size(); ++j) {
+            int size = list.get(i).size();
+            for (int j = 0; j < size; ++j) {
                 array[i][j] = list.get(i).get(j);
             }
         }

@@ -11,8 +11,9 @@ public record RemoveEntitiesS2C(List<Integer> ids) {
     public static final Codec<RemoveEntitiesS2C> CODEC = Codec.INT.listOf().xmap(RemoveEntitiesS2C::new, RemoveEntitiesS2C::ids);
 
     public static void write(Output output, RemoveEntitiesS2C o) {
-        output.writeInt(o.ids.size());
-        for (int i = 0; i < o.ids.size(); ++i) {
+        int size = o.ids.size();
+        output.writeInt(size);
+        for (int i = 0; i < size; ++i) {
             output.writeInt(o.ids.get(i));
         }
     }

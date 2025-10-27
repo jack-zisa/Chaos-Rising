@@ -6,5 +6,6 @@
     "type": "simple",
     "speed": 10
   },
-  "piercing": true
+  "piercing": true,
+  "angle_offset": -45
 }

@@ -12,5 +12,6 @@
       "duration": 150,
       "curve": "ease_in"
     }
-  }
+  },
+  "angle_offset": -45
 }

@@ -42,7 +42,7 @@ public class BulletEntity extends Entity {
     @Nullable
     @Override
     public EntityCustomData getCustomPacketData() {
-        return new BulletData(0f, 0f);
+        return new BulletData(getType().id(), 0f, 0f);
     }
 
     public Entity getParent() {

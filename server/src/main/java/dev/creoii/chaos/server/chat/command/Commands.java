@@ -239,7 +239,8 @@ public final class Commands {
                     return Command.Result.FAIL;
                 }
 
-                for (int i = character.getStatusEffects().size() - 1; i >= 0; --i) {
+                int size = character.getStatusEffects().size();
+                for (int i = size - 1; i >= 0; --i) {
                     if (character.getStatusEffects().get(i).getType().id().equals(effectType))
                         character.getStatusEffects().remove(i);
                 }
