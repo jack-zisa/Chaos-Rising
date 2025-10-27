@@ -110,6 +110,23 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
 
     @Override
     public void dispose() {
+        listener.disconnected(networkQueue.connection());
+
+        if (client.isConnected()) {
+            client.close();
+        }
+
+        try {
+            Thread.sleep(50);
+        } catch (InterruptedException ignored) {}
+
+        client.stop();
+        try {
+            client.dispose();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         renderer.dispose();
         assetManager.dispose();
     }

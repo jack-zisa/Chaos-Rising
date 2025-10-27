@@ -194,7 +194,6 @@ public class ServerListener extends Listener {
         }
 
         else if (object instanceof CharacterLeaveC2S(int id)) {
-            System.out.println("character leave");
             game.getEntityManager().removeEntity(id);
         }
     }
