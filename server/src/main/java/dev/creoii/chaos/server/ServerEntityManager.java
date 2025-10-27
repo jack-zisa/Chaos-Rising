@@ -8,6 +8,8 @@ import dev.creoii.chaos.network.s2c.*;
 import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.Tickable;
 import dev.creoii.chaos.util.event.SpawnEntityEvent;
+import dev.creoii.chaos.util.provider.Provider;
+import dev.creoii.chaos.util.provider.vecprovider.VecProvider;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
@@ -25,6 +27,32 @@ public class ServerEntityManager extends EntityManager<Entity> implements Tickab
         removedEntities = new IntArrayList();
         moveEntries = new ObjectArrayList<>();
         game.getTickManager().addTickable(this);
+    }
+
+    public <E extends Entity, T extends EntityType<E>> void addEntities(T type, VecProvider posProvider, Map<String, Object> customData, int count) {
+        List<SpawnEntitiesS2C.Entry> spawnedEntities = new ArrayList<>();
+        List<DisplayEntitiesS2C.Entry> displayedEntities = new ArrayList<>();
+
+        for (int i = 0; i < count; ++i) {
+            Vector2 pos = posProvider.get(new Provider.Context(getGame(), null, getGame().getGametime(), Vector2.Zero, getGame().getRandom()));
+            E spawned = type.create(getGame(), getNextId(), pos, customData);
+            getEntities(type.group()).put(spawned.getId(), spawned);
+
+            ((ServerGame) getGame()).getTickManager().addTickable(spawned);
+
+            SpawnEntityEvent.EVENT.invoker().onSpawnEntity(getGame(), spawned.getId());
+
+            spawnedEntities.add(new SpawnEntitiesS2C.Entry(spawned.getId(), spawned.getPos().x, spawned.getPos().y, spawned.getCustomPacketData()));
+            displayedEntities.add(new DisplayEntitiesS2C.Entry(spawned.getId(), type.id(), type.scale()));
+        }
+
+        setSize(getSize() + count);
+
+        int size = spawnedEntities.size();
+        for (int i = 0; i < size; i += 50) {
+            getGame().getServer().sendToAllTCP(new SpawnEntitiesS2C(spawnedEntities.subList(i, Math.min(i + 50, spawnedEntities.size()))));
+            getGame().getServer().sendToAllTCP(new DisplayEntitiesS2C(displayedEntities.subList(i, Math.min(i + 50, displayedEntities.size()))));
+        }
     }
 
     public <E extends Entity, T extends EntityType<E>> E addEntity(T type, Vector2 pos, Map<String, Object> customData) {

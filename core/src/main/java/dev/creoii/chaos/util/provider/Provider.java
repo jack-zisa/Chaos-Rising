@@ -11,7 +11,7 @@ public interface Provider<T> {
 
     record Context(Game game, Entity sourceEntity, int startTime, Vector2 startPos, Random random) {
         public static Context of(Entity sourceEntity, int startTime) {
-            return new Context(sourceEntity.getGame(), sourceEntity, startTime, sourceEntity.getPos(), new Random());
+            return new Context(sourceEntity.getGame(), sourceEntity, startTime, sourceEntity.getPos(), sourceEntity.getGame().getRandom());
         }
     }
 }

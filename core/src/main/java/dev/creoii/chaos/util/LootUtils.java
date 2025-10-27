@@ -9,11 +9,8 @@ import dev.creoii.chaos.loot.LootTable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 public final class LootUtils {
-    private static final Random RANDOM = new Random();
-
     public static void fillInventory(Game game, Inventory inventory, LootTable lootTable, int rolls) {
         List<ItemStack> loot = lootTable.roll(game, rolls);
         List<Slot> availableSlots = new ArrayList<>();
@@ -28,7 +25,7 @@ public final class LootUtils {
         if (availableSlots.isEmpty())
             return;
 
-        Collections.shuffle(availableSlots, RANDOM);
+        Collections.shuffle(availableSlots, game.getRandom());
 
         for (ItemStack stack : loot) {
             Slot slot = availableSlots.removeFirst();

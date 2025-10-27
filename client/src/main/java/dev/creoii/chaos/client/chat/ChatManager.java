@@ -8,6 +8,7 @@ import dev.creoii.chaos.client.ClientGame;
 import dev.creoii.chaos.network.c2s.ChatMessageSendC2S;
 import dev.creoii.chaos.network.c2s.ExecuteCommandC2S;
 import dev.creoii.chaos.util.event.ExecuteCommandEvent;
+import dev.creoii.chaos.util.event.MessageChatEvent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -89,6 +90,7 @@ public class ChatManager extends InputAdapter {
                     Message message = new Message(game.getCharacterId(), input.toString());
                     messages.add(message);
                     game.getClient().sendTCP(new ChatMessageSendC2S(message));
+                    MessageChatEvent.EVENT.invoker().onMessageChat(game, message);
                 }
             }
             input.setLength(0);

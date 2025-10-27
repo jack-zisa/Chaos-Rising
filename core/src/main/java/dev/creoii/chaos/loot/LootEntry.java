@@ -11,8 +11,6 @@ import dev.creoii.chaos.util.provider.Provider;
 import dev.creoii.chaos.util.provider.numberprovider.ConstantNumberProvider;
 import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
 
-import java.util.Random;
-
 public record LootEntry(String item, int weight, NumberProvider count) {
     public static final Codec<LootEntry> CODEC = RecordCodecBuilder.create(instance -> {
         return instance.group(
@@ -26,6 +24,6 @@ public record LootEntry(String item, int weight, NumberProvider count) {
         Item item = DataManager.getItem(item());
         if (item == null)
             return ItemStack.EMPTY;
-        return new ItemStack(item, count.getInt(new Provider.Context(game, null, game.getGametime(), Vector2.Zero, new Random())));
+        return new ItemStack(item, count.getInt(new Provider.Context(game, null, game.getGametime(), Vector2.Zero, game.getRandom())));
     }
 }

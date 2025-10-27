@@ -15,13 +15,14 @@ import dev.creoii.chaos.item.Item;
 import dev.creoii.chaos.network.s2c.LivingStatUpdateS2C;
 import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.logging.Logger;
+import dev.creoii.chaos.util.provider.vecprovider.ConstantVecProvider;
+import dev.creoii.chaos.util.provider.vecprovider.RandomBetweenVecProvider;
 import dev.creoii.chaos.util.stat.Stat;
 
 import javax.annotation.Nullable;
 import java.util.*;
 
 public final class Commands {
-    private static final Random RANDOM = new Random();
     public static final Logger LOGGER = new Logger(Commands.class.getSimpleName());
     static final ObjectMap<String, Command> ALL = new ObjectMap<>();
 
@@ -131,8 +132,8 @@ public final class Commands {
                 int y1 = Integer.parseInt(args[2]) * (int) Entity.COORDINATE_SCALE;
                 int x2 = Integer.parseInt(args[3]) * (int) Entity.COORDINATE_SCALE;
                 int y2 = Integer.parseInt(args[4]) * (int) Entity.COORDINATE_SCALE;
-                float x = x1 + RANDOM.nextInt(Math.max(1, x2 - x1));
-                float y = y1 + RANDOM.nextInt(Math.max(1, y2 - y1));
+                float x = x1 + game.getRandom().nextInt(Math.max(1, x2 - x1));
+                float y = y1 + game.getRandom().nextInt(Math.max(1, y2 - y1));
                 game.getEntityManager().addEntity(enemy, new Vector2(x, y));
                 return Command.Result.SUCCESS;
             } else if (argCount == 6) {
@@ -149,11 +150,8 @@ public final class Commands {
                     y1 = y2;
                 }
 
-                for (int i = 0; i < count; i++) {
-                    float x = x1 + RANDOM.nextInt(Math.max(1, x2 - x1));
-                    float y = y1 + RANDOM.nextInt(Math.max(1, y2 - y1));
-                    game.getEntityManager().addEntity(enemy, new Vector2(x, y));
-                }
+                game.getEntityManager().addEntities(enemy, new RandomBetweenVecProvider(new ConstantVecProvider(x1, y1), new ConstantVecProvider(x2, y2)), new HashMap<>(), count);
+
                 return Command.Result.SUCCESS;
             }
             return Command.Result.FAIL;

@@ -12,7 +12,6 @@ import java.util.*;
 
 public abstract class Entity implements Tickable {
     public static final float COORDINATE_SCALE = 32f;
-    public static final Random RANDOM = new Random();
     private final Game game;
     private final EntityType<? extends Entity> type;
     private int id;

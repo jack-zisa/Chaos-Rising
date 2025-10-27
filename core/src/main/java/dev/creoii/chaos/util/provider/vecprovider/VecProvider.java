@@ -25,6 +25,7 @@ public interface VecProvider extends Provider<Vector2> {
         case DIRECTION -> DirectionVecProvider.CODEC;
         case NORMALIZED -> NormalizedVecProvider.CODEC;
         case PERPENDICULAR -> PerpendicularVecProvider.CODEC;
+        case RANDOM_BETWEEN -> RandomBetweenVecProvider.CODEC;
         case RELATIVE_TO -> RelativeToVecProvider.CODEC;
         case ROTATE_ANGLE -> RotateAngleVecProvider.CODEC;
         case ROTATED_OFFSET -> RotatedOffsetVecProvider.CODEC;
@@ -64,6 +65,7 @@ public interface VecProvider extends Provider<Vector2> {
         DIRECTION,
         NORMALIZED,
         PERPENDICULAR,
+        RANDOM_BETWEEN,
         RELATIVE_TO,
         ROTATE_ANGLE,
         ROTATED_OFFSET,

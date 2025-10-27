@@ -4,8 +4,8 @@
   "attack": {
     "type": "simple",
     "bullet_id": "dark_magic",
-    "damage": 4,
-    "bullet_count": 6,
+    "damage": 8,
+    "bullet_count": 5,
     "arc_gap": 12
   },
   "rate_of_fire": 2

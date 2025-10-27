@@ -20,6 +20,7 @@ import dev.creoii.chaos.item.WeaponItem;
 import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.Mutable;
 import dev.creoii.chaos.util.event.ExecuteCommandEvent;
+import dev.creoii.chaos.util.event.MessageChatEvent;
 import dev.creoii.chaos.util.provider.vecprovider.ConstantVecProvider;
 import dev.creoii.chaos.util.provider.vecprovider.SourcePosVecProvider;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
@@ -115,6 +116,7 @@ public class ServerListener extends Listener {
 
         else if (object instanceof ChatMessageSendC2S(Message message)) {
             game.getServer().sendToAllExceptTCP(connection.getID(), new ChatMessageReceiveS2C(message));
+            MessageChatEvent.EVENT.invoker().onMessageChat(game, message);
         }
 
         else if (object instanceof SlotUpdateC2S(int id, SlotUpdateC2S.Action action, InventoryType from, InventoryType to, Slot fromSlot, Slot toSlot)) {
