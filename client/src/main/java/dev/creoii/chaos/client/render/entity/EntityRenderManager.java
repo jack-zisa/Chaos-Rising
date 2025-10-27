@@ -37,7 +37,7 @@ public class EntityRenderManager extends EntityManager<EntityRenderData> impleme
 
     public void addEntity(int id, EntityRenderData entity) {
         setSize(getSize() + 1);
-        EntityRenderers.getRenderer(entity).init(this);
+        EntityRenderers.getRenderer(entity).init(this, entity);
         visibleEntities.put(id, entity);
         SpawnEntityEvent.EVENT.invoker().onSpawnEntity(getGame(), id);
     }

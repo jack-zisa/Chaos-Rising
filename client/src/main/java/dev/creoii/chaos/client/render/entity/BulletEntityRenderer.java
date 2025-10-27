@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import dev.creoii.chaos.client.ClientGame;
 import dev.creoii.chaos.client.render.Renderer;
 import dev.creoii.chaos.client.render.entity.data.BulletEntityRenderData;
 import dev.creoii.chaos.util.provider.Provider;
@@ -19,7 +20,7 @@ public class BulletEntityRenderer extends SimpleEntityRenderer<BulletEntityRende
 
     @Override
     public void render(BulletEntityRenderData entity, Renderer renderer, @Nullable SpriteBatch batch, @Nullable ShapeRenderer shapeRenderer, BitmapFont font, float delta, boolean debug) {
-        Sprite sprite = EntityRenderManager.getSprite(renderer.getGame(), entity);
+        Sprite sprite = entity.sprite;
         if (batch != null) {
             float predictedX = entity.x + entity.xv * delta;
             float predictedY = entity.y + entity.yv * delta;

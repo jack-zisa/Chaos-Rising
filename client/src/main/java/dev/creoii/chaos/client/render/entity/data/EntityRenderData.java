@@ -1,8 +1,10 @@
 package dev.creoii.chaos.client.render.entity.data;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import dev.creoii.chaos.util.EntityGroup;
 
 public class EntityRenderData {
+    public Sprite sprite;
     public final int id;
     public final EntityGroup group;
     public float x;

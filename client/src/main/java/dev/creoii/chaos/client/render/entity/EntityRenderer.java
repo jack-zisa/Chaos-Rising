@@ -23,7 +23,7 @@ public abstract class EntityRenderer<T extends EntityRenderData> {
 
     public abstract void render(T entity, Renderer renderer, @Nullable SpriteBatch batch, @Nullable ShapeRenderer shapeRenderer, BitmapFont font, float delta, boolean debug);
 
-    public abstract void init(EntityRenderManager manager);
+    public abstract void init(EntityRenderManager manager, T entity);
 
     protected static void renderDebugCollisionBox(ShapeRenderer shapeRenderer, EntityRenderData entity, Sprite sprite) {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
