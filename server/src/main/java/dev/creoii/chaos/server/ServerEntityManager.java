@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.EntityManager;
 import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.entity.EntityType;
+import dev.creoii.chaos.entity.serialization.EntityCustomData;
 import dev.creoii.chaos.network.s2c.*;
 import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.Tickable;
@@ -74,8 +75,10 @@ public class ServerEntityManager extends EntityManager<Entity> implements Tickab
         getEntities(type.group()).put(spawned.getId(), spawned);
 
         ((ServerGame) getGame()).getTickManager().addTickable(spawned);
-        getGame().getServer().sendToTCP(connectionId, new CharacterJoinS2C(spawned.getId(), pos.x, pos.y, spawned.getCustomPacketData()));
-        getGame().getServer().sendToAllExceptTCP(connectionId, new EntitySpawnS2C(spawned.getId(), pos.x, pos.y, spawned.getCustomPacketData()));
+
+        EntityCustomData data = spawned.getCustomPacketData();
+        getGame().getServer().sendToTCP(connectionId, new CharacterJoinS2C(spawned.getId(), pos.x, pos.y, data));
+        getGame().getServer().sendToAllExceptTCP(connectionId, new EntitySpawnS2C(spawned.getId(), pos.x, pos.y, data));
         getGame().getServer().sendToAllTCP(new EntityDisplayS2C(spawned.getId(), type.id(), type.scale()));
 
         SpawnEntityEvent.EVENT.invoker().onSpawnEntity(getGame(), spawned.getId());

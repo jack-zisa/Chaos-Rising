@@ -263,11 +263,9 @@ public class ClientListener extends Listener {
                             };
                         } else return new Slot(r, c);
                     })));
+                    game.setCharacterId(id);
                     game.getEntityManager().addEntity(id, character);
-                    if (game.getCharacterId() == -1) {
-                        game.setCharacterId(id);
-                        game.getInputManager().addInput(new CharacterController());
-                    }
+                    game.getInputManager().addInput(new CharacterController());
                 }
             }
             case SyncDataS2C(byte[] data) -> {

@@ -16,6 +16,9 @@ import dev.creoii.chaos.util.event.SpawnEntityEvent;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 public class EntityRenderManager extends EntityManager<EntityRenderData> implements Renderable {
     private static final float RENDER_DISTANCE = 17578.125f * Entity.COORDINATE_SCALE; // sqrt(17578.125 * 32) = 750 units
@@ -66,11 +69,17 @@ public class EntityRenderManager extends EntityManager<EntityRenderData> impleme
         float camY = renderer.getCamera().position.y - renderer.getCamera().viewportHeight / 2;
         float camW = renderer.getCamera().viewportWidth;
         float camH = renderer.getCamera().viewportHeight;
-        for (EntityRenderData entity : visibleEntities.values()) {
-            if (isEntityInView(renderer.getCamera().position, camX, camY, camW, camH, entity)) {
-                ++visibleSize;
-                EntityRenderers.getRenderer(entity).render(entity, renderer, batch, shapeRenderer, font, delta, debug);
-            }
+
+        List<EntityRenderData> visible = new ArrayList<>();
+        for (EntityRenderData e : visibleEntities.values()) {
+            if (isEntityInView(renderer.getCamera().position, camX, camY, camW, camH, e))
+                visible.add(e);
+        }
+        visible.sort(Comparator.comparingDouble(e -> -e.renderY));
+
+        for (EntityRenderData entity : visible) {
+            ++visibleSize;
+            EntityRenderers.getRenderer(entity).render(entity, renderer, batch, shapeRenderer, font, delta, debug);
         }
     }
 

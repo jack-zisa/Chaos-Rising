@@ -172,13 +172,15 @@ public class ServerListener extends Listener {
         else if (object instanceof CharacterJoinC2S()) {
             Object2ObjectArrayMap<String, Object> customData = new Object2ObjectArrayMap<>();
             customData.put("connection_id", connection.getID());
-            game.getEntityManager().addCharacter(connection.getID(), new CharacterEntityType(new Mutable<>(DataManager.getCharacterClass("wizard"))), new Vector2(0, 0), customData);
+            CharacterEntity character = game.getEntityManager().addCharacter(connection.getID(), new CharacterEntityType(new Mutable<>(DataManager.getCharacterClass("wizard"))), new Vector2(0, 0), customData);
 
             ObjectList<SpawnEntitiesS2C.Entry> spawnEntries = new ObjectArrayList<>();
             ObjectList<DisplayEntitiesS2C.Entry> displayEntries = new ObjectArrayList<>();
             game.getEntityManager().getAllEntities().values().forEach(uuidEntityMap -> uuidEntityMap.values().forEach(entity -> {
-                spawnEntries.add(new SpawnEntitiesS2C.Entry(entity.getId(), entity.getPos().x, entity.getPos().y, entity.getCustomPacketData()));
-                displayEntries.add(new DisplayEntitiesS2C.Entry(entity.getId(), entity.getType().id(), entity.getType().scale()));
+                if (entity.getId() != character.getId()) {
+                    spawnEntries.add(new SpawnEntitiesS2C.Entry(entity.getId(), entity.getPos().x, entity.getPos().y, entity.getCustomPacketData()));
+                    displayEntries.add(new DisplayEntitiesS2C.Entry(entity.getId(), entity.getType().id(), entity.getType().scale()));
+                }
             }));
 
             if (!spawnEntries.isEmpty()) {
