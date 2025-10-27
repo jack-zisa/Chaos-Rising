@@ -21,7 +21,7 @@ public class CharacterEntity extends LivingEntity implements Attacker {
     public CharacterEntity(Game game, EntityType<? extends CharacterEntity> type, int id, Vector2 pos, int connectionId) {
         super(game, type, id, pos, ((CharacterEntityType) type).characterClass().get().baseStatContainer().copy(), ((CharacterEntityType) type).characterClass().get().baseStatContainer().copy());
         this.connectionId = connectionId;
-        this.inventory = new CharacterInventory(this);
+        inventory = new CharacterInventory(this);
         lastAttackTime = 0L;
     }
 
@@ -30,7 +30,7 @@ public class CharacterEntity extends LivingEntity implements Attacker {
         super.reinit(id, pos, data);
         connectionId = (int) data.get("connection_id");
         inventory = new CharacterInventory(this);
-        lastAttackTime = 0;
+        lastAttackTime = 0L;
     }
 
     @Override

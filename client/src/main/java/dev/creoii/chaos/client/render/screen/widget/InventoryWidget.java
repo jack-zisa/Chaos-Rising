@@ -31,7 +31,7 @@ public class InventoryWidget extends Widget {
     protected ItemStack dragStack;
 
     public InventoryWidget(Screen parent, Vector2 pos, Slot[][] slots, Predicate<ClientGame> activePredicate) {
-        super(parent, pos, slots.length * SLOT_SIZE, slots.length * SLOT_SIZE);
+        super(parent, pos, (slots.length + 1) * SLOT_SIZE, (slots[0].length + 1) * SLOT_SIZE);
         this.slots = slots;
         this.activePredicate = activePredicate;
     }
@@ -106,7 +106,7 @@ public class InventoryWidget extends Widget {
         if (getParent() instanceof InventoryScreen inventoryScreen && isMouseOver()) {
             Slot touched = inventoryScreen.getMouseOverSlot();
             if (touched != null && touched.hasItem()) {
-                if (!touched.getStack().clickInSlot(manager.getGame(), manager.getGame().getCharacter().id, touched)) {
+                if (!touched.getStack().clickInSlot(manager.getGame(), manager.getGame().getCharacterId(), touched)) {
                     dragSource = touched;
                     dragStack = touched.takeStack();
                 }
@@ -129,11 +129,11 @@ public class InventoryWidget extends Widget {
                 } else {
                     if (touched.hasItem()) {
                         if (dragSource.canAccept(touched.getStack().getItem())) {
-                            game.getClient().sendTCP(new SlotUpdateC2S(manager.getGame().getCharacter().id, SlotUpdateC2S.Action.SWAP, InventoryType.MAIN, InventoryType.MAIN, dragSource, touched));
+                            game.getClient().sendTCP(new SlotUpdateC2S(manager.getGame().getCharacterId(), SlotUpdateC2S.Action.SWAP, InventoryType.MAIN, InventoryType.MAIN, dragSource, touched));
                         } else
                             dragSource.setStack(dragStack.copy());
                     } else {
-                        game.getClient().sendTCP(new SlotUpdateC2S(manager.getGame().getCharacter().id, SlotUpdateC2S.Action.MOVE, InventoryType.MAIN, InventoryType.MAIN, dragSource, touched));
+                        game.getClient().sendTCP(new SlotUpdateC2S(manager.getGame().getCharacterId(), SlotUpdateC2S.Action.MOVE, InventoryType.MAIN, InventoryType.MAIN, dragSource, touched));
 
                         /*if (getInventory().isEmpty()) {
                             if (game.getCharacter().getLootUuid() != null) {
@@ -144,7 +144,7 @@ public class InventoryWidget extends Widget {
                     }
                 }
             } else {
-                game.getClient().sendTCP(new DropSlotItemC2S(manager.getGame().getCharacter().id, dragSource));
+                game.getClient().sendTCP(new DropSlotItemC2S(manager.getGame().getCharacterId(), dragSource));
             }
             dragStack = null;
         }

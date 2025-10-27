@@ -191,10 +191,19 @@ public class ClientListener extends Listener {
             case StatusEffectS2C(int id, StatusEffect statusEffect) -> {
                 //((LivingEntity) game.getEntityManager().getEntityData(uuid)).addStatusEffect(statusEffect);
             }
-            case InventoryUpdateS2C(InventoryType type, List<Slot> slots) -> {
-                for (Slot slot : slots) {
-                    if (type == InventoryType.MAIN) {
-                        game.getCharacter().slots[slot.getR()][slot.getC()] = slot;
+            case InventoryUpdateS2C(int id, InventoryType type, List<Slot> slots) -> {
+                EntityRenderData entityRenderData = game.getEntityManager().getEntityData(id);
+                if (entityRenderData instanceof CharacterEntityRenderData character) {
+                    for (Slot slot : slots) {
+                        if (type == InventoryType.MAIN) {
+                            character.slots[slot.getR()][slot.getC()] = slot;
+                        }
+                    }
+                } else if (entityRenderData instanceof LootDropEntityRenderData lootDrop) {
+                    for (Slot slot : slots) {
+                        if (type == InventoryType.MAIN) {
+                            lootDrop.slots[slot.getR()][slot.getC()] = slot;
+                        }
                     }
                 }
             }

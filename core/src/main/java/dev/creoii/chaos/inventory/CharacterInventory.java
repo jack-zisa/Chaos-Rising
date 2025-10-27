@@ -3,9 +3,11 @@ package dev.creoii.chaos.inventory;
 import dev.creoii.chaos.entity.CharacterEntity;
 import dev.creoii.chaos.item.EquipmentItem;
 import dev.creoii.chaos.item.ItemStack;
+import dev.creoii.chaos.network.c2s.SlotUpdateC2S;
 import dev.creoii.chaos.network.s2c.InventoryUpdateS2C;
 import dev.creoii.chaos.util.stat.ModifierEntry;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class CharacterInventory extends Inventory {
@@ -40,8 +42,6 @@ public class CharacterInventory extends Inventory {
                     }
                 });
             }
-            if (!getCharacter().getGame().isClient())
-                getCharacter().getGame().getServer().sendToTCP(getCharacter().getConnectionId(), new InventoryUpdateS2C(InventoryType.MAIN, List.of(slot)));
         }
     }
 
@@ -61,9 +61,23 @@ public class CharacterInventory extends Inventory {
                     }
                 });
             }
-            if (!getCharacter().getGame().isClient())
-                getCharacter().getGame().getServer().sendToTCP(getCharacter().getConnectionId(), new InventoryUpdateS2C(InventoryType.MAIN, List.of(slot)));
         }
+    }
+
+    @Nullable
+    @Override
+    public Slot addItem(ItemStack stack) {
+        Slot slot = super.addItem(stack);
+        if (slot != null && !character.getGame().isClient())
+            character.getGame().getServer().sendToAllTCP(new InventoryUpdateS2C(character.getId(), InventoryType.MAIN, List.of(slot)));
+        return slot;
+    }
+
+    @Override
+    public void updateSlot(SlotUpdateC2S.Action action, Inventory from, Inventory to, Slot fromSlot, Slot toSlot) {
+        super.updateSlot(action, from, to, fromSlot, toSlot);
+        if (!character.getGame().isClient())
+            character.getGame().getServer().sendToAllTCP(new InventoryUpdateS2C(character.getId(), InventoryType.MAIN, List.of(fromSlot, toSlot)));
     }
 
     public Slot[] getHotbar() {
