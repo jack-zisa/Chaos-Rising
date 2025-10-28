@@ -2,15 +2,15 @@
   "id": "test_skeleton",
   "entries": [
     {
-      "item": "test",
+      "item": "occult",
       "weight": 3
     },
     {
-      "item": "test_random",
+      "item": "brilliance",
       "weight": 1
     },
     {
-      "item": "test_circle",
+      "item": "obsidian_kris",
       "weight": 1
     }
   ]

@@ -30,16 +30,8 @@ public record LootDropEntityType(String id, float scale, BooleanProvider removeE
         return scale * Entity.COORDINATE_SCALE;
     }
 
+    @Override
     public LootDropEntity create(Game game, int id, Vector2 pos, Map<String, Object> customData) {
-        LootDropEntity lootDrop = new LootDropEntity(game, this, id, pos, new Inventory(2, 4));
-        /*lootDrop.centerPos = new Vector2();
-        lootDrop.colliderRect = new Rectangle();
-        lootDrop.colliderRect.setPosition(pos);
-        lootDrop.colliderRect.setSize(scale());
-        lootDrop.collidingWith = new HashSet<>();
-        lootDrop.spawnTime = game.getGametime();
-        lootDrop.getCenterPos();
-        lootDrop.postSpawn();*/
-        return lootDrop;
+        return new LootDropEntity(game, this, id, pos, new Inventory(2, 4));
     }
 }

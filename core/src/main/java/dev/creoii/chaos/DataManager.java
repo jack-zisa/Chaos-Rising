@@ -21,7 +21,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -139,7 +138,7 @@ public class DataManager {
         SCHEMA.put(SchemaType.CLASS, CharacterClass.CODEC);
         SCHEMA.put(SchemaType.ITEM, Item.CODEC);
         SCHEMA.put(SchemaType.ENTITY_TYPE, EntityType.CODEC);
-        SCHEMA.put(SchemaType.LOOT_TABLE, LootTable.CODEC);
+        SCHEMA.put(SchemaType.LOOT_TABLE, LootTable.OBJECT_CODEC);
 
         for (SchemaType schemaType : SCHEMA.keySet()) {
             DATA.put(schemaType, new Object2ObjectArrayMap<>());

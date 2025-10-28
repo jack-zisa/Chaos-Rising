@@ -2,31 +2,35 @@
   "id": "test_beholder",
   "entries": [
     {
-      "item": "test_random",
+      "item": "obsidian_kris",
       "weight": 1
     },
     {
-      "item": "test_spread",
+      "item": "brilliance",
       "weight": 1
     },
     {
-      "item": "test_three",
+      "item": "occult",
       "weight": 1
     },
     {
-      "item": "test_two",
+      "item": "serpent_lake_orb",
       "weight": 1
     },
     {
-      "item": "test_circle",
+      "item": "malice",
       "weight": 1
     },
     {
-      "item": "test_backwards",
+      "item": "polar_blade",
       "weight": 1
     },
     {
-      "item": "test_multi",
+      "item": "twilight",
+      "weight": 1
+    },
+    {
+      "item": "shattered_crown",
       "weight": 1
     }
   ]

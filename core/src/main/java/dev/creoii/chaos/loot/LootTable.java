@@ -1,5 +1,6 @@
 package dev.creoii.chaos.loot;
 
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.DataManager;
@@ -11,10 +12,11 @@ import it.unimi.dsi.fastutil.objects.ObjectList;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 public class LootTable implements Identifiable {
     public static final LootTable EMPTY = new LootTable("empty");
-    public static final Codec<LootTable> CODEC = RecordCodecBuilder.create(instance -> {
+    public static final Codec<LootTable> OBJECT_CODEC = RecordCodecBuilder.create(instance -> {
         return instance.group(
             Codec.STRING.fieldOf("id").forGetter(lootTable -> lootTable.id),
             LootEntry.CODEC.listOf().fieldOf("entries").forGetter(lootTable -> lootTable.entries)
@@ -24,7 +26,11 @@ public class LootTable implements Identifiable {
             return lootTable;
         });
     });
-    public static final Codec<LootTable> ID_CODEC = Codec.STRING.xmap(DataManager::getLootTable, lootTable -> lootTable.id);
+    public static final Codec<LootTable> CODEC = Codec.either(Codec.STRING, OBJECT_CODEC).xmap(
+        either -> either.map(DataManager::getLootTable, Function.identity()),
+        Either::right
+    );
+
     private final String id;
     private final ObjectList<LootEntry> entries = new ObjectArrayList<>();
 

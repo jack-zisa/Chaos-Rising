@@ -57,16 +57,32 @@ public class BulletEntity extends Entity {
         return direction;
     }
 
+    public void setDirection(Vector2 direction) {
+        this.direction = direction;
+    }
+
     public int getLifetime() {
         return lifetime;
+    }
+
+    public void setLifetime(int lifetime) {
+        this.lifetime = lifetime;
     }
 
     public int getDamage() {
         return damage;
     }
 
+    public void setDamage(int damage) {
+        this.damage = damage;
+    }
+
     public int getIndex() {
         return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
 
     @Override

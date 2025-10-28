@@ -117,7 +117,7 @@ public class Slot {
     }
 
     public boolean hasItem() {
-        return stack != ItemStack.EMPTY && stack.getCount() > 0;
+        return stack != null && !stack.isEmpty() && stack.getCount() > 0;
     }
 
     public boolean canAccept(Item item) {

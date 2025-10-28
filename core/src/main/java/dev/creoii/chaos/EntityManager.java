@@ -78,6 +78,23 @@ public class EntityManager<T> {
         return spawned;
     }
 
+    @SuppressWarnings("unchecked")
+    public <E extends Entity> E addEntity(E entity) {
+        entities.get(entity.getType().group()).put(entity.getId(), (T) entity);
+        ++size;
+        return entity;
+    }
+
+    public <E extends Entity> void addEntities(List<E> entities) {
+        entities.forEach(this::addEntity);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <E extends Entity> E getEntityFromPool(EntityGroup group) {
+        Pool<Entity> pool = pools.get(group);
+        return (E) pool.obtain();
+    }
+
     public Map<EntityGroup, Int2ObjectOpenHashMap<T>> getAllEntities() {
         return entities;
     }

@@ -27,7 +27,7 @@ public class SimpleEntityRenderer<T extends EntityRenderData> extends EntityRend
             float predictedX = entity.x + entity.xv * delta;
             float predictedY = entity.y + entity.yv * delta;
 
-            float alpha = 1f - (float) Math.pow(.001f, delta);
+            float alpha = Math.min(1f, delta * 17.5f);
             entity.renderX += (predictedX - entity.renderX) * alpha;
             entity.renderY += (predictedY - entity.renderY) * alpha;
 

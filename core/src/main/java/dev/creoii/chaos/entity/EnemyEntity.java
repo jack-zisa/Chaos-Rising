@@ -6,9 +6,11 @@ import dev.creoii.chaos.Game;
 import dev.creoii.chaos.entity.controller.EnemyController;
 import dev.creoii.chaos.entity.serialization.EnemyData;
 import dev.creoii.chaos.entity.serialization.EntityCustomData;
+import dev.creoii.chaos.loot.LootTable;
 import dev.creoii.chaos.util.LootUtils;
 
 import javax.annotation.Nullable;
+import java.util.HashMap;
 import java.util.Map;
 
 public class EnemyEntity extends LivingEntity implements Attacker {
@@ -60,11 +62,20 @@ public class EnemyEntity extends LivingEntity implements Attacker {
 
     @Override
     public void remove() {
-        if (((EnemyEntityType) getType()).lootTable() != null) {
-            int rolls = getGame().getRandom().nextInt(4);
-            if (rolls > 0) {
-                LootDropEntity lootDropEntity = getGame().getEntityManager().addEntity(DataManager.getLootDrop("bag"), getPos().cpy());
-                LootUtils.fillInventory(getGame(), lootDropEntity.getInventory(), ((EnemyEntityType) getType()).lootTable(), rolls);
+        if (!((EnemyEntityType) getType()).lootTableId().isEmpty()) {
+            LootTable lootTable = DataManager.getLootTable(((EnemyEntityType) getType()).lootTableId());
+            if (lootTable != null) {
+                int rolls = getGame().getRandom().nextInt(4);
+                if (rolls > 0) {
+                    LootDropEntityType lootDropType = DataManager.getLootDrop("bag");
+                    if (lootDropType != null) {
+                        LootDropEntity lootDropEntity = lootDropType.create(getGame(), getGame().getEntityManager().getNextId(), getPos().cpy(), new HashMap<>());
+                        LootUtils.fillInventory(getGame(), lootDropEntity.getInventory(), lootTable, rolls);
+                        if (!lootDropEntity.getInventory().isEmpty()) {
+                            getGame().getEntityManager().addEntity(lootDropEntity);
+                        } else lootDropEntity.remove();
+                    }
+                }
             }
         }
         super.remove();

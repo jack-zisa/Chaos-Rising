@@ -30,6 +30,48 @@ public class ServerEntityManager extends EntityManager<Entity> implements Tickab
         game.getTickManager().addTickable(this);
     }
 
+    @Override
+    public <E extends Entity> E addEntity(E entity) {
+        EntityType<?> type = entity.getType();
+        getEntities(type.group()).put(entity.getId(), entity);
+
+        ((ServerGame) getGame()).getTickManager().addTickable(entity);
+        getGame().getServer().sendToAllTCP(new EntitySpawnS2C(entity.getId(), entity.getPos().x, entity.getPos().y, entity.getCustomPacketData()));
+        getGame().getServer().sendToAllTCP(new EntityDisplayS2C(entity.getId(), type.id(), type.scale()));
+
+        SpawnEntityEvent.EVENT.invoker().onSpawnEntity(getGame(), entity.getId());
+
+        setSize(getSize() + 1);
+        return entity;
+    }
+
+    @Override
+    public <E extends Entity> void addEntities(List<E> entities) {
+        List<SpawnEntitiesS2C.Entry> spawnedEntities = new ArrayList<>();
+        List<DisplayEntitiesS2C.Entry> displayedEntities = new ArrayList<>();
+
+        int size = entities.size();
+        for (int i = 0; i < size; ++i) {
+            E entity = entities.get(i);
+
+            getEntities(entity.getType().group()).put(entity.getId(), entity);
+            ((ServerGame) getGame()).getTickManager().addTickable(entity);
+
+            SpawnEntityEvent.EVENT.invoker().onSpawnEntity(getGame(), entity.getId());
+
+            spawnedEntities.add(new SpawnEntitiesS2C.Entry(entity.getId(), entity.getPos().x, entity.getPos().y, entity.getCustomPacketData()));
+            displayedEntities.add(new DisplayEntitiesS2C.Entry(entity.getId(), entity.getType().id(), entity.getType().scale()));
+        }
+
+        setSize(getSize() + size);
+
+        size = spawnedEntities.size();
+        for (int i = 0; i < size; i += 50) {
+            getGame().getServer().sendToAllTCP(new SpawnEntitiesS2C(spawnedEntities.subList(i, Math.min(i + 50, spawnedEntities.size()))));
+            getGame().getServer().sendToAllTCP(new DisplayEntitiesS2C(displayedEntities.subList(i, Math.min(i + 50, displayedEntities.size()))));
+        }
+    }
+
     public <E extends Entity, T extends EntityType<E>> void addEntities(T type, VecProvider posProvider, Map<String, Object> customData, int count) {
         List<SpawnEntitiesS2C.Entry> spawnedEntities = new ArrayList<>();
         List<DisplayEntitiesS2C.Entry> displayedEntities = new ArrayList<>();

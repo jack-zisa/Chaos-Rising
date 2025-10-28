@@ -50,6 +50,10 @@ public class ItemStack {
         return new ItemStack(item, count);
     }
 
+    public boolean isEmpty() {
+        return item == null || count <= 0 || this == EMPTY;
+    }
+
     /**
      * @return false to allow dragging, true to disable dragging
      */

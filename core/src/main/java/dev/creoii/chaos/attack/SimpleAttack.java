@@ -58,22 +58,22 @@ public record SimpleAttack(String bulletId, NumberProvider damage, int bulletCou
         Vector2 direction = target.isPresent() ? target.get().get(context).sub(pos).nor() : targetPos.get(context).sub(pos).nor();
         float baseAngle = -arcGap * (bulletCount - 1) / 2f;
 
+        List<BulletEntity> bullets = new ArrayList<>();
         for (int i = 0; i < bulletCount; ++i) {
             float angle = baseAngle + i * arcGap;
 
-            Map<String, Object> customData = new HashMap<>();
-            customData.put("direction", direction.cpy().rotateDeg(angle + angleOffset.get(context)));
-            customData.put("index", i % 2 == 0 ? 1 : -1);
-            if (sourceEntity instanceof LivingEntity livingEntity)
-                customData.put("damage", Math.round(damage.getInt(context) * .5f + livingEntity.getStats().attack().value() / 50f));
-
             BulletEntityType bulletType = DataManager.getBullet(bulletId);
             if (bulletType != null) {
-                // use addEntities when implemented
-                BulletEntity bullet = sourceEntity.getGame().getEntityManager().addEntity(bulletType, pos.cpy(), customData);
+                BulletEntity bullet = bulletType.create(context.game(), context.game().getEntityManager().getNextId(), pos.cpy(), new HashMap<>());
+                bullet.setDamage(sourceEntity instanceof LivingEntity living ? Math.round(damage.getInt(context) * .5f + living.getStats().attack().value() / 50f) : 0);
+                bullet.setIndex(i % 2 == 0 ? 1 : -1);
+                bullet.setDirection(direction.cpy().rotateDeg(angle + angleOffset.get(context)));
                 bullet.setParent(sourceEntity);
+                bullets.add(bullet);
             }
         }
+
+        sourceEntity.getGame().getEntityManager().addEntities(bullets);
 
         attacker.setLastAttackTime(System.currentTimeMillis());
     }

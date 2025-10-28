@@ -31,16 +31,8 @@ public record CharacterEntityType(Mutable<CharacterClass> characterClass) implem
         return characterClass.get().scale() * Entity.COORDINATE_SCALE;
     }
 
+    @Override
     public CharacterEntity create(Game game, int id, Vector2 pos, Map<String, Object> customData) {
-        CharacterEntity character = new CharacterEntity(game, this, id, pos.cpy(), (int) customData.get("connection_id"));
-/*        character.centerPos = new Vector2();
-        character.colliderRect = new Rectangle();
-        character.colliderRect.setPosition(pos);
-        character.colliderRect.setSize(scale());
-        character.collidingWith = new HashSet<>();
-        character.spawnTime = game.getGametime();
-        character.getCenterPos();
-        character.postSpawn();*/
-        return character;
+        return new CharacterEntity(game, this, id, pos.cpy(), (int) customData.get("connection_id"));
     }
 }

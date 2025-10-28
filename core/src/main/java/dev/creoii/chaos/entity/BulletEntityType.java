@@ -37,16 +37,8 @@ public record BulletEntityType(String id, float scale, int lifetime, NumberProvi
         return scale * Entity.COORDINATE_SCALE;
     }
 
+    @Override
     public BulletEntity create(Game game, int id, Vector2 pos, Map<String, Object> customData) {
-        BulletEntity bullet = new BulletEntity(game, this, id, pos.cpy(), (Vector2) customData.get("direction"), lifetime, (int) customData.get("damage"), (int) customData.get("index"));
-        /*bullet.centerPos = new Vector2();
-        bullet.colliderRect = new Rectangle();
-        bullet.colliderRect.setPosition(pos);
-        bullet.colliderRect.setSize(scale());
-        bullet.collidingWith = new HashSet<>();
-        bullet.spawnTime = game.getGametime();*/
-        /*bullet.getCenterPos();*/
-        /*bullet.postSpawn();*/
-        return bullet;
+        return new BulletEntity(game, this, id, pos.cpy(), Vector2.Zero, lifetime, 0, 0);
     }
 }
