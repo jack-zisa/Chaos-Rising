@@ -10,25 +10,32 @@ import dev.creoii.chaos.entity.behavior.phase.Phase;
 import dev.creoii.chaos.entity.behavior.phase.PhaseKey;
 import dev.creoii.chaos.entity.controller.EnemyController;
 
-import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Random;
 
 public class MultiBehavior implements Behavior {
     public static final Random RANDOM = new Random();
-    public static final MapCodec<MultiBehavior> CODEC = RecordCodecBuilder.mapCodec(instance -> {
-        return instance.group(
-            Phase.CODEC.listOf().fieldOf("phases").forGetter(multiBehavior -> Arrays.stream(multiBehavior.getPhases()).toList()),
-            Codec.STRING.fieldOf("start_phase").forGetter(MultiBehavior::getStartPhaseKey)
-        ).apply(instance, (phases, s) -> {
-            HashBiMap<PhaseKey, Phase> map = HashBiMap.create();
-            int size = phases.size();
-            for (int i = 0; i < size; ++i) {
-                Phase phase = phases.get(i);
-                map.put(new PhaseKey(phase.getId(), i), phase);
-            }
-            return new MultiBehavior(map, s);
-        });
-    });
+    public static final MapCodec<MultiBehavior> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+        Codec.unboundedMap(Codec.STRING, Phase.CODEC).fieldOf("phases").forGetter(multiBehavior -> {
+                Map<String, Phase> map = new LinkedHashMap<>();
+                Phase[] phases = multiBehavior.getPhases();
+                for (int i = 0; i < phases.length; ++i) {
+                    map.put(multiBehavior.getPhase(i).getId(), phases[i]);
+                }
+                return map;
+            }),
+        Codec.STRING.fieldOf("start_phase").forGetter(MultiBehavior::getStartPhaseKey)
+    ).apply(instance, (phases, s) -> {
+        HashBiMap<PhaseKey, Phase> map = HashBiMap.create();
+        int i = 0;
+        for (Map.Entry<String, Phase> entry : phases.entrySet()) {
+            Phase phase = entry.getValue();
+            phase.setId(entry.getKey());
+            map.put(new PhaseKey(entry.getKey(), i++), phase);
+        }
+        return new MultiBehavior(map, s);
+    }));
     private final Phase[] phases;
     private final BiMap<String, Integer> phaseKeys;
     private final String startPhaseKey;
@@ -89,6 +96,5 @@ public class MultiBehavior implements Behavior {
             currentPhase = currentPhase.getNext(controller);
             currentPhase.start(controller, time);
         }
-        //System.out.println("multi");
     }
 }

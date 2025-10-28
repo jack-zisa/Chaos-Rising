@@ -21,6 +21,7 @@ public class SimpleEntityRenderer<T extends EntityRenderData> extends EntityRend
         entity.sprite = EntityRenderManager.getSprite((ClientGame) manager.getGame(), entity);
     }
 
+    @Override
     public void render(T entity, Renderer renderer, @Nullable SpriteBatch batch, @Nullable ShapeRenderer shapeRenderer, BitmapFont font, float delta, boolean debug) {
         Sprite sprite = entity.sprite;
         if (batch != null) {

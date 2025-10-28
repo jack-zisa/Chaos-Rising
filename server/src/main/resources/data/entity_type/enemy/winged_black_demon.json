@@ -88,7 +88,7 @@
             "cooldown": 15
           },
           {
-            "id": "move",
+            "type": "move",
             "movement": "random",
             "speed": 3
           }

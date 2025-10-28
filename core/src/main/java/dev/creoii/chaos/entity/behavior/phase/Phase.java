@@ -15,20 +15,18 @@ import java.util.List;
 public class Phase {
     public static final Codec<Phase> CODEC = RecordCodecBuilder.create(instance -> {
         return instance.group(
-            Codec.STRING.fieldOf("id").forGetter(Phase::getId),
             Codec.INT.fieldOf("duration").orElse(-1).forGetter(Phase::getDuration),
             Action.CODEC.listOf().fieldOf("actions").forGetter(Phase::getActions)
-        ).apply(instance, (id, duration, actions) -> new Phase(id, duration, Transitions.ALL.get(Transitions.Key.NEXT.ordinal()), actions));
+        ).apply(instance, (duration, actions) -> new Phase(duration, Transitions.ALL.get(Transitions.Key.NEXT.ordinal()), actions));
     });
 
-    private final String id;
+    private String id;
     private final int duration;
     private final Transition transition;
     private final List<Action> actions;
     private int startTime;
 
-    public Phase(String id, int duration, Transition transition, List<Action> actions) {
-        this.id = id;
+    public Phase(int duration, Transition transition, List<Action> actions) {
         this.duration = duration;
         this.transition = transition;
         this.actions = actions;
@@ -37,6 +35,10 @@ public class Phase {
 
     public String getId() {
         return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public int getDuration() {

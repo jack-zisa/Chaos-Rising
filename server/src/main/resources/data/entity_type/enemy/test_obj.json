@@ -2,6 +2,9 @@
   "id": "test_obj",
   "type": "enemy",
   "scale": 1,
+  "behavior": {
+    "type": "empty"
+  },
   "stats": {
     "health": 100
   }

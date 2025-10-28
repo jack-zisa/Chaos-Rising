@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import dev.creoii.chaos.client.ClientGame;
 import dev.creoii.chaos.client.render.Renderer;
 import dev.creoii.chaos.client.render.entity.data.BulletEntityRenderData;
 import dev.creoii.chaos.util.provider.Provider;

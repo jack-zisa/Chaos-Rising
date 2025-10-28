@@ -6,7 +6,7 @@
     "health": 50
   },
   "behavior": {
-    "type": "multi",
+    "type": "simple",
     "phase": {
       "actions": [
         {

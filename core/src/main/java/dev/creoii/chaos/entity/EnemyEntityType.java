@@ -6,7 +6,6 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.Game;
 import dev.creoii.chaos.entity.behavior.Behavior;
-import dev.creoii.chaos.entity.behavior.EmptyBehavior;
 import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.stat.StatContainer;
 
@@ -20,7 +19,7 @@ public record EnemyEntityType(String id, float scale, String lootTableId, @Nulla
             Codec.STRING.fieldOf("id").forGetter(EnemyEntityType::id),
             Codec.FLOAT.fieldOf("scale").orElse(1f).forGetter(EnemyEntityType::scale),
             Codec.STRING.fieldOf("loot_table").orElse("").forGetter(EnemyEntityType::lootTableId),
-            Behavior.CODEC.fieldOf("behavior").orElse(EmptyBehavior.INSTANCE).forGetter(EnemyEntityType::behavior),
+            Behavior.CODEC.fieldOf("behavior").forGetter(EnemyEntityType::behavior),
             StatContainer.STAT_CODEC.fieldOf("stats").orElse(DEFAULT_STAT_CONTAINER).forGetter(EnemyEntityType::stats)
         ).apply(instance, EnemyEntityType::new);
     });
