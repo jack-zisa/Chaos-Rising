@@ -17,6 +17,7 @@ import dev.creoii.chaos.network.Networking;
 import dev.creoii.chaos.client.render.Renderer;
 import dev.creoii.chaos.client.render.entity.EntityRenderManager;
 import dev.creoii.chaos.client.render.entity.data.CharacterEntityRenderData;
+import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.logging.Logger;
 
 import java.io.IOException;
@@ -166,7 +167,7 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
     }
 
     public CharacterEntityRenderData getCharacter() {
-        return (CharacterEntityRenderData) getEntityManager().getEntityData(characterId);
+        return (CharacterEntityRenderData) getEntityManager().getEntityData(EntityGroup.CHARACTER, characterId);
     }
 
     public int getCharacterId() {

@@ -21,6 +21,7 @@ import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.client.render.entity.data.CharacterEntityRenderData;
 import dev.creoii.chaos.client.render.entity.EntityRenderManager;
 import dev.creoii.chaos.client.util.Renderable;
+import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.event.ChangeStatEvent;
 import dev.creoii.chaos.util.event.DamageEntityEvent;
 import dev.creoii.chaos.util.event.SpawnEntityEvent;
@@ -67,7 +68,7 @@ public class HudRenderer implements Renderable {
 
         SpawnEntityEvent.EVENT.register((_, entity) -> {
             if (entity == renderer.getGame().getCharacterId()) {
-                EntityRenderData entityData = renderer.getGame().getEntityManager().getEntityData(entity);
+                EntityRenderData entityData = renderer.getGame().getEntityManager().getEntityData(EntityGroup.CHARACTER, entity);
                 if (entityData instanceof CharacterEntityRenderData characterEntityRenderData) {
                     int health = characterEntityRenderData.statContainer.health().value();
                     int maxHealth = characterEntityRenderData.maxStatContainer.health().value();
@@ -92,7 +93,7 @@ public class HudRenderer implements Renderable {
 
         DamageEntityEvent.EVENT.register((_, _, entity, _) -> {
             if (entity == renderer.getGame().getCharacterId()) {
-                EntityRenderData entityData = renderer.getGame().getEntityManager().getEntityData(entity);
+                EntityRenderData entityData = renderer.getGame().getEntityManager().getEntityData(EntityGroup.CHARACTER, entity);
                 if (entityData instanceof CharacterEntityRenderData characterEntityRenderData) {
                     int health = characterEntityRenderData.statContainer.health().value();
                     int maxHealth = characterEntityRenderData.maxStatContainer.health().value();
@@ -120,7 +121,7 @@ public class HudRenderer implements Renderable {
 
         ChangeStatEvent.EVENT.register((_, entity, stat) -> {
             if (stat.type() == Stat.Type.HEALTH && entity == renderer.getGame().getCharacterId()) {
-                EntityRenderData entityData = renderer.getGame().getEntityManager().getEntityData(entity);
+                EntityRenderData entityData = renderer.getGame().getEntityManager().getEntityData(EntityGroup.CHARACTER, entity);
                 if (entityData instanceof CharacterEntityRenderData characterEntityRenderData) {
                     int health = characterEntityRenderData.statContainer.health().value();
                     int maxHealth = characterEntityRenderData.maxStatContainer.health().value();
