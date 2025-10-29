@@ -73,6 +73,10 @@ public class MultiBehavior implements Behavior {
         return startPhaseKey;
     }
 
+    public Phase getCurrentPhase() {
+        return currentPhase;
+    }
+
     public int getIndex(Phase phase) {
         return phaseKeys.get(phase.getId());
     }

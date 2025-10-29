@@ -1,0 +1,8 @@
+{
+  "id": "woodland_cultist",
+  "type": "enemy",
+  "behavior": {
+    "type": "empty"
+  },
+  "loot_table": "test_skeleton"
+}

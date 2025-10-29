@@ -3,6 +3,7 @@ package dev.creoii.chaos.entity;
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.DataManager;
 import dev.creoii.chaos.Game;
+import dev.creoii.chaos.entity.behavior.Behavior;
 import dev.creoii.chaos.entity.controller.EnemyController;
 import dev.creoii.chaos.entity.serialization.EnemyData;
 import dev.creoii.chaos.entity.serialization.EntityCustomData;
@@ -31,6 +32,10 @@ public class EnemyEntity extends LivingEntity implements Attacker {
     public void reinit(int id, Vector2 pos, Map<String, Object> data) {
         super.reinit(id, pos, data);
         lastAttackTime = 0;
+    }
+
+    public EnemyController getController() {
+        return controller;
     }
 
     @Override
@@ -79,5 +84,10 @@ public class EnemyEntity extends LivingEntity implements Attacker {
             }
         }
         super.remove();
+    }
+
+    @Override
+    public boolean canMove() {
+        return controller.getBehavior().getType() != Behavior.Type.EMPTY;
     }
 }
