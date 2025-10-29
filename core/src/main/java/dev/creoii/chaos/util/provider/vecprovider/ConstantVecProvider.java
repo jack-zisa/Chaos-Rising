@@ -9,12 +9,16 @@ import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
 import java.util.Objects;
 
 public record ConstantVecProvider(NumberProvider x, NumberProvider y) implements VecProvider {
-    public static final ConstantVecProvider ZERO = new ConstantVecProvider(0, 0);
+    public static final ConstantVecProvider ZERO = new ConstantVecProvider(ConstantNumberProvider.ZERO, ConstantNumberProvider.ZERO);
     public static final MapCodec<ConstantVecProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(
             NumberProvider.CODEC.fieldOf("x").orElse(ConstantNumberProvider.ZERO).forGetter(ConstantVecProvider::x),
             NumberProvider.CODEC.fieldOf("y").orElse(ConstantNumberProvider.ZERO).forGetter(ConstantVecProvider::y)
-        ).apply(instance, ConstantVecProvider::new);
+        ).apply(instance, (x, y) -> {
+            if (x == ConstantNumberProvider.ZERO && y == ConstantNumberProvider.ZERO) {
+                return ZERO;
+            } else return new ConstantVecProvider(x, y);
+        });
     });
 
     @Override

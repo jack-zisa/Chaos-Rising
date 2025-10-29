@@ -10,7 +10,10 @@ public record ConstantBooleanProvider(boolean value) implements BooleanProvider 
     public static final MapCodec<ConstantBooleanProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(
             Codec.BOOL.fieldOf("value").forGetter(ConstantBooleanProvider::value)
-        ).apply(instance, ConstantBooleanProvider::new);
+        ).apply(instance, (value) -> {
+            if (value) return TRUE;
+            else return FALSE;
+        });
     });
 
     @Override

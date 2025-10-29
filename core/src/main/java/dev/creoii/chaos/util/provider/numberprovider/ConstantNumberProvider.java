@@ -11,7 +11,13 @@ public record ConstantNumberProvider(float value) implements NumberProvider {
     public static final MapCodec<ConstantNumberProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(
             Codec.FLOAT.fieldOf("value").forGetter(ConstantNumberProvider::value)
-        ).apply(instance, ConstantNumberProvider::new);
+        ).apply(instance, (value) -> {
+            if (value <= 1 && value >= -1) {
+                if (value == -1) return NEG_ONE;
+                else if (value == 0) return ZERO;
+                else return ONE;
+            } else return new ConstantNumberProvider(value);
+        });
     });
 
     @Override
