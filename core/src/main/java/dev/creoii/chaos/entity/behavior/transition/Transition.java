@@ -1,31 +1,30 @@
 package dev.creoii.chaos.entity.behavior.transition;
 
-import com.badlogic.gdx.utils.JsonValue;
-import dev.creoii.chaos.entity.behavior.MultiBehavior;
+import com.mojang.serialization.Codec;
 import dev.creoii.chaos.entity.behavior.phase.Phase;
-import dev.creoii.chaos.util.function.TriFunction;
+import dev.creoii.chaos.util.provider.Provider;
+import dev.creoii.chaos.util.provider.phaseprovider.PhaseProvider;
 
-public class Transition {
-    private final TriFunction<MultiBehavior, Phase, JsonValue, Phase> function;
-    private JsonValue data;
+public interface Transition {
+    Codec<Transition> CODEC = Transition.Type.CODEC.dispatch(Transition::getType, type -> switch (type) {
+        case AFTER -> AfterTransition.CODEC;
+        case FOREVER -> ForeverTransition.CODEC;
+    });
 
-    public Transition(TriFunction<MultiBehavior, Phase, JsonValue, Phase> function) {
-        this.function = function;
+    Type getType();
+
+    PhaseProvider target();
+
+    boolean canTransition(Provider.Context context, int time);
+
+    default Phase getTarget(Provider.Context context) {
+        return target().get(context);
     }
 
-    public TriFunction<MultiBehavior, Phase, JsonValue, Phase> getFunction() {
-        return function;
-    }
+    enum Type {
+        AFTER,
+        FOREVER;
 
-    public JsonValue getData() {
-        return data;
-    }
-
-    public void setData(JsonValue data) {
-        this.data = data;
-    }
-
-    static void register(Transitions.Key key, TriFunction<MultiBehavior, Phase, JsonValue, Phase> function) {
-        Transitions.ALL.put(key.ordinal(), new Transition(function));
+        public static final Codec<Type> CODEC = Codec.STRING.xmap(s -> Type.valueOf(s.toUpperCase()), type -> type.name().toLowerCase());
     }
 }

@@ -6,10 +6,13 @@
     "start_phase": "test0",
     "phases": {
       "test0": {
-        "duration": 100,
         "transition": {
-          "id": "to",
-          "to": "test2"
+          "type": "after",
+          "after": 100,
+          "target": {
+            "type": "to",
+            "to": "test2"
+          }
         },
         "actions": [
           {
@@ -32,9 +35,12 @@
         ]
       },
       "test1": {
-        "duration": 100,
         "transition": {
-          "id": "next"
+          "type": "after",
+          "after": 100,
+          "target": {
+            "type": "next"
+          }
         },
         "actions": [
           {
@@ -45,9 +51,12 @@
         ]
       },
       "test2": {
-        "duration": 100,
         "transition": {
-          "id": "random"
+          "type": "after",
+          "after": 100,
+          "target": {
+            "type": "random"
+          }
         },
         "actions": [
           {

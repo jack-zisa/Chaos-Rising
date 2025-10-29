@@ -16,7 +16,7 @@ import javax.annotation.Nullable;
 public record ToPhaseProvider(Either<String, NumberProvider> to) implements PhaseProvider {
     public static final MapCodec<ToPhaseProvider> CODEC = RecordCodecBuilder.mapCodec(instance ->
         instance.group(
-            Codec.either(Codec.STRING, NumberProvider.CODEC).fieldOf("value").forGetter(ToPhaseProvider::to)
+            Codec.either(Codec.STRING, NumberProvider.CODEC).fieldOf("to").forGetter(ToPhaseProvider::to)
         ).apply(instance, ToPhaseProvider::new)
     );
 

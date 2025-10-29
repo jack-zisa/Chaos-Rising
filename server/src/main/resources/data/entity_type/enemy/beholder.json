@@ -7,43 +7,41 @@
   },
   "behavior": {
     "type": "simple",
-    "phase": {
-      "actions": [
-        {
-          "type": "move",
-          "movement": "chase",
-          "speed": 0.5
-        },
-        {
-          "type": "attack",
-          "attack": {
-            "type": "simple",
-            "bullet_id": "fireball",
-            "damage": 20,
-            "bullet_count": 6,
-            "arc_gap": 60,
-            "angle_offset": {
-              "type": "cycle",
-              "value": {
-                "type": "binary",
-                "a": {
-                  "type": "time"
-                },
-                "b": 0.33334,
-                "operation": "mul"
+    "actions": [
+      {
+        "type": "move",
+        "movement": "chase",
+        "speed": 0.5
+      },
+      {
+        "type": "attack",
+        "attack": {
+          "type": "simple",
+          "bullet_id": "fireball",
+          "damage": 20,
+          "bullet_count": 6,
+          "arc_gap": 60,
+          "angle_offset": {
+            "type": "cycle",
+            "value": {
+              "type": "binary",
+              "a": {
+                "type": "time"
               },
-              "max": 360
+              "b": 0.33334,
+              "operation": "mul"
             },
-            "target": {
-              "type": "constant",
-              "x": 0,
-              "y": 0
-            }
+            "max": 360
           },
-          "cooldown": 10
-        }
-      ]
-    }
+          "target": {
+            "type": "constant",
+            "x": 0,
+            "y": 0
+          }
+        },
+        "cooldown": 10
+      }
+    ]
   },
   "loot_table": "test_beholder"
 }

@@ -10,9 +10,12 @@
     "start_phase": "lotus_idle",
     "phases": {
       "lotus_idle": {
-        "duration": 600,
         "transition": {
-          "type": "next"
+          "type": "after",
+          "after": 600,
+          "target": {
+            "type": "next"
+          }
         },
         "actions": [
           {
@@ -23,9 +26,12 @@
         ]
       },
       "lotus_bloom": {
-        "duration": 2000,
         "transition": {
-          "type": "next"
+          "type": "after",
+          "after": 2000,
+          "target": {
+            "type": "next"
+          }
         },
         "actions": [
           {
@@ -59,9 +65,12 @@
         ]
       },
       "lotus_spin": {
-        "duration": 1500,
         "transition": {
-          "id": "next"
+          "type": "after",
+          "after": 1500,
+          "target": {
+            "type": "next"
+          }
         },
         "actions": [
           {

@@ -8,14 +8,14 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.entity.EnemyEntity;
 import dev.creoii.chaos.entity.behavior.phase.Phase;
 import dev.creoii.chaos.entity.behavior.phase.PhaseKey;
+import dev.creoii.chaos.entity.behavior.transition.Transition;
 import dev.creoii.chaos.entity.controller.EnemyController;
+import dev.creoii.chaos.util.provider.Provider;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Random;
 
 public class MultiBehavior implements Behavior {
-    public static final Random RANDOM = new Random();
     public static final MapCodec<MultiBehavior> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
         Codec.unboundedMap(Codec.STRING, Phase.CODEC).fieldOf("phases").forGetter(multiBehavior -> {
                 Map<String, Phase> map = new LinkedHashMap<>();
@@ -95,10 +95,13 @@ public class MultiBehavior implements Behavior {
     public void update(EnemyController controller, int time, float delta) {
         currentPhase.update(controller, time, delta);
 
-        if (currentPhase.shouldTransition(time)) {
-            currentPhase.end(controller);
-            currentPhase = currentPhase.getNext(controller);
-            currentPhase.start(controller, time);
+        if (currentPhase.getTransition().getType() != Transition.Type.FOREVER) {
+            Provider.Context context = Provider.Context.of(controller.getEntity(), time);
+            if (currentPhase.shouldTransition(context, time)) {
+                currentPhase.end(controller);
+                currentPhase = currentPhase.getTransition().getTarget(context);
+                currentPhase.start(controller, time);
+            }
         }
     }
 }
