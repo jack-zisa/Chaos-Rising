@@ -3,9 +3,9 @@
   "type": "enemy",
   "scale": 2,
   "stats": {
-    "health": 50,
+    "health": 100,
     "attack_speed": 10,
-    "speed": 10
+    "speed": 5
   },
   "behavior": {
     "type": "simple",
@@ -29,11 +29,7 @@
               }
             }
           },
-          "b": {
-            "type": "constant",
-            "x": 1,
-            "y": 1
-          }
+          "b": [1, 1]
         }
       },
       {

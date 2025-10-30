@@ -1,33 +1,33 @@
 {
   "id": "fireball_blast",
   "type": "bullet",
-  "lifetime": 200,
+  "lifetime": 80,
   "path": {
     "type": "segmented",
     "segments": [
       {
-        "threshold": 200,
+        "threshold": 80,
         "path": {
           "type": "simple",
           "speed": 10
         }
       },
       {
-        "threshold": 150,
+        "threshold": 60,
         "path": {
           "type": "simple",
           "speed": 0
         }
       },
       {
-        "threshold": 100,
+        "threshold": 40,
         "path": {
           "type": "simple",
           "speed": 10
         }
       },
       {
-        "threshold": 50,
+        "threshold": 20,
         "path": {
           "type": "simple",
           "speed": 0

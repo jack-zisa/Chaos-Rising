@@ -37,11 +37,7 @@
                   }
                 }
               },
-              "b": {
-                "type": "constant",
-                "x": 2,
-                "y": 2
-              }
+              "b": [2, 2]
             }
           },
           {
@@ -72,22 +68,10 @@
               "type": "mul",
               "a": {
                 "type": "random_between",
-                "min": {
-                  "type": "constant",
-                  "x": -1,
-                  "y": -1
-                },
-                "max": {
-                  "type": "constant",
-                  "x": 1,
-                  "y": 1
-                }
+                "min": [-1, 1],
+                "max": [1, 1]
               },
-              "b": {
-                "type": "constant",
-                "x": 4,
-                "y": 4
-              }
+              "b": [4, 4]
             }
           }
         ]
@@ -120,11 +104,7 @@
                   }
                 }
               },
-              "b": {
-                "type": "constant",
-                "x": 5,
-                "y": 5
-              }
+              "b": [5, 5]
             }
           },
           {

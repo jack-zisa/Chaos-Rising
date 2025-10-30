@@ -1,7 +1,7 @@
 {
   "id": "dark_magic_blade",
   "type": "bullet",
-  "lifetime": 100,
+  "lifetime": 40,
   "path": {
     "type": "simple",
     "speed": 10
