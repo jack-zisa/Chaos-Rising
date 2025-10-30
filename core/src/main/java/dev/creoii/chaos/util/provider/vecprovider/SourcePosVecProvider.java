@@ -19,6 +19,6 @@ public record SourcePosVecProvider() implements VecProvider {
 
     @Override
     public VecProvider copy() {
-        return new SourcePosVecProvider();
+        return INSTANCE;
     }
 }

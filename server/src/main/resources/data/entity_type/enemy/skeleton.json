@@ -1,6 +1,9 @@
 {
   "id": "skeleton",
   "type": "enemy",
+  "stats": {
+    "attack_speed": 30
+  },
   "behavior": {
     "type": "multi",
     "start_phase": "test0",
@@ -17,8 +20,32 @@
         "actions": [
           {
             "type": "move",
-            "movement": "chase",
-            "speed": 2
+            "movement": {
+              "type": "mul",
+              "a": {
+                "type": "normalized",
+                "value": {
+                  "type": "sub",
+                  "a": {
+                    "type": "entity",
+                    "entity": {
+                      "type": "nearest_character"
+                    }
+                  },
+                  "b": {
+                    "type": "entity",
+                    "entity": {
+                      "type": "self"
+                    }
+                  }
+                }
+              },
+              "b": {
+                "type": "constant",
+                "x": 2,
+                "y": 2
+              }
+            }
           },
           {
             "type": "attack",
@@ -29,8 +56,7 @@
               "bullet_count": 2,
               "arc_gap": 20,
               "predictability": 100
-            },
-            "cooldown": 20
+            }
           }
         ]
       },
@@ -45,8 +71,27 @@
         "actions": [
           {
             "type": "move",
-            "movement": "random",
-            "speed": 4
+            "movement": {
+              "type": "mul",
+              "a": {
+                "type": "random_between",
+                "min": {
+                  "type": "constant",
+                  "x": -1,
+                  "y": -1
+                },
+                "max": {
+                  "type": "constant",
+                  "x": 1,
+                  "y": 1
+                }
+              },
+              "b": {
+                "type": "constant",
+                "x": 4,
+                "y": 4
+              }
+            }
           }
         ]
       },
@@ -61,8 +106,32 @@
         "actions": [
           {
             "type": "move",
-            "movement": "chase",
-            "speed": 5
+            "movement": {
+              "type": "mul",
+              "a": {
+                "type": "normalized",
+                "value": {
+                  "type": "sub",
+                  "a": {
+                    "type": "entity",
+                    "entity": {
+                      "type": "nearest_character"
+                    }
+                  },
+                  "b": {
+                    "type": "entity",
+                    "entity": {
+                      "type": "self"
+                    }
+                  }
+                }
+              },
+              "b": {
+                "type": "constant",
+                "x": 5,
+                "y": 5
+              }
+            }
           },
           {
             "type": "attack",
@@ -72,8 +141,7 @@
               "damage": 5,
               "bullet_count": 3,
               "arc_gap": 120
-            },
-            "cooldown": 60
+            }
           }
         ]
       }

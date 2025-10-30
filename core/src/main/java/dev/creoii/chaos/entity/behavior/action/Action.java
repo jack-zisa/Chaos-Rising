@@ -12,6 +12,8 @@ public abstract class Action {
 
     public abstract Type getType();
 
+    public abstract void start(EntityController<? extends EnemyEntity> controller);
+
     public abstract void update(EntityController<? extends EnemyEntity> controller, int time, float delta);
 
     public abstract void reset(EntityController<? extends EnemyEntity> controller);

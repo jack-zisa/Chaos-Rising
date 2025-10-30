@@ -48,6 +48,7 @@ public class Phase {
 
     public void start(EntityController<? extends EnemyEntity> controller, int startTime) {
         this.startTime = startTime;
+        actions.forEach(action -> action.start(controller));
     }
 
     public void end(EntityController<? extends EnemyEntity> controller) {

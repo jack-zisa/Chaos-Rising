@@ -23,6 +23,7 @@ public interface VecProvider extends Provider<Vector2> {
         case COMPARISON -> ComparisonVecProvider.CODEC;
         case CONSTANT -> ConstantVecProvider.CODEC;
         case DIRECTION -> DirectionVecProvider.CODEC;
+        case ENTITY -> EntityVecProvider.CODEC;
         case NORMALIZED -> NormalizedVecProvider.CODEC;
         case PERPENDICULAR -> PerpendicularVecProvider.CODEC;
         case RANDOM_BETWEEN -> RandomBetweenVecProvider.CODEC;
@@ -30,7 +31,6 @@ public interface VecProvider extends Provider<Vector2> {
         case ROTATE_ANGLE -> RotateAngleVecProvider.CODEC;
         case ROTATED_OFFSET -> RotatedOffsetVecProvider.CODEC;
         case SOURCE_POS -> SourcePosVecProvider.CODEC;
-        case TARGET_POS -> TargetPosVecProvider.CODEC;
         case UNARY -> UnaryVecProvider.CODEC;
         case SIN -> UnaryVecProvider.SIN_CODEC;
         case COS -> UnaryVecProvider.COS_CODEC;
@@ -63,6 +63,7 @@ public interface VecProvider extends Provider<Vector2> {
         COMPARISON,
         CONSTANT,
         DIRECTION,
+        ENTITY,
         NORMALIZED,
         PERPENDICULAR,
         RANDOM_BETWEEN,
@@ -70,7 +71,6 @@ public interface VecProvider extends Provider<Vector2> {
         ROTATE_ANGLE,
         ROTATED_OFFSET,
         SOURCE_POS,
-        TARGET_POS,
         UNARY, SIN, COS, TAN, SQRT, CBRT, ABS;
 
         public static final Codec<Type> CODEC = Codec.STRING.xmap(s -> Type.valueOf(s.toUpperCase()), type -> type.name().toLowerCase());

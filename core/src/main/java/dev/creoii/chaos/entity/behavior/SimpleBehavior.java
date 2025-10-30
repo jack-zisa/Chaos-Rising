@@ -22,6 +22,7 @@ public record SimpleBehavior(List<Action> actions) implements Behavior {
 
     @Override
     public void start(EnemyController controller, EnemyEntity entity) {
+        actions.forEach(action -> action.start(controller));
     }
 
     @Override

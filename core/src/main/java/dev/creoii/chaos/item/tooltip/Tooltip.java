@@ -16,9 +16,7 @@ public record Tooltip(EnumMap<Section, List<String>> sections) {
 
     public Tooltip order() {
         EnumMap<Section, List<String>> ordered = new EnumMap<>(Section.class);
-        sections.entrySet().stream()
-            .sorted(Comparator.comparingInt(entry -> entry.getKey().ordinal()))
-            .forEach(entry -> ordered.put(entry.getKey(), entry.getValue()));
+        sections.entrySet().stream().sorted(Comparator.comparingInt(entry -> entry.getKey().ordinal())).forEach(entry -> ordered.put(entry.getKey(), entry.getValue()));
         return new Tooltip(ordered);
     }
 

@@ -3,7 +3,8 @@
   "type": "enemy",
   "scale": 3,
   "stats": {
-    "health": 300
+    "health": 300,
+    "attack_speed": 25
   },
   "behavior": {
     "type": "multi",
@@ -20,8 +21,19 @@
         "actions": [
           {
             "type": "move",
-            "movement": "random",
-            "speed": 1
+            "movement": {
+              "type": "random_between",
+              "min": {
+                "type": "constant",
+                "x": -1,
+                "y": -1
+              },
+              "max": {
+                "type": "constant",
+                "x": 1,
+                "y": 1
+              }
+            }
           }
         ]
       },
@@ -59,8 +71,7 @@
                 "x": 0,
                 "y": 0
               }
-            },
-            "cooldown": 20
+            }
           }
         ]
       },
@@ -93,13 +104,31 @@
                 },
                 "max": 360
               }
-            },
-            "cooldown": 15
+            }
           },
           {
             "type": "move",
-            "movement": "random",
-            "speed": 3
+            "movement": {
+              "type": "mul",
+              "a": {
+                "type": "random_between",
+                "min": {
+                  "type": "constant",
+                  "x": -1,
+                  "y": -1
+                },
+                "max": {
+                  "type": "constant",
+                  "x": 1,
+                  "y": 1
+                }
+              },
+              "b": {
+                "type": "constant",
+                "x": 3,
+                "y": 3
+              }
+            }
           }
         ]
       },
@@ -124,13 +153,36 @@
                   "angle_offset": 180
                 }
               ]
-            },
-            "cooldown": 30
+            }
           },
           {
             "type": "move",
-            "movement": "chase",
-            "speed": 2
+            "movement": {
+              "type": "mul",
+              "a": {
+                "type": "normalized",
+                "value": {
+                  "type": "sub",
+                  "a": {
+                    "type": "entity",
+                    "entity": {
+                      "type": "nearest_character"
+                    }
+                  },
+                  "b": {
+                    "type": "entity",
+                    "entity": {
+                      "type": "self"
+                    }
+                  }
+                }
+              },
+              "b": {
+                "type": "constant",
+                "x": 2,
+                "y": 2
+              }
+            }
           }
         ]
       }

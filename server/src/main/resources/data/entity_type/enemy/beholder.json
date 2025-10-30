@@ -3,21 +3,47 @@
   "type": "enemy",
   "scale": 2,
   "stats": {
-    "health": 50
+    "health": 50,
+    "attack_speed": 10,
+    "speed": 10
   },
   "behavior": {
     "type": "simple",
     "actions": [
       {
         "type": "move",
-        "movement": "chase",
-        "speed": 0.5
+        "movement": {
+          "type": "mul",
+          "a": {
+            "type": "normalized",
+            "value": {
+              "type": "sub",
+              "a": {
+                "type": "entity",
+                "entity": {
+                  "type": "nearest_character"
+                }
+              },
+              "b": {
+                "type": "entity",
+                "entity": {
+                  "type": "self"
+                }
+              }
+            }
+          },
+          "b": {
+            "type": "constant",
+            "x": 1,
+            "y": 1
+          }
+        }
       },
       {
         "type": "attack",
         "attack": {
           "type": "simple",
-          "bullet_id": "fireball",
+          "bullet_id": "fireball_blast",
           "damage": 20,
           "bullet_count": 6,
           "arc_gap": 60,
@@ -32,14 +58,8 @@
               "operation": "mul"
             },
             "max": 360
-          },
-          "target": {
-            "type": "constant",
-            "x": 0,
-            "y": 0
           }
-        },
-        "cooldown": 10
+        }
       }
     ]
   },
