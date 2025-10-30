@@ -4,7 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.mojang.serialization.MapCodec;
 
 public record SourcePosVecProvider() implements VecProvider {
-    private static final SourcePosVecProvider INSTANCE = new SourcePosVecProvider();
+    public static final SourcePosVecProvider INSTANCE = new SourcePosVecProvider();
     public static final MapCodec<SourcePosVecProvider> CODEC = MapCodec.unit(INSTANCE);
 
     @Override

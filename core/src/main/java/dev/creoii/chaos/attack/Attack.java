@@ -22,7 +22,7 @@ public interface Attack {
     void attack(VecProvider targetPos, VecProvider sourcePos, Entity sourceEntity, EquipmentItem item);
 
     default void attack(VecProvider targetPos, Entity sourceEntity, @Nullable EquipmentItem item) {
-        attack(targetPos, new SourcePosVecProvider(), sourceEntity, item);
+        attack(targetPos, SourcePosVecProvider.INSTANCE, sourceEntity, item);
     }
 
     enum Type {

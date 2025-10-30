@@ -111,7 +111,7 @@ public class DataManager {
     public static void load() {
         URL baseUrl = DataManager.class.getClassLoader().getResource("data");
         if (baseUrl == null) {
-            DataManager.LOGGER.error("Directory 'data/' does not exist");
+            LOGGER.error("Directory 'data/' does not exist");
             return;
         }
 

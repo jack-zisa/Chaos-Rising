@@ -20,7 +20,7 @@ public record EnemyEntityType(String id, float scale, String lootTableId, @Nulla
             Codec.FLOAT.fieldOf("scale").orElse(1f).forGetter(EnemyEntityType::scale),
             Codec.STRING.fieldOf("loot_table").orElse("").forGetter(EnemyEntityType::lootTableId),
             Behavior.CODEC.fieldOf("behavior").forGetter(EnemyEntityType::behavior),
-            StatContainer.STAT_CODEC.fieldOf("stats").orElse(DEFAULT_STAT_CONTAINER).forGetter(EnemyEntityType::stats)
+            StatContainer.INT_CODEC.fieldOf("stats").orElse(DEFAULT_STAT_CONTAINER).forGetter(EnemyEntityType::stats)
         ).apply(instance, EnemyEntityType::new);
     });
 
