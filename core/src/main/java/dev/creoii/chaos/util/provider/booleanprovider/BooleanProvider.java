@@ -10,7 +10,7 @@ public interface BooleanProvider extends Provider<Boolean> {
     Codec<BooleanProvider> DISPATCH_CODEC = Type.CODEC.dispatch(
         BooleanProvider::getType,
         type -> switch (type) {
-            case BETWEEN -> BetweenBooleanProvider.CODEC;
+            case BETWEEN_NUMBER -> BetweenNumberBooleanProvider.CODEC;
             case BINARY -> BinaryBooleanProvider.CODEC;
             case AND -> BinaryBooleanProvider.AND_CODEC;
             case OR -> BinaryBooleanProvider.OR_CODEC;
@@ -41,7 +41,7 @@ public interface BooleanProvider extends Provider<Boolean> {
     BooleanProvider init(int startTime);
 
     enum Type {
-        BETWEEN,
+        BETWEEN_NUMBER,
         BINARY, AND, OR, XOR,
         CONSTANT,
         HAS_EFFECT,

@@ -8,6 +8,7 @@ public record ConstantNumberProvider(float value) implements NumberProvider {
     public static final ConstantNumberProvider ZERO = new ConstantNumberProvider(0);
     public static final ConstantNumberProvider ONE = new ConstantNumberProvider(1);
     public static final ConstantNumberProvider NEG_ONE = new ConstantNumberProvider(-1);
+    public static final ConstantNumberProvider HALF = new ConstantNumberProvider(.5f);
     public static final MapCodec<ConstantNumberProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(
             Codec.FLOAT.fieldOf("value").forGetter(ConstantNumberProvider::value)
@@ -15,6 +16,7 @@ public record ConstantNumberProvider(float value) implements NumberProvider {
             if (value <= 1 && value >= -1) {
                 if (value == -1) return NEG_ONE;
                 else if (value == 0) return ZERO;
+                else if (value == .5f) return HALF;
                 else return ONE;
             } else return new ConstantNumberProvider(value);
         });

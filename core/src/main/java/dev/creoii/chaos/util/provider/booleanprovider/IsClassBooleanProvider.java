@@ -9,7 +9,7 @@ import dev.creoii.chaos.entity.CharacterEntityType;
 public record IsClassBooleanProvider(String classId) implements BooleanProvider {
     public static final MapCodec<IsClassBooleanProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(
-            Codec.STRING.fieldOf("classId").forGetter(IsClassBooleanProvider::classId)
+            Codec.STRING.fieldOf("class").forGetter(IsClassBooleanProvider::classId)
         ).apply(instance, IsClassBooleanProvider::new);
     });
 
