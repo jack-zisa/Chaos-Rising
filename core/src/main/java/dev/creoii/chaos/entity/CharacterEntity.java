@@ -51,7 +51,7 @@ public class CharacterEntity extends LivingEntity implements Attacker {
     @Nullable
     @Override
     public EntityCustomData getCustomPacketData() {
-        return new CharacterData(getStats(), getMaxStats(), inventory.isEmpty() ? null : inventory.getSlots());
+        return new CharacterData(getType().id(), getStats(), getMaxStats(), inventory.isEmpty() ? null : inventory.getSlots());
     }
 
     public Mutable<CharacterClass> getCharacterClass() {

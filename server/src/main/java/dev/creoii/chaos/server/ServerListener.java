@@ -175,22 +175,16 @@ public class ServerListener extends Listener {
             CharacterEntity character = game.getEntityManager().addCharacter(connection.getID(), new CharacterEntityType(new Mutable<>(DataManager.getCharacterClass("wizard"))), new Vector2(0, 0), customData);
 
             ObjectList<SpawnEntitiesS2C.Entry> spawnEntries = new ObjectArrayList<>();
-            ObjectList<DisplayEntitiesS2C.Entry> displayEntries = new ObjectArrayList<>();
             game.getEntityManager().getAllEntities().values().forEach(uuidEntityMap -> uuidEntityMap.values().forEach(entity -> {
                 if (entity.getId() != character.getId()) {
-                    spawnEntries.add(new SpawnEntitiesS2C.Entry(entity.getId(), entity.getPos().x, entity.getPos().y, entity.getCustomPacketData()));
-                    displayEntries.add(new DisplayEntitiesS2C.Entry(entity.getId(), entity.getType().id(), entity.getType().scale()));
+                    spawnEntries.add(new SpawnEntitiesS2C.Entry(entity.getId(), entity.getPos().x, entity.getPos().y, entity.getType().scale(), entity.getCustomPacketData()));
                 }
             }));
 
             if (!spawnEntries.isEmpty()) {
                 int size = spawnEntries.size();
-                if (size != displayEntries.size())
-                    ServerGame.LOGGER.error("Length of SpawnEntities entries should equal DisplayEntities entries: " + spawnEntries.size() + " != " + displayEntries.size());
-
                 for (int i = 0; i < size; i += 50) {
                     game.getServer().sendToTCP(connection.getID(), new SpawnEntitiesS2C(spawnEntries.subList(i, Math.min(i + 50, spawnEntries.size()))));
-                    game.getServer().sendToTCP(connection.getID(), new DisplayEntitiesS2C(displayEntries.subList(i, Math.min(i + 50, displayEntries.size()))));
                 }
             }
         }

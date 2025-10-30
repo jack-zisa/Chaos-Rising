@@ -22,7 +22,7 @@ public interface VecProvider extends Provider<Vector2> {
         case CLAMP -> ClampVecProvider.CODEC;
         case COMPARISON -> ComparisonVecProvider.CODEC;
         case CONSTANT -> ConstantVecProvider.CODEC;
-        case DIRECTION -> DirectionVecProvider.CODEC;
+        case DIRECTION_TO -> DirectionToVecProvider.CODEC;
         case ENTITY -> EntityVecProvider.CODEC;
         case NORMALIZED -> NormalizedVecProvider.CODEC;
         case PERPENDICULAR -> PerpendicularVecProvider.CODEC;
@@ -62,7 +62,7 @@ public interface VecProvider extends Provider<Vector2> {
         CLAMP,
         COMPARISON,
         CONSTANT,
-        DIRECTION,
+        DIRECTION_TO,
         ENTITY,
         NORMALIZED,
         PERPENDICULAR,

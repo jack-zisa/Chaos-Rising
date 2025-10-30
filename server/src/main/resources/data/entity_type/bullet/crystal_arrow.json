@@ -57,7 +57,7 @@
           "b": {
             "type": "perpendicular",
             "value": {
-              "type": "direction",
+              "type": "direction_to",
               "from": {
                 "type": "source_pos"
               },

@@ -2,6 +2,7 @@ package dev.creoii.chaos.entity.serialization;
 
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.inventory.Slot;
@@ -13,15 +14,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public record CharacterData(StatContainer baseStats, StatContainer maxStats, Optional<List<List<Slot>>> slots) implements EntityCustomData {
+public record CharacterData(String textureId, StatContainer baseStats, StatContainer maxStats, Optional<List<List<Slot>>> slots) implements EntityCustomData {
     public static final MapCodec<CharacterData> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+        Codec.STRING.fieldOf("texture_id").forGetter(CharacterData::textureId),
         StatContainer.STAT_CODEC.fieldOf("base_stats").forGetter(CharacterData::baseStats),
         StatContainer.STAT_CODEC.optionalFieldOf("max_stats").forGetter(characterData -> characterData.maxStats.equals(characterData.baseStats) ? Optional.empty() : Optional.of(characterData.maxStats)),
         Slot.CODEC.listOf().listOf().optionalFieldOf("slots").forGetter(CharacterData::slots)
-    ).apply(instance, (baseStats, maxStats, slots) -> new CharacterData(baseStats, maxStats.orElse(baseStats), slots)));
+    ).apply(instance, (textureId, baseStats, maxStats, slots) -> new CharacterData(textureId, baseStats, maxStats.orElse(baseStats), slots)));
 
-    public CharacterData(StatContainer baseStats, StatContainer maxStats, Slot[][] slots) {
-        this(baseStats, maxStats, slots == null ? Optional.empty() : Optional.of(Slot.toSlotListArray(slots)));
+    public CharacterData(String textureId, StatContainer baseStats, StatContainer maxStats, Slot[][] slots) {
+        this(textureId, baseStats, maxStats, slots == null ? Optional.empty() : Optional.of(Slot.toSlotListArray(slots)));
     }
 
     @Override
@@ -36,6 +38,7 @@ public record CharacterData(StatContainer baseStats, StatContainer maxStats, Opt
 
     @Override
     public void write(Output output) {
+        output.writeString(textureId);
         PacketUtils.writeStatContainer(output, baseStats);
         PacketUtils.writeStatContainer(output, maxStats);
         if (slots.isPresent()) {
@@ -54,12 +57,13 @@ public record CharacterData(StatContainer baseStats, StatContainer maxStats, Opt
     }
 
     public static CharacterData read(Input input) {
+        String textureId = input.readString();
         StatContainer base = PacketUtils.readStatContainer(input);
         StatContainer max = PacketUtils.readStatContainer(input);
         boolean hasSlots = input.readBoolean();
 
         if (!hasSlots) {
-            return new CharacterData(base, max, (Slot[][]) null);
+            return new CharacterData(textureId, base, max, (Slot[][]) null);
         }
 
         int outerSize = input.readInt();
@@ -76,6 +80,6 @@ public record CharacterData(StatContainer baseStats, StatContainer maxStats, Opt
             outerList.add(innerList);
         }
 
-        return new CharacterData(base, max, Optional.of(outerList));
+        return new CharacterData(textureId, base, max, Optional.of(outerList));
     }
 }

@@ -160,20 +160,17 @@
             "movement": {
               "type": "mul",
               "a": {
-                "type": "normalized",
-                "value": {
-                  "type": "sub",
-                  "a": {
-                    "type": "entity",
-                    "entity": {
-                      "type": "nearest_character"
-                    }
-                  },
-                  "b": {
-                    "type": "entity",
-                    "entity": {
-                      "type": "self"
-                    }
+                "type": "direction_to",
+                "to": {
+                  "type": "entity",
+                  "entity": {
+                    "type": "nearest_character"
+                  }
+                },
+                "from": {
+                  "type": "entity",
+                  "entity": {
+                    "type": "self"
                   }
                 }
               },

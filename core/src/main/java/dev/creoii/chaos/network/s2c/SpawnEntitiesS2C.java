@@ -19,6 +19,7 @@ public record SpawnEntitiesS2C(List<Entry> entries) {
             output.writeInt(entry.id);
             output.writeFloat(entry.x);
             output.writeFloat(entry.y);
+            output.writeFloat(entry.scale);
             PacketUtils.writeCustomEntityData(output, entry.customData);
         }
     }
@@ -27,17 +28,18 @@ public record SpawnEntitiesS2C(List<Entry> entries) {
         int count = input.readInt();
         List<Entry> entries = new ArrayList<>(count);
         for (int i = 0; i < count; i++) {
-            entries.add(new Entry(input.readInt(), input.readFloat(), input.readFloat(), PacketUtils.readCustomEntityData(input)));
+            entries.add(new Entry(input.readInt(), input.readFloat(), input.readFloat(), input.readFloat(), PacketUtils.readCustomEntityData(input)));
         }
         return new SpawnEntitiesS2C(entries);
     }
 
-    public record Entry(int id, float x, float y, EntityCustomData customData) {
+    public record Entry(int id, float x, float y, float scale, EntityCustomData customData) {
         public static final Codec<Entry> CODEC = RecordCodecBuilder.create(instance -> {
             return instance.group(
                 Codec.INT.fieldOf("id").forGetter(Entry::id),
                 Codec.FLOAT.fieldOf("x").forGetter(Entry::x),
                 Codec.FLOAT.fieldOf("y").forGetter(Entry::y),
+                Codec.FLOAT.fieldOf("scale").forGetter(Entry::scale),
                 EntityCustomData.CODEC.fieldOf("custom_data").forGetter(Entry::customData)
             ).apply(instance, Entry::new);
         });
