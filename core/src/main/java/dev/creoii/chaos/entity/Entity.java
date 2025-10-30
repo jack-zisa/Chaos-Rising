@@ -28,7 +28,7 @@ public abstract class Entity implements Tickable {
         this.pos = pos.cpy();
         prevPos = pos.cpy();
         spawnTime = game.getGametime();
-        collider = new Vector2(type.scale(), type.scale());
+        collider = new Vector2(type.scale() * .75f, type.scale() * .75f);
         collidingWith = new IntArraySet();
     }
 
@@ -88,12 +88,18 @@ public abstract class Entity implements Tickable {
         game.getEntityManager().removeEntity(id);
     }
 
-    public Vector2 getCollider() {
-        return collider;
-    }
-
     public boolean collides(Entity other) {
-        return pos.x < other.pos.x + other.collider.x && pos.x + collider.x > other.pos.x && pos.y < other.pos.y + other.collider.y && pos.y + collider.y > other.pos.y;
+        float ax1 = pos.x + (type.scale() - collider.x) * .5f;
+        float ay1 = pos.y + (type.scale() - collider.y) * .5f;
+        float ax2 = ax1 + collider.x;
+        float ay2 = ay1 + collider.y;
+
+        float bx1 = other.pos.x + (other.type.scale() - other.collider.x) * .5f;
+        float by1 = other.pos.y + (other.type.scale() - other.collider.y) * .5f;
+        float bx2 = bx1 + other.collider.x;
+        float by2 = by1 + other.collider.y;
+
+        return ax1 < bx2 && ax2 > bx1 && ay1 < by2 && ay2 > by1;
     }
 
     public IntSet getCollidingWith() {
