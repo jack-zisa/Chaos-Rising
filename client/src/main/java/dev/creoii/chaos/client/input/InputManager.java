@@ -168,6 +168,12 @@ public class InputManager extends InputAdapter {
         return super.touchCancelled(screenX, screenY, pointer, button);
     }
 
+    @Override
+    public boolean scrolled(float amountX, float amountY) {
+        game.getRenderer().updateZoom(amountY);
+        return super.scrolled(amountX, amountY);
+    }
+
     private record TouchEntry(int screenX, int screenY, int pointer, int button) {
     }
 }

@@ -1,8 +1,108 @@
 {
   "id": "woodland_cultist",
   "type": "enemy",
+  "stats": {
+    "health": 120,
+    "speed": 3,
+    "attack_speed": 2
+  },
   "behavior": {
-    "type": "empty"
+    "type": "multi",
+    "start_phase": "0",
+    "phases": {
+      "0": {
+        "transition": {
+          "type": "after",
+          "after": 1000,
+          "target": {
+            "type": "next"
+          }
+        },
+        "actions": [
+          {
+            "type": "move",
+            "movement": {
+              "type": "mul",
+              "a": {
+                "type": "perpendicular",
+                "value": {
+                  "type": "normalized",
+                  "value": {
+                    "type": "sub",
+                    "a": {
+                      "type": "entity",
+                      "entity": {
+                        "type": "nearest_character"
+                      }
+                    },
+                    "b": {
+                      "type": "entity",
+                      "entity": {
+                        "type": "self"
+                      }
+                    }
+                  }
+                }
+              },
+              "b": [2, 2]
+            }
+          },
+          {
+            "type": "attack",
+            "attack": {
+              "type": "simple",
+              "bullet_id": "fireball_blast",
+              "damage": 15,
+              "bullet_count": 3,
+              "arc_gap": 25
+            }
+          }
+        ]
+      },
+      "1": {
+        "transition": {
+          "type": "after",
+          "after": 200,
+          "target": {
+            "type": "prev"
+          }
+        },
+        "actions": [
+          {
+            "type": "move",
+            "movement": {
+              "type": "mul",
+              "a": {
+                "type": "direction_to",
+                "to": {
+                  "type": "entity",
+                  "entity": {
+                    "type": "nearest_character"
+                  }
+                },
+                "from": {
+                  "type": "entity",
+                  "entity": {
+                    "type": "self"
+                  }
+                }
+              },
+              "b": [5, 5]
+            }
+          },
+          {
+            "type": "attack",
+            "attack": {
+              "type": "simple",
+              "bullet_id": "fireball_blast",
+              "damage": 15,
+              "bullet_count": 2,
+              "arc_gap": 25
+            }
+          }
+        ]
+      }
+    }
   },
   "loot_table": "test_skeleton"
 }

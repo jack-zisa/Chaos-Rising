@@ -1,10 +1,11 @@
 package dev.creoii.chaos.client.render.entity;
 
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector3;
 import dev.creoii.chaos.client.ClientGame;
 import dev.creoii.chaos.EntityManager;
 import dev.creoii.chaos.client.render.entity.data.*;
@@ -91,16 +92,11 @@ public class EntityRenderManager extends EntityManager<EntityRenderData> impleme
     @Override
     public void render(Renderer renderer, @Nullable SpriteBatch batch, @Nullable ShapeRenderer shapeRenderer, BitmapFont font, float delta, boolean debug) {
         visibleSize = 0;
-        float camX = renderer.getCamera().position.x - renderer.getCamera().viewportWidth / 2;
-        float camY = renderer.getCamera().position.y - renderer.getCamera().viewportHeight / 2;
-        float camW = renderer.getCamera().viewportWidth;
-        float camH = renderer.getCamera().viewportHeight;
-
         visibleEntities.clear();
 
         for (Int2ObjectOpenHashMap<EntityRenderData> map : getAllEntities().values()) {
             for (Int2ObjectMap.Entry<EntityRenderData> entry : map.int2ObjectEntrySet()) {
-                if (isEntityInView(renderer.getCamera().position, camX, camY, camW, camH, entry.getValue())) {
+                if (isEntityInView(renderer, entry.getValue())) {
                     visibleEntities.add(entry.getValue());
                 }
             }
@@ -113,17 +109,32 @@ public class EntityRenderManager extends EntityManager<EntityRenderData> impleme
         }
     }
 
-    private boolean isEntityInView(Vector3 cameraPos, float camX, float camY, float camW, float camH, EntityRenderData entity) {
+    private boolean isEntityInView(Renderer renderer, EntityRenderData entity) {
         if (entity == null)
             return false;
 
-        float xd = cameraPos.x - entity.x;
-        float yd = cameraPos.y - entity.y;
+        Camera camera = renderer.getCamera();
+        float zoom = camera instanceof OrthographicCamera orthographicCamera ? orthographicCamera.zoom : 1f;
 
-        if (xd * xd + yd * yd > RENDER_DISTANCE) {
+        float halfWidth = (renderer.getCamera().viewportWidth * .5f) * zoom;
+        float halfHeight = (renderer.getCamera().viewportHeight * .5f) * zoom;
+
+        float viewMinX = camera.position.x - halfWidth;
+        float viewMaxX = camera.position.x + halfWidth;
+        float viewMinY = camera.position.y - halfHeight;
+        float viewMaxY = camera.position.y + halfHeight;
+
+        float dx = camera.position.x - entity.x;
+        float dy = camera.position.y - entity.y;
+        if (dx * dx + dy * dy > (RENDER_DISTANCE * zoom) * (RENDER_DISTANCE * zoom))
             return false;
-        }
+
         Sprite sprite = getSprite((ClientGame) getGame(), entity);
-        return camX < entity.x + sprite.getWidth() && camX + camW > entity.x && camY < entity.y + sprite.getHeight() && camY + camH > entity.y;
+        float entityMinX = entity.x;
+        float entityMaxX = entity.x + sprite.getWidth();
+        float entityMinY = entity.y;
+        float entityMaxY = entity.y + sprite.getHeight();
+
+        return entityMaxX >= viewMinX && entityMinX <= viewMaxX && entityMaxY >= viewMinY && entityMinY <= viewMaxY;
     }
 }

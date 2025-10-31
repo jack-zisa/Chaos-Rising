@@ -23,6 +23,8 @@ import dev.creoii.chaos.client.util.Renderable;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 
+import java.util.Arrays;
+
 public class Renderer implements Disposable {
     private static final float CAMERA_LOOK_OFFSET = 10f;
     private final ClientGame game;
@@ -36,6 +38,9 @@ public class Renderer implements Disposable {
     private final StatusTextManager statusTextManager;
     private final ObjectMap<RenderSpace, ObjectMap<RenderLayer, ObjectList<Renderable>>> renderables;
     private Screen currentScreen = null;
+
+    private static final float[] ZOOM_LEVELS = {.25f, .5f, 1f, 1.5f, 2f, 2.5f};
+    private float zoom = 1f;
 
     public Renderer(ClientGame game) {
         this.game = game;
@@ -121,6 +126,10 @@ public class Renderer implements Disposable {
         return font;
     }
 
+    public float getZoom() {
+        return zoom;
+    }
+
     public void resize(int width, int height) {
         viewport.update(width, height, true);
     }
@@ -174,8 +183,11 @@ public class Renderer implements Disposable {
         if (direction.len2() > 1e-4f)
             direction.nor().scl(CAMERA_LOOK_OFFSET);
 
-        camera.position.x += ((game.getCharacter().x + direction.x) - camera.position.x) * 0.2f;
-        camera.position.y += ((game.getCharacter().y + direction.y) - camera.position.y) * 0.2f;
+        camera.position.x += ((game.getCharacter().x + direction.x) - camera.position.x) * .2f;
+        camera.position.y += ((game.getCharacter().y + direction.y) - camera.position.y) * .2f;
+
+        camera.zoom += (zoom - camera.zoom) * .2f;
+
         camera.update();
     }
 
@@ -191,6 +203,18 @@ public class Renderer implements Disposable {
     public void clearCurrentScreen() {
         currentScreen.close(game);
         currentScreen = null;
+    }
+
+    public void updateZoom(float amountY) {
+        int index = Arrays.binarySearch(ZOOM_LEVELS, zoom);
+        if (index < 0)
+            index = -index - 1;
+
+        if (amountY > .25f && index < ZOOM_LEVELS.length - 1) {
+            zoom = ZOOM_LEVELS[index + 1];
+        } else if (amountY < -.25f && index > 0) {
+            zoom = ZOOM_LEVELS[index - 1];
+        }
     }
 
     public StatusTextManager getStatusTextManager() {
