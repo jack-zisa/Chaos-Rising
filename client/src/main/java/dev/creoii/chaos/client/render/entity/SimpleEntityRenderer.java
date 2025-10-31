@@ -25,17 +25,12 @@ public class SimpleEntityRenderer<T extends EntityRenderData> extends EntityRend
     public void render(T entity, Renderer renderer, @Nullable SpriteBatch batch, @Nullable ShapeRenderer shapeRenderer, BitmapFont font, float delta, boolean debug) {
         Sprite sprite = entity.sprite;
         if (batch != null) {
-            float predictedX = entity.x + entity.xv * delta;
-            float predictedY = entity.y + entity.yv * delta;
-
-            float alpha = Math.min(1f, delta * 17.5f);
-            entity.renderX += (predictedX - entity.renderX) * alpha;
-            entity.renderY += (predictedY - entity.renderY) * alpha;
-
             sprite.setPosition(entity.renderX, entity.renderY);
             sprite.draw(batch);
 
             if (entity instanceof LivingEntityRenderData livingEntity) {
+                sprite.setFlip(!livingEntity.facingRight, false);
+
                 float scale = livingEntity.scale;
                 float baseX = entity.x + (scale / 2f) - 16f;
                 float baseY = entity.y + scale;

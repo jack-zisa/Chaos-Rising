@@ -21,13 +21,6 @@ public class BulletEntityRenderer extends SimpleEntityRenderer<BulletEntityRende
     public void render(BulletEntityRenderData entity, Renderer renderer, @Nullable SpriteBatch batch, @Nullable ShapeRenderer shapeRenderer, BitmapFont font, float delta, boolean debug) {
         Sprite sprite = entity.sprite;
         if (batch != null) {
-            float predictedX = entity.x + entity.xv * delta;
-            float predictedY = entity.y + entity.yv * delta;
-
-            float alpha = 1f - (float) Math.pow(.001f, delta);
-            entity.renderX += (predictedX - entity.renderX) * alpha;
-            entity.renderY += (predictedY - entity.renderY) * alpha;
-
             sprite.setPosition(entity.renderX, entity.renderY);
 
             sprite.setOriginCenter();

@@ -32,4 +32,16 @@ public class EntityRenderData {
     public boolean canMove() {
         return false;
     }
+
+    public void tick(float delta) {
+        if (!canMove())
+            return;
+
+        float predictedX = x + xv * delta;
+        float predictedY = y + yv * delta;
+
+        float alpha = Math.min(1f, delta * 17.5f);
+        renderX += (predictedX - renderX) * alpha;
+        renderY += (predictedY - renderY) * alpha;
+    }
 }

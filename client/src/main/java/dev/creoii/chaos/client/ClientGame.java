@@ -95,6 +95,8 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
         chatManager.update();
         inputManager.update();
 
+        entityManager.getAllEntities().values().forEach(map -> map.values().forEach(entityRenderData -> entityRenderData.tick(Gdx.graphics.getDeltaTime())));
+
         renderer.render(Gdx.graphics.getDeltaTime(), debug);
     }
 
