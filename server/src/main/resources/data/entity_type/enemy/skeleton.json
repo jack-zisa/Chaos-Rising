@@ -2,6 +2,7 @@
   "id": "skeleton",
   "type": "enemy",
   "stats": {
+    "speed": 1,
     "attack_speed": 1
   },
   "behavior": {

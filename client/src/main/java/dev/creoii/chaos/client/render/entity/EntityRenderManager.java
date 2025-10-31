@@ -1,5 +1,6 @@
 package dev.creoii.chaos.client.render.entity;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -136,5 +137,9 @@ public class EntityRenderManager extends EntityManager<EntityRenderData> impleme
         float entityMaxY = entity.y + sprite.getHeight();
 
         return entityMaxX >= viewMinX && entityMinX <= viewMaxX && entityMaxY >= viewMinY && entityMinY <= viewMaxY;
+    }
+
+    public void update(float delta) {
+        visibleEntities.forEach(entityRenderData -> entityRenderData.tick(delta));
     }
 }

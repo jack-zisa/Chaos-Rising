@@ -92,12 +92,13 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
             listener.handlePacket(networkQueue.connection(), packet);
         }
 
+        float delta = Gdx.graphics.getDeltaTime();
+
         chatManager.update();
         inputManager.update();
+        entityManager.update(delta);
 
-        entityManager.getAllEntities().values().forEach(map -> map.values().forEach(entityRenderData -> entityRenderData.tick(Gdx.graphics.getDeltaTime())));
-
-        renderer.render(Gdx.graphics.getDeltaTime(), debug);
+        renderer.render(delta, debug);
     }
 
     @Override

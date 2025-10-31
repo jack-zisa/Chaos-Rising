@@ -14,4 +14,9 @@ public class BulletEntityRenderData extends EntityRenderData {
         this.yd = yd;
         this.angleOffset = angleOffset;
     }
+
+    @Override
+    public boolean canMove() {
+        return true;
+    }
 }

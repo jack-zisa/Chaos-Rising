@@ -21,12 +21,12 @@ public class EntityRenderData {
         this.group = group;
         this.x = x;
         this.y = y;
-        renderX = x;
-        renderY = y;
         this.xv = xv;
         this.yv = yv;
         this.textureId = textureId;
         this.scale = scale;
+        renderX = x;
+        renderY = y;
     }
 
     public boolean canMove() {
