@@ -1,20 +1,24 @@
 package dev.creoii.chaos.chat;
 
 import com.badlogic.gdx.graphics.Color;
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.util.Codecs;
 
 import java.util.Optional;
+import java.util.function.Function;
 
 public class Message {
-    public static final Codec<Message> CODEC = RecordCodecBuilder.create(instance -> {
+    public static final Codec<Message> OBJECT_CODEC = RecordCodecBuilder.create(instance -> {
         return instance.group(
             Codec.INT.optionalFieldOf("sender_id").forGetter(message -> message.senderId == -1 ? Optional.empty() : Optional.of(message.senderId)),
             Codec.STRING.fieldOf("text").forGetter(Message::getText),
             Codecs.COLOR.optionalFieldOf("color").forGetter(message -> message.color == Color.WHITE ? Optional.empty() : Optional.of(message.color))
         ).apply(instance, (senderId, text, color) -> new Message(senderId.orElse(-1), text, color.orElse(Color.WHITE)));
     });
+    public static final Codec<Message> STRING_CODEC = Codec.STRING.xmap(s -> new Message(-1, s), Message::getText);
+    public static final Codec<Message> CODEC = Codec.either(STRING_CODEC, OBJECT_CODEC).xmap(either -> either.map(Function.identity(), Function.identity()), Either::right);
     private final int senderId;
     private final String text;
     private final Color color;

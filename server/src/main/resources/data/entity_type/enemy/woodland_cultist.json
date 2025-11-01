@@ -22,29 +22,25 @@
           {
             "type": "move",
             "movement": {
-              "type": "mul",
-              "a": {
-                "type": "perpendicular",
+              "type": "perpendicular",
+              "value": {
+                "type": "normalized",
                 "value": {
-                  "type": "normalized",
-                  "value": {
-                    "type": "sub",
-                    "a": {
-                      "type": "entity",
-                      "entity": {
-                        "type": "nearest_character"
-                      }
-                    },
-                    "b": {
-                      "type": "entity",
-                      "entity": {
-                        "type": "self"
-                      }
+                  "type": "sub",
+                  "a": {
+                    "type": "entity",
+                    "entity": {
+                      "type": "nearest_character"
+                    }
+                  },
+                  "b": {
+                    "type": "entity",
+                    "entity": {
+                      "type": "self"
                     }
                   }
                 }
-              },
-              "b": [1, 1]
+              }
             }
           },
           {
@@ -71,23 +67,19 @@
           {
             "type": "move",
             "movement": {
-              "type": "mul",
-              "a": {
-                "type": "direction_to",
-                "to": {
-                  "type": "entity",
-                  "entity": {
-                    "type": "nearest_character"
-                  }
-                },
-                "from": {
-                  "type": "entity",
-                  "entity": {
-                    "type": "self"
-                  }
+              "type": "direction_to",
+              "to": {
+                "type": "entity",
+                "entity": {
+                  "type": "nearest_character"
                 }
               },
-              "b": [1, 1]
+              "from": {
+                "type": "entity",
+                "entity": {
+                  "type": "self"
+                }
+              }
             }
           },
           {
@@ -102,9 +94,7 @@
           },
           {
             "type": "message",
-            "message": {
-              "text": "CHARGE!"
-            }
+            "message": "CHARGE!"
           }
         ]
       },
@@ -122,9 +112,7 @@
           },
           {
             "type": "message",
-            "message": {
-              "text": "Dying..."
-            }
+            "message": "Dying..."
           },
           {
             "type": "effect",

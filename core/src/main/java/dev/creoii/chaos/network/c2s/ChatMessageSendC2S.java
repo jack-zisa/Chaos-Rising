@@ -7,7 +7,7 @@ import dev.creoii.chaos.chat.Message;
 import dev.creoii.chaos.network.PacketUtils;
 
 public record ChatMessageSendC2S(Message message) {
-    public static final Codec<ChatMessageSendC2S> CODEC = Message.CODEC.xmap(ChatMessageSendC2S::new, ChatMessageSendC2S::message);
+    public static final Codec<ChatMessageSendC2S> CODEC = Message.OBJECT_CODEC.xmap(ChatMessageSendC2S::new, ChatMessageSendC2S::message);
 
     public static void write(Output output, ChatMessageSendC2S o) {
         PacketUtils.writeMessage(output, o.message);

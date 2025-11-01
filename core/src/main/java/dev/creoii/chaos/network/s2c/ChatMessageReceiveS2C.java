@@ -6,10 +6,8 @@ import com.esotericsoftware.kryo.io.Output;
 import com.mojang.serialization.Codec;
 import dev.creoii.chaos.chat.Message;
 
-import java.io.*;
-
 public record ChatMessageReceiveS2C(Message message) {
-    public static final Codec<ChatMessageReceiveS2C> CODEC = Message.CODEC.xmap(ChatMessageReceiveS2C::new, ChatMessageReceiveS2C::message);
+    public static final Codec<ChatMessageReceiveS2C> CODEC = Message.OBJECT_CODEC.xmap(ChatMessageReceiveS2C::new, ChatMessageReceiveS2C::message);
 
     public static void write(Output output, ChatMessageReceiveS2C o) {
         output.writeInt(o.message.getSenderId());
