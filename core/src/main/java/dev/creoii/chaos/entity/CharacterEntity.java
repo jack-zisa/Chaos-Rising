@@ -60,8 +60,8 @@ public class CharacterEntity extends LivingEntity implements Attacker {
 
     public void setCharacterClass(CharacterClass characterClass) {
         ((CharacterEntityType) getType()).characterClass().set(characterClass);
-        getStats().set(characterClass.baseStatContainer());
-        getMaxStats().set(characterClass.baseStatContainer());
+        getStats().set(characterClass.baseStatContainer().copy());
+        getMaxStats().set(characterClass.baseStatContainer().copy());
     }
 
     public int getConnectionId() {

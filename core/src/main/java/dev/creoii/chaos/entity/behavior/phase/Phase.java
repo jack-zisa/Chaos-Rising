@@ -3,6 +3,7 @@ package dev.creoii.chaos.entity.behavior.phase;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.entity.EnemyEntity;
+import dev.creoii.chaos.entity.behavior.transition.AfterTransition;
 import dev.creoii.chaos.entity.behavior.transition.ForeverTransition;
 import dev.creoii.chaos.entity.controller.EntityController;
 import dev.creoii.chaos.entity.behavior.action.Action;
@@ -48,6 +49,11 @@ public class Phase {
 
     public void start(EntityController<? extends EnemyEntity> controller, int startTime) {
         this.startTime = startTime;
+
+        if (transition instanceof AfterTransition afterTransition) {
+            afterTransition.setStartTime(startTime);
+        }
+
         actions.forEach(action -> action.start(controller));
     }
 

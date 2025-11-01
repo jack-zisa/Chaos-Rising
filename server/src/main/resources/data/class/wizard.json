@@ -2,13 +2,13 @@
   "id": "wizard",
   "texture": "wizard",
   "base_stats": {
-    "health": 100,
-    "speed": 10,
+    "health": 1000,
+    "speed": 25,
     "attack_speed": 10
   },
   "max_stats": {
-    "health": 100,
-    "speed": 10,
+    "health": 1000,
+    "speed": 25,
     "attack_speed": 50
   }
 }

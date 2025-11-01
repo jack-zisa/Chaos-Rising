@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.Game;
 import dev.creoii.chaos.effect.StatusEffect;
 import dev.creoii.chaos.network.s2c.EntityDamageS2C;
+import dev.creoii.chaos.network.s2c.LivingStatUpdateS2C;
 import dev.creoii.chaos.util.event.DamageEntityEvent;
 import dev.creoii.chaos.util.stat.StatContainer;
 
@@ -18,7 +19,7 @@ public abstract class LivingEntity extends Entity {
     public LivingEntity(Game game, EntityType<? extends LivingEntity> type, int id, Vector2 pos, StatContainer statContainer, StatContainer maxStatContainer) {
         super(game, type, id, pos);
         this.statContainer = statContainer;
-        this.maxStatContainer = statContainer;
+        this.maxStatContainer = maxStatContainer;
         statusEffects = new ArrayList<>();
     }
 
@@ -54,6 +55,10 @@ public abstract class LivingEntity extends Entity {
         if (statContainer.health().value() <= 0)
             return;
         statContainer.health().set(Math.min(maxStatContainer.health().value(), statContainer.health().value() + amount));
+
+        if (!getGame().isClient()) {
+            getGame().getServer().sendToAllTCP(new LivingStatUpdateS2C(getId(), statContainer.health(), false));
+        }
     }
 
     public List<StatusEffect> getStatusEffects() {
@@ -93,7 +98,9 @@ public abstract class LivingEntity extends Entity {
             }
         }
 
-        if (statContainer.health().value() <= maxStatContainer.health().value() && gametime % 40 == 0)
-            heal(Math.round(1f + .2f * statContainer.vitality().value()));
+        int vitality = statContainer.vitality().value();
+        if (vitality > 0 && statContainer.health().value() <= maxStatContainer.health().value() && gametime % 40 == 0) {
+            heal(Math.round(1f + .2f * vitality));
+        }
     }
 }

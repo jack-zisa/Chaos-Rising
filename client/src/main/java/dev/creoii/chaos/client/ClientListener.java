@@ -194,33 +194,39 @@ public class ClientListener extends Listener {
                     }
                 }
             }
-            case LivingStatUpdateS2C(int id, Stat stat) -> {
+            case LivingStatUpdateS2C(int id, Stat stat, boolean setMax) -> {
                 EntityRenderData renderData = game.getEntityManager().getEntityData(id);
                 if (renderData instanceof LivingEntityRenderData livingEntityRenderData) {
                     switch (stat.type()) {
                         case HEALTH -> {
                             livingEntityRenderData.statContainer.setHealth(stat.value());
-                            livingEntityRenderData.maxStatContainer.setHealth(stat.value());
+                            if (setMax)
+                                livingEntityRenderData.maxStatContainer.setHealth(stat.value());
                         }
                         case SPEED -> {
                             livingEntityRenderData.statContainer.setSpeed(stat.value());
-                            livingEntityRenderData.maxStatContainer.setSpeed(stat.value());
+                            if (setMax)
+                                livingEntityRenderData.maxStatContainer.setSpeed(stat.value());
                         }
                         case ATTACK_SPEED -> {
                             livingEntityRenderData.statContainer.setAttackSpeed(stat.value());
-                            livingEntityRenderData.maxStatContainer.setAttackSpeed(stat.value());
+                            if (setMax)
+                                livingEntityRenderData.maxStatContainer.setAttackSpeed(stat.value());
                         }
                         case DEFENSE -> {
                             livingEntityRenderData.statContainer.setDefense(stat.value());
-                            livingEntityRenderData.maxStatContainer.setDefense(stat.value());
+                            if (setMax)
+                                livingEntityRenderData.maxStatContainer.setDefense(stat.value());
                         }
                         case ATTACK -> {
                             livingEntityRenderData.statContainer.setAttack(stat.value());
-                            livingEntityRenderData.maxStatContainer.setAttack(stat.value());
+                            if (setMax)
+                                livingEntityRenderData.maxStatContainer.setAttack(stat.value());
                         }
                         case VITALITY -> {
                             livingEntityRenderData.statContainer.setVitality(stat.value());
-                            livingEntityRenderData.maxStatContainer.setVitality(stat.value());
+                            if (setMax)
+                                livingEntityRenderData.maxStatContainer.setVitality(stat.value());
                         }
                     }
 
