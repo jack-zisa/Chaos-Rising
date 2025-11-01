@@ -1,6 +1,5 @@
 package dev.creoii.chaos.client.render.entity;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -34,7 +33,7 @@ public class EntityRenderManager extends EntityManager<EntityRenderData> impleme
         EntityRenderers.register(LivingEntityRenderData.class, SimpleEntityRenderer::new);
         EntityRenderers.register(BulletEntityRenderData.class, BulletEntityRenderer::new);
         EntityRenderers.register(LootDropEntityRenderData.class, SimpleEntityRenderer::new);
-        EntityRenderers.register(CharacterEntityRenderData.class, SimpleEntityRenderer::new);
+        EntityRenderers.register(CharacterEntityRenderData.class, CharacterEntityRenderer::new);
     }
 
     public int getVisibleSize() {

@@ -85,12 +85,14 @@ public class ServerListener extends Listener {
     }
 
     public void handlePacket(Connection connection, Object object) {
-        if (object instanceof CharacterMoveC2S(int id, float dx, float dy)) {
+        if (object instanceof CharacterMoveC2S(int id, boolean axis, boolean positive)) {
             CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id);
             if (character != null) {
                 character.setPrevPos(character.getPos().x, character.getPos().y);
-                Vector2 newPos = character.getPos().add(new Vector2(dx, dy).nor().scl(character.getStats().speed().value() / 8f));
-                game.getServer().sendToAllTCP(new MoveEntityS2C(id, newPos.x, newPos.y, newPos.x - character.getPrevPos().x, newPos.y - character.getPrevPos().y));
+                float x = axis ? positive ? 1f : -1f : 0f;
+                float y = axis ? 0f : positive ? 1f : -1f;
+                Vector2 newPos = character.getPos().add(new Vector2(x, y).scl(character.getStats().speed().value() / 8f));
+                game.getServer().sendToAllExceptUDP(connection.getID(), new MoveEntityS2C(id, newPos.x, newPos.y, newPos.x - character.getPrevPos().x, newPos.y - character.getPrevPos().y));
             }
         }
 

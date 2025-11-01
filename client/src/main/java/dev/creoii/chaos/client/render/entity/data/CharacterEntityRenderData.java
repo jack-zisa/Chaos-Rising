@@ -31,4 +31,16 @@ public class CharacterEntityRenderData extends LivingEntityRenderData {
     public Slot getAccessorySlot() {
         return getHotbar()[3];
     }
+
+    @Override
+    public void tick(float delta) {
+        if (!canMove())
+            return;
+
+        if (xv > .01f) {
+            facingRight = true;
+        } else if (xv < -.01f) {
+            facingRight = false;
+        }
+    }
 }

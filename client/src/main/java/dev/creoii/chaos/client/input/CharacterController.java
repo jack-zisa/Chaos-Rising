@@ -1,8 +1,10 @@
 package dev.creoii.chaos.client.input;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import dev.creoii.chaos.OptionsManager;
 import dev.creoii.chaos.client.ClientGame;
+import dev.creoii.chaos.client.render.entity.data.CharacterEntityRenderData;
 import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.inventory.Slot;
 import dev.creoii.chaos.item.AbilityItem;
@@ -33,11 +35,24 @@ public record CharacterController() implements Inputtable {
                 dy -= 1;
 
             if (dx != 0f || dy != 0f) {
-                float len = (float) Math.sqrt(dx * dx + dy * dy);
-                dx /= len;
-                dy /= len;
+                boolean axis = true;
+                boolean positive;
+                if (dy != 0f) {
+                    axis = false;
+                    positive = dy > 0f;
+                } else positive = dx > 0f;
 
-                game.getClient().sendTCP(new CharacterMoveC2S(game.getCharacter().id, dx, dy));
+                CharacterEntityRenderData character = game.getCharacter();
+                game.getClient().sendUDP(new CharacterMoveC2S(character.id, axis, positive));
+
+                Vector2 newPos = new Vector2(character.x, character.y).add(new Vector2(dx, dy).scl(character.statContainer.speed().value() / 8f));
+
+                character.xv = newPos.x - character.x;
+                character.yv = newPos.y - character.y;
+                character.x = newPos.x;
+                character.y = newPos.y;
+                character.renderX = newPos.x;
+                character.renderY = newPos.y;
             }
         }
 
