@@ -12,12 +12,12 @@
         "source": {
           "type": "relative_to",
           "parent": {
-            "type": "source_pos"
+            "type": "source"
           },
           "offset": {
             "type": "rotated_offset",
             "from": {
-              "type": "source_pos"
+              "type": "source"
             },
             "to": {
               "type": "mouse_pos"
@@ -33,7 +33,7 @@
           "offset": {
             "type": "rotated_offset",
             "from": {
-              "type": "source_pos"
+              "type": "source"
             },
             "to": {
               "type": "mouse_pos"
@@ -49,12 +49,12 @@
         "source": {
           "type": "relative_to",
           "parent": {
-            "type": "source_pos"
+            "type": "source"
           },
           "offset": {
             "type": "rotated_offset",
             "from": {
-              "type": "source_pos"
+              "type": "source"
             },
             "to": {
               "type": "mouse_pos"
@@ -70,7 +70,7 @@
           "offset": {
             "type": "rotated_offset",
             "from": {
-              "type": "source_pos"
+              "type": "source"
             },
             "to": {
               "type": "mouse_pos"
@@ -86,12 +86,12 @@
         "source": {
           "type": "relative_to",
           "parent": {
-            "type": "source_pos"
+            "type": "source"
           },
           "offset": {
             "type": "rotated_offset",
             "from": {
-              "type": "source_pos"
+              "type": "source"
             },
             "to": {
               "type": "mouse_pos"
@@ -107,7 +107,7 @@
           "offset": {
             "type": "rotated_offset",
             "from": {
-              "type": "source_pos"
+              "type": "source"
             },
             "to": {
               "type": "mouse_pos"
@@ -123,12 +123,12 @@
         "source": {
           "type": "relative_to",
           "parent": {
-            "type": "source_pos"
+            "type": "source"
           },
           "offset": {
             "type": "rotated_offset",
             "from": {
-              "type": "source_pos"
+              "type": "source"
             },
             "to": {
               "type": "mouse_pos"
@@ -144,7 +144,7 @@
           "offset": {
             "type": "rotated_offset",
             "from": {
-              "type": "source_pos"
+              "type": "source"
             },
             "to": {
               "type": "mouse_pos"

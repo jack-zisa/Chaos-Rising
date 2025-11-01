@@ -8,6 +8,8 @@ import dev.creoii.chaos.network.s2c.LivingStatUpdateS2C;
 import dev.creoii.chaos.network.s2c.StatusEffectS2C;
 import dev.creoii.chaos.util.event.DamageEntityEvent;
 import dev.creoii.chaos.util.stat.StatContainer;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,12 +18,16 @@ public abstract class LivingEntity extends Entity {
     private final StatContainer statContainer;
     private final StatContainer maxStatContainer;
     private final List<StatusEffect.Instance> statusEffects;
+    private final IntList children;
+    private int parentId;
 
     public LivingEntity(Game game, EntityType<? extends LivingEntity> type, int id, Vector2 pos, StatContainer statContainer, StatContainer maxStatContainer) {
         super(game, type, id, pos);
         this.statContainer = statContainer;
         this.maxStatContainer = maxStatContainer;
         statusEffects = new ArrayList<>();
+        children = new IntArrayList();
+        parentId = -1;
     }
 
     public StatContainer getStats() {
@@ -30,6 +36,30 @@ public abstract class LivingEntity extends Entity {
 
     public StatContainer getMaxStats() {
         return maxStatContainer;
+    }
+
+    public int getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(int id) {
+        parentId = id;
+    }
+
+    public IntList getChildren() {
+        return children;
+    }
+
+    public boolean hasParent() {
+        return parentId == -1;
+    }
+
+    public void addChild(int id) {
+        children.add(id);
+    }
+
+    public void removeChild(int id) {
+        children.removeInt(id);
     }
 
     @Override

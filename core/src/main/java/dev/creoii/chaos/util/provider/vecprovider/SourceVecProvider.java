@@ -3,13 +3,13 @@ package dev.creoii.chaos.util.provider.vecprovider;
 import com.badlogic.gdx.math.Vector2;
 import com.mojang.serialization.MapCodec;
 
-public record SourcePosVecProvider() implements VecProvider {
-    public static final SourcePosVecProvider INSTANCE = new SourcePosVecProvider();
-    public static final MapCodec<SourcePosVecProvider> CODEC = MapCodec.unit(INSTANCE);
+public record SourceVecProvider() implements VecProvider {
+    public static final SourceVecProvider INSTANCE = new SourceVecProvider();
+    public static final MapCodec<SourceVecProvider> CODEC = MapCodec.unit(INSTANCE);
 
     @Override
     public Type getType() {
-        return Type.SOURCE_POS;
+        return Type.SOURCE;
     }
 
     @Override

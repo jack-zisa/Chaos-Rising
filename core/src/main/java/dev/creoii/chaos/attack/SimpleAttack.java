@@ -11,7 +11,7 @@ import dev.creoii.chaos.util.provider.Provider;
 import dev.creoii.chaos.util.provider.numberprovider.ConstantNumberProvider;
 import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
 import dev.creoii.chaos.util.provider.vecprovider.ConstantVecProvider;
-import dev.creoii.chaos.util.provider.vecprovider.SourcePosVecProvider;
+import dev.creoii.chaos.util.provider.vecprovider.SourceVecProvider;
 import dev.creoii.chaos.util.provider.vecprovider.VecProvider;
 
 import javax.annotation.Nullable;
@@ -26,7 +26,7 @@ public record SimpleAttack(String bulletId, NumberProvider damage, int bulletCou
             Codec.INT.fieldOf("arc_gap").orElse(0).forGetter(SimpleAttack::arcGap),
             Codec.FLOAT.fieldOf("predictability").orElse(0f).forGetter(SimpleAttack::predictability),
             NumberProvider.CODEC.fieldOf("angle_offset").orElse(ConstantNumberProvider.ZERO).forGetter(SimpleAttack::angleOffset),
-            VecProvider.CODEC.optionalFieldOf("source").orElse(Optional.of(new SourcePosVecProvider())).forGetter(SimpleAttack::source),
+            VecProvider.CODEC.optionalFieldOf("source").orElse(Optional.of(new SourceVecProvider())).forGetter(SimpleAttack::source),
             VecProvider.CODEC.optionalFieldOf("target").orElse(Optional.of(ConstantVecProvider.ZERO)).forGetter(SimpleAttack::target)
         ).apply(instance, SimpleAttack::new);
     });

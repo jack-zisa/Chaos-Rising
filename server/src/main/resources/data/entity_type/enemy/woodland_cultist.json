@@ -101,7 +101,7 @@
       "2": {
         "transition": {
           "type": "after",
-          "after": 100,
+          "after": 150,
           "target": {
             "type": "next"
           }
@@ -121,27 +121,52 @@
               "duration": -1
             },
             "remove": false
+          },
+          {
+            "type": "spawn",
+            "entity": {
+              "type": "new",
+              "id": "skeleton"
+            },
+            "pos": {
+              "type": "random_between",
+              "min": {
+                "type": "add",
+                "a": {
+                  "type": "source"
+                },
+                "b": [-3, -3]
+              },
+              "max": {
+                "type": "add",
+                "a": {
+                  "type": "source"
+                },
+                "b": [-3, -3]
+              }
+            }
           }
         ]
       },
       "3": {
+        "transition": {
+          "type": "after",
+          "after": 150,
+          "target": {
+            "type": "next"
+          }
+        },
         "actions": [
           {
-            "type": "spawn",
-            "entity": {
-              "type": "random",
-              "entities": [
-                {
-                  "type": "new",
-                  "id": "skeleton"
-                },
-                {
-                  "type": "new",
-                  "id": "woodland_cultist"
-                }
-              ]
+            "type": "order",
+            "phase": {
+              "type": "random"
             }
-          },
+          }
+        ]
+      },
+      "4": {
+        "actions": [
           {
             "type": "kill"
           }

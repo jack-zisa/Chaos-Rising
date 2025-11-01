@@ -78,6 +78,10 @@ public class MultiBehavior implements Behavior {
         return currentPhase;
     }
 
+    public void setCurrentPhase(Phase currentPhase) {
+        this.currentPhase = currentPhase;
+    }
+
     public int getIndex(Phase phase) {
         return phaseKeys.get(phase.getId());
     }
@@ -100,7 +104,7 @@ public class MultiBehavior implements Behavior {
             Provider.Context context = Provider.Context.of(controller.getEntity(), time);
             if (currentPhase.shouldTransition(context, time)) {
                 currentPhase.end(controller);
-                currentPhase = currentPhase.getTransition().getTarget(context);
+                setCurrentPhase(currentPhase.getTransition().getTarget(context));
                 currentPhase.start(controller, time);
             }
         }

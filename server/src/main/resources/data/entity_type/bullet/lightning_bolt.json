@@ -14,7 +14,7 @@
           "value": {
             "type": "direction_to",
             "from": {
-              "type": "source_pos"
+              "type": "source"
             },
             "to": {
               "type": "target_pos"

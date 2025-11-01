@@ -9,6 +9,7 @@ public interface EntityProvider extends Provider<Entity> {
         case NEW -> NewEntityProvider.CODEC;
         case RANDOM -> RandomEntityProvider.CODEC;
         case SELF -> SelfEntityProvider.CODEC;
+        case PARENT -> ParentEntityProvider.CODEC;
         case NEAREST_CHARACTER -> NearestCharacterEntityProvider.CODEC;
     });
 
@@ -18,6 +19,7 @@ public interface EntityProvider extends Provider<Entity> {
         NEW,
         RANDOM,
         SELF,
+        PARENT,
         NEAREST_CHARACTER;
 
         public static final Codec<Type> CODEC = Codec.STRING.xmap(s -> Type.valueOf(s.toUpperCase()), type -> type.name().toLowerCase());

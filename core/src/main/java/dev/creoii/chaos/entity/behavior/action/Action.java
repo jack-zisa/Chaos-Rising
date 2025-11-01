@@ -11,6 +11,7 @@ public abstract class Action {
         case MOVE -> MoveAction.CODEC;
         case TELEPORT -> TeleportAction.CODEC;
         case EFFECT -> EffectAction.CODEC;
+        case ORDER -> OrderAction.CODEC;
         case MESSAGE -> MessageAction.CODEC;
         case KILL -> KillAction.CODEC;
         case WAIT -> WaitAction.CODEC;
@@ -30,6 +31,7 @@ public abstract class Action {
         MOVE,
         TELEPORT,
         EFFECT,
+        ORDER,
         MESSAGE,
         KILL,
         WAIT;

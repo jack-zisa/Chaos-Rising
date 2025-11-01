@@ -22,7 +22,7 @@ import dev.creoii.chaos.util.Mutable;
 import dev.creoii.chaos.util.event.ExecuteCommandEvent;
 import dev.creoii.chaos.util.event.MessageChatEvent;
 import dev.creoii.chaos.util.provider.vecprovider.ConstantVecProvider;
-import dev.creoii.chaos.util.provider.vecprovider.SourcePosVecProvider;
+import dev.creoii.chaos.util.provider.vecprovider.SourceVecProvider;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
@@ -101,7 +101,7 @@ public class ServerListener extends Listener {
             if (character != null) {
                 ItemStack stack = slot.getStack();
                 if (stack.getItem() instanceof WeaponItem weaponItem) {
-                    weaponItem.getAttack().attack(new ConstantVecProvider(mouseX, mouseY), new SourcePosVecProvider(), character, weaponItem);
+                    weaponItem.getAttack().attack(new ConstantVecProvider(mouseX, mouseY), new SourceVecProvider(), character, weaponItem);
                 }
             }
         }
@@ -111,7 +111,7 @@ public class ServerListener extends Listener {
             if (character != null) {
                 ItemStack stack = slot.getStack();
                 if (stack.getItem() instanceof AbilityItem abilityItem) {
-                    abilityItem.getAttack().attack(ConstantVecProvider.ZERO, new SourcePosVecProvider(), character, abilityItem);
+                    abilityItem.getAttack().attack(ConstantVecProvider.ZERO, new SourceVecProvider(), character, abilityItem);
                 }
             }
         }

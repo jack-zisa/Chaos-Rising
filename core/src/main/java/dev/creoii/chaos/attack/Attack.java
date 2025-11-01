@@ -3,7 +3,7 @@ package dev.creoii.chaos.attack;
 import com.mojang.serialization.Codec;
 import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.item.EquipmentItem;
-import dev.creoii.chaos.util.provider.vecprovider.SourcePosVecProvider;
+import dev.creoii.chaos.util.provider.vecprovider.SourceVecProvider;
 import dev.creoii.chaos.util.provider.vecprovider.VecProvider;
 
 import javax.annotation.Nullable;
@@ -22,7 +22,7 @@ public interface Attack {
     void attack(VecProvider targetPos, VecProvider sourcePos, Entity sourceEntity, EquipmentItem item);
 
     default void attack(VecProvider targetPos, Entity sourceEntity, @Nullable EquipmentItem item) {
-        attack(targetPos, SourcePosVecProvider.INSTANCE, sourceEntity, item);
+        attack(targetPos, SourceVecProvider.INSTANCE, sourceEntity, item);
     }
 
     enum Type {
