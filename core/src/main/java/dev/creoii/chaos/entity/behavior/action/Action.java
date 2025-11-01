@@ -8,6 +8,10 @@ public abstract class Action {
     public static final Codec<Action> CODEC = Action.Type.CODEC.dispatch(Action::getType, type -> switch (type) {
         case ATTACK -> AttackAction.CODEC;
         case MOVE -> MoveAction.CODEC;
+        case TELEPORT -> TeleportAction.CODEC;
+        case MESSAGE -> MessageAction.CODEC;
+        case KILL -> KillAction.CODEC;
+        case WAIT -> WaitAction.CODEC;
     });
 
     public abstract Type getType();
@@ -20,7 +24,11 @@ public abstract class Action {
 
     public enum Type {
         ATTACK,
-        MOVE;
+        MOVE,
+        TELEPORT,
+        MESSAGE,
+        KILL,
+        WAIT;
 
         public static final Codec<Type> CODEC = Codec.STRING.xmap(s -> Type.valueOf(s.toUpperCase()), type -> type.name().toLowerCase());
     }

@@ -9,13 +9,16 @@ public interface Transition {
     Codec<Transition> CODEC = Transition.Type.CODEC.dispatch(Transition::getType, type -> switch (type) {
         case AFTER -> AfterTransition.CODEC;
         case FOREVER -> ForeverTransition.CODEC;
+        case RANDOM -> RandomTransition.CODEC;
+        case CONDITION -> ConditionTransition.CODEC;
+        case THRESHOLD -> ThresholdTransition.CODEC;
     });
 
     Type getType();
 
     PhaseProvider target();
 
-    boolean canTransition(Provider.Context context, int time);
+    boolean shouldTransition(Provider.Context context, int time);
 
     default Phase getTarget(Provider.Context context) {
         return target().get(context);
@@ -23,7 +26,10 @@ public interface Transition {
 
     enum Type {
         AFTER,
-        FOREVER;
+        FOREVER,
+        RANDOM,
+        CONDITION,
+        THRESHOLD;
 
         public static final Codec<Type> CODEC = Codec.STRING.xmap(s -> Type.valueOf(s.toUpperCase()), type -> type.name().toLowerCase());
     }

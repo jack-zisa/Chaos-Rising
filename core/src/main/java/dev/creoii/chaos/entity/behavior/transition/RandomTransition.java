@@ -6,21 +6,21 @@ import dev.creoii.chaos.util.provider.Provider;
 import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
 import dev.creoii.chaos.util.provider.phaseprovider.PhaseProvider;
 
-public record AfterTransition(NumberProvider after, PhaseProvider target) implements Transition {
-    public static final MapCodec<AfterTransition> CODEC = RecordCodecBuilder.mapCodec(instance -> {
+public record RandomTransition(NumberProvider chance, PhaseProvider target) implements Transition {
+    public static final MapCodec<RandomTransition> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(
-            NumberProvider.CODEC.fieldOf("after").forGetter(AfterTransition::after),
-            PhaseProvider.CODEC.fieldOf("target").forGetter(AfterTransition::target)
-        ).apply(instance, AfterTransition::new);
+            NumberProvider.CODEC.fieldOf("chance").forGetter(RandomTransition::chance),
+            PhaseProvider.CODEC.fieldOf("target").forGetter(RandomTransition::target)
+        ).apply(instance, RandomTransition::new);
     });
 
     @Override
     public Type getType() {
-        return Type.AFTER;
+        return Type.RANDOM;
     }
 
     @Override
     public boolean shouldTransition(Provider.Context context, int time) {
-        return time >= after.get(context);
+        return context.random().nextInt(100) <= chance.get(context);
     }
 }

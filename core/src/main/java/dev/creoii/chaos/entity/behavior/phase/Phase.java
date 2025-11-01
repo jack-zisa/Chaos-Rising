@@ -63,6 +63,6 @@ public class Phase {
     }
 
     public boolean shouldTransition(Provider.Context context, int time) {
-        return transition.canTransition(context, time);
+        return transition.shouldTransition(context, time);
     }
 }

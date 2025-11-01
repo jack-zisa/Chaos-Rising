@@ -19,7 +19,7 @@ public record ForeverTransition(PhaseProvider target) implements Transition {
     }
 
     @Override
-    public boolean canTransition(Provider.Context context, int time) {
+    public boolean shouldTransition(Provider.Context context, int time) {
         return false;
     }
 }
