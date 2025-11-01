@@ -34,7 +34,7 @@ public class Networking {
         kryo.register(LootDropCloseS2C.class, PacketSerializer.INSTANCE);
         kryo.register(LootDropOpenS2C.class, PacketSerializer.INSTANCE);
         kryo.register(ChatMessageReceiveS2C.class, PacketSerializer.INSTANCE);
-        //kryo.register(StatusEffectS2C.class, serializer);
+        kryo.register(StatusEffectS2C.class, PacketSerializer.INSTANCE);
         kryo.register(SyncDataS2C.class, PacketSerializer.INSTANCE);
 
         registerCodecSchema();
@@ -66,6 +66,7 @@ public class Networking {
         PacketSerializer.INSTANCE.register(LootDropCloseS2C.class, LootDropCloseS2C::write, LootDropCloseS2C::read);
         PacketSerializer.INSTANCE.register(LootDropOpenS2C.class, LootDropOpenS2C::write, LootDropOpenS2C::read);
         PacketSerializer.INSTANCE.register(ChatMessageReceiveS2C.class, ChatMessageReceiveS2C::write, ChatMessageReceiveS2C::read);
+        PacketSerializer.INSTANCE.register(StatusEffectS2C.class, StatusEffectS2C::write, StatusEffectS2C::read);
         PacketSerializer.INSTANCE.register(SyncDataS2C.class, SyncDataS2C::write, SyncDataS2C::read);
     }
 }

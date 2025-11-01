@@ -1,14 +1,14 @@
 package dev.creoii.chaos.util.provider.booleanprovider;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.chaos.effect.StatusEffect;
 import dev.creoii.chaos.entity.LivingEntity;
 
-public record HasEffectBooleanProvider(String effect) implements BooleanProvider {
+public record HasEffectBooleanProvider(StatusEffect.Type effect) implements BooleanProvider {
     public static final MapCodec<HasEffectBooleanProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(
-            Codec.STRING.fieldOf("effect").forGetter(HasEffectBooleanProvider::effect)
+            StatusEffect.Type.CODEC.fieldOf("effect").forGetter(HasEffectBooleanProvider::effect)
         ).apply(instance, HasEffectBooleanProvider::new);
     });
 

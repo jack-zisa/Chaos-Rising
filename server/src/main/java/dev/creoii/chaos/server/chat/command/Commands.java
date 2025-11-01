@@ -4,12 +4,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ObjectMap;
 import dev.creoii.chaos.DataManager;
 import dev.creoii.chaos.chat.Message;
+import dev.creoii.chaos.effect.StatusEffects;
 import dev.creoii.chaos.network.s2c.ChatMessageReceiveS2C;
 import dev.creoii.chaos.network.s2c.MoveEntityS2C;
 import dev.creoii.chaos.server.ServerGame;
 import dev.creoii.chaos.effect.StatusEffect;
-import dev.creoii.chaos.effect.StatusEffectType;
-import dev.creoii.chaos.effect.StatusEffectTypes;
 import dev.creoii.chaos.entity.*;
 import dev.creoii.chaos.item.Item;
 import dev.creoii.chaos.network.s2c.LivingStatUpdateS2C;
@@ -201,26 +200,26 @@ public final class Commands {
             if (argCount < 1)
                 return Command.Result.FAIL;
 
-            String effectType = args[0];
+            StatusEffect.Type effectType = StatusEffect.Type.valueOf(args[0].toUpperCase());
 
             if (argCount == 1) {
-                StatusEffectType type = StatusEffectTypes.ALL.get(effectType);
+                StatusEffect type = StatusEffects.ALL.get(effectType);
                 if (type == null)
                     return Command.Result.FAIL;
                 CharacterEntity character = ((CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id));
                 if (character != null) {
-                    character.addStatusEffect(new StatusEffect(type, 1, 30));
+                    character.addStatusEffect(new StatusEffect.Instance(type, 1, 30));
                     return Command.Result.SUCCESS;
                 }
             } else if (argCount == 3) {
-                StatusEffectType type = StatusEffectTypes.ALL.get(effectType);
+                StatusEffect type = StatusEffects.ALL.get(effectType);
                 if (type == null)
                     return Command.Result.FAIL;
                 CharacterEntity character = ((CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id));
                 if (character != null) {
                     int amplifier = Integer.parseInt(args[1]);
                     int duration = Integer.parseInt(args[2]);
-                    character.addStatusEffect(new StatusEffect(type, amplifier, duration));
+                    character.addStatusEffect(new StatusEffect.Instance(type, amplifier, duration));
                     return Command.Result.SUCCESS;
                 }
             }
@@ -239,7 +238,7 @@ public final class Commands {
 
                 int size = character.getStatusEffects().size();
                 for (int i = size - 1; i >= 0; --i) {
-                    if (character.getStatusEffects().get(i).getType().id().equals(effectType))
+                    if (character.getStatusEffects().get(i).getEffect().id().equals(effectType))
                         character.getStatusEffects().remove(i);
                 }
                 return Command.Result.SUCCESS;

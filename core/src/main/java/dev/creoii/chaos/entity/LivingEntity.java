@@ -5,6 +5,7 @@ import dev.creoii.chaos.Game;
 import dev.creoii.chaos.effect.StatusEffect;
 import dev.creoii.chaos.network.s2c.EntityDamageS2C;
 import dev.creoii.chaos.network.s2c.LivingStatUpdateS2C;
+import dev.creoii.chaos.network.s2c.StatusEffectS2C;
 import dev.creoii.chaos.util.event.DamageEntityEvent;
 import dev.creoii.chaos.util.stat.StatContainer;
 
@@ -14,7 +15,7 @@ import java.util.List;
 public abstract class LivingEntity extends Entity {
     private final StatContainer statContainer;
     private final StatContainer maxStatContainer;
-    private final List<StatusEffect> statusEffects;
+    private final List<StatusEffect.Instance> statusEffects;
 
     public LivingEntity(Game game, EntityType<? extends LivingEntity> type, int id, Vector2 pos, StatContainer statContainer, StatContainer maxStatContainer) {
         super(game, type, id, pos);
@@ -37,7 +38,7 @@ public abstract class LivingEntity extends Entity {
     }
 
     public void damage(int amount) {
-        if (statContainer.health().value() <= 0 || hasStatusEffect("invulnerable"))
+        if (statContainer.health().value() <= 0 || hasStatusEffect(StatusEffect.Type.INVULNERABLE))
             return;
         amount = Math.max(0, amount - statContainer.defense().value());
         statContainer.health().set(Math.max(0, statContainer.health().value() - amount));
@@ -61,24 +62,29 @@ public abstract class LivingEntity extends Entity {
         }
     }
 
-    public List<StatusEffect> getStatusEffects() {
+    public List<StatusEffect.Instance> getStatusEffects() {
         return statusEffects;
     }
 
-    public void addStatusEffect(StatusEffect statusEffect) {
-        statusEffects.add(statusEffect);
+    public void addStatusEffect(StatusEffect.Instance instance) {
+        statusEffects.add(instance);
+        getGame().getServer().sendToAllTCP(new StatusEffectS2C(getId(), instance, true));
     }
 
-    public void removeStatusEffect(StatusEffect statusEffect) {
-        statusEffects.remove(statusEffect);
+    public void removeStatusEffect(StatusEffect.Instance instance) {
+        statusEffects.remove(instance);
+        getGame().getServer().sendToAllTCP(new StatusEffectS2C(getId(), instance, false));
     }
 
     public void clearStatusEffects() {
+        statusEffects.forEach(instance -> {
+            getGame().getServer().sendToAllTCP(new StatusEffectS2C(getId(), instance, false));
+        });
         statusEffects.clear();
     }
 
-    public boolean hasStatusEffect(String id) {
-        return statusEffects.stream().anyMatch(statusEffect1 -> statusEffect1.getType().id().equals(id));
+    public boolean hasStatusEffect(StatusEffect.Type type) {
+        return statusEffects.stream().anyMatch(statusEffect1 -> statusEffect1.getEffect().type().equals(type));
     }
 
     @Override
@@ -86,15 +92,15 @@ public abstract class LivingEntity extends Entity {
         super.tick(gametime, delta);
 
         for (int i = getStatusEffects().size() - 1; i >= 0; --i) {
-            StatusEffect statusEffect = getStatusEffects().get(i);
+            StatusEffect.Instance instance = getStatusEffects().get(i);
 
-            if (statusEffect.getType().applier() != null)
-                statusEffect.getType().applier().accept(this, statusEffect);
+            if (instance.getEffect().applier() != null)
+                instance.getEffect().applier().accept(this, instance);
 
-            if (statusEffect.getDuration() > 0) {
-                statusEffect.decrementDuration();
+            if (instance.getDuration() > 0) {
+                instance.decrementDuration();
             } else {
-                removeStatusEffect(statusEffect);
+                removeStatusEffect(instance);
             }
         }
 

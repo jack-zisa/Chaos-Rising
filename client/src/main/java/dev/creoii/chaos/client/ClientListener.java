@@ -185,8 +185,11 @@ public class ClientListener extends Listener {
             case ChatMessageReceiveS2C(Message message) -> game.getChatManager().getMessages().add(message);
             case EntityRemoveS2C(int id) -> game.getEntityManager().removeEntity(id);
             case RemoveEntitiesS2C(List<Integer> ids) -> ids.forEach(integer -> game.getEntityManager().removeEntity(integer));
-            case StatusEffectS2C(int id, StatusEffect statusEffect) -> {
-                //((LivingEntity) game.getEntityManager().getEntityData(uuid)).addStatusEffect(statusEffect);
+            case StatusEffectS2C(int id, StatusEffect.Instance instance, boolean add) -> {
+                EntityRenderData entityRenderData = game.getEntityManager().getEntityData(id);
+                if (entityRenderData instanceof LivingEntityRenderData livingEntityRenderData) {
+                    //((LivingEntity) game.getEntityManager().getEntityData(uuid)).addStatusEffect(statusEffect);
+                }
             }
             case InventoryUpdateS2C(int id, InventoryType type, List<Slot> slots) -> {
                 EntityRenderData entityRenderData = game.getEntityManager().getEntityData(id);

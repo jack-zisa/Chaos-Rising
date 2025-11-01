@@ -5,6 +5,8 @@ import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import dev.creoii.chaos.DataManager;
 import dev.creoii.chaos.chat.Message;
+import dev.creoii.chaos.effect.StatusEffect;
+import dev.creoii.chaos.effect.StatusEffects;
 import dev.creoii.chaos.entity.serialization.*;
 import dev.creoii.chaos.inventory.Slot;
 import dev.creoii.chaos.item.Item;
@@ -122,5 +124,16 @@ public final class PacketUtils {
             case BULLET -> BulletData.read(input);
             case LOOT_DROP -> LootDropData.read(input);
         };
+    }
+
+    public static void writeStatusEffectInstance(Output output, StatusEffect.Instance instance) {
+        writeEnum(output, instance.getEffect().type());
+        output.writeInt(instance.getAmplifier());
+        output.writeInt(instance.getDuration());
+    }
+
+    public static StatusEffect.Instance readStatusEffectInstance(Input input) {
+        StatusEffect effect = StatusEffects.ALL.get(readEnum(StatusEffect.Type.class, input));
+        return new StatusEffect.Instance(effect, input.readInt(), input.readInt());
     }
 }

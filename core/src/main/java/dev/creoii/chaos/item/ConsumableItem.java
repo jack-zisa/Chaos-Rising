@@ -26,20 +26,20 @@ public class ConsumableItem extends Item {
         ).apply(instance, (id, rarity, statBonus) -> new ConsumableItem(id, rarity, statBonus, List.of()));
     });
     private final List<ModifierEntry> statBonus;
-    private final List<StatusEffect> statusEffects;
+    private final List<StatusEffect.Instance> instances;
 
-    public ConsumableItem(String id, Rarity rarity, List<ModifierEntry> statBonus, List<StatusEffect> statusEffects) {
+    public ConsumableItem(String id, Rarity rarity, List<ModifierEntry> statBonus, List<StatusEffect.Instance> instances) {
         super(id, Type.CONSUMABLE, rarity);
         this.statBonus = statBonus;
-        this.statusEffects = statusEffects;
+        this.instances = instances;
     }
 
     public List<ModifierEntry> getStatBonus() {
         return statBonus;
     }
 
-    public List<StatusEffect> getStatusEffects() {
-        return statusEffects;
+    public List<StatusEffect.Instance> getStatusEffects() {
+        return instances;
     }
 
     @Override
@@ -74,7 +74,7 @@ public class ConsumableItem extends Item {
                 });
             }
             if (!getStatusEffects().isEmpty()) {
-                statusEffects.forEach(character::addStatusEffect);
+                instances.forEach(character::addStatusEffect);
             }
         }
         slot.setStack(ItemStack.EMPTY);
