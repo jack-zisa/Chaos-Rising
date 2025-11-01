@@ -43,7 +43,7 @@ public class MoveAction extends Action {
     }
 
     @Override
-    public void reset(EntityController<? extends EnemyEntity> controller) {
+    public void end(EntityController<? extends EnemyEntity> controller) {
         speed = (controller.getEntity() instanceof LivingEntity living ? living.getStats().speed().value() : 1f);
     }
 }

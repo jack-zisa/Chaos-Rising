@@ -1,17 +1,23 @@
 package dev.creoii.chaos.client.render.entity.data;
 
+import dev.creoii.chaos.effect.StatusEffect;
 import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.stat.StatContainer;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class LivingEntityRenderData extends EntityRenderData {
     public StatContainer statContainer;
     public StatContainer maxStatContainer;
+    public List<StatusEffect.Instance> statusEffects;
     public boolean facingRight;
 
     public LivingEntityRenderData(int id, EntityGroup group, float x, float y, float xv, float yv, String textureId, float scale, StatContainer statContainer, StatContainer maxStatContainer) {
         super(id, group, x, y, xv, yv, textureId, scale);
         this.statContainer = statContainer;
         this.maxStatContainer = maxStatContainer;
+        statusEffects = new ArrayList<>();
     }
 
     public boolean canMove() {

@@ -125,6 +125,14 @@
             "message": {
               "text": "Dying..."
             }
+          },
+          {
+            "type": "effect",
+            "effect": {
+              "id": "invulnerable",
+              "duration": -1
+            },
+            "remove": false
           }
         ]
       },

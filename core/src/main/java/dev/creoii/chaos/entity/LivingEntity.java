@@ -97,6 +97,9 @@ public abstract class LivingEntity extends Entity {
             if (instance.getEffect().applier() != null)
                 instance.getEffect().applier().accept(this, instance);
 
+            if (instance.isInfinite())
+                continue;
+
             if (instance.getDuration() > 0) {
                 instance.decrementDuration();
             } else {

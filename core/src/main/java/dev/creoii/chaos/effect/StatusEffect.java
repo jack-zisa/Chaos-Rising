@@ -25,13 +25,14 @@ public record StatusEffect(Type type, BiConsumer<LivingEntity, Instance> starter
 
     public static class Instance {
         public static final Codec<Instance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            StatusEffect.CODEC.fieldOf("effect").forGetter(Instance::getEffect),
-            Codec.INT.fieldOf("amplifier").forGetter(Instance::getAmplifier),
-            Codec.INT.fieldOf("duration").forGetter(Instance::getDuration)
+            StatusEffect.CODEC.fieldOf("id").forGetter(Instance::getEffect),
+            Codec.INT.fieldOf("amplifier").orElse(1).forGetter(Instance::getAmplifier),
+            Codec.INT.fieldOf("duration").orElse(-1).forGetter(Instance::getDuration)
         ).apply(instance, Instance::new));
         private final StatusEffect effect;
         private final int amplifier;
         private int duration;
+        // add frequency
 
         public Instance(StatusEffect effect, int amplifier, int duration) {
             this.effect = effect;
@@ -45,6 +46,10 @@ public record StatusEffect(Type type, BiConsumer<LivingEntity, Instance> starter
 
         public int getAmplifier() {
             return amplifier;
+        }
+
+        public boolean isInfinite() {
+            return duration < 0;
         }
 
         public int getDuration() {

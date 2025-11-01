@@ -188,7 +188,9 @@ public class ClientListener extends Listener {
             case StatusEffectS2C(int id, StatusEffect.Instance instance, boolean add) -> {
                 EntityRenderData entityRenderData = game.getEntityManager().getEntityData(id);
                 if (entityRenderData instanceof LivingEntityRenderData livingEntityRenderData) {
-                    //((LivingEntity) game.getEntityManager().getEntityData(uuid)).addStatusEffect(statusEffect);
+                    if (add) {
+                        livingEntityRenderData.statusEffects.add(instance);
+                    } else livingEntityRenderData.statusEffects.remove(instance);
                 }
             }
             case InventoryUpdateS2C(int id, InventoryType type, List<Slot> slots) -> {

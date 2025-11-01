@@ -10,6 +10,7 @@ public abstract class Action {
         case SPAWN -> SpawnAction.CODEC;
         case MOVE -> MoveAction.CODEC;
         case TELEPORT -> TeleportAction.CODEC;
+        case EFFECT -> EffectAction.CODEC;
         case MESSAGE -> MessageAction.CODEC;
         case KILL -> KillAction.CODEC;
         case WAIT -> WaitAction.CODEC;
@@ -21,13 +22,14 @@ public abstract class Action {
 
     public abstract void update(EntityController<? extends EnemyEntity> controller, int time, float delta);
 
-    public abstract void reset(EntityController<? extends EnemyEntity> controller);
+    public abstract void end(EntityController<? extends EnemyEntity> controller);
 
     public enum Type {
         ATTACK,
         SPAWN,
         MOVE,
         TELEPORT,
+        EFFECT,
         MESSAGE,
         KILL,
         WAIT;

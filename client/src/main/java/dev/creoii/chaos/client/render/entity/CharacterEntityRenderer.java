@@ -27,6 +27,8 @@ public class CharacterEntityRenderer extends EntityRenderer<CharacterEntityRende
             sprite.setPosition(entity.renderX, entity.renderY);
             sprite.draw(batch);
             sprite.setFlip(!entity.facingRight, false);
+
+            SimpleEntityRenderer.renderStatusEffects(renderer.getGame(), batch, entity);
         }
 
         if (debug && shapeRenderer != null) {

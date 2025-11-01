@@ -42,6 +42,6 @@ public class AttackAction extends Action {
     }
 
     @Override
-    public void reset(EntityController<? extends EnemyEntity> controller) {
+    public void end(EntityController<? extends EnemyEntity> controller) {
     }
 }

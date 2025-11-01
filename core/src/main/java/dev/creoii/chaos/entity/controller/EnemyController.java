@@ -18,7 +18,7 @@ public class EnemyController extends EntityController<EnemyEntity> {
         this.behavior = behavior;
 
         if (behavior instanceof SimpleBehavior(List<Action> actions)) {
-            actions.forEach(action -> action.reset(this));
+            actions.forEach(action -> action.end(this));
         } else if (behavior instanceof MultiBehavior multiBehavior) {
             for (Phase phase : multiBehavior.getPhases()) {
                 phase.end(this);
