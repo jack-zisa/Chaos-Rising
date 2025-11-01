@@ -12,6 +12,7 @@ import dev.creoii.chaos.entity.behavior.transition.Transition;
 import dev.creoii.chaos.entity.controller.EnemyController;
 import dev.creoii.chaos.util.provider.Provider;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -103,5 +104,18 @@ public class MultiBehavior implements Behavior {
                 currentPhase.start(controller, time);
             }
         }
+    }
+
+    @Override
+    public Behavior copy() {
+        HashBiMap<PhaseKey, Phase> map = HashBiMap.create();
+        int index = 0;
+        for (int i = 0; i < phases.length; ++i) {
+            Phase toCopy = getPhase(i);
+            Phase phase = new Phase(toCopy.getTransition(), new ArrayList<>(toCopy.getActions()));
+            phase.setId(toCopy.getId());
+            map.put(new PhaseKey(phase.getId(), index++), phase);
+        }
+        return new MultiBehavior(map, startPhaseKey);
     }
 }

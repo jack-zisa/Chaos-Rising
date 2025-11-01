@@ -7,6 +7,7 @@ import dev.creoii.chaos.entity.controller.EntityController;
 public abstract class Action {
     public static final Codec<Action> CODEC = Action.Type.CODEC.dispatch(Action::getType, type -> switch (type) {
         case ATTACK -> AttackAction.CODEC;
+        case SPAWN -> SpawnAction.CODEC;
         case MOVE -> MoveAction.CODEC;
         case TELEPORT -> TeleportAction.CODEC;
         case MESSAGE -> MessageAction.CODEC;
@@ -24,6 +25,7 @@ public abstract class Action {
 
     public enum Type {
         ATTACK,
+        SPAWN,
         MOVE,
         TELEPORT,
         MESSAGE,

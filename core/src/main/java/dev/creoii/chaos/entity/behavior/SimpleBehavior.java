@@ -6,6 +6,7 @@ import dev.creoii.chaos.entity.EnemyEntity;
 import dev.creoii.chaos.entity.behavior.action.Action;
 import dev.creoii.chaos.entity.controller.EnemyController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public record SimpleBehavior(List<Action> actions) implements Behavior {
@@ -28,5 +29,10 @@ public record SimpleBehavior(List<Action> actions) implements Behavior {
     @Override
     public void update(EnemyController controller, int time, float delta) {
         actions.forEach(action -> action.update(controller, time, delta));
+    }
+
+    @Override
+    public Behavior copy() {
+        return new SimpleBehavior(new ArrayList<>(actions));
     }
 }

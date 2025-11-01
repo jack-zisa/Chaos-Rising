@@ -54,7 +54,7 @@ public final class Commands {
                 float x = Integer.parseInt(args[0]) * Entity.COORDINATE_SCALE;
                 float y = Integer.parseInt(args[1]) * Entity.COORDINATE_SCALE;
                 character.setPos(x, y);
-                game.getServer().sendToAllTCP(new MoveEntityS2C(character.getId(), x, y, 0f, 0f));
+                game.getServer().sendToAllUDP(new MoveEntityS2C(character.getId(), x, y, 0f, 0f));
                 return Command.Result.SUCCESS;
             }
             return Command.Result.FAIL;

@@ -13,7 +13,7 @@
       "0": {
         "transition": {
           "type": "after",
-          "after": 1000,
+          "after": 400,
           "target": {
             "type": "next"
           }
@@ -64,7 +64,7 @@
           "type": "after",
           "after": 200,
           "target": {
-            "type": "prev"
+            "type": "next"
           }
         },
         "actions": [
@@ -105,6 +105,49 @@
             "message": {
               "text": "CHARGE!"
             }
+          }
+        ]
+      },
+      "2": {
+        "transition": {
+          "type": "after",
+          "after": 100,
+          "target": {
+            "type": "next"
+          }
+        },
+        "actions": [
+          {
+            "type": "wait"
+          },
+          {
+            "type": "message",
+            "message": {
+              "text": "Dying..."
+            }
+          }
+        ]
+      },
+      "3": {
+        "actions": [
+          {
+            "type": "spawn",
+            "entity": {
+              "type": "random",
+              "entities": [
+                {
+                  "type": "new",
+                  "id": "skeleton"
+                },
+                {
+                  "type": "new",
+                  "id": "woodland_cultist"
+                }
+              ]
+            }
+          },
+          {
+            "type": "kill"
           }
         ]
       }

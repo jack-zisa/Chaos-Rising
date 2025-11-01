@@ -21,7 +21,7 @@ public class EnemyEntity extends LivingEntity implements Attacker {
     public EnemyEntity(Game game, EntityType<? extends EnemyEntity> type, int id, Vector2 pos) {
         super(game, type, id, pos, ((EnemyEntityType) type).stats().copy(), ((EnemyEntityType) type).stats().copy());
         if (!game.isClient()) {
-            controller = new EnemyController(((EnemyEntityType) type).behavior());
+            controller = new EnemyController(((EnemyEntityType) type).behavior().copy());
             controller.start(this);
         } else controller = null;
 

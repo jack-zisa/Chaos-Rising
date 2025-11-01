@@ -6,6 +6,8 @@ import dev.creoii.chaos.util.provider.Provider;
 
 public interface EntityProvider extends Provider<Entity> {
     Codec<EntityProvider> CODEC = Type.CODEC.dispatch(EntityProvider::getType, type -> switch (type) {
+        case NEW -> NewEntityProvider.CODEC;
+        case RANDOM -> RandomEntityProvider.CODEC;
         case SELF -> SelfEntityProvider.CODEC;
         case NEAREST_CHARACTER -> NearestCharacterEntityProvider.CODEC;
     });
@@ -13,6 +15,8 @@ public interface EntityProvider extends Provider<Entity> {
     Type getType();
 
     enum Type {
+        NEW,
+        RANDOM,
         SELF,
         NEAREST_CHARACTER;
 

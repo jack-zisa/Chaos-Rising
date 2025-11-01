@@ -60,6 +60,10 @@ public class Phase {
     public void end(EntityController<? extends EnemyEntity> controller) {
         this.startTime = 0;
         actions.forEach(action -> action.reset(controller));
+
+        if (transition instanceof AfterTransition afterTransition) {
+            afterTransition.setStartTime(0);
+        }
     }
 
     public void update(EntityController<? extends EnemyEntity> controller, int time, float delta) {

@@ -20,4 +20,9 @@ public record EmptyBehavior() implements Behavior {
     @Override
     public void update(EnemyController controller, int time, float delta) {
     }
+
+    @Override
+    public Behavior copy() {
+        return INSTANCE;
+    }
 }

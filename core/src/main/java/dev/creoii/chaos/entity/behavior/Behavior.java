@@ -34,6 +34,8 @@ public interface Behavior {
 
     void update(EnemyController controller, int time, float delta);
 
+    Behavior copy();
+
     enum Type {
         SIMPLE,
         MULTI,
