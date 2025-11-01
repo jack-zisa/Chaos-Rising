@@ -145,7 +145,7 @@ public class ServerEntityManager extends EntityManager<Entity> implements Tickab
         if (!moveEntries.isEmpty()) {
             int size = moveEntries.size();
             for (int i = 0; i < size; i += 50) {
-                getGame().getServer().sendToAllTCP(new MoveEntitiesS2C(moveEntries.subList(i, Math.min(i + 50, moveEntries.size()))));
+                getGame().getServer().sendToAllUDP(new MoveEntitiesS2C(moveEntries.subList(i, Math.min(i + 50, moveEntries.size()))));
             }
         }
         moveEntries.clear();

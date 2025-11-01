@@ -151,6 +151,11 @@ public class ClientListener extends Listener {
                     entityRenderData.y = entry.y();
                     entityRenderData.xv = entry.xv();
                     entityRenderData.yv = entry.yv();
+
+                    if (entityRenderData instanceof CharacterEntityRenderData) {
+                        entityRenderData.renderX = entry.x();
+                        entityRenderData.renderY = entry.y();
+                    }
                 }
             });
             case MoveEntityS2C(int id, float x, float y, float xv, float yv) -> {
@@ -160,6 +165,11 @@ public class ClientListener extends Listener {
                     entityRenderData.y = y;
                     entityRenderData.xv = xv;
                     entityRenderData.yv = yv;
+
+                    if (entityRenderData instanceof CharacterEntityRenderData) {
+                        entityRenderData.renderX = x;
+                        entityRenderData.renderY = y;
+                    }
                 }
             }
             case EntityDamageS2C(int id, float amount) -> {
