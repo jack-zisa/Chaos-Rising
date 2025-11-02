@@ -1,0 +1,58 @@
+{
+  "id": "black_skeleton",
+  "type": "enemy",
+  "behavior": {
+    "type": "multi",
+    "start_phase": "0",
+    "phases": {
+      "0": {
+        "transition": {
+          "type": "after",
+          "after": 100,
+          "target": {
+            "type": "next"
+          }
+        },
+        "actions": [
+        ]
+      },
+      "1": {
+        "actions": [
+          {
+            "type": "spawn",
+            "entity": {
+              "type": "new",
+              "id": "white_demon"
+            },
+            "pos": {
+              "type": "random_between",
+              "min": {
+                "type": "add",
+                "a": {
+                  "type": "source"
+                },
+                "b": [
+                  -3,
+                  -3
+                ]
+              },
+              "max": {
+                "type": "add",
+                "a": {
+                  "type": "source"
+                },
+                "b": [
+                  3,
+                  3
+                ]
+              }
+            }
+          },
+          {
+            "type": "kill"
+          }
+        ]
+      }
+    }
+  }
+}

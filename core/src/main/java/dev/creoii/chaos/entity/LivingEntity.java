@@ -138,7 +138,7 @@ public abstract class LivingEntity extends Entity {
         }
 
         int vitality = statContainer.vitality().value();
-        if (vitality > 0 && statContainer.health().value() <= maxStatContainer.health().value() && gametime % 40 == 0) {
+        if (vitality > 0 && statContainer.health().value() < maxStatContainer.health().value() && gametime % 40 == 0) {
             heal(Math.round(1f + .2f * vitality));
         }
     }
