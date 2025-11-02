@@ -35,7 +35,6 @@ public class ServerEntityManager extends EntityManager<Entity> implements Tickab
         EntityType<?> type = entity.getType();
         getEntities(type.group()).put(entity.getId(), entity);
 
-        ((ServerGame) getGame()).getTickManager().addTickable(entity);
         getGame().getServer().sendToAllTCP(new EntitySpawnS2C(entity.getId(), entity.getPos().x, entity.getPos().y, entity.getType().scale(), entity.getCustomPacketData()));
 
         SpawnEntityEvent.EVENT.invoker().onSpawnEntity(getGame(), entity.getId());
@@ -53,7 +52,6 @@ public class ServerEntityManager extends EntityManager<Entity> implements Tickab
             E entity = entities.get(i);
 
             getEntities(entity.getType().group()).put(entity.getId(), entity);
-            ((ServerGame) getGame()).getTickManager().addTickable(entity);
 
             SpawnEntityEvent.EVENT.invoker().onSpawnEntity(getGame(), entity.getId());
 
@@ -76,8 +74,6 @@ public class ServerEntityManager extends EntityManager<Entity> implements Tickab
             E spawned = type.create(getGame(), getNextId(), pos, customData);
             getEntities(type.group()).put(spawned.getId(), spawned);
 
-            ((ServerGame) getGame()).getTickManager().addTickable(spawned);
-
             SpawnEntityEvent.EVENT.invoker().onSpawnEntity(getGame(), spawned.getId());
 
             spawnedEntities.add(new SpawnEntitiesS2C.Entry(spawned.getId(), spawned.getPos().x, spawned.getPos().y, type.scale(), spawned.getCustomPacketData()));
@@ -95,7 +91,6 @@ public class ServerEntityManager extends EntityManager<Entity> implements Tickab
         E spawned = type.create(getGame(), getNextId(), pos, customData);
         getEntities(type.group()).put(spawned.getId(), spawned);
 
-        ((ServerGame) getGame()).getTickManager().addTickable(spawned);
         getGame().getServer().sendToAllTCP(new EntitySpawnS2C(spawned.getId(), pos.x, pos.y, type.scale(), spawned.getCustomPacketData()));
 
         SpawnEntityEvent.EVENT.invoker().onSpawnEntity(getGame(), spawned.getId());
@@ -107,8 +102,6 @@ public class ServerEntityManager extends EntityManager<Entity> implements Tickab
     public <E extends Entity, T extends EntityType<E>> E addCharacter(int connectionId, T type, Vector2 pos, Map<String, Object> customData) {
         E spawned = type.create(getGame(), getNextId(), pos, customData);
         getEntities(type.group()).put(spawned.getId(), spawned);
-
-        ((ServerGame) getGame()).getTickManager().addTickable(spawned);
 
         EntityCustomData data = spawned.getCustomPacketData();
         getGame().getServer().sendToTCP(connectionId, new CharacterJoinS2C(spawned.getId(), pos.x, pos.y, type.scale(), data));

@@ -3,37 +3,8 @@
   "type": "bullet",
   "lifetime": 80,
   "path": {
-    "type": "segmented",
-    "segments": [
-      {
-        "threshold": 80,
-        "path": {
-          "type": "simple",
-          "speed": 10
-        }
-      },
-      {
-        "threshold": 60,
-        "path": {
-          "type": "simple",
-          "speed": 0
-        }
-      },
-      {
-        "threshold": 40,
-        "path": {
-          "type": "simple",
-          "speed": 10
-        }
-      },
-      {
-        "threshold": 20,
-        "path": {
-          "type": "simple",
-          "speed": 0
-        }
-      }
-    ]
+    "type": "simple",
+    "speed": 10
   },
   "angle_offset": -90
 }
