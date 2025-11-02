@@ -7,6 +7,7 @@ import dev.creoii.chaos.entity.serialization.CharacterData;
 import dev.creoii.chaos.entity.serialization.EntityCustomData;
 import dev.creoii.chaos.inventory.CharacterInventory;
 import dev.creoii.chaos.item.ItemStack;
+import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.Mutable;
 
 import javax.annotation.Nullable;
@@ -90,7 +91,7 @@ public class CharacterEntity extends LivingEntity implements Attacker {
             lootDropEntity.addItem(stack);
             lootId = lootDropEntity.getId();
         } else {
-            LootDropEntity lootDropEntity = (LootDropEntity) getGame().getEntityManager().getEntity(lootId);
+            LootDropEntity lootDropEntity = (LootDropEntity) getGame().getEntityManager().getEntity(EntityGroup.LOOT_DROP, lootId);
             if (lootDropEntity == null || lootDropEntity.getInventory().addItem(stack) == null)
                 dropItem(stack, true);
         }

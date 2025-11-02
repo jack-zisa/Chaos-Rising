@@ -125,7 +125,7 @@ public class ServerListener extends Listener {
             CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id);
 
             if (character != null) {
-                LootDropEntity lootDrop = (LootDropEntity) game.getEntityManager().getEntity(character.getLootId());
+                LootDropEntity lootDrop = (LootDropEntity) game.getEntityManager().getEntity(EntityGroup.LOOT_DROP, character.getLootId());
 
                 Inventory fromInventory = null;
                 if (from == InventoryType.MAIN) {

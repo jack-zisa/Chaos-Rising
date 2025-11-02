@@ -106,14 +106,14 @@ public abstract class Entity implements Tickable {
         return collidingWith;
     }
 
-    public void setCollidingWith(int id) {
-        if (collidingWith.add(id))
-            collisionEnter((Entity) getGame().getEntityManager().getEntity(id));
+    public void setCollidingWith(Entity entity) {
+        if (collidingWith.add(entity.id))
+            collisionEnter((Entity) getGame().getEntityManager().getEntity(entity.getType().group(), entity.id));
     }
 
-    public void removeCollidingWith(int id) {
-        if (collidingWith.remove(id))
-            collisionExit((Entity) getGame().getEntityManager().getEntity(id));
+    public void removeCollidingWith(Entity entity) {
+        if (collidingWith.remove(entity.id))
+            collisionExit((Entity) getGame().getEntityManager().getEntity(entity.getType().group(), entity.id));
     }
 
     public void collisionEnter(Entity other) {

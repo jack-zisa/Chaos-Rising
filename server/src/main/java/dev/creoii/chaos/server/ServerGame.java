@@ -27,7 +27,7 @@ public class ServerGame implements Game {
     private int gametime;
 
     public ServerGame(int tcpPort, int udpPort) throws IOException {
-        server = new Server(65536, 65536, new CreoSerialization());
+        server = new Server(16384, 8192, new CreoSerialization());
         networkQueue = new NetworkQueue<>(null, new ConcurrentLinkedQueue<>());
         Log.NONE();
         server.start();

@@ -79,8 +79,8 @@ public class CollisionManager {
                         collisions.computeIfAbsent(a.getId(), _ -> new ObjectArraySet<>()).add(b.getId());
                         collisions.computeIfAbsent(b.getId(), _ -> new ObjectArraySet<>()).add(a.getId());
 
-                        a.setCollidingWith(b.getId());
-                        b.setCollidingWith(a.getId());
+                        a.setCollidingWith(b);
+                        b.setCollidingWith(a);
                     }
                 }
             }
@@ -108,8 +108,8 @@ public class CollisionManager {
                             collisions.computeIfAbsent(a.getId(), _ -> new ObjectArraySet<>()).add(b.getId());
                             collisions.computeIfAbsent(b.getId(), _ -> new ObjectArraySet<>()).add(a.getId());
 
-                            a.setCollidingWith(b.getId());
-                            b.setCollidingWith(a.getId());
+                            a.setCollidingWith(b);
+                            b.setCollidingWith(a);
                         }
                     }
                 }
@@ -126,8 +126,8 @@ public class CollisionManager {
                     if (b == null)
                         continue;
                     it.remove();
-                    entity.removeCollidingWith(id);
-                    b.removeCollidingWith(entity.getId());
+                    entity.removeCollidingWith(b);
+                    b.removeCollidingWith(entity);
                 }
             }
         }

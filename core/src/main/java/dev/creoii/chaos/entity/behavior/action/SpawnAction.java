@@ -58,7 +58,7 @@ public class SpawnAction extends Action {
         if (!game.isClient()) {
             Provider.Context context = Provider.Context.of(entity, game.getGametime());
             Entity spawned = this.entity.get(context);
-            if (game.getEntityManager().getEntity(spawned.getId()) != null)
+            if (game.getEntityManager().getEntity(spawned.getType().group(), spawned.getId()) != null)
                 return;
 
             if (spawned instanceof LivingEntity living && makeChildren.get(context)) {
