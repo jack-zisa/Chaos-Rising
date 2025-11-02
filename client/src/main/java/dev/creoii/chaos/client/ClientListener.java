@@ -1,12 +1,14 @@
 package dev.creoii.chaos.client;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.FrameworkMessage;
 import com.esotericsoftware.kryonet.Listener;
 import dev.creoii.chaos.DataManager;
 import dev.creoii.chaos.chat.Message;
 import dev.creoii.chaos.client.render.entity.data.*;
+import dev.creoii.chaos.client.texture.TextureManager;
 import dev.creoii.chaos.effect.StatusEffect;
 import dev.creoii.chaos.entity.BulletEntityType;
 import dev.creoii.chaos.entity.serialization.*;
@@ -23,6 +25,7 @@ import dev.creoii.chaos.util.event.DamageEntityEvent;
 import dev.creoii.chaos.util.provider.numberprovider.ConstantNumberProvider;
 import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
 import dev.creoii.chaos.util.stat.Stat;
+import dev.creoii.chaos.util.stat.StatContainer;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -172,6 +175,14 @@ public class ClientListener extends Listener {
                     }
                 }
             }
+            case EntityDisplayS2C(int id, String textureId, float scale) -> {
+                EntityRenderData entityRenderData = game.getEntityManager().getEntityData(id);
+                if (entityRenderData != null) {
+                    entityRenderData.textureId = textureId;
+                    entityRenderData.scale = scale;
+                    entityRenderData.sprite.setTexture(game.getAssetManager().getTextureManager().getTexture(TextureManager.AtlasKey.CHARACTER, textureId));
+                }
+            }
             case EntityDamageS2C(int id, float amount) -> {
                 EntityRenderData entityRenderData = game.getEntityManager().getEntityData(id);
                 if (entityRenderData != null) {
@@ -246,6 +257,13 @@ public class ClientListener extends Listener {
                     }
 
                     ChangeStatEvent.EVENT.invoker().onChangeStat(game, id, stat);
+                }
+            }
+            case LivingStatsUpdateS2C(int id, StatContainer stats) -> {
+                EntityRenderData entityRenderData = game.getEntityManager().getEntityData(id);
+                if (entityRenderData instanceof LivingEntityRenderData livingEntityRenderData) {
+                    livingEntityRenderData.statContainer = stats;
+                    livingEntityRenderData.maxStatContainer = stats;
                 }
             }
 

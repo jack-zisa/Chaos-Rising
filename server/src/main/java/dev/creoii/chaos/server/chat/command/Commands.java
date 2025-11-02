@@ -5,13 +5,11 @@ import com.badlogic.gdx.utils.ObjectMap;
 import dev.creoii.chaos.DataManager;
 import dev.creoii.chaos.chat.Message;
 import dev.creoii.chaos.effect.StatusEffects;
-import dev.creoii.chaos.network.s2c.ChatMessageReceiveS2C;
-import dev.creoii.chaos.network.s2c.MoveEntityS2C;
+import dev.creoii.chaos.network.s2c.*;
 import dev.creoii.chaos.server.ServerGame;
 import dev.creoii.chaos.effect.StatusEffect;
 import dev.creoii.chaos.entity.*;
 import dev.creoii.chaos.item.Item;
-import dev.creoii.chaos.network.s2c.LivingStatUpdateS2C;
 import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.logging.Logger;
 import dev.creoii.chaos.util.provider.vecprovider.ConstantVecProvider;
@@ -172,17 +170,18 @@ public final class Commands {
             return Command.Result.FAIL;
         });
 
-        /**
-         * FOR /setclass:
-         *         sprite = new Sprite(game.getTextureManager().getTexture("class", getTextureId()));
-         *         sprite.setSize(getScale(), getScale());
-         */
         Command.register("setclass", 1, (game, id, args) -> {
             CharacterClass characterClass = DataManager.getCharacterClass(args[0]);
             if (characterClass != null) {
                 CharacterEntity character = ((CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id));
                 if (character != null) {
                     character.setCharacterClass(characterClass);
+
+                    if (!game.isClient()) {
+                        game.getServer().sendToAllTCP(new EntityDisplayS2C(id, characterClass.id(), characterClass.scale()));
+                        game.getServer().sendToAllTCP(new LivingStatsUpdateS2C(id, character.getStats()));
+                    }
+
                     return Command.Result.SUCCESS;
                 }
             }
