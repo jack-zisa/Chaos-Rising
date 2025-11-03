@@ -28,7 +28,9 @@ public record SimpleAttack(String bulletId, NumberProvider damage, int bulletCou
             NumberProvider.CODEC.fieldOf("angle_offset").orElse(ConstantNumberProvider.ZERO).forGetter(SimpleAttack::angleOffset),
             VecProvider.CODEC.optionalFieldOf("source").orElse(Optional.of(new SourceVecProvider())).forGetter(SimpleAttack::source),
             VecProvider.CODEC.optionalFieldOf("target").orElse(Optional.of(ConstantVecProvider.ZERO)).forGetter(SimpleAttack::target)
-        ).apply(instance, SimpleAttack::new);
+        ).apply(instance, (bulletId, damage, bulletCount, arcGap, predictability, angleOffset, source, target) -> {
+            return new SimpleAttack(bulletId, (NumberProvider) damage.optimize(), bulletCount, arcGap, predictability, (NumberProvider) angleOffset.optimize(), source, target);
+        });
     });
 
     @Override

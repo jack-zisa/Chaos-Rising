@@ -17,7 +17,7 @@ public record LootEntry(String item, int weight, NumberProvider count) {
             Codec.STRING.fieldOf("item").forGetter(LootEntry::item),
             Codec.INT.fieldOf("weight").orElse(1).forGetter(LootEntry::weight),
             NumberProvider.CODEC.fieldOf("count").orElse(ConstantNumberProvider.ONE).forGetter(LootEntry::count)
-        ).apply(instance, LootEntry::new);
+        ).apply(instance, (item, weight, count) -> new LootEntry(item, weight, (NumberProvider) count.optimize()));
     });
 
     public ItemStack roll(Game game) {

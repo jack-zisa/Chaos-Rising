@@ -11,6 +11,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import javax.annotation.Nullable;
 import java.util.*;
 
+// TODO: convert to abstract class
 public class EntityManager<T> {
     private static int NEXT_ID = 0;
     private final Game game;

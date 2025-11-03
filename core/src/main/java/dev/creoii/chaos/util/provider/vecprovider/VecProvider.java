@@ -4,8 +4,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import dev.creoii.chaos.util.provider.Provider;
-import dev.creoii.chaos.util.provider.numberprovider.ConstantNumberProvider;
-import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
 
 import java.util.List;
 import java.util.function.Function;
@@ -27,7 +25,6 @@ public interface VecProvider extends Provider<Vector2> {
         case NORMALIZED -> NormalizedVecProvider.CODEC;
         case PERPENDICULAR -> PerpendicularVecProvider.CODEC;
         case RANDOM_BETWEEN -> RandomBetweenVecProvider.CODEC;
-        case RELATIVE_TO -> RelativeToVecProvider.CODEC;
         case ROTATE_ANGLE -> RotateAngleVecProvider.CODEC;
         case ROTATED_OFFSET -> RotatedOffsetVecProvider.CODEC;
         case SOURCE -> SourceVecProvider.CODEC;
@@ -40,13 +37,10 @@ public interface VecProvider extends Provider<Vector2> {
         case ABS -> UnaryVecProvider.ABS_CODEC;
     });
 
-    Codec<VecProvider> CODEC = Codec.either(Codec.FLOAT.listOf(2, 2), DISPATCH_CODEC).xmap(either -> either.map(list -> new ConstantVecProvider(new ConstantNumberProvider(list.getFirst()), new ConstantNumberProvider(list.get(1))), Function.identity()),
+    Codec<VecProvider> CODEC = Codec.either(Codec.FLOAT.listOf(2, 2), DISPATCH_CODEC).xmap(either -> either.map(list -> new ConstantVecProvider(new Vector2(list.getFirst(), list.get(1))), Function.identity()),
         vecProvider -> {
-            if (vecProvider instanceof ConstantVecProvider(NumberProvider x, NumberProvider y)) {
-                if (x instanceof ConstantNumberProvider(float value) && y instanceof ConstantNumberProvider(float value1)) {
-                    return Either.left(List.of(value, value1));
-                }
-                throw new IllegalArgumentException("Illegal value in raw VecProvider");
+            if (vecProvider instanceof ConstantVecProvider(Vector2 pos)) {
+                return Either.left(List.of(pos.x, pos.y));
             } else {
                 return Either.right(vecProvider);
             }
@@ -67,7 +61,6 @@ public interface VecProvider extends Provider<Vector2> {
         NORMALIZED,
         PERPENDICULAR,
         RANDOM_BETWEEN,
-        RELATIVE_TO,
         ROTATE_ANGLE,
         ROTATED_OFFSET,
         SOURCE,

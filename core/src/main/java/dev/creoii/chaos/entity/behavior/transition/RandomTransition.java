@@ -11,7 +11,7 @@ public record RandomTransition(NumberProvider chance, PhaseProvider target) impl
         return instance.group(
             NumberProvider.CODEC.fieldOf("chance").forGetter(RandomTransition::chance),
             PhaseProvider.CODEC.fieldOf("target").forGetter(RandomTransition::target)
-        ).apply(instance, RandomTransition::new);
+        ).apply(instance, (chance, target) -> new RandomTransition((NumberProvider) chance.optimize(), (PhaseProvider) target.optimize()));
     });
 
     @Override

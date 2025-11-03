@@ -5,6 +5,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.entity.EnemyEntity;
 import dev.creoii.chaos.entity.controller.EntityController;
+import dev.creoii.chaos.network.s2c.MoveEntityS2C;
 import dev.creoii.chaos.util.provider.Provider;
 import dev.creoii.chaos.util.provider.vecprovider.VecProvider;
 
@@ -12,7 +13,7 @@ public class TeleportAction extends Action {
     public static final MapCodec<TeleportAction> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(
             VecProvider.CODEC.fieldOf("pos").forGetter(TeleportAction::getPos)
-        ).apply(instance, TeleportAction::new);
+        ).apply(instance, pos -> new TeleportAction((VecProvider) pos.optimize()));
     });
     private final VecProvider pos;
 
@@ -33,6 +34,9 @@ public class TeleportAction extends Action {
     public void start(EntityController<? extends EnemyEntity> controller) {
         Vector2 pos = this.pos.get(Provider.Context.of(controller.getEntity(), controller.getEntity().getGame().getGametime()));
         controller.getEntity().setPos(pos.x, pos.y);
+        if (!controller.getEntity().getGame().isClient()) {
+            controller.getEntity().getGame().getServer().sendToAllTCP(new MoveEntityS2C(controller.getEntity().getId(), pos.x, pos.y, 0f, 0f));
+        }
     }
 
     @Override

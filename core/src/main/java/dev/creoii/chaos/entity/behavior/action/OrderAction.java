@@ -16,7 +16,7 @@ public class OrderAction extends Action {
     public static final MapCodec<OrderAction> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(
             PhaseProvider.CODEC.fieldOf("phase").forGetter(OrderAction::getPhase)
-        ).apply(instance, OrderAction::new);
+        ).apply(instance, phase -> new OrderAction((PhaseProvider) phase.optimize()));
     });
     private final PhaseProvider phase;
 

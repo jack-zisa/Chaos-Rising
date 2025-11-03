@@ -14,6 +14,6 @@ public record SelfEntityProvider() implements EntityProvider {
 
     @Override
     public Entity get(Context context) {
-        return context.sourceEntity();
+        return context.entity();
     }
 }

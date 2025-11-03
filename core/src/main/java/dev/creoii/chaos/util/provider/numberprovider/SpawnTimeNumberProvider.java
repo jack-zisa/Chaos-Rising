@@ -13,7 +13,7 @@ public record SpawnTimeNumberProvider() implements NumberProvider {
 
     @Override
     public Float get(Context context) {
-        return (float) context.sourceEntity().getSpawnTime();
+        return (float) context.entity().getSpawnTime();
     }
 
     @Override

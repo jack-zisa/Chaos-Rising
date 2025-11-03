@@ -23,7 +23,7 @@ public record NewEntityProvider(String id) implements EntityProvider {
     public Entity get(Context context) {
         EnemyEntityType entityType = DataManager.getEnemy(id);
         if (entityType != null)
-            return entityType.create(context.game(), context.game().getEntityManager().getNextId(), context.startPos().cpy(), new HashMap<>());
+            return entityType.create(context.game(), context.game().getEntityManager().getNextId(), context.pos().cpy(), new HashMap<>());
         return null;
     }
 }

@@ -37,6 +37,7 @@ public final class Commands {
                 }
             } catch (Exception e) {
                 LOGGER.error(Command.Result.FAIL.getResultMessageWithReason(commandType, args, e.toString()));
+                e.printStackTrace();
             }
         } else {
             LOGGER.warn("Command '/" + commandType + "' not found");

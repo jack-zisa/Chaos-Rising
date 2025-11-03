@@ -11,7 +11,7 @@ public record ConditionTransition(BooleanProvider condition, PhaseProvider targe
         return instance.group(
             BooleanProvider.CODEC.fieldOf("condition").forGetter(ConditionTransition::condition),
             PhaseProvider.CODEC.fieldOf("target").forGetter(ConditionTransition::target)
-        ).apply(instance, ConditionTransition::new);
+        ).apply(instance, (condition, target) -> new ConditionTransition((BooleanProvider) condition.optimize(), (PhaseProvider) target.optimize()));
     });
 
     @Override

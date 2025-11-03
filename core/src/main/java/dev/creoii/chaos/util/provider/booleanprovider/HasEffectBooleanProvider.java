@@ -19,7 +19,7 @@ public record HasEffectBooleanProvider(StatusEffect.Type effect) implements Bool
 
     @Override
     public Boolean get(Context context) {
-        if (context.sourceEntity() instanceof LivingEntity livingEntity) {
+        if (context.entity() instanceof LivingEntity livingEntity) {
             return livingEntity.hasStatusEffect(effect);
         }
         return false;

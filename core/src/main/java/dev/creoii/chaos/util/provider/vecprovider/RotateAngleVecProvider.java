@@ -3,6 +3,8 @@ package dev.creoii.chaos.util.provider.vecprovider;
 import com.badlogic.gdx.math.Vector2;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.chaos.util.provider.Provider;
+import dev.creoii.chaos.util.provider.numberprovider.ConstantNumberProvider;
 import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
 
 public record RotateAngleVecProvider(VecProvider direction, NumberProvider angle) implements VecProvider {
@@ -12,6 +14,16 @@ public record RotateAngleVecProvider(VecProvider direction, NumberProvider angle
             NumberProvider.CODEC.fieldOf("angle").forGetter(RotateAngleVecProvider::angle)
         ).apply(instance, RotateAngleVecProvider::new);
     });
+
+    @Override
+    public Provider<Vector2> optimize() {
+        if (direction instanceof ConstantVecProvider(Vector2 pos) && angle instanceof ConstantNumberProvider(float value)) {
+            if (pos.len() != 1f)
+                pos.nor();
+            return new ConstantVecProvider(pos.rotateRad(value));
+        }
+        return VecProvider.super.optimize();
+    }
 
     @Override
     public Type getType() {

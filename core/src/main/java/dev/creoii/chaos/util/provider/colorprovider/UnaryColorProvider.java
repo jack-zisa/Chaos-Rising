@@ -3,6 +3,7 @@ package dev.creoii.chaos.util.provider.colorprovider;
 import com.badlogic.gdx.graphics.Color;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.chaos.util.provider.Provider;
 import dev.creoii.chaos.util.provider.UnaryOperation;
 
 public record UnaryColorProvider(UnaryOperation operation, ColorProvider value) implements ColorProvider {
@@ -59,6 +60,21 @@ public record UnaryColorProvider(UnaryOperation operation, ColorProvider value) 
             case CBRT -> cbrt(v);
             case ABS -> abs(v);
         };
+    }
+
+    @Override
+    public Provider<Color> optimize() {
+        if (value instanceof ConstantColorProvider(Color color)) {
+            return new ConstantColorProvider(switch (operation) {
+                case SIN -> sin(color);
+                case COS -> cos(color);
+                case TAN -> tan(color);
+                case SQRT -> sqrt(color);
+                case CBRT -> cbrt(color);
+                case ABS -> abs(color);
+            });
+        }
+        return ColorProvider.super.optimize();
     }
 
     public static Color sin(Color color) {

@@ -3,6 +3,7 @@ package dev.creoii.chaos.util.provider.numberprovider;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.util.provider.Operation;
+import dev.creoii.chaos.util.provider.Provider;
 
 public record BinaryNumberProvider(NumberProvider a, NumberProvider b, Operation operation) implements NumberProvider {
     public static final MapCodec<BinaryNumberProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
@@ -48,6 +49,21 @@ public record BinaryNumberProvider(NumberProvider a, NumberProvider b, Operation
             NumberProvider.CODEC.fieldOf("b").forGetter(BinaryNumberProvider::b)
         ).apply(instance, (a, b) -> new BinaryNumberProvider(a, b, Operation.POW));
     });
+
+    @Override
+    public Provider<Float> optimize() {
+        if (a instanceof ConstantNumberProvider(float value) && b instanceof ConstantNumberProvider(float value1)) {
+            return new ConstantNumberProvider(switch (operation) {
+                case ADD -> value + value1;
+                case SUB -> value - value1;
+                case MUL -> value * value1;
+                case DIV -> value / value1;
+                case MOD -> value % value1;
+                case POW -> (float) Math.pow(value, value1);
+            });
+        }
+        return NumberProvider.super.optimize();
+    }
 
     @Override
     public Type getType() {

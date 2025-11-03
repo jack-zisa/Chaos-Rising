@@ -12,7 +12,7 @@ public record ThresholdTransition(NumberProvider value, NumberProvider threshold
             NumberProvider.CODEC.fieldOf("value").forGetter(ThresholdTransition::value),
             NumberProvider.CODEC.fieldOf("threshold").forGetter(ThresholdTransition::threshold),
             PhaseProvider.CODEC.fieldOf("target").forGetter(ThresholdTransition::target)
-        ).apply(instance, ThresholdTransition::new);
+        ).apply(instance, (value, threshold, target) -> new ThresholdTransition((NumberProvider) value.optimize(), (NumberProvider) threshold.optimize(), (PhaseProvider) target.optimize()));
     });
 
     @Override

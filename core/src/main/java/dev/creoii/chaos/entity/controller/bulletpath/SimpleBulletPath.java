@@ -17,7 +17,7 @@ public record SimpleBulletPath(NumberProvider speed, VecProvider offset, NumberP
             NumberProvider.CODEC.fieldOf("speed").forGetter(SimpleBulletPath::speed),
             VecProvider.CODEC.fieldOf("offset").orElse(ConstantVecProvider.ZERO).forGetter(SimpleBulletPath::offset),
             NumberProvider.CODEC.fieldOf("arc_speed").orElse(ConstantNumberProvider.ZERO).forGetter(SimpleBulletPath::arcSpeed)
-        ).apply(instance, SimpleBulletPath::new);
+        ).apply(instance, (speed, offset, arcSpeed) -> new SimpleBulletPath((NumberProvider) speed.optimize(), (VecProvider) offset.optimize(), (NumberProvider) arcSpeed.optimize()));
     });
 
     @Override

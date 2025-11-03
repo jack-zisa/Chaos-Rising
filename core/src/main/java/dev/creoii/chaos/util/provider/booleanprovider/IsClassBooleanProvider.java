@@ -20,7 +20,7 @@ public record IsClassBooleanProvider(String classId) implements BooleanProvider 
 
     @Override
     public Boolean get(Context context) {
-        if (context.sourceEntity() instanceof CharacterEntity character) {
+        if (context.entity() instanceof CharacterEntity character) {
             return ((CharacterEntityType) character.getType()).characterClass().get().id().equals(classId);
         }
         return false;

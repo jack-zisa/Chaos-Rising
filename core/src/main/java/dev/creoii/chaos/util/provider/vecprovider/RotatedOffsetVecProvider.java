@@ -3,6 +3,7 @@ package dev.creoii.chaos.util.provider.vecprovider;
 import com.badlogic.gdx.math.Vector2;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.chaos.util.provider.Provider;
 
 public record RotatedOffsetVecProvider(VecProvider from, VecProvider to, VecProvider offset) implements VecProvider {
     public static final MapCodec<RotatedOffsetVecProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
@@ -12,6 +13,15 @@ public record RotatedOffsetVecProvider(VecProvider from, VecProvider to, VecProv
             VecProvider.CODEC.fieldOf("offset").forGetter(RotatedOffsetVecProvider::offset)
         ).apply(instance, RotatedOffsetVecProvider::new);
     });
+
+    @Override
+    public Provider<Vector2> optimize() {
+        if (from instanceof ConstantVecProvider(Vector2 pos) && to instanceof ConstantVecProvider(Vector2 pos1) && offset instanceof ConstantVecProvider(Vector2 pos2)) {
+            Vector2 direction = pos1.sub(pos);
+            return new ConstantVecProvider(pos2.rotateRad(direction.angleRad()));
+        }
+        return VecProvider.super.optimize();
+    }
 
     @Override
     public Type getType() {

@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.EntityManager;
 import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.entity.EntityType;
+import dev.creoii.chaos.entity.LivingEntity;
 import dev.creoii.chaos.entity.serialization.EntityCustomData;
 import dev.creoii.chaos.network.s2c.*;
 import dev.creoii.chaos.util.EntityGroup;
@@ -35,7 +36,7 @@ public class ServerEntityManager extends EntityManager<Entity> implements Tickab
         EntityType<?> type = entity.getType();
         getEntities(type.group()).put(entity.getId(), entity);
 
-        getGame().getServer().sendToAllTCP(new EntitySpawnS2C(entity.getId(), entity.getPos().x, entity.getPos().y, entity.getType().scale(), entity.getCustomPacketData()));
+        getGame().getServer().sendToAllTCP(new EntitySpawnS2C(entity.getId(), entity.getPos().x, entity.getPos().y, type.scale(), entity.getCustomPacketData()));
 
         SpawnEntityEvent.EVENT.invoker().onSpawnEntity(getGame(), entity.getId());
 
@@ -61,8 +62,8 @@ public class ServerEntityManager extends EntityManager<Entity> implements Tickab
         setSize(getSize() + size);
 
         size = spawnedEntities.size();
-        for (int i = 0; i < size; i += 50) {
-            getGame().getServer().sendToAllTCP(new SpawnEntitiesS2C(spawnedEntities.subList(i, Math.min(i + 50, spawnedEntities.size()))));
+        for (int i = 0; i < size; i += 100) {
+            getGame().getServer().sendToAllTCP(new SpawnEntitiesS2C(spawnedEntities.subList(i, Math.min(i + 100, spawnedEntities.size()))));
         }
     }
 
@@ -116,14 +117,34 @@ public class ServerEntityManager extends EntityManager<Entity> implements Tickab
     @Override
     public void tick(int gametime, float delta) {
         if (!removedEntities.isEmpty()) {
+            for (int id : removedEntities) {
+                for (Map.Entry<EntityGroup, Int2ObjectOpenHashMap<Entity>> entry : getAllEntities().entrySet()) {
+                    Int2ObjectOpenHashMap<Entity> map = entry.getValue();
+                    if (map.containsKey(id)) {
+                        Entity entity = map.get(id);
+
+                        if (entity instanceof LivingEntity living && living.hasParent()) {
+                            if (getEntity(living.getParentId()) instanceof LivingEntity living1) {
+                                living1.removeChild(id);
+                            }
+                        }
+
+                        map.remove(id);
+                        setSize(getSize() - 1);
+                        free(id);
+                    }
+                }
+            }
+
             getGame().getServer().sendToAllTCP(new RemoveEntitiesS2C(removedEntities));
+
             removedEntities.clear();
         }
 
         if (getSize() <= 0 || gametime % 2 == 0)
             return;
         for (Int2ObjectOpenHashMap<Entity> map : getAllEntities().values()) {
-            for (Entity entity : map.values()) {
+            for (Entity entity : map.clone().values()) {
                 entity.tick(gametime, delta);
 
                 if (!entity.canMove() || entity.getType().group() == EntityGroup.CHARACTER)
@@ -146,17 +167,6 @@ public class ServerEntityManager extends EntityManager<Entity> implements Tickab
 
     @Override
     public boolean removeEntity(int id) {
-        for (Map.Entry<EntityGroup, Int2ObjectOpenHashMap<Entity>> entry : getAllEntities().entrySet()) {
-            Int2ObjectOpenHashMap<Entity> map = entry.getValue();
-            if (map.containsKey(id)) {
-                ((ServerGame) getGame()).getTickManager().removeTickable(map.get(id));
-                map.remove(id);
-                setSize(getSize() - 1);
-                free(id);
-                removedEntities.add(id);
-                return true;
-            }
-        }
-        return false;
+        return removedEntities.add(id);
     }
 }

@@ -11,7 +11,7 @@ public class AfterTransition implements Transition {
         return instance.group(
             NumberProvider.CODEC.fieldOf("after").forGetter(AfterTransition::after),
             PhaseProvider.CODEC.fieldOf("target").forGetter(AfterTransition::target)
-        ).apply(instance, AfterTransition::new);
+        ).apply(instance, (after, target) -> new AfterTransition((NumberProvider) after.optimize(), (PhaseProvider) target.optimize()));
     });
 
     private final NumberProvider after;

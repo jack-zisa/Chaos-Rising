@@ -2,6 +2,7 @@ package dev.creoii.chaos.util.provider.numberprovider;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.chaos.util.provider.Provider;
 
 import java.util.Optional;
 
@@ -13,6 +14,22 @@ public record ClampNumberProvider(NumberProvider value, Optional<NumberProvider>
             NumberProvider.CODEC.optionalFieldOf("max").forGetter(ClampNumberProvider::max)
         ).apply(instance, ClampNumberProvider::new);
     });
+
+    @Override
+    public Provider<Float> optimize() {
+        if (value instanceof ConstantNumberProvider(float value1)) {
+            if (max.isPresent() && max.get() instanceof ConstantNumberProvider(float value2)) {
+                value1 = Math.min(value1, value2);
+            }
+
+            if (min.isPresent() && min.get() instanceof ConstantNumberProvider(float value2)) {
+                value1 = Math.max(value1, value2);
+            }
+
+            return new ConstantNumberProvider(value1);
+        }
+        return NumberProvider.super.optimize();
+    }
 
     @Override
     public Type getType() {

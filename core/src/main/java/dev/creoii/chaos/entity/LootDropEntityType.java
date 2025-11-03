@@ -17,7 +17,7 @@ public record LootDropEntityType(String id, float scale, BooleanProvider removeE
             Codec.STRING.fieldOf("id").forGetter(LootDropEntityType::id),
             Codec.FLOAT.fieldOf("scale").orElse(1f).forGetter(LootDropEntityType::scale),
             BooleanProvider.CODEC.fieldOf("remove_empty").forGetter(LootDropEntityType::removeEmpty)
-        ).apply(instance, LootDropEntityType::new);
+        ).apply(instance, (id, scale, removeEmpty) -> new LootDropEntityType(id, scale, (BooleanProvider) removeEmpty.optimize()));
     });
 
     @Override

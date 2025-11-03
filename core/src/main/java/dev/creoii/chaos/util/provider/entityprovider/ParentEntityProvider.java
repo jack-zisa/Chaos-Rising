@@ -18,7 +18,7 @@ public record ParentEntityProvider() implements EntityProvider {
     @Override
     @Nullable
     public Entity get(Context context) {
-        if (context.sourceEntity() instanceof LivingEntity living && living.hasParent()) {
+        if (context.entity() instanceof LivingEntity living && living.hasParent()) {
             return (Entity) context.game().getEntityManager().getEntity(living.getParentId());
         }
         return null;

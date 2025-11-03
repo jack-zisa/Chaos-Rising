@@ -3,7 +3,9 @@ package dev.creoii.chaos.util.provider.vecprovider;
 import com.badlogic.gdx.math.Vector2;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.chaos.util.provider.Provider;
 import dev.creoii.chaos.util.provider.booleanprovider.BooleanProvider;
+import dev.creoii.chaos.util.provider.booleanprovider.ConstantBooleanProvider;
 
 public record ComparisonVecProvider(BooleanProvider comparison, VecProvider trueValue, VecProvider falseValue) implements VecProvider {
     public static final MapCodec<ComparisonVecProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
@@ -22,6 +24,14 @@ public record ComparisonVecProvider(BooleanProvider comparison, VecProvider true
     @Override
     public Vector2 get(Context context) {
         return comparison.get(context) ? trueValue.get(context) : falseValue.get(context);
+    }
+
+    @Override
+    public Provider<Vector2> optimize() {
+        if (comparison instanceof ConstantBooleanProvider(boolean value) && trueValue instanceof ConstantVecProvider(Vector2 pos) && falseValue instanceof ConstantVecProvider(Vector2 pos1)) {
+            return new ConstantVecProvider(value ? pos : pos1);
+        }
+        return VecProvider.super.optimize();
     }
 
     @Override

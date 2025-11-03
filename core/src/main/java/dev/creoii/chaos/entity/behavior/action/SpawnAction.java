@@ -8,7 +8,6 @@ import dev.creoii.chaos.entity.EnemyEntity;
 import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.entity.LivingEntity;
 import dev.creoii.chaos.entity.controller.EntityController;
-import dev.creoii.chaos.network.s2c.EntitySpawnS2C;
 import dev.creoii.chaos.util.provider.Provider;
 import dev.creoii.chaos.util.provider.booleanprovider.BooleanProvider;
 import dev.creoii.chaos.util.provider.booleanprovider.ConstantBooleanProvider;
@@ -22,7 +21,7 @@ public class SpawnAction extends Action {
             EntityProvider.CODEC.fieldOf("entity").forGetter(SpawnAction::getEntity),
             VecProvider.CODEC.fieldOf("pos").orElse(SourceVecProvider.INSTANCE).forGetter(SpawnAction::getPos),
             BooleanProvider.CODEC.fieldOf("make_children").orElse(ConstantBooleanProvider.TRUE).forGetter(SpawnAction::shouldMakeChildren)
-        ).apply(instance, SpawnAction::new);
+        ).apply(instance, (entity, pos, makeChildren) -> new SpawnAction((EntityProvider) entity.optimize(), (VecProvider) pos.optimize(), (BooleanProvider) makeChildren.optimize()));
     });
     private final EntityProvider entity;
     private final VecProvider pos;
@@ -69,7 +68,6 @@ public class SpawnAction extends Action {
             Vector2 pos = this.pos.get(context);
             spawned.setPos(pos.x, pos.y);
             game.getEntityManager().addEntity(spawned);
-            game.getServer().sendToAllTCP(new EntitySpawnS2C(spawned.getId(), pos.x, pos.y, spawned.getType().scale(), spawned.getCustomPacketData()));
         }
     }
 

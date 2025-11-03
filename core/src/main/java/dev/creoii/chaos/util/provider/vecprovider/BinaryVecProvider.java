@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.util.provider.Operation;
+import dev.creoii.chaos.util.provider.Provider;
 
 public record BinaryVecProvider(VecProvider a, VecProvider b, Operation operation) implements VecProvider {
     public static final MapCodec<BinaryVecProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
@@ -49,6 +50,33 @@ public record BinaryVecProvider(VecProvider a, VecProvider b, Operation operatio
             VecProvider.CODEC.fieldOf("b").forGetter(BinaryVecProvider::b)
         ).apply(instance, (a, b) -> new BinaryVecProvider(a, b, Operation.POW));
     });
+
+    @Override
+    public Provider<Vector2> optimize() {
+        if (a instanceof ConstantVecProvider(Vector2 pos) && b instanceof ConstantVecProvider(Vector2 pos1)) {
+            return new ConstantVecProvider(switch (operation) {
+                case ADD -> pos.add(pos1);
+                case SUB -> pos.sub(pos1);
+                case MUL -> pos.scl(pos1);
+                case DIV -> {
+                    float x = pos.x / pos1.x;
+                    float y = pos.y / pos1.y;
+                    yield new Vector2(x, y);
+                }
+                case MOD -> {
+                    float x = pos.x % pos1.x;
+                    float y = pos.y % pos1.y;
+                    yield new Vector2(x, y);
+                }
+                case POW -> {
+                    float x = (float) Math.pow(pos.x, pos1.x);
+                    float y = (float) Math.pow(pos.y, pos1.y);
+                    yield new Vector2(x, y);
+                }
+            });
+        }
+        return VecProvider.super.optimize();
+    }
 
     @Override
     public Type getType() {

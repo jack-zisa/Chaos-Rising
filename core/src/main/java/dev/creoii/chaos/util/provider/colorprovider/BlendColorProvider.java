@@ -3,10 +3,9 @@ package dev.creoii.chaos.util.provider.colorprovider;
 import com.badlogic.gdx.graphics.Color;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.chaos.util.provider.Provider;
 import dev.creoii.chaos.util.provider.numberprovider.ConstantNumberProvider;
 import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
-
-import java.util.List;
 
 public record BlendColorProvider(ColorProvider a, ColorProvider b, NumberProvider factor) implements ColorProvider {
     public static final MapCodec<BlendColorProvider> CODEC = RecordCodecBuilder.mapCodec(instance ->
@@ -16,6 +15,14 @@ public record BlendColorProvider(ColorProvider a, ColorProvider b, NumberProvide
             NumberProvider.CODEC.orElse(ConstantNumberProvider.HALF).fieldOf("factor").forGetter(BlendColorProvider::factor)
         ).apply(instance, BlendColorProvider::new)
     );
+
+    @Override
+    public Provider<Color> optimize() {
+        if (a instanceof ConstantColorProvider(Color color1) && b instanceof ConstantColorProvider(Color color) && factor instanceof ConstantNumberProvider(float value)) {
+            return new ConstantColorProvider(color1.lerp(color, value));
+        }
+        return ColorProvider.super.optimize();
+    }
 
     @Override
     public Type getType() {

@@ -24,7 +24,7 @@ public record BulletEntityType(String id, float scale, int lifetime, NumberProvi
             NumberProvider.CODEC.fieldOf("angle_offset").orElse(ConstantNumberProvider.ZERO).forGetter(BulletEntityType::angleOffset),
             BulletPath.CODEC.fieldOf("path").orElse(EmptyBulletPath.INSTANCE).forGetter(BulletEntityType::path),
             BooleanProvider.CODEC.fieldOf("piercing").orElse(ConstantBooleanProvider.FALSE).forGetter(BulletEntityType::piercing)
-        ).apply(instance, BulletEntityType::new);
+        ).apply(instance, (id, scale, lifetime, angleOffset, path, piercing) -> new BulletEntityType(id, scale, lifetime, (NumberProvider) angleOffset.optimize(), path, (BooleanProvider) piercing.optimize()));
     });
 
     @Override

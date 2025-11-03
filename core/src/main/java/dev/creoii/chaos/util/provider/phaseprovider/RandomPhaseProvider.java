@@ -21,7 +21,7 @@ public record RandomPhaseProvider() implements PhaseProvider {
     @Override
     @Nullable
     public Phase get(Context context) {
-        Entity entity = context.sourceEntity();
+        Entity entity = context.entity();
         if (entity instanceof EnemyEntity enemy) {
             Behavior behavior = enemy.getController().getBehavior();
             if (behavior.getType() == Behavior.Type.MULTI) {

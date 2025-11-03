@@ -11,6 +11,10 @@ public interface Transition {
         case FOREVER -> ForeverTransition.CODEC;
         case RANDOM -> RandomTransition.CODEC;
         case CONDITION -> ConditionTransition.CODEC;
+        case BINARY -> BinaryTransition.CODEC;
+        case AND -> BinaryTransition.AND_CODEC;
+        case OR -> BinaryTransition.OR_CODEC;
+        case XOR -> BinaryTransition.XOR_CODEC;
         case THRESHOLD -> ThresholdTransition.CODEC;
     });
 
@@ -29,6 +33,7 @@ public interface Transition {
         FOREVER,
         RANDOM,
         CONDITION,
+        BINARY, AND, OR, XOR,
         THRESHOLD;
 
         public static final Codec<Type> CODEC = Codec.STRING.xmap(s -> Type.valueOf(s.toUpperCase()), type -> type.name().toLowerCase());

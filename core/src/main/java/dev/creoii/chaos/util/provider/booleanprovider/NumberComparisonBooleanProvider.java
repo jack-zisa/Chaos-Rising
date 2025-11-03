@@ -3,6 +3,8 @@ package dev.creoii.chaos.util.provider.booleanprovider;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.util.provider.Comparison;
+import dev.creoii.chaos.util.provider.Provider;
+import dev.creoii.chaos.util.provider.numberprovider.ConstantNumberProvider;
 import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
 
 public record NumberComparisonBooleanProvider(NumberProvider a, NumberProvider b, Comparison comparison) implements BooleanProvider {
@@ -30,6 +32,21 @@ public record NumberComparisonBooleanProvider(NumberProvider a, NumberProvider b
             case NE -> av != bv;
             case E -> av == bv;
         };
+    }
+
+    @Override
+    public Provider<Boolean> optimize() {
+        if (a instanceof ConstantNumberProvider(float value) && b instanceof ConstantNumberProvider(float value1)) {
+            return new ConstantBooleanProvider(switch (comparison) {
+                case LT -> value < value1;
+                case GT -> value > value1;
+                case LTEQ -> value <= value1;
+                case GTEQ -> value >= value1;
+                case NE -> value != value1;
+                case E -> value == value1;
+            });
+        }
+        return BooleanProvider.super.optimize();
     }
 
     @Override

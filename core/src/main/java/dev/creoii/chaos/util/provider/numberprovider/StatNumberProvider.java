@@ -8,7 +8,7 @@ import dev.creoii.chaos.util.stat.Stat;
 public record StatNumberProvider(Stat.Type statType) implements NumberProvider {
     public static final MapCodec<StatNumberProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(
-            Stat.Type.CODEC.fieldOf("stat_type").orElse(Stat.Type.HEALTH).forGetter(StatNumberProvider::statType)
+            Stat.Type.CODEC.fieldOf("stat").orElse(Stat.Type.HEALTH).forGetter(StatNumberProvider::statType)
         ).apply(instance, StatNumberProvider::new);
     });
 
@@ -19,7 +19,7 @@ public record StatNumberProvider(Stat.Type statType) implements NumberProvider {
 
     @Override
     public Float get(Context context) {
-        if (context.sourceEntity() instanceof LivingEntity livingEntity) {
+        if (context.entity() instanceof LivingEntity livingEntity) {
             switch (statType) {
                 case HEALTH -> livingEntity.getStats().health().value();
                 case ATTACK_SPEED -> livingEntity.getStats().attackSpeed().value();

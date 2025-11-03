@@ -70,6 +70,7 @@ public abstract class LivingEntity extends Entity {
     public void damage(int amount) {
         if (statContainer.health().value() <= 0 || hasStatusEffect(StatusEffect.Type.INVULNERABLE))
             return;
+
         amount = Math.max(0, amount - statContainer.defense().value());
         statContainer.health().set(Math.max(0, statContainer.health().value() - amount));
 

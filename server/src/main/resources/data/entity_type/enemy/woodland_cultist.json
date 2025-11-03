@@ -3,7 +3,7 @@
   "type": "enemy",
   "stats": {
     "health": 120,
-    "speed": 3,
+    "speed": 5,
     "attack_speed": 2
   },
   "behavior": {
@@ -13,7 +13,7 @@
       "0": {
         "transition": {
           "type": "after",
-          "after": 400,
+          "after": 250,
           "target": {
             "type": "next"
           }
@@ -58,7 +58,7 @@
       "1": {
         "transition": {
           "type": "after",
-          "after": 200,
+          "after": 75,
           "target": {
             "type": "next"
           }
@@ -67,19 +67,23 @@
           {
             "type": "move",
             "movement": {
-              "type": "direction_to",
-              "to": {
-                "type": "entity",
-                "entity": {
-                  "type": "nearest_character"
+              "type": "mul",
+              "a": {
+                "type": "direction_to",
+                "to": {
+                  "type": "entity",
+                  "entity": {
+                    "type": "nearest_character"
+                  }
+                },
+                "from": {
+                  "type": "entity",
+                  "entity": {
+                    "type": "self"
+                  }
                 }
               },
-              "from": {
-                "type": "entity",
-                "entity": {
-                  "type": "self"
-                }
-              }
+              "b": [2, 2]
             }
           },
           {
@@ -101,15 +105,108 @@
       "2": {
         "transition": {
           "type": "after",
-          "after": 150,
+          "after": 25,
           "target": {
             "type": "next"
           }
         },
         "actions": [
           {
-            "type": "wait"
-          },
+            "type": "teleport",
+            "pos": [0, 0]
+          }
+        ]
+      },
+      "3": {
+        "transition": {
+          "type": "after",
+          "after": 800,
+          "target": {
+            "type": "next"
+          }
+        },
+        "actions": [
+          {
+            "type": "attack",
+            "attack": {
+              "type": "multi",
+              "attacks": [
+                {
+                  "type": "simple",
+                  "bullet_id": "fireball_blast",
+                  "damage": 15,
+                  "bullet_count": 5,
+                  "arc_gap": 12,
+                  "angle_offset": {
+                    "type": "cycle",
+                    "value": {
+                      "type": "mul",
+                      "a": {
+                        "type": "time"
+                      },
+                      "b": -5
+                    },
+                    "max": 360
+                  }
+                },
+                {
+                  "type": "simple",
+                  "bullet_id": "fireball_blast",
+                  "damage": 15,
+                  "bullet_count": 5,
+                  "arc_gap": 12,
+                  "angle_offset": {
+                    "type": "add",
+                    "a": {
+                      "type": "cycle",
+                      "value": {
+                        "type": "mul",
+                        "a": {
+                          "type": "time"
+                        },
+                        "b": -5
+                      },
+                      "max": 360
+                    },
+                    "b": 120
+                  }
+                },
+                {
+                  "type": "simple",
+                  "bullet_id": "fireball_blast",
+                  "damage": 15,
+                  "bullet_count": 5,
+                  "arc_gap": 12,
+                  "angle_offset": {
+                    "type": "add",
+                    "a": {
+                      "type": "cycle",
+                      "value": {
+                        "type": "mul",
+                        "a": {
+                          "type": "time"
+                        },
+                        "b": -5
+                      },
+                      "max": 360
+                    },
+                    "b": 240
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "4": {
+        "transition": {
+          "type": "after",
+          "after": 50,
+          "target": {
+            "type": "next"
+          }
+        },
+        "actions": [
           {
             "type": "message",
             "message": "Dying..."
@@ -145,28 +242,7 @@
                 "b": [-3, -3]
               }
             }
-          }
-        ]
-      },
-      "3": {
-        "transition": {
-          "type": "after",
-          "after": 150,
-          "target": {
-            "type": "next"
-          }
-        },
-        "actions": [
-          {
-            "type": "order",
-            "phase": {
-              "type": "random"
-            }
-          }
-        ]
-      },
-      "4": {
-        "actions": [
+          },
           {
             "type": "kill"
           }

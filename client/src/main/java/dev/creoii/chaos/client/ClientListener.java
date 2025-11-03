@@ -185,10 +185,8 @@ public class ClientListener extends Listener {
             }
             case EntityDamageS2C(int id, float amount) -> {
                 EntityRenderData entityRenderData = game.getEntityManager().getEntityData(id);
-                if (entityRenderData != null) {
-                    if (entityRenderData instanceof LivingEntityRenderData livingEntityRenderData) {
-                        livingEntityRenderData.statContainer.setHealth((int) (livingEntityRenderData.statContainer.health().value() - amount));
-                    }
+                if (entityRenderData instanceof LivingEntityRenderData livingEntityRenderData) {
+                    livingEntityRenderData.statContainer.setHealth((int) (livingEntityRenderData.statContainer.health().value() - amount));
                     DamageEntityEvent.EVENT.invoker().onDamageEntity(game, amount, id, -1);
                     game.getRenderer().getStatusTextManager().addStatusText(String.valueOf(amount), entityRenderData.x + (entityRenderData.scale / 2f), entityRenderData.y + entityRenderData.scale, 20, Color.RED);
                 }

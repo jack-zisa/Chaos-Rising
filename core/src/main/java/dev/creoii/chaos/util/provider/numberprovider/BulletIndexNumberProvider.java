@@ -14,7 +14,7 @@ public record BulletIndexNumberProvider() implements NumberProvider {
 
     @Override
     public Float get(Context context) {
-        return context.sourceEntity() instanceof BulletEntity bullet ? (float) bullet.getIndex() : 1f;
+        return context.entity() instanceof BulletEntity bullet ? (float) bullet.getIndex() : 1f;
     }
 
     @Override

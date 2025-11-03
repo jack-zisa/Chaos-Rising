@@ -1,16 +1,15 @@
 package dev.creoii.chaos.util.provider.stringprovider;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.chaos.util.provider.Provider;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
-public record ConcatStringProvider(List<String> values) implements StringProvider {
+public record ConcatStringProvider(List<StringProvider> values) implements StringProvider {
     public static final MapCodec<ConcatStringProvider> CODEC = RecordCodecBuilder.mapCodec(instance ->
         instance.group(
-            Codec.STRING.listOf().fieldOf("values").forGetter(ConcatStringProvider::values)
+            StringProvider.CODEC.listOf().fieldOf("values").forGetter(ConcatStringProvider::values)
         ).apply(instance, ConcatStringProvider::new)
     );
 
@@ -21,6 +20,14 @@ public record ConcatStringProvider(List<String> values) implements StringProvide
 
     @Override
     public String get(Context context) {
-        return String.join("", values);
+        return String.join("", values.stream().map(s -> s.get(context)).toList());
+    }
+
+    @Override
+    public Provider<String> optimize() {
+        if (values.stream().allMatch(s -> s instanceof ConstantStringProvider)) {
+            return new ConstantStringProvider(String.join("", values.stream().map(s -> ((ConstantStringProvider) s).value()).toList()));
+        }
+        return StringProvider.super.optimize();
     }
 }

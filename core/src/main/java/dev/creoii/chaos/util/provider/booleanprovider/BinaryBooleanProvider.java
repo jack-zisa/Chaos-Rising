@@ -3,6 +3,7 @@ package dev.creoii.chaos.util.provider.booleanprovider;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.util.provider.BinaryOperation;
+import dev.creoii.chaos.util.provider.Provider;
 
 public record BinaryBooleanProvider(BooleanProvider a, BooleanProvider b, BinaryOperation operation) implements BooleanProvider {
     public static final MapCodec<BinaryBooleanProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
@@ -44,6 +45,18 @@ public record BinaryBooleanProvider(BooleanProvider a, BooleanProvider b, Binary
             case OR -> av || bv;
             case XOR -> av ^ bv;
         };
+    }
+
+    @Override
+    public Provider<Boolean> optimize() {
+        if (a instanceof ConstantBooleanProvider(boolean a1) && b instanceof ConstantBooleanProvider(boolean b1)) {
+            return new ConstantBooleanProvider(switch (operation) {
+                case AND -> a1 && b1;
+                case OR -> a1 || b1;
+                case XOR -> a1 ^ b1;
+            });
+        }
+        return BooleanProvider.super.optimize();
     }
 
     @Override

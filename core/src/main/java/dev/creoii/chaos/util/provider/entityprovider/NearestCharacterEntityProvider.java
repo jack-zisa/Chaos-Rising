@@ -26,7 +26,7 @@ public record NearestCharacterEntityProvider() implements EntityProvider {
         EntityManager<?> entityManager = game.getEntityManager();
         return entityManager.getEntities(EntityGroup.CHARACTER).values().stream()
             .map(o -> (CharacterEntity) o)
-            .min(Comparator.comparingDouble(c -> context.sourceEntity().getPos().dst2(c.getPos())))
+            .min(Comparator.comparingDouble(c -> context.entity().getPos().dst2(c.getPos())))
             .orElse(null);
     }
 }

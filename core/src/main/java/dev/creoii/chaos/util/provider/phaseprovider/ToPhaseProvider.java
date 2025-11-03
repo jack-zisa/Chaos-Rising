@@ -29,8 +29,7 @@ public record ToPhaseProvider(Either<StringProvider, NumberProvider> to) impleme
     @Override
     @Nullable
     public Phase get(Context context) {
-        Entity entity = context.sourceEntity();
-        if (entity instanceof EnemyEntity enemy) {
+        if (context.entity() instanceof EnemyEntity enemy) {
             Behavior behavior = enemy.getController().getBehavior();
             if (behavior.getType() == Behavior.Type.MULTI) {
                 MultiBehavior multiBehavior = (MultiBehavior) behavior;

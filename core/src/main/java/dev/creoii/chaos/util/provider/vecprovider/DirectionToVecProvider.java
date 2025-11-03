@@ -3,6 +3,7 @@ package dev.creoii.chaos.util.provider.vecprovider;
 import com.badlogic.gdx.math.Vector2;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.chaos.util.provider.Provider;
 
 public record DirectionToVecProvider(VecProvider from, VecProvider to) implements VecProvider {
     public static final MapCodec<DirectionToVecProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
@@ -11,6 +12,14 @@ public record DirectionToVecProvider(VecProvider from, VecProvider to) implement
             VecProvider.CODEC.fieldOf("to").forGetter(DirectionToVecProvider::to)
         ).apply(instance, DirectionToVecProvider::new);
     });
+
+    @Override
+    public Provider<Vector2> optimize() {
+        if (from instanceof ConstantVecProvider(Vector2 pos) && to instanceof ConstantVecProvider(Vector2 pos1)) {
+            return new ConstantVecProvider(pos1.sub(pos).nor().cpy());
+        }
+        return VecProvider.super.optimize();
+    }
 
     @Override
     public Type getType() {

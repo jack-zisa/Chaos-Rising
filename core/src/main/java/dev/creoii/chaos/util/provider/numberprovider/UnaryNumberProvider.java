@@ -2,6 +2,7 @@ package dev.creoii.chaos.util.provider.numberprovider;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.chaos.util.provider.Provider;
 import dev.creoii.chaos.util.provider.UnaryOperation;
 
 public record UnaryNumberProvider(UnaryOperation operation, NumberProvider value) implements NumberProvider {
@@ -41,6 +42,21 @@ public record UnaryNumberProvider(UnaryOperation operation, NumberProvider value
             NumberProvider.CODEC.fieldOf("value").forGetter(UnaryNumberProvider::value)
         ).apply(instance, value -> new UnaryNumberProvider(UnaryOperation.ABS, value));
     });
+
+    @Override
+    public Provider<Float> optimize() {
+        if (value instanceof ConstantNumberProvider(float value1)) {
+            return new ConstantNumberProvider(switch (operation) {
+                case SIN -> (float) Math.sin(value1);
+                case COS -> (float) Math.cos(value1);
+                case TAN -> (float) Math.tan(value1);
+                case SQRT -> (float) Math.sqrt(value1);
+                case CBRT -> (float) Math.cbrt(value1);
+                case ABS -> Math.abs(value1);
+            });
+        }
+        return NumberProvider.super.optimize();
+    }
 
     @Override
     public Type getType() {

@@ -13,9 +13,10 @@ public class MoveAction extends Action {
     public static final MapCodec<MoveAction> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(
             VecProvider.CODEC.fieldOf("movement").forGetter(MoveAction::getMovement)
-        ).apply(instance, MoveAction::new);
+        ).apply(instance, movement -> new MoveAction((VecProvider) movement.optimize()));
     });
     private final VecProvider movement;
+    private Provider.Context context;
     private float speed;
 
     public MoveAction(VecProvider movement) {
@@ -33,12 +34,17 @@ public class MoveAction extends Action {
 
     @Override
     public void start(EntityController<? extends EnemyEntity> controller) {
+        context = Provider.Context.of(controller.getEntity(), controller.getEntity().getGame().getGametime());
         speed = (controller.getEntity() instanceof LivingEntity living ? living.getStats().speed().value() : 1f);
     }
 
     @Override
     public void update(EntityController<? extends EnemyEntity> controller, int time, float delta) {
-        Vector2 move = movement.get(Provider.Context.of(controller.getEntity(), controller.getEntity().getGame().getGametime()));
+        if (context == null) {
+            context = Provider.Context.of(controller.getEntity(), controller.getEntity().getGame().getGametime());
+        }
+        context.setTime(controller.getEntity().getGame().getGametime());
+        Vector2 move = movement.get(context);
         controller.getEntity().getPos().add(move.scl(speed * delta));
     }
 

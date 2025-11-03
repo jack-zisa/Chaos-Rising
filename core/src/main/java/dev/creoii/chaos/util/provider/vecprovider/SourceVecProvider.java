@@ -14,7 +14,7 @@ public record SourceVecProvider() implements VecProvider {
 
     @Override
     public Vector2 get(Context context) {
-        return context.sourceEntity().getPos().cpy();
+        return context.entity().getPos().cpy();
     }
 
     @Override
