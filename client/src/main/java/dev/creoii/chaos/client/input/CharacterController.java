@@ -67,7 +67,7 @@ public record CharacterController() implements Inputtable {
     @Override
     public void touchHeld(InputManager manager, int screenX, int screenY, int pointer, int button) {
         ClientGame game = manager.getGame();
-        if (game.getChatManager().isActive())
+        if (game.getChatManager().isActive() || game.getCharacter() == null)
             return;
 
         Slot weaponSlot = game.getCharacter().getWeaponSlot();

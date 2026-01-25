@@ -7,6 +7,8 @@ import dev.creoii.chaos.entity.Attacker;
 import dev.creoii.chaos.entity.EnemyEntity;
 import dev.creoii.chaos.entity.controller.EntityController;
 import dev.creoii.chaos.util.provider.entityprovider.NearestCharacterEntityProvider;
+import dev.creoii.chaos.util.provider.entityprovider.SelfEntityProvider;
+import dev.creoii.chaos.util.provider.vecprovider.ConstantVecProvider;
 import dev.creoii.chaos.util.provider.vecprovider.EntityVecProvider;
 
 public class AttackAction extends Action {
@@ -37,7 +39,7 @@ public class AttackAction extends Action {
     @Override
     public void update(EntityController<? extends EnemyEntity> controller, int time, float delta) {
         if (Attacker.canAttack(controller.getEntity())) {
-            attack.attack(new EntityVecProvider(NearestCharacterEntityProvider.INSTANCE), controller.getEntity(), null);
+            attack.attack(new EntityVecProvider(new SelfEntityProvider()), controller.getEntity(), null);
         }
     }
 

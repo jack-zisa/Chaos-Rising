@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public record SpawnEntitiesS2C(List<Entry> entries) {
+    public static final int BATCH_SIZE = 50;
     public static final Codec<SpawnEntitiesS2C> CODEC = Entry.CODEC.listOf().xmap(SpawnEntitiesS2C::new, SpawnEntitiesS2C::entries);
 
     public static void write(Output output, SpawnEntitiesS2C o) {

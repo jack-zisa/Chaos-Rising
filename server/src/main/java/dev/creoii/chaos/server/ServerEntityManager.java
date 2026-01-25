@@ -83,8 +83,8 @@ public class ServerEntityManager extends EntityManager<Entity> implements Tickab
         setSize(getSize() + count);
 
         int size = spawnedEntities.size();
-        for (int i = 0; i < size; i += 50) {
-            getGame().getServer().sendToAllTCP(new SpawnEntitiesS2C(spawnedEntities.subList(i, Math.min(i + 50, spawnedEntities.size()))));
+        for (int i = 0; i < size; i += SpawnEntitiesS2C.BATCH_SIZE) {
+            getGame().getServer().sendToAllTCP(new SpawnEntitiesS2C(spawnedEntities.subList(i, Math.min(i + SpawnEntitiesS2C.BATCH_SIZE, spawnedEntities.size()))));
         }
     }
 

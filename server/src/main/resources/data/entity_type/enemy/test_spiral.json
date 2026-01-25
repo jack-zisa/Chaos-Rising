@@ -1,0 +1,86 @@
+{
+  "id": "test_spiral",
+  "type": "enemy",
+  "scale": 2,
+  "stats": {
+    "health": 250,
+    "attack_speed": 10,
+    "speed": 0
+  },
+  "behavior": {
+    "type": "simple",
+    "actions": [
+      {
+        "type": "attack",
+        "attack": {
+          "type": "multi",
+          "attacks": [
+            {
+              "type": "simple",
+              "bullet_id": "dark_magic",
+              "damage": 8,
+              "bullet_count": 5,
+              "arc_gap": 12,
+              "angle_offset": {
+                "type": "cycle",
+                "value": {
+                  "type": "mul",
+                  "a": {
+                    "type": "time"
+                  },
+                  "b": 2.5
+                },
+                "max": 360
+              }
+            },
+            {
+              "type": "simple",
+              "bullet_id": "dark_magic",
+              "damage": 8,
+              "bullet_count": 5,
+              "arc_gap": 12,
+              "angle_offset": {
+                "type": "cycle",
+                "value": {
+                  "type": "add",
+                  "a": {
+                    "type": "mul",
+                    "a": {
+                      "type": "time"
+                    },
+                    "b": 2.5
+                  },
+                  "b": 120
+                },
+                "max": 360
+              }
+            },
+            {
+              "type": "simple",
+              "bullet_id": "dark_magic",
+              "damage": 8,
+              "bullet_count": 5,
+              "arc_gap": 12,
+              "angle_offset": {
+                "type": "cycle",
+                "value": {
+                  "type": "add",
+                  "a": {
+                    "type": "mul",
+                    "a": {
+                      "type": "time"
+                    },
+                    "b": 2.5
+                  },
+                  "b": 240
+                },
+                "max": 360
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "loot_table": "test_beholder"
+}

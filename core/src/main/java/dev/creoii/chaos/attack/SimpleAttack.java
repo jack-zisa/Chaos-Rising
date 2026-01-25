@@ -18,6 +18,8 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 public record SimpleAttack(String bulletId, NumberProvider damage, int bulletCount, int arcGap, float predictability, NumberProvider angleOffset, Optional<VecProvider> source, Optional<VecProvider> target) implements Attack {
+    private static final Vector2 ONE = new Vector2(1f, 0f);
+
     public static final MapCodec<SimpleAttack> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(
             Codec.STRING.fieldOf("bullet_id").forGetter(SimpleAttack::bulletId),
@@ -46,12 +48,14 @@ public record SimpleAttack(String bulletId, NumberProvider damage, int bulletCou
 
         Provider.Context context = Provider.Context.of(sourceEntity, sourceEntity.getGame().getGametime());
         Vector2 pos = source.isPresent() ? source.get().get(context) : sourcePos.get(context);
-        Vector2 direction = target.isPresent() ? target.get().get(context).sub(pos).nor() : targetPos.get(context).sub(pos).nor();
+        Vector2 direction = target.isPresent() ? target.get().get(context).sub(pos).nor() : item == null ? ONE : targetPos.get(context).sub(pos).nor();
+
         float baseAngle = -arcGap * (bulletCount - 1) / 2f;
+        float angleOffset = this.angleOffset.get(context);
 
         List<BulletEntity> bullets = new ArrayList<>();
         for (int i = 0; i < bulletCount; ++i) {
-            float angle = (baseAngle + i * arcGap) + angleOffset.get(context);
+            float angle = (baseAngle + i * arcGap) + angleOffset;
 
             BulletEntityType bulletType = DataManager.getBullet(bulletId);
             if (bulletType != null) {
