@@ -84,7 +84,7 @@ public class EntityRenderManager extends EntityManager<EntityRenderData> impleme
     }
 
     public static Sprite getSprite(ClientGame game, EntityRenderData entity) {
-        Sprite sprite = new Sprite(game.getAssetManager().getTextureManager().getTexture(TextureManager.AtlasKey.fromEntityGroup(entity.group), entity.textureId));
+        Sprite sprite = new Sprite(game.getAssetManager().getTextureManager().getTexture(TextureManager.Atlas.fromEntityGroup(entity.group), entity.textureId));
         sprite.setSize(entity.scale, entity.scale);
         return sprite;
     }
@@ -129,7 +129,10 @@ public class EntityRenderManager extends EntityManager<EntityRenderData> impleme
         if (dx * dx + dy * dy > (RENDER_DISTANCE * zoom) * (RENDER_DISTANCE * zoom))
             return false;
 
-        Sprite sprite = getSprite((ClientGame) getGame(), entity);
+        Sprite sprite = entity.sprite;
+        if (sprite == null)
+            return false;
+
         float entityMinX = entity.x;
         float entityMaxX = entity.x + sprite.getWidth();
         float entityMinY = entity.y;

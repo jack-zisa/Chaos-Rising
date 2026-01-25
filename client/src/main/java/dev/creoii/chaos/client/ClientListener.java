@@ -1,7 +1,6 @@
 package dev.creoii.chaos.client;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.FrameworkMessage;
 import com.esotericsoftware.kryonet.Listener;
@@ -180,7 +179,7 @@ public class ClientListener extends Listener {
                 if (entityRenderData != null) {
                     entityRenderData.textureId = textureId;
                     entityRenderData.scale = scale;
-                    entityRenderData.sprite.setTexture(game.getAssetManager().getTextureManager().getTexture(TextureManager.AtlasKey.CHARACTER, textureId));
+                    entityRenderData.sprite.setTexture(game.getAssetManager().getTextureManager().getTexture(TextureManager.Atlas.CHARACTER, textureId));
                 }
             }
             case EntityDamageS2C(int id, float amount) -> {

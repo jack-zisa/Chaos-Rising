@@ -27,6 +27,7 @@ public class EntityRenderData {
         this.scale = scale;
         renderX = x;
         renderY = y;
+        sprite = null;
     }
 
     public boolean canMove() {

@@ -48,7 +48,7 @@ public class SimpleEntityRenderer<T extends EntityRenderData> extends EntityRend
 
         for (int i = 0; i < livingEntityRenderData.statusEffects.size(); ++i) {
             StatusEffect.Instance instance = livingEntityRenderData.statusEffects.get(i);
-            Sprite effectSprite = new Sprite(game.getAssetManager().getTextureManager().getTexture(TextureManager.AtlasKey.EFFECT, instance.getEffect().id()));
+            Sprite effectSprite = new Sprite(game.getAssetManager().getTextureManager().getTexture(TextureManager.Atlas.EFFECT, instance.getEffect().id()));
 
             float x = baseX + ((i % 4f) * 8f);
             float y = baseY + ((i / 4f) * 8f) + 4f;

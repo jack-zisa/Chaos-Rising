@@ -9,3 +9,4 @@ assets/assets.txt
 /assets/cache
 packr-all-4.0.0.jar
 /out
+/cache

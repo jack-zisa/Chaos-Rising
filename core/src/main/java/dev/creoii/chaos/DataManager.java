@@ -96,7 +96,7 @@ public class DataManager {
                             Identifiable obj = (Identifiable) codec.parse(JsonOps.INSTANCE, jsonValue).getOrThrow();
                             data.put(obj.id(), obj);
                         } catch (Exception e) {
-                            LOGGER.info("Error parsing " + file.getFileName() + " in '/" + folder + "': " + e);
+                            LOGGER.error("Error parsing " + file.getFileName() + " in '/" + folder + "': " + e);
                         }
                     });
                 }

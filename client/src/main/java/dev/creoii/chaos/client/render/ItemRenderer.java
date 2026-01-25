@@ -27,7 +27,7 @@ public class ItemRenderer implements Disposable {
     public static void renderItem(ClientGame game, SpriteBatch batch, @Nullable String id, Vector2 pos, float scale) {
         if (id == null || id.isBlank())
             return;
-        Sprite sprite = new Sprite(game.getAssetManager().getTextureManager().getTexture(TextureManager.AtlasKey.ITEM, id));
+        Sprite sprite = new Sprite(game.getAssetManager().getTextureManager().getTexture(TextureManager.Atlas.ITEM, id));
         sprite.setPosition(pos.x, pos.y);
         sprite.setSize(scale, scale);
         batch.enableBlending();
