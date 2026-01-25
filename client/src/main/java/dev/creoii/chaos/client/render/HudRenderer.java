@@ -191,6 +191,7 @@ public class HudRenderer implements Renderable {
         String statsText = character.statContainer.toDebugString(character.maxStatContainer);
         EntityRenderManager entityRenderManager = renderer.getGame().getEntityManager();
         String entitiesText = "E:" + entityRenderManager.getVisibleSize() + "/" + entityRenderManager.getSize();
-        return new String[]{Gdx.graphics.getFramesPerSecond() + " FPS", posText, statsText, entitiesText};
+        String levelText = "L:" + character.level + (character.level >= 40 ? "" : "|LE:" + character.experience + "/" + Math.pow((character.level + 1) / .1f, 2));
+        return new String[]{Gdx.graphics.getFramesPerSecond() + " FPS", posText, statsText, entitiesText, levelText};
     }
 }

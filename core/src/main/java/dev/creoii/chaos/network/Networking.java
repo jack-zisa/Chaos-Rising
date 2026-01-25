@@ -37,6 +37,7 @@ public class Networking {
         kryo.register(ChatMessageReceiveS2C.class, PacketSerializer.INSTANCE);
         kryo.register(StatusEffectS2C.class, PacketSerializer.INSTANCE);
         kryo.register(SyncDataS2C.class, PacketSerializer.INSTANCE);
+        kryo.register(GainExperienceS2C.class, PacketSerializer.INSTANCE);
 
         registerCodecSchema();
     }
@@ -70,5 +71,6 @@ public class Networking {
         PacketSerializer.INSTANCE.register(ChatMessageReceiveS2C.class, ChatMessageReceiveS2C::write, ChatMessageReceiveS2C::read);
         PacketSerializer.INSTANCE.register(StatusEffectS2C.class, StatusEffectS2C::write, StatusEffectS2C::read);
         PacketSerializer.INSTANCE.register(SyncDataS2C.class, SyncDataS2C::write, SyncDataS2C::read);
+        PacketSerializer.INSTANCE.register(GainExperienceS2C.class, GainExperienceS2C::write, GainExperienceS2C::read);
     }
 }

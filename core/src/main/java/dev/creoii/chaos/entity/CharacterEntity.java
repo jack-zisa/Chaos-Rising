@@ -7,8 +7,11 @@ import dev.creoii.chaos.entity.serialization.CharacterData;
 import dev.creoii.chaos.entity.serialization.EntityCustomData;
 import dev.creoii.chaos.inventory.CharacterInventory;
 import dev.creoii.chaos.item.ItemStack;
+import dev.creoii.chaos.network.s2c.GainExperienceS2C;
 import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.Mutable;
+import dev.creoii.chaos.util.event.GainExperienceEvent;
+import dev.creoii.chaos.util.event.LevelUpEvent;
 
 import javax.annotation.Nullable;
 import java.util.Map;
@@ -18,6 +21,8 @@ public class CharacterEntity extends LivingEntity implements Attacker {
     private CharacterInventory inventory;
     private long lastAttackTime;
     private int lootId = -1;
+    private int experience = 0;
+    private int level = 0;
 
     public CharacterEntity(Game game, EntityType<? extends CharacterEntity> type, int id, Vector2 pos, int connectionId) {
         super(game, type, id, pos, ((CharacterEntityType) type).characterClass().get().baseStatContainer().copy(), ((CharacterEntityType) type).characterClass().get().baseStatContainer().copy());
@@ -95,5 +100,49 @@ public class CharacterEntity extends LivingEntity implements Attacker {
             if (lootDropEntity == null || lootDropEntity.getInventory().addItem(stack) == null)
                 dropItem(stack, true);
         }
+    }
+
+    public int getExperience() {
+        return experience;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public int getRequiredExperienceForNextLevel() {
+        return (int) Math.pow((level + 1) / .1f, 2);
+    }
+
+    public void giveExperience(int amount) {
+        if (level >= 40)
+            return;
+
+        experience += amount;
+
+        while (level < 40 && experience >= getRequiredExperienceForNextLevel()) {
+            experience -= getRequiredExperienceForNextLevel();
+            levelUp();
+            LevelUpEvent.EVENT.invoker().onLevelUp(getGame(), getId(), level);
+        }
+
+        if (level >= 40) {
+            experience = 0;
+        }
+
+        getGame().getServer().sendToAllTCP(new GainExperienceS2C(getId(), experience, level));
+    }
+
+    public void levelUp(boolean sync) {
+        level += 1;
+
+        if (sync) {
+            getGame().getServer().sendToAllTCP(new GainExperienceS2C(getId(), experience, level));
+            LevelUpEvent.EVENT.invoker().onLevelUp(getGame(), getId(), level);
+        }
+    }
+
+    public void levelUp() {
+        levelUp(false);
     }
 }

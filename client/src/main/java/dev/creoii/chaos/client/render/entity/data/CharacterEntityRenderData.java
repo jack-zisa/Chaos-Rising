@@ -6,10 +6,14 @@ import dev.creoii.chaos.util.stat.StatContainer;
 
 public class CharacterEntityRenderData extends LivingEntityRenderData {
     public Slot[][] slots;
+    public int experience;
+    public int level;
 
     public CharacterEntityRenderData(int id, float x, float y, float xv, float yv, String textureId, float scale, StatContainer statContainer, StatContainer maxStatContainer, Slot[][] slots) {
         super(id, EntityGroup.CHARACTER, x, y, xv, yv, textureId, scale, statContainer, maxStatContainer);
         this.slots = slots;
+        experience = 0;
+        level = 0;
     }
 
     public Slot[] getHotbar() {

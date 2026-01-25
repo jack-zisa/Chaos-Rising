@@ -261,5 +261,50 @@ public final class Commands {
             }
             return Command.Result.FAIL;
         });
+
+        Command.register("heal", 1, (game, id, args) -> {
+            try {
+                int health = Integer.parseInt(args[0]);
+                if (health > 0) {
+                    CharacterEntity character = ((CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id));
+                    if (character != null) {
+                        character.heal(health);
+                        return Command.Result.SUCCESS;
+                    }
+                }
+            } catch (NumberFormatException e) {
+                return Command.Result.FAIL;
+            }
+            return Command.Result.FAIL;
+        });
+
+        Command.register("experience", 1, (game, id, args) -> {
+            try {
+                int amount = Integer.parseInt(args[0]);
+                if (amount > 0) {
+                    CharacterEntity character = ((CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id));
+                    if (character != null) {
+                        character.giveExperience(amount);
+                        return Command.Result.SUCCESS;
+                    }
+                }
+            } catch (NumberFormatException e) {
+                return Command.Result.FAIL;
+            }
+            return Command.Result.FAIL;
+        });
+
+        Command.register("levelup", 0, (game, id, args) -> {
+            try {
+                CharacterEntity character = ((CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id));
+                if (character != null) {
+                    character.levelUp(true);
+                    return Command.Result.SUCCESS;
+                }
+            } catch (NumberFormatException e) {
+                return Command.Result.FAIL;
+            }
+            return Command.Result.FAIL;
+        });
     }
 }

@@ -193,6 +193,20 @@ public class ClientListener extends Listener {
             case ChatMessageReceiveS2C(Message message) -> game.getChatManager().getMessages().add(message);
             case EntityRemoveS2C(int id) -> game.getEntityManager().removeEntity(id);
             case RemoveEntitiesS2C(List<Integer> ids) -> ids.forEach(integer -> game.getEntityManager().removeEntity(integer));
+            case GainExperienceS2C(int id, int experience, int level) -> {
+                EntityRenderData entityRenderData = game.getEntityManager().getEntityData(id);
+                if (entityRenderData instanceof CharacterEntityRenderData characterEntityRenderData) {
+                    game.getRenderer().getStatusTextManager().addStatusText(String.valueOf(experience), entityRenderData.x + (entityRenderData.scale / 2f), entityRenderData.y + entityRenderData.scale, 20, Color.LIME);
+
+                    characterEntityRenderData.experience = experience;
+
+                    if (characterEntityRenderData.level != level) {
+                        game.getRenderer().getStatusTextManager().addStatusText(String.valueOf(level), entityRenderData.x + (entityRenderData.scale / 2f), entityRenderData.y + entityRenderData.scale, 20, Color.LIME);
+                    }
+
+                    characterEntityRenderData.level = level;
+                }
+            }
             case StatusEffectS2C(int id, StatusEffect.Instance instance, boolean add) -> {
                 EntityRenderData entityRenderData = game.getEntityManager().getEntityData(id);
                 if (entityRenderData instanceof LivingEntityRenderData livingEntityRenderData) {

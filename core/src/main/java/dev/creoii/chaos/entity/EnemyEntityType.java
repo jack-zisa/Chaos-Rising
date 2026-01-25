@@ -7,12 +7,14 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.Game;
 import dev.creoii.chaos.entity.behavior.Behavior;
 import dev.creoii.chaos.util.EntityGroup;
+import dev.creoii.chaos.util.provider.numberprovider.ConstantNumberProvider;
+import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
 import dev.creoii.chaos.util.stat.StatContainer;
 
 import javax.annotation.Nullable;
 import java.util.Map;
 
-public record EnemyEntityType(String id, float scale, String lootTableId, @Nullable Behavior behavior, StatContainer stats) implements EntityType<EnemyEntity> {
+public record EnemyEntityType(String id, float scale, String lootTableId, @Nullable Behavior behavior, StatContainer stats, NumberProvider experience) implements EntityType<EnemyEntity> {
     public static final StatContainer DEFAULT_STAT_CONTAINER = new StatContainer(10, 1, 1, 0, 1, 1);
     public static final MapCodec<EnemyEntityType> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(
@@ -20,7 +22,8 @@ public record EnemyEntityType(String id, float scale, String lootTableId, @Nulla
             Codec.FLOAT.fieldOf("scale").orElse(1f).forGetter(EnemyEntityType::scale),
             Codec.STRING.fieldOf("loot_table").orElse("").forGetter(EnemyEntityType::lootTableId),
             Behavior.CODEC.fieldOf("behavior").forGetter(EnemyEntityType::behavior),
-            StatContainer.INT_CODEC.fieldOf("stats").orElse(DEFAULT_STAT_CONTAINER).forGetter(EnemyEntityType::stats)
+            StatContainer.INT_CODEC.fieldOf("stats").orElse(DEFAULT_STAT_CONTAINER).forGetter(EnemyEntityType::stats),
+            NumberProvider.CODEC.fieldOf("experience").orElse(ConstantNumberProvider.ZERO).forGetter(EnemyEntityType::experience)
         ).apply(instance, EnemyEntityType::new);
     });
 

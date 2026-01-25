@@ -89,9 +89,9 @@ public class ServerListener extends Listener {
             CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id);
             if (character != null) {
                 character.setPrevPos(character.getPos().x, character.getPos().y);
-                float x = axis ? positive ? 1f : -1f : 0f;
-                float y = axis ? 0f : positive ? 1f : -1f;
-                Vector2 newPos = character.getPos().add(new Vector2(x, y).scl(character.getStats().speed().value() / 8f));
+                float x = (axis ? positive ? 1f : -1f : 0f) * (character.getStats().speed().value() / 8f);
+                float y = (axis ? 0f : positive ? 1f : -1f) * (character.getStats().speed().value() / 8f);
+                Vector2 newPos = character.getPos().add(x, y);
                 game.getServer().sendToAllExceptUDP(connection.getID(), new MoveEntityS2C(id, newPos.x, newPos.y, newPos.x - character.getPrevPos().x, newPos.y - character.getPrevPos().y));
             }
         }

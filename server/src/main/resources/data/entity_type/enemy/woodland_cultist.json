@@ -1,6 +1,7 @@
 {
   "id": "woodland_cultist",
   "type": "enemy",
+  "experience": 1000,
   "stats": {
     "health": 120,
     "speed": 5,
