@@ -92,7 +92,7 @@ public class TextureManager implements Disposable {
         public static Atlas fromEntityGroup(EntityGroup group) {
             return switch (group) {
                 case CHARACTER -> Atlas.CHARACTER;
-                case ENEMY -> Atlas.ENEMY;
+                case ENEMY, OBJECT -> Atlas.ENEMY;
                 case BULLET -> Atlas.BULLET;
                 case LOOT_DROP -> Atlas.LOOT_DROP;
             };

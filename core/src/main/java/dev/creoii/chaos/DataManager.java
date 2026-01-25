@@ -57,6 +57,11 @@ public class DataManager {
     }
 
     @Nullable
+    public static ObjectEntityType getObject(String id) {
+        return (ObjectEntityType) getEntities().getOrDefault(id, null);
+    }
+
+    @Nullable
     public static BulletEntityType getBullet(String id) {
         return (BulletEntityType) getEntities().getOrDefault(id, null);
     }

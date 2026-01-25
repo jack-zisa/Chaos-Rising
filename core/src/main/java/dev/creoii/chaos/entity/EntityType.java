@@ -12,6 +12,7 @@ public interface EntityType<T extends Entity> extends Identifiable {
     Codec<EntityType<?>> CODEC = EntityGroup.CODEC.dispatch(EntityType::group, group -> switch (group) {
         case CHARACTER -> CharacterEntityType.CODEC;
         case ENEMY -> EnemyEntityType.CODEC;
+        case OBJECT -> ObjectEntityType.CODEC;
         case BULLET -> BulletEntityType.CODEC;
         case LOOT_DROP -> LootDropEntityType.CODEC;
     });

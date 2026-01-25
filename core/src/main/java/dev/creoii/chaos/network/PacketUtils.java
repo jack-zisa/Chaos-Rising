@@ -120,7 +120,7 @@ public final class PacketUtils {
         EntityGroup group = readEnum(EntityGroup.class, input);
         return switch (group) {
             case CHARACTER -> CharacterData.read(input);
-            case ENEMY -> EnemyData.read(input);
+            case ENEMY, OBJECT -> EnemyData.read(input);
             case BULLET -> BulletData.read(input);
             case LOOT_DROP -> LootDropData.read(input);
         };

@@ -38,8 +38,9 @@ public record SimpleAttack(String bulletId, NumberProvider damage, int bulletCou
         return Type.SIMPLE;
     }
 
-    public void attack(VecProvider targetPos, VecProvider sourcePos, Entity sourceEntity, @Nullable EquipmentItem item) {
-        if (!Attacker.canAttack(sourceEntity, item)) {
+    @Override
+    public void attack(VecProvider targetPos, VecProvider sourcePos, Entity sourceEntity, @Nullable EquipmentItem item, boolean force) {
+        if (!force && !Attacker.canAttack(sourceEntity, item)) {
             return;
         }
 
@@ -50,14 +51,14 @@ public record SimpleAttack(String bulletId, NumberProvider damage, int bulletCou
 
         List<BulletEntity> bullets = new ArrayList<>();
         for (int i = 0; i < bulletCount; ++i) {
-            float angle = baseAngle + i * arcGap;
+            float angle = (baseAngle + i * arcGap) + angleOffset.get(context);
 
             BulletEntityType bulletType = DataManager.getBullet(bulletId);
             if (bulletType != null) {
                 BulletEntity bullet = bulletType.create(context.game(), context.game().getEntityManager().getNextId(), pos.cpy(), new HashMap<>());
                 bullet.setDamage(sourceEntity instanceof LivingEntity living ? Math.round(damage.getInt(context) * .5f + living.getStats().attack().value() / 50f) : 0);
                 bullet.setIndex(i % 2 == 0 ? 1 : -1);
-                bullet.setDirection(direction.cpy().rotateDeg(angle + angleOffset.get(context)));
+                bullet.setDirection(direction.cpy().rotateDeg(angle));
                 bullet.setParent(sourceEntity);
                 bullets.add(bullet);
             }

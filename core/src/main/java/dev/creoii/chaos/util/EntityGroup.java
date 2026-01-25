@@ -5,6 +5,7 @@ import com.mojang.serialization.Codec;
 public enum EntityGroup {
     CHARACTER(64),
     ENEMY(256),
+    OBJECT(512),
     BULLET(1024),
     LOOT_DROP(64);
 

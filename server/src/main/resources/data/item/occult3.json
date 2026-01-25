@@ -1,0 +1,33 @@
+{
+  "id": "occult3",
+  "type": "weapon",
+  "attack": {
+    "type": "multi",
+    "attacks": [
+      {
+        "type": "simple",
+        "bullet_id": "dark_magic",
+        "damage": 8,
+        "bullet_count": 5,
+        "arc_gap": 12
+      },
+      {
+        "type": "simple",
+        "bullet_id": "dark_magic",
+        "damage": 8,
+        "bullet_count": 5,
+        "arc_gap": 12,
+        "angle_offset": 120
+      },
+      {
+        "type": "simple",
+        "bullet_id": "dark_magic",
+        "damage": 8,
+        "bullet_count": 5,
+        "arc_gap": 12,
+        "angle_offset": 240
+      }
+    ]
+  },
+  "rate_of_fire": 2
+}

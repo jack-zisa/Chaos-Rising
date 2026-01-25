@@ -1,10 +1,7 @@
 {
   "id": "test_obj",
-  "type": "enemy",
+  "type": "object",
   "scale": 1,
-  "behavior": {
-    "type": "empty"
-  },
   "stats": {
     "health": 100
   }

@@ -19,10 +19,14 @@ public interface Attack {
     /**
      * @param item null if attacking from an {@link dev.creoii.chaos.entity.EnemyEntity}.
      */
-    void attack(VecProvider targetPos, VecProvider sourcePos, Entity sourceEntity, EquipmentItem item);
+    void attack(VecProvider targetPos, VecProvider sourcePos, Entity sourceEntity, EquipmentItem item, boolean force);
+
+    default void attack(VecProvider targetPos, VecProvider sourcePos, Entity sourceEntity, EquipmentItem item) {
+        attack(targetPos, sourcePos, sourceEntity, item, false);
+    }
 
     default void attack(VecProvider targetPos, Entity sourceEntity, @Nullable EquipmentItem item) {
-        attack(targetPos, SourceVecProvider.INSTANCE, sourceEntity, item);
+        attack(targetPos, SourceVecProvider.INSTANCE, sourceEntity, item, false);
     }
 
     enum Type {
