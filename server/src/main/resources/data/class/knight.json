@@ -2,8 +2,8 @@
   "id": "knight",
   "texture": "knight",
   "base_stats": {
-    "health": 1500,
-    "speed": 20,
+    "health": 150,
+    "speed": 4,
     "attack_speed": 8,
     "defense": 5
   },

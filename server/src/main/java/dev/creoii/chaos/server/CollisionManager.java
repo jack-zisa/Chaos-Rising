@@ -18,6 +18,12 @@ public class CollisionManager {
     private static final int[][] FORWARD_NEIGHBORS = {
         {1, 0}, {1, 1}, {0, 1}, {-1, 1}
     };
+    private static final int[][] ALL_NEIGHBORS = {
+        {-1,-1},{0,-1},{1,-1},
+        {-1, 0},        {1, 0},
+        {-1, 1},{0, 1},{1, 1}
+    };
+
     private static final Long2ObjectArrayMap<int[][]> DIRECTION_OFFSETS = createDirectionOffsets();
     private static final int[] COLLISION_MASKS = new int[EntityGroup.values().length];
     public static final int KEY_OFFSET = 32768;
@@ -51,8 +57,8 @@ public class CollisionManager {
         }
 
         for (Entity entity : toCollide) {
-            int x = Math.round(entity.getPos().x / Entity.COORDINATE_SCALE);
-            int y = Math.round(entity.getPos().y / Entity.COORDINATE_SCALE);
+            int x = (int) Math.floor(entity.getPos().x / Entity.COORDINATE_SCALE);
+            int y = (int) Math.floor(entity.getPos().y / Entity.COORDINATE_SCALE);
 
             int key = ((x + KEY_OFFSET) << 16) | ((y + KEY_OFFSET) & 0xffff);
             ObjectList<Entity> entities = grid.get(key);
@@ -89,7 +95,7 @@ public class CollisionManager {
             int y = (entry.getKey() & 0xffff) - KEY_OFFSET;
 
             for (Entity a : entities) {
-                int[][] neighborDirs = a instanceof BulletEntity bullet ? getBulletForwardNeighbors(bullet) : FORWARD_NEIGHBORS;
+                int[][] neighborDirs = a instanceof BulletEntity bullet ? getBulletForwardNeighbors(bullet) : ALL_NEIGHBORS;
 
                 for (int[] dir : neighborDirs) {
                     int neighborKey = ((x + dir[0] + KEY_OFFSET) << 16) | ((y + dir[1] + KEY_OFFSET) & 0xffff);
@@ -140,8 +146,8 @@ public class CollisionManager {
         if (dir.isZero())
             return new int[0][0];
 
-        int dx = Math.round(dir.x);
-        int dy = Math.round(dir.y);
+        int dx = (int) Math.signum(dir.x);
+        int dy = (int) Math.signum(dir.y);
 
         long key = ((long) (dx + 1) << 2) | (dy + 1);
         return DIRECTION_OFFSETS.getOrDefault(key, new int[0][0]);
@@ -153,18 +159,26 @@ public class CollisionManager {
 
         BiFunction<Integer, Integer, Long> key = (x, y) -> ((long) (x + 1) << 2) | (y + 1);
 
-        map.put((long) key.apply(1, 0),  new int[][]{{1, 0}, {1, 0}});     // East
-        map.put((long) key.apply(-1, 0), new int[][]{{-1, 0}, {-1, 0}});   // West
-        map.put((long) key.apply(0, 1),  new int[][]{{0, 1}, {0, 1}});     // North
-        map.put((long) key.apply(0, -1), new int[][]{{0, -1}, {0, -1}});   // South
-        map.put((long) key.apply(1, 1),  new int[][]{{1, 1}, {1, 0}, {0, 1}});     // NE
-        map.put((long) key.apply(-1, 1), new int[][]{{-1, 1}, {-1, 0}, {0, 1}});   // NW
-        map.put((long) key.apply(1, -1), new int[][]{{1, -1}, {1, 0}, {0, -1}});   // SE
-        map.put((long) key.apply(-1, -1), new int[][]{{-1, -1}, {-1, 0}, {0, -1}});// SW
+        map.put((long) key.apply(1, 0), new int[][]{   // East
+            {1, 0}, {1, 1}, {1, -1}});
+        map.put((long) key.apply(-1, 0), new int[][]{  // West
+            {-1, 0}, {-1, 1}, {-1, -1}});
+        map.put((long) key.apply(0, 1), new int[][]{   // North
+            {0, 1}, {1, 1}, {-1, 1}});
+        map.put((long) key.apply(0, -1), new int[][]{  // South
+            {0, -1}, {1, -1}, {-1, -1}});
+
+        map.put((long) key.apply(1, 1), new int[][]{   // NE
+            {1, 1}, {1, 0}, {0, 1}});
+        map.put((long) key.apply(-1, 1), new int[][]{  // NW
+            {-1, 1}, {-1, 0}, {0, 1}});
+        map.put((long) key.apply(1, -1), new int[][]{  // SE
+            {1, -1}, {1, 0}, {0, -1}});
+        map.put((long) key.apply(-1, -1), new int[][]{ // SW
+            {-1, -1}, {-1, 0}, {0, -1}});
 
         return map;
     }
-
     private static boolean checkMask(Entity a, Entity b) {
         return (COLLISION_MASKS[a.getType().group().ordinal()] & (1 << b.getType().group().ordinal())) != 0;
     }

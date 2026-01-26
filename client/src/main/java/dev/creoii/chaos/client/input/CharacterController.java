@@ -18,7 +18,7 @@ public record CharacterController() implements Inputtable {
     @Override
     public void keyHeld(InputManager manager, int keycode) {
         ClientGame game = manager.getGame();
-        if (game.getChatManager().isActive())
+        if (game.getChatManager().isActive() || game.getCharacter() == null)
             return;
 
         if (game.getCharacter().canMove()) {
