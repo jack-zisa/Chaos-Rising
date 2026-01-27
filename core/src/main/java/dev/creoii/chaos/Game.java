@@ -7,8 +7,6 @@ import java.util.Random;
 public interface Game {
     boolean isClient();
 
-    EntityManager<?> getEntityManager();
-
     int getGametime();
 
     Random getRandom();

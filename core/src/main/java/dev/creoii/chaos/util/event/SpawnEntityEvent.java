@@ -1,14 +1,14 @@
 package dev.creoii.chaos.util.event;
 
-import dev.creoii.chaos.Game;
+import dev.creoii.chaos.World;
 
 @FunctionalInterface
 public interface SpawnEntityEvent {
-    Event<SpawnEntityEvent> EVENT = Event.create(SpawnEntityEvent.class, events -> (game, entity) -> {
+    Event<SpawnEntityEvent> EVENT = Event.create(SpawnEntityEvent.class, events -> (world, entity) -> {
         for (SpawnEntityEvent event : events) {
-            event.onSpawnEntity(game, entity);
+            event.onSpawnEntity(world, entity);
         }
     });
 
-    void onSpawnEntity(Game game, int entity);
+    void onSpawnEntity(World world, int entity);
 }

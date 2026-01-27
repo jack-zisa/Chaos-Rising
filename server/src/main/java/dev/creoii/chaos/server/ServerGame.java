@@ -25,8 +25,6 @@ public class ServerGame implements Game {
     public static final Logger LOGGER = new Logger(ServerGame.class.getSimpleName());
     protected NetworkQueue<NetworkQueue.QueuedPacket> networkQueue;
     private final TickManager tickManager;
-    private final CollisionManager collisionManager;
-    private final ServerEntityManager entityManager;
     private final Map<String, World> worlds;
     private int gametime;
 
@@ -44,8 +42,6 @@ public class ServerGame implements Game {
         server.addListener(listener = new ServerListener(this));
 
         tickManager = new TickManager();
-        collisionManager = new CollisionManager(this);
-        entityManager = new ServerEntityManager(this);
 
         worlds = new HashMap<>();
         worlds.put("main", new ServerWorld(this, World.createMapOfSize(100, 100)));
@@ -85,12 +81,13 @@ public class ServerGame implements Game {
 
     public void update() {
         tickManager.tick(++gametime, 1f);
-        collisionManager.checkCollisions();
 
         NetworkQueue.QueuedPacket packet;
         while ((packet = networkQueue.queue().poll()) != null) {
             listener.handlePacket(packet.connection(), packet.packet());
         }
+
+        worlds.forEach((_, world) -> ((ServerWorld) world).update());
     }
 
     @Override
@@ -105,15 +102,6 @@ public class ServerGame implements Game {
 
     public TickManager getTickManager() {
         return tickManager;
-    }
-
-    public CollisionManager getCollisionManager() {
-        return collisionManager;
-    }
-
-    @Override
-    public ServerEntityManager getEntityManager() {
-        return entityManager;
     }
 
     public Map<String, World> getWorlds() {

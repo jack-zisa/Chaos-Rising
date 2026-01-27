@@ -3,7 +3,7 @@ package dev.creoii.chaos.entity;
 import com.badlogic.gdx.math.Vector2;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dev.creoii.chaos.Game;
+import dev.creoii.chaos.World;
 import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.Mutable;
 
@@ -32,7 +32,7 @@ public record CharacterEntityType(Mutable<CharacterClass> characterClass) implem
     }
 
     @Override
-    public CharacterEntity create(Game game, int id, Vector2 pos, Map<String, Object> customData) {
-        return new CharacterEntity(game, this, id, pos.cpy(), (int) customData.get("connection_id"));
+    public CharacterEntity create(World world, int id, Vector2 pos, Map<String, Object> customData) {
+        return new CharacterEntity(world, this, id, pos.cpy(), (int) customData.get("connection_id"));
     }
 }

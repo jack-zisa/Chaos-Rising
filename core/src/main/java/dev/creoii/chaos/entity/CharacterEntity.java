@@ -2,7 +2,7 @@ package dev.creoii.chaos.entity;
 
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.DataManager;
-import dev.creoii.chaos.Game;
+import dev.creoii.chaos.World;
 import dev.creoii.chaos.entity.serialization.CharacterData;
 import dev.creoii.chaos.entity.serialization.EntityCustomData;
 import dev.creoii.chaos.inventory.CharacterInventory;
@@ -10,7 +10,6 @@ import dev.creoii.chaos.item.ItemStack;
 import dev.creoii.chaos.network.s2c.GainExperienceS2C;
 import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.Mutable;
-import dev.creoii.chaos.util.event.GainExperienceEvent;
 import dev.creoii.chaos.util.event.LevelUpEvent;
 
 import javax.annotation.Nullable;
@@ -24,8 +23,8 @@ public class CharacterEntity extends LivingEntity implements Attacker {
     private int experience = 0;
     private int level = 0;
 
-    public CharacterEntity(Game game, EntityType<? extends CharacterEntity> type, int id, Vector2 pos, int connectionId) {
-        super(game, type, id, pos, ((CharacterEntityType) type).characterClass().get().baseStatContainer().copy(), ((CharacterEntityType) type).characterClass().get().baseStatContainer().copy());
+    public CharacterEntity(World world, EntityType<? extends CharacterEntity> type, int id, Vector2 pos, int connectionId) {
+        super(world, type, id, pos, ((CharacterEntityType) type).characterClass().get().baseStatContainer().copy(), ((CharacterEntityType) type).characterClass().get().baseStatContainer().copy());
         this.connectionId = connectionId;
         inventory = new CharacterInventory(this);
         lastAttackTime = 0L;
@@ -92,11 +91,11 @@ public class CharacterEntity extends LivingEntity implements Attacker {
 
     public void dropItem(ItemStack stack, boolean forceDrop) {
         if (lootId == -1 || forceDrop) {
-            LootDropEntity lootDropEntity = getGame().getEntityManager().addEntity(DataManager.getLootDrop("bag"), getPos().cpy());
+            LootDropEntity lootDropEntity = getWorld().getEntityManager().addEntity(DataManager.getLootDrop("bag"), getPos().cpy());
             lootDropEntity.addItem(stack);
             lootId = lootDropEntity.getId();
         } else {
-            LootDropEntity lootDropEntity = (LootDropEntity) getGame().getEntityManager().getEntity(EntityGroup.LOOT_DROP, lootId);
+            LootDropEntity lootDropEntity = (LootDropEntity) getWorld().getEntityManager().getEntity(EntityGroup.LOOT_DROP, lootId);
             if (lootDropEntity == null || lootDropEntity.getInventory().addItem(stack) == null)
                 dropItem(stack, true);
         }
@@ -123,22 +122,22 @@ public class CharacterEntity extends LivingEntity implements Attacker {
         while (level < 40 && experience >= getRequiredExperienceForNextLevel()) {
             experience -= getRequiredExperienceForNextLevel();
             levelUp();
-            LevelUpEvent.EVENT.invoker().onLevelUp(getGame(), getId(), level);
+            LevelUpEvent.EVENT.invoker().onLevelUp(getWorld(), getId(), level);
         }
 
         if (level >= 40) {
             experience = 0;
         }
 
-        getGame().getServer().sendToAllTCP(new GainExperienceS2C(getId(), experience, level));
+        getWorld().getGame().getServer().sendToAllTCP(new GainExperienceS2C(getId(), experience, level));
     }
 
     public void levelUp(boolean sync) {
         level += 1;
 
         if (sync) {
-            getGame().getServer().sendToAllTCP(new GainExperienceS2C(getId(), experience, level));
-            LevelUpEvent.EVENT.invoker().onLevelUp(getGame(), getId(), level);
+            getWorld().getGame().getServer().sendToAllTCP(new GainExperienceS2C(getId(), experience, level));
+            LevelUpEvent.EVENT.invoker().onLevelUp(getWorld(), getId(), level);
         }
     }
 

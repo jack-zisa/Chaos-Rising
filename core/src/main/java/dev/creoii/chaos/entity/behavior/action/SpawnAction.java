@@ -3,7 +3,7 @@ package dev.creoii.chaos.entity.behavior.action;
 import com.badlogic.gdx.math.Vector2;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dev.creoii.chaos.Game;
+import dev.creoii.chaos.World;
 import dev.creoii.chaos.entity.EnemyEntity;
 import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.entity.LivingEntity;
@@ -53,11 +53,11 @@ public class SpawnAction extends Action {
     @Override
     public void start(EntityController<? extends EnemyEntity> controller) {
         LivingEntity entity = controller.getEntity();
-        Game game = entity.getGame();
-        if (!game.isClient()) {
-            Provider.Context context = Provider.Context.of(entity, game.getGametime());
+        World world = entity.getWorld();
+        if (!world.getGame().isClient()) {
+            Provider.Context context = Provider.Context.of(entity, world.getGame().getGametime());
             Entity spawned = this.entity.get(context);
-            if (game.getEntityManager().getEntity(spawned.getType().group(), spawned.getId()) != null)
+            if (world.getEntityManager().getEntity(spawned.getType().group(), spawned.getId()) != null)
                 return;
 
             if (spawned instanceof LivingEntity living && makeChildren.get(context)) {
@@ -67,7 +67,7 @@ public class SpawnAction extends Action {
 
             Vector2 pos = this.pos.get(context);
             spawned.setPos(pos.x, pos.y);
-            game.getEntityManager().addEntity(spawned);
+            world.getEntityManager().addEntity(spawned);
         }
     }
 

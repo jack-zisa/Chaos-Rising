@@ -24,11 +24,11 @@ public class ServerEntityManager extends EntityManager<Entity> implements Tickab
     private final IntList removedEntities;
     private final ObjectList<MoveEntitiesS2C.Entry> moveEntries;
 
-    public ServerEntityManager(ServerGame game) {
-        super(game);
+    public ServerEntityManager(ServerWorld world) {
+        super(world);
         removedEntities = new IntArrayList();
         moveEntries = new ObjectArrayList<>();
-        game.getTickManager().addTickable(this);
+        world.getGame().getTickManager().addTickable(this);
     }
 
     @Override
@@ -36,9 +36,9 @@ public class ServerEntityManager extends EntityManager<Entity> implements Tickab
         EntityType<?> type = entity.getType();
         getEntities(type.group()).put(entity.getId(), entity);
 
-        getGame().getServer().sendToAllTCP(new EntitySpawnS2C(entity.getId(), entity.getPos().x, entity.getPos().y, type.scale(), entity.getCustomPacketData()));
+        getWorld().getGame().getServer().sendToAllTCP(new EntitySpawnS2C(entity.getId(), entity.getPos().x, entity.getPos().y, type.scale(), entity.getCustomPacketData()));
 
-        SpawnEntityEvent.EVENT.invoker().onSpawnEntity(getGame(), entity.getId());
+        SpawnEntityEvent.EVENT.invoker().onSpawnEntity(getWorld(), entity.getId());
 
         setSize(getSize() + 1);
         return entity;
@@ -54,7 +54,7 @@ public class ServerEntityManager extends EntityManager<Entity> implements Tickab
 
             getEntities(entity.getType().group()).put(entity.getId(), entity);
 
-            SpawnEntityEvent.EVENT.invoker().onSpawnEntity(getGame(), entity.getId());
+            SpawnEntityEvent.EVENT.invoker().onSpawnEntity(getWorld(), entity.getId());
 
             spawnedEntities.add(new SpawnEntitiesS2C.Entry(entity.getId(), entity.getPos().x, entity.getPos().y, entity.getType().scale(), entity.getCustomPacketData()));
         }
@@ -63,7 +63,7 @@ public class ServerEntityManager extends EntityManager<Entity> implements Tickab
 
         size = spawnedEntities.size();
         for (int i = 0; i < size; i += 100) {
-            getGame().getServer().sendToAllTCP(new SpawnEntitiesS2C(spawnedEntities.subList(i, Math.min(i + 100, spawnedEntities.size()))));
+            getWorld().getGame().getServer().sendToAllTCP(new SpawnEntitiesS2C(spawnedEntities.subList(i, Math.min(i + 100, spawnedEntities.size()))));
         }
     }
 
@@ -71,11 +71,11 @@ public class ServerEntityManager extends EntityManager<Entity> implements Tickab
         List<SpawnEntitiesS2C.Entry> spawnedEntities = new ArrayList<>();
 
         for (int i = 0; i < count; ++i) {
-            Vector2 pos = posProvider.get(new Provider.Context(getGame(), null, getGame().getGametime(), Vector2.Zero, getGame().getRandom()));
-            E spawned = type.create(getGame(), getNextId(), pos, customData);
+            Vector2 pos = posProvider.get(new Provider.Context(getWorld().getGame(), getWorld(), null, getWorld().getGame().getGametime(), Vector2.Zero, getWorld().getRandom()));
+            E spawned = type.create(getWorld(), getNextId(), pos, customData);
             getEntities(type.group()).put(spawned.getId(), spawned);
 
-            SpawnEntityEvent.EVENT.invoker().onSpawnEntity(getGame(), spawned.getId());
+            SpawnEntityEvent.EVENT.invoker().onSpawnEntity(getWorld(), spawned.getId());
 
             spawnedEntities.add(new SpawnEntitiesS2C.Entry(spawned.getId(), spawned.getPos().x, spawned.getPos().y, type.scale(), spawned.getCustomPacketData()));
         }
@@ -84,31 +84,31 @@ public class ServerEntityManager extends EntityManager<Entity> implements Tickab
 
         int size = spawnedEntities.size();
         for (int i = 0; i < size; i += SpawnEntitiesS2C.BATCH_SIZE) {
-            getGame().getServer().sendToAllTCP(new SpawnEntitiesS2C(spawnedEntities.subList(i, Math.min(i + SpawnEntitiesS2C.BATCH_SIZE, spawnedEntities.size()))));
+            getWorld().getGame().getServer().sendToAllTCP(new SpawnEntitiesS2C(spawnedEntities.subList(i, Math.min(i + SpawnEntitiesS2C.BATCH_SIZE, spawnedEntities.size()))));
         }
     }
 
     public <E extends Entity, T extends EntityType<E>> E addEntity(T type, Vector2 pos, Map<String, Object> customData) {
-        E spawned = type.create(getGame(), getNextId(), pos, customData);
+        E spawned = type.create(getWorld(), getNextId(), pos, customData);
         getEntities(type.group()).put(spawned.getId(), spawned);
 
-        getGame().getServer().sendToAllTCP(new EntitySpawnS2C(spawned.getId(), pos.x, pos.y, type.scale(), spawned.getCustomPacketData()));
+        getWorld().getGame().getServer().sendToAllTCP(new EntitySpawnS2C(spawned.getId(), pos.x, pos.y, type.scale(), spawned.getCustomPacketData()));
 
-        SpawnEntityEvent.EVENT.invoker().onSpawnEntity(getGame(), spawned.getId());
+        SpawnEntityEvent.EVENT.invoker().onSpawnEntity(getWorld(), spawned.getId());
 
         setSize(getSize() + 1);
         return spawned;
     }
 
     public <E extends Entity, T extends EntityType<E>> E addCharacter(int connectionId, T type, Vector2 pos, Map<String, Object> customData) {
-        E spawned = type.create(getGame(), getNextId(), pos, customData);
+        E spawned = type.create(getWorld(), getNextId(), pos, customData);
         getEntities(type.group()).put(spawned.getId(), spawned);
 
         EntityCustomData data = spawned.getCustomPacketData();
-        getGame().getServer().sendToTCP(connectionId, new CharacterJoinS2C(spawned.getId(), pos.x, pos.y, type.scale(), data));
-        getGame().getServer().sendToAllExceptTCP(connectionId, new EntitySpawnS2C(spawned.getId(), pos.x, pos.y, type.scale(), data));
+        getWorld().getGame().getServer().sendToTCP(connectionId, new CharacterJoinS2C(spawned.getId(), pos.x, pos.y, type.scale(), data));
+        getWorld().getGame().getServer().sendToAllExceptTCP(connectionId, new EntitySpawnS2C(spawned.getId(), pos.x, pos.y, type.scale(), data));
 
-        SpawnEntityEvent.EVENT.invoker().onSpawnEntity(getGame(), spawned.getId());
+        SpawnEntityEvent.EVENT.invoker().onSpawnEntity(getWorld(), spawned.getId());
 
         setSize(getSize() + 1);
         return spawned;
@@ -136,7 +136,7 @@ public class ServerEntityManager extends EntityManager<Entity> implements Tickab
                 }
             }
 
-            getGame().getServer().sendToAllTCP(new RemoveEntitiesS2C(removedEntities));
+            getWorld().getGame().getServer().sendToAllTCP(new RemoveEntitiesS2C(removedEntities));
 
             removedEntities.clear();
         }
@@ -159,7 +159,7 @@ public class ServerEntityManager extends EntityManager<Entity> implements Tickab
         if (!moveEntries.isEmpty()) {
             int size = moveEntries.size();
             for (int i = 0; i < size; i += 50) {
-                getGame().getServer().sendToAllUDP(new MoveEntitiesS2C(moveEntries.subList(i, Math.min(i + 50, moveEntries.size()))));
+                getWorld().getGame().getServer().sendToAllUDP(new MoveEntitiesS2C(moveEntries.subList(i, Math.min(i + 50, moveEntries.size()))));
             }
         }
         moveEntries.clear();

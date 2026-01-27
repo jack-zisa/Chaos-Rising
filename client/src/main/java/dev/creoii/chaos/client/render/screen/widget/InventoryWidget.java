@@ -106,7 +106,7 @@ public class InventoryWidget extends Widget {
         if (getParent() instanceof InventoryScreen inventoryScreen && isMouseOver()) {
             Slot touched = inventoryScreen.getMouseOverSlot();
             if (touched != null && touched.hasItem()) {
-                if (!touched.getStack().clickInSlot(manager.getGame(), manager.getGame().getCharacterId(), touched)) {
+                if (!touched.getStack().clickInSlot(manager.getGame().getWorld(), manager.getGame().getCharacterId(), touched)) {
                     dragSource = touched;
                     dragStack = touched.takeStack();
                 }

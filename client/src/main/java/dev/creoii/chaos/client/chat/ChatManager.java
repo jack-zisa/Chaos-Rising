@@ -47,7 +47,7 @@ public class ChatManager extends InputAdapter {
             return;
 
         String[] args = Arrays.copyOfRange(elements, 1, elements.length);
-        ExecuteCommandEvent.EVENT.invoker().onExecuteCommand(game, game.getCharacterId(), command, args);
+        ExecuteCommandEvent.EVENT.invoker().onExecuteCommand(game.getWorld(), game.getCharacterId(), command, args);
         game.getClient().sendTCP(new ExecuteCommandC2S(game.getCharacter().id, commandType, args));
     }
 
@@ -90,7 +90,7 @@ public class ChatManager extends InputAdapter {
                     Message message = new Message(game.getCharacterId(), input.toString());
                     messages.add(message);
                     game.getClient().sendTCP(new ChatMessageSendC2S(message));
-                    MessageChatEvent.EVENT.invoker().onMessageChat(game, message);
+                    MessageChatEvent.EVENT.invoker().onMessageChat(game.getWorld(), message);
                 }
             }
             input.setLength(0);

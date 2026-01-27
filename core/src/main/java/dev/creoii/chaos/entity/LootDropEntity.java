@@ -1,7 +1,7 @@
 package dev.creoii.chaos.entity;
 
 import com.badlogic.gdx.math.Vector2;
-import dev.creoii.chaos.Game;
+import dev.creoii.chaos.World;
 import dev.creoii.chaos.entity.serialization.EntityCustomData;
 import dev.creoii.chaos.entity.serialization.LootDropData;
 import dev.creoii.chaos.inventory.Inventory;
@@ -13,8 +13,8 @@ import java.util.Map;
 public class LootDropEntity extends Entity {
     private Inventory inventory;
 
-    public LootDropEntity(Game game, EntityType<? extends LootDropEntity> type, int id, Vector2 pos, Inventory inventory) {
-        super(game, type, id, pos);
+    public LootDropEntity(World world, EntityType<? extends LootDropEntity> type, int id, Vector2 pos, Inventory inventory) {
+        super(world, type, id, pos);
         this.inventory = inventory;
     }
 

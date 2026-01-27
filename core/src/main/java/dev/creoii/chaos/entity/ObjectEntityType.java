@@ -4,7 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dev.creoii.chaos.Game;
+import dev.creoii.chaos.World;
 import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.provider.numberprovider.ConstantNumberProvider;
 import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
@@ -34,7 +34,7 @@ public record ObjectEntityType(String id, float scale, String lootTableId, StatC
     }
 
     @Override
-    public ObjectEntity create(Game game, int id, Vector2 pos, Map<String, Object> customData) {
-        return new ObjectEntity(game, this, id, pos.cpy());
+    public ObjectEntity create(World world, int id, Vector2 pos, Map<String, Object> customData) {
+        return new ObjectEntity(world, this, id, pos.cpy());
     }
 }

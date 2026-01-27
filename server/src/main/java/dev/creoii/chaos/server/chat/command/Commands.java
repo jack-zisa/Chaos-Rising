@@ -6,10 +6,10 @@ import dev.creoii.chaos.DataManager;
 import dev.creoii.chaos.chat.Message;
 import dev.creoii.chaos.effect.StatusEffects;
 import dev.creoii.chaos.network.s2c.*;
-import dev.creoii.chaos.server.ServerGame;
 import dev.creoii.chaos.effect.StatusEffect;
 import dev.creoii.chaos.entity.*;
 import dev.creoii.chaos.item.Item;
+import dev.creoii.chaos.server.ServerWorld;
 import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.logging.Logger;
 import dev.creoii.chaos.util.provider.vecprovider.ConstantVecProvider;
@@ -24,12 +24,12 @@ public final class Commands {
     static final ObjectMap<String, Command> ALL = new ObjectMap<>();
 
     @Nullable
-    public static Command.Result tryExecute(ServerGame game, int id, String commandType, String[] args) {
+    public static Command.Result tryExecute(ServerWorld world, int id, String commandType, String[] args) {
         if (Commands.ALL.containsKey(commandType)) {
             try {
                 Command command = Commands.ALL.get(commandType);
                 if (args.length > command.minArgs() - 1) {
-                    Command.Result result = command.execute(game, id, args);
+                    Command.Result result = command.execute(world, id, args);
                     LOGGER.info(result.getResultMessage(commandType, args));
                     return result;
                 } else {
@@ -46,20 +46,20 @@ public final class Commands {
     }
 
     static {
-        Command.register("setpos", 2, (game, id, args) -> {
-            CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id);
+        Command.register("setpos", 2, (world, id, args) -> {
+            CharacterEntity character = (CharacterEntity) world.getEntityManager().getEntity(EntityGroup.CHARACTER, id);
             if (character != null) {
                 float x = Integer.parseInt(args[0]) * Entity.COORDINATE_SCALE;
                 float y = Integer.parseInt(args[1]) * Entity.COORDINATE_SCALE;
                 character.setPos(x, y);
-                game.getServer().sendToAllUDP(new MoveEntityS2C(character.getId(), x, y, 0f, 0f));
+                world.getGame().getServer().sendToAllUDP(new MoveEntityS2C(character.getId(), x, y, 0f, 0f));
                 return Command.Result.SUCCESS;
             }
             return Command.Result.FAIL;
         });
 
-        Command.register("setstat", 2, (game, id, args) -> {
-            CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id);
+        Command.register("setstat", 2, (world, id, args) -> {
+            CharacterEntity character = (CharacterEntity) world.getEntityManager().getEntity(EntityGroup.CHARACTER, id);
 
             if (character != null) {
                 Stat.Type statType = Stat.Type.valueOf(args[0].toUpperCase());
@@ -90,13 +90,13 @@ public final class Commands {
                         character.getMaxStats().setVitality(value);
                     }
                 }
-                game.getServer().sendToTCP(character.getConnectionId(), new LivingStatUpdateS2C(character.getId(), new Stat(statType, value)));
+                world.getGame().getServer().sendToTCP(character.getConnectionId(), new LivingStatUpdateS2C(character.getId(), new Stat(statType, value)));
                 return Command.Result.SUCCESS;
             }
             return Command.Result.FAIL;
         });
 
-        Command.register("spawn", 1, (game, id, args) -> {
+        Command.register("spawn", 1, (world, id, args) -> {
             int argCount = args.length;
 
             if (argCount == 2)
@@ -108,21 +108,21 @@ public final class Commands {
                 return Command.Result.FAIL;
 
             if (argCount == 1) {
-                Entity entity = game.getEntityManager().getEntity(id);
+                Entity entity = world.getEntityManager().getEntity(id);
                 Vector2 pos = entity == null ? Vector2.Zero.cpy() : entity.getPos().cpy();
-                game.getEntityManager().addEntity(enemy, pos);
+                world.getEntityManager().addEntity(enemy, pos);
                 return Command.Result.SUCCESS;
             } else if (argCount == 3) {
                 float x = Float.parseFloat(args[1]) * Entity.COORDINATE_SCALE;
                 float y = Float.parseFloat(args[2]) * Entity.COORDINATE_SCALE;
-                game.getEntityManager().addEntity(enemy, new Vector2(x, y));
+                world.getEntityManager().addEntity(enemy, new Vector2(x, y));
                 return Command.Result.SUCCESS;
             } else if (argCount == 4) {
                 float x = Float.parseFloat(args[1]) * Entity.COORDINATE_SCALE;
                 float y = Float.parseFloat(args[2]) * Entity.COORDINATE_SCALE;
                 int count = Integer.parseInt(args[3]);
                 for (int i = 0; i < count; i++) {
-                    game.getEntityManager().addEntity(enemy, new Vector2(x, y));
+                    world.getEntityManager().addEntity(enemy, new Vector2(x, y));
                 }
                 return Command.Result.SUCCESS;
             } else if (argCount == 5) {
@@ -130,9 +130,9 @@ public final class Commands {
                 int y1 = Integer.parseInt(args[2]) * (int) Entity.COORDINATE_SCALE;
                 int x2 = Integer.parseInt(args[3]) * (int) Entity.COORDINATE_SCALE;
                 int y2 = Integer.parseInt(args[4]) * (int) Entity.COORDINATE_SCALE;
-                float x = x1 + game.getRandom().nextInt(Math.max(1, x2 - x1));
-                float y = y1 + game.getRandom().nextInt(Math.max(1, y2 - y1));
-                game.getEntityManager().addEntity(enemy, new Vector2(x, y));
+                float x = x1 + world.getRandom().nextInt(Math.max(1, x2 - x1));
+                float y = y1 + world.getRandom().nextInt(Math.max(1, y2 - y1));
+                world.getEntityManager().addEntity(enemy, new Vector2(x, y));
                 return Command.Result.SUCCESS;
             } else if (argCount == 6) {
                 int x1 = Integer.parseInt(args[1]) * (int) Entity.COORDINATE_SCALE;
@@ -148,15 +148,15 @@ public final class Commands {
                     y1 = y2;
                 }
 
-                game.getEntityManager().addEntities(enemy, new RandomBetweenVecProvider(new ConstantVecProvider(x1, y1), new ConstantVecProvider(x2, y2)), new HashMap<>(), count);
+                world.getEntityManager().addEntities(enemy, new RandomBetweenVecProvider(new ConstantVecProvider(x1, y1), new ConstantVecProvider(x2, y2)), new HashMap<>(), count);
 
                 return Command.Result.SUCCESS;
             }
             return Command.Result.FAIL;
         });
 
-        Command.register("give", 1, (game, id, args) -> {
-            CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id);
+        Command.register("give", 1, (world, id, args) -> {
+            CharacterEntity character = (CharacterEntity) world.getEntityManager().getEntity(EntityGroup.CHARACTER, id);
             if (character != null) {
                 Item item = DataManager.getItem(args[0]);
                 if (item == null)
@@ -171,17 +171,15 @@ public final class Commands {
             return Command.Result.FAIL;
         });
 
-        Command.register("setclass", 1, (game, id, args) -> {
+        Command.register("setclass", 1, (world, id, args) -> {
             CharacterClass characterClass = DataManager.getCharacterClass(args[0]);
             if (characterClass != null) {
-                CharacterEntity character = ((CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id));
+                CharacterEntity character = ((CharacterEntity) world.getEntityManager().getEntity(EntityGroup.CHARACTER, id));
                 if (character != null) {
                     character.setCharacterClass(characterClass);
 
-                    if (!game.isClient()) {
-                        game.getServer().sendToAllTCP(new EntityDisplayS2C(id, characterClass.id(), characterClass.scale()));
-                        game.getServer().sendToAllTCP(new LivingStatsUpdateS2C(id, character.getStats()));
-                    }
+                    world.getGame().getServer().sendToAllTCP(new EntityDisplayS2C(id, characterClass.id(), characterClass.scale()));
+                    world.getGame().getServer().sendToAllTCP(new LivingStatsUpdateS2C(id, character.getStats()));
 
                     return Command.Result.SUCCESS;
                 }
@@ -189,13 +187,13 @@ public final class Commands {
             return Command.Result.FAIL;
         });
 
-        Command.register("say", 1, (game, _, args) -> {
+        Command.register("say", 1, (world, _, args) -> {
             String message = args[0];
-            game.getServer().sendToAllTCP(new ChatMessageReceiveS2C(new Message(message)));
+            world.getGame().getServer().sendToAllTCP(new ChatMessageReceiveS2C(new Message(message)));
             return Command.Result.SUCCESS;
         });
 
-        Command.register("addeffect", 2, (game, id, args) -> {
+        Command.register("addeffect", 2, (world, id, args) -> {
             int argCount = args.length;
             if (argCount < 1)
                 return Command.Result.FAIL;
@@ -206,7 +204,7 @@ public final class Commands {
                 StatusEffect type = StatusEffects.ALL.get(effectType);
                 if (type == null)
                     return Command.Result.FAIL;
-                CharacterEntity character = ((CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id));
+                CharacterEntity character = ((CharacterEntity) world.getEntityManager().getEntity(EntityGroup.CHARACTER, id));
                 if (character != null) {
                     character.addStatusEffect(new StatusEffect.Instance(type, 1, 30));
                     return Command.Result.SUCCESS;
@@ -215,7 +213,7 @@ public final class Commands {
                 StatusEffect type = StatusEffects.ALL.get(effectType);
                 if (type == null)
                     return Command.Result.FAIL;
-                CharacterEntity character = ((CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id));
+                CharacterEntity character = ((CharacterEntity) world.getEntityManager().getEntity(EntityGroup.CHARACTER, id));
                 if (character != null) {
                     int amplifier = Integer.parseInt(args[1]);
                     int duration = Integer.parseInt(args[2]);
@@ -226,9 +224,9 @@ public final class Commands {
             return Command.Result.FAIL;
         });
 
-        Command.register("removeeffect", 1, (game, id, args) -> {
+        Command.register("removeeffect", 1, (world, id, args) -> {
             String effectType = args[0];
-            CharacterEntity character = ((CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id));
+            CharacterEntity character = ((CharacterEntity) world.getEntityManager().getEntity(EntityGroup.CHARACTER, id));
 
             if (character != null) {
                 if ("all".equals(effectType) || "*".equals(effectType)) {
@@ -246,11 +244,11 @@ public final class Commands {
             return Command.Result.FAIL;
         });
 
-        Command.register("damage", 1, (game, id, args) -> {
+        Command.register("damage", 1, (world, id, args) -> {
             try {
                 int damage = Integer.parseInt(args[0]);
                 if (damage > 0) {
-                    CharacterEntity character = ((CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id));
+                    CharacterEntity character = ((CharacterEntity) world.getEntityManager().getEntity(EntityGroup.CHARACTER, id));
                     if (character != null) {
                         character.damage(damage);
                         return Command.Result.SUCCESS;
@@ -262,11 +260,11 @@ public final class Commands {
             return Command.Result.FAIL;
         });
 
-        Command.register("heal", 1, (game, id, args) -> {
+        Command.register("heal", 1, (world, id, args) -> {
             try {
                 int health = Integer.parseInt(args[0]);
                 if (health > 0) {
-                    CharacterEntity character = ((CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id));
+                    CharacterEntity character = ((CharacterEntity) world.getEntityManager().getEntity(EntityGroup.CHARACTER, id));
                     if (character != null) {
                         character.heal(health);
                         return Command.Result.SUCCESS;
@@ -278,11 +276,11 @@ public final class Commands {
             return Command.Result.FAIL;
         });
 
-        Command.register("experience", 1, (game, id, args) -> {
+        Command.register("experience", 1, (world, id, args) -> {
             try {
                 int amount = Integer.parseInt(args[0]);
                 if (amount > 0) {
-                    CharacterEntity character = ((CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id));
+                    CharacterEntity character = ((CharacterEntity) world.getEntityManager().getEntity(EntityGroup.CHARACTER, id));
                     if (character != null) {
                         character.giveExperience(amount);
                         return Command.Result.SUCCESS;
@@ -294,8 +292,8 @@ public final class Commands {
             return Command.Result.FAIL;
         });
 
-        Command.register("levelup", 0, (game, id, args) -> {
-            CharacterEntity character = ((CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id));
+        Command.register("levelup", 0, (world, id, args) -> {
+            CharacterEntity character = ((CharacterEntity) world.getEntityManager().getEntity(EntityGroup.CHARACTER, id));
             if (character != null) {
                 character.levelUp(true);
                 return Command.Result.SUCCESS;
@@ -303,15 +301,14 @@ public final class Commands {
             return Command.Result.FAIL;
         });
 
-        Command.register("settile", 1, (game, id, args) -> {
+        Command.register("settile", 1, (world, id, args) -> {
             if (args.length == 1) {
-                CharacterEntity character = ((CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id));
+                CharacterEntity character = ((CharacterEntity) world.getEntityManager().getEntity(EntityGroup.CHARACTER, id));
                 if (character != null) {
                     int x = Math.round(character.getPos().x / Entity.COORDINATE_SCALE);
                     int y = Math.round(character.getPos().y / Entity.COORDINATE_SCALE);
                     String tile = args[0];
-                    System.out.println(x + "," + y);
-                    game.getWorlds().get("main").setGround(x, y, tile);
+                    world.setGround(x, y, tile);
                     return Command.Result.SUCCESS;
                 }
             } else if (args.length == 3) {
@@ -319,7 +316,7 @@ public final class Commands {
                     int x = Integer.parseInt(args[0]);
                     int y = Integer.parseInt(args[1]);
                     String tile = args[2];
-                    game.getWorlds().get("main").setGround(x, y, tile);
+                    world.setGround(x, y, tile);
                     return Command.Result.SUCCESS;
                 } catch (NumberFormatException e) {
                     return Command.Result.FAIL;
@@ -331,9 +328,9 @@ public final class Commands {
                     String tile = args[2];
                     String layer = args[3];
                     if (layer.equals("ground")) {
-                        game.getWorlds().get("main").setGround(x, y, tile);
+                        world.setGround(x, y, tile);
                     } else if (layer.equals("object")) {
-                        game.getWorlds().get("main").setObject(x, y, tile);
+                        world.setObject(x, y, tile);
                     }
                     return Command.Result.SUCCESS;
                 } catch (NumberFormatException e) {
@@ -346,7 +343,7 @@ public final class Commands {
                     int x2 = Integer.parseInt(args[2]);
                     int y2 = Integer.parseInt(args[3]);
                     String tile = args[4];
-                    game.getWorlds().get("main").setGroundArea(x1, y1, x2, y2, tile);
+                    world.setGroundArea(x1, y1, x2, y2, tile);
                     return Command.Result.SUCCESS;
                 } catch (NumberFormatException e) {
                     return Command.Result.FAIL;
@@ -360,9 +357,9 @@ public final class Commands {
                     String tile = args[4];
                     String layer = args[5];
                     if (layer.equals("ground")) {
-                        game.getWorlds().get("main").setGroundArea(x1, y1, x2, y2, tile);
+                        world.setGroundArea(x1, y1, x2, y2, tile);
                     } else if (layer.equals("object")) {
-                        game.getWorlds().get("main").setObjectArea(x1, y1, x2, y2, tile);
+                        world.setObjectArea(x1, y1, x2, y2, tile);
                     }return Command.Result.SUCCESS;
                 } catch (NumberFormatException e) {
                     return Command.Result.FAIL;

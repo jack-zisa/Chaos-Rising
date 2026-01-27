@@ -24,7 +24,7 @@ public class BulletEntityRenderer extends SimpleEntityRenderer<BulletEntityRende
             sprite.setPosition(entity.renderX, entity.renderY);
 
             sprite.setOriginCenter();
-            sprite.setRotation((MathUtils.atan2(entity.yv, entity.xv) * MathUtils.radiansToDegrees) + entity.angleOffset.get(new Provider.Context(renderer.getGame(), null, 0, new Vector2(entity.x, entity.y), renderer.getGame().getRandom())));
+            sprite.setRotation((MathUtils.atan2(entity.yv, entity.xv) * MathUtils.radiansToDegrees) + entity.angleOffset.get(new Provider.Context(renderer.getGame(), renderer.getGame().getWorld(), null, 0, new Vector2(entity.x, entity.y), renderer.getGame().getRandom())));
 
             sprite.draw(batch);
         }

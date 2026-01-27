@@ -3,7 +3,7 @@ package dev.creoii.chaos.item;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.DataManager;
-import dev.creoii.chaos.Game;
+import dev.creoii.chaos.World;
 import dev.creoii.chaos.inventory.Slot;
 
 import javax.annotation.Nullable;
@@ -57,9 +57,9 @@ public class ItemStack {
     /**
      * @return false to allow dragging, true to disable dragging
      */
-    public boolean clickInSlot(Game game, int id, Slot slot) {
+    public boolean clickInSlot(World world, int id, Slot slot) {
         if (item == null)
             return false;
-        return item.clickInSlot(game, id, slot, this);
+        return item.clickInSlot(world, id, slot, this);
     }
 }

@@ -1,7 +1,7 @@
 package dev.creoii.chaos.item;
 
 import com.mojang.serialization.Codec;
-import dev.creoii.chaos.Game;
+import dev.creoii.chaos.World;
 import dev.creoii.chaos.entity.*;
 import dev.creoii.chaos.inventory.Slot;
 import dev.creoii.chaos.item.tooltip.Tooltip;
@@ -60,7 +60,7 @@ public class Item implements Identifiable {
         return tooltip;
     }
 
-    public boolean clickInSlot(Game game, int characterId, Slot slot, ItemStack stack) {
+    public boolean clickInSlot(World world, int characterId, Slot slot, ItemStack stack) {
         return false;
     }
 

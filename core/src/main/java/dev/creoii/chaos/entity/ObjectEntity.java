@@ -2,7 +2,7 @@ package dev.creoii.chaos.entity;
 
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.DataManager;
-import dev.creoii.chaos.Game;
+import dev.creoii.chaos.World;
 import dev.creoii.chaos.entity.serialization.EnemyData;
 import dev.creoii.chaos.entity.serialization.EntityCustomData;
 import dev.creoii.chaos.loot.LootTable;
@@ -14,8 +14,8 @@ import javax.annotation.Nullable;
 import java.util.HashMap;
 
 public class ObjectEntity extends LivingEntity {
-    public ObjectEntity(Game game, EntityType<? extends ObjectEntity> type, int id, Vector2 pos) {
-        super(game, type, id, pos, ((ObjectEntityType) type).stats().copy(), ((ObjectEntityType) type).stats().copy());
+    public ObjectEntity(World world, EntityType<? extends ObjectEntity> type, int id, Vector2 pos) {
+        super(world, type, id, pos, ((ObjectEntityType) type).stats().copy(), ((ObjectEntityType) type).stats().copy());
     }
 
     @Nullable
@@ -29,23 +29,23 @@ public class ObjectEntity extends LivingEntity {
         if (!((ObjectEntityType) getType()).lootTableId().isEmpty()) {
             LootTable lootTable = DataManager.getLootTable(((ObjectEntityType) getType()).lootTableId());
             if (lootTable != null) {
-                int rolls = getGame().getRandom().nextInt(4);
+                int rolls = getWorld().getGame().getRandom().nextInt(4);
                 if (rolls > 0) {
                     LootDropEntityType lootDropType = DataManager.getLootDrop("bag");
                     if (lootDropType != null) {
-                        LootDropEntity lootDropEntity = lootDropType.create(getGame(), getGame().getEntityManager().getNextId(), getPos().cpy(), new HashMap<>());
-                        LootUtils.fillInventory(getGame(), lootDropEntity.getInventory(), lootTable, rolls);
+                        LootDropEntity lootDropEntity = lootDropType.create(getWorld(), getWorld().getEntityManager().getNextId(), getPos().cpy(), new HashMap<>());
+                        LootUtils.fillInventory(getWorld(), lootDropEntity.getInventory(), lootTable, rolls);
                         if (!lootDropEntity.getInventory().isEmpty()) {
-                            getGame().getEntityManager().addEntity(lootDropEntity);
+                            getWorld().getEntityManager().addEntity(lootDropEntity);
                         } else lootDropEntity.remove();
                     }
                 }
             }
         }
 
-        float experience = ((ObjectEntityType) getType()).experience().get(Provider.Context.of(this, getGame().getGametime()));
+        float experience = ((ObjectEntityType) getType()).experience().get(Provider.Context.of(this, getWorld().getGame().getGametime()));
         if (experience > 0f) {
-            getGame().getEntityManager().getEntities(EntityGroup.CHARACTER).forEach((id, o) -> {
+            getWorld().getEntityManager().getEntities(EntityGroup.CHARACTER).forEach((id, o) -> {
                 if (o instanceof CharacterEntity character) {
                     character.giveExperience(Math.round(experience));
                 }

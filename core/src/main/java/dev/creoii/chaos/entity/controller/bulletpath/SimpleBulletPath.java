@@ -27,12 +27,12 @@ public record SimpleBulletPath(NumberProvider speed, VecProvider offset, NumberP
 
     @Override
     public float speed(EntityController<? extends BulletEntity> controller) {
-        return speed.init(controller.getEntity().getGame().getGametime()).get(Provider.Context.of(controller.getEntity(), controller.getEntity().getGame().getGametime()));
+        return speed.init(controller.getEntity().getWorld().getGame().getGametime()).get(Provider.Context.of(controller.getEntity(), controller.getEntity().getWorld().getGame().getGametime()));
     }
 
     @Override
     public void update(EntityController<? extends BulletEntity> controller, int gametime, float dt) {
-        Provider.Context context = Provider.Context.of(controller.getEntity(), controller.getEntity().getGame().getGametime());
+        Provider.Context context = Provider.Context.of(controller.getEntity(), controller.getEntity().getWorld().getGame().getGametime());
         float speed = this.speed.init(gametime).get(context);
         if (speed == 0)
             return;

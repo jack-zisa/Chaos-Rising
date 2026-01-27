@@ -26,8 +26,8 @@ public class MessageAction extends Action {
 
     @Override
     public void start(EntityController<? extends EnemyEntity> controller) {
-        if (!controller.getEntity().getGame().isClient()) {
-            controller.getEntity().getGame().getServer().sendToAllTCP(new ChatMessageReceiveS2C(message));
+        if (!controller.getEntity().getWorld().getGame().isClient()) {
+            controller.getEntity().getWorld().getGame().getServer().sendToAllTCP(new ChatMessageReceiveS2C(message));
         }
     }
 

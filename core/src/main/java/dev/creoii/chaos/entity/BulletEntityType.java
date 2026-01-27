@@ -5,6 +5,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.Game;
+import dev.creoii.chaos.World;
 import dev.creoii.chaos.entity.controller.bulletpath.BulletPath;
 import dev.creoii.chaos.entity.controller.bulletpath.EmptyBulletPath;
 import dev.creoii.chaos.util.EntityGroup;
@@ -38,7 +39,7 @@ public record BulletEntityType(String id, float scale, int lifetime, NumberProvi
     }
 
     @Override
-    public BulletEntity create(Game game, int id, Vector2 pos, Map<String, Object> customData) {
-        return new BulletEntity(game, this, id, pos.cpy(), Vector2.Zero, lifetime, 0, 0);
+    public BulletEntity create(World world, int id, Vector2 pos, Map<String, Object> customData) {
+        return new BulletEntity(world, this, id, pos.cpy(), Vector2.Zero, lifetime, 0, 0);
     }
 }

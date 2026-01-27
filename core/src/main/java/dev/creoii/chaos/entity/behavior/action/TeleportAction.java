@@ -32,10 +32,10 @@ public class TeleportAction extends Action {
 
     @Override
     public void start(EntityController<? extends EnemyEntity> controller) {
-        Vector2 pos = this.pos.get(Provider.Context.of(controller.getEntity(), controller.getEntity().getGame().getGametime()));
+        Vector2 pos = this.pos.get(Provider.Context.of(controller.getEntity(), controller.getEntity().getWorld().getGame().getGametime()));
         controller.getEntity().setPos(pos.x, pos.y);
-        if (!controller.getEntity().getGame().isClient()) {
-            controller.getEntity().getGame().getServer().sendToAllTCP(new MoveEntityS2C(controller.getEntity().getId(), pos.x, pos.y, 0f, 0f));
+        if (!controller.getEntity().getWorld().getGame().isClient()) {
+            controller.getEntity().getWorld().getGame().getServer().sendToAllTCP(new MoveEntityS2C(controller.getEntity().getId(), pos.x, pos.y, 0f, 0f));
         }
     }
 

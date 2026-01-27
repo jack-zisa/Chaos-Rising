@@ -68,7 +68,7 @@ public class HudRenderer implements Renderable {
 
         SpawnEntityEvent.EVENT.register((_, entity) -> {
             if (entity == renderer.getGame().getCharacterId()) {
-                EntityRenderData entityData = renderer.getGame().getEntityManager().getEntityData(EntityGroup.CHARACTER, entity);
+                EntityRenderData entityData = renderer.getGame().getWorld().getEntityManager().getEntityData(EntityGroup.CHARACTER, entity);
                 if (entityData instanceof CharacterEntityRenderData characterEntityRenderData) {
                     int health = characterEntityRenderData.statContainer.health().value();
                     int maxHealth = characterEntityRenderData.maxStatContainer.health().value();
@@ -93,7 +93,7 @@ public class HudRenderer implements Renderable {
 
         DamageEntityEvent.EVENT.register((_, _, entity, _) -> {
             if (entity == renderer.getGame().getCharacterId()) {
-                EntityRenderData entityData = renderer.getGame().getEntityManager().getEntityData(EntityGroup.CHARACTER, entity);
+                EntityRenderData entityData = renderer.getGame().getWorld().getEntityManager().getEntityData(EntityGroup.CHARACTER, entity);
                 if (entityData instanceof CharacterEntityRenderData characterEntityRenderData) {
                     int health = characterEntityRenderData.statContainer.health().value();
                     int maxHealth = characterEntityRenderData.maxStatContainer.health().value();
@@ -121,7 +121,7 @@ public class HudRenderer implements Renderable {
 
         ChangeStatEvent.EVENT.register((_, entity, stat) -> {
             if (stat.type() == Stat.Type.HEALTH && entity == renderer.getGame().getCharacterId()) {
-                EntityRenderData entityData = renderer.getGame().getEntityManager().getEntityData(EntityGroup.CHARACTER, entity);
+                EntityRenderData entityData = renderer.getGame().getWorld().getEntityManager().getEntityData(EntityGroup.CHARACTER, entity);
                 if (entityData instanceof CharacterEntityRenderData characterEntityRenderData) {
                     int health = characterEntityRenderData.statContainer.health().value();
                     int maxHealth = characterEntityRenderData.maxStatContainer.health().value();
@@ -189,7 +189,7 @@ public class HudRenderer implements Renderable {
         CharacterEntityRenderData character = renderer.getGame().getCharacter();
         String posText = String.format("%.2f, %.2f", character.x / Entity.COORDINATE_SCALE, character.y / Entity.COORDINATE_SCALE);
         String statsText = character.statContainer.toDebugString(character.maxStatContainer);
-        EntityRenderManager entityRenderManager = renderer.getGame().getEntityManager();
+        EntityRenderManager entityRenderManager = renderer.getGame().getWorld().getEntityManager();
         String entitiesText = "E:" + entityRenderManager.getVisibleSize() + "/" + entityRenderManager.getSize();
         String levelText = "L:" + character.level + (character.level >= 40 ? "" : "|LE:" + character.experience + "/" + Math.pow((character.level + 1) / .1f, 2));
         return new String[]{Gdx.graphics.getFramesPerSecond() + " FPS", posText, statsText, entitiesText, levelText};

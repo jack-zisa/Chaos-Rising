@@ -39,7 +39,7 @@ public class EnemyController extends EntityController<EnemyEntity> {
         if (behavior == null)
             return;
         this.entity = entity;
-        time = entity.getGame().getGametime();
+        time = entity.getWorld().getGame().getGametime();
         behavior.start(this, entity);
     }
 

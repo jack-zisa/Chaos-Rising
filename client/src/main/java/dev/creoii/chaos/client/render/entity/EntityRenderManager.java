@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import dev.creoii.chaos.client.ClientGame;
 import dev.creoii.chaos.EntityManager;
+import dev.creoii.chaos.client.ClientWorld;
 import dev.creoii.chaos.client.render.entity.data.*;
 import dev.creoii.chaos.client.texture.TextureManager;
 import dev.creoii.chaos.entity.*;
@@ -27,8 +28,8 @@ public class EntityRenderManager extends EntityManager<EntityRenderData> impleme
     private final ObjectList<EntityRenderData> visibleEntities = new ObjectArrayList<>();
     private int visibleSize;
 
-    public EntityRenderManager(ClientGame game) {
-        super(game);
+    public EntityRenderManager(ClientWorld world) {
+        super(world);
         EntityRenderers.register(EntityRenderData.class, SimpleEntityRenderer::new);
         EntityRenderers.register(LivingEntityRenderData.class, SimpleEntityRenderer::new);
         EntityRenderers.register(BulletEntityRenderData.class, BulletEntityRenderer::new);
@@ -45,7 +46,7 @@ public class EntityRenderManager extends EntityManager<EntityRenderData> impleme
         setSize(getSize() + 1);
 
         EntityRenderers.getRenderer(entity).init(this, entity);
-        SpawnEntityEvent.EVENT.invoker().onSpawnEntity(getGame(), id);
+        SpawnEntityEvent.EVENT.invoker().onSpawnEntity(getWorld(), id);
     }
 
     @Nullable

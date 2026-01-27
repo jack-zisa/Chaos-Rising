@@ -1,7 +1,7 @@
 package dev.creoii.chaos.entity;
 
 import com.badlogic.gdx.math.Vector2;
-import dev.creoii.chaos.Game;
+import dev.creoii.chaos.World;
 import dev.creoii.chaos.entity.serialization.EntityCustomData;
 import dev.creoii.chaos.util.Tickable;
 import it.unimi.dsi.fastutil.ints.IntArraySet;
@@ -12,7 +12,7 @@ import java.util.*;
 
 public abstract class Entity implements Tickable {
     public static final float COORDINATE_SCALE = 32f;
-    private final Game game;
+    private final World world;
     private final EntityType<? extends Entity> type;
     private int id;
     private final Vector2 pos;
@@ -21,13 +21,13 @@ public abstract class Entity implements Tickable {
     private final Vector2 collider;
     private final IntSet collidingWith;
 
-    public Entity(Game game, EntityType<? extends Entity> type, int id, Vector2 pos) {
-        this.game = game;
+    public Entity(World world, EntityType<? extends Entity> type, int id, Vector2 pos) {
+        this.world = world;
         this.type = type;
         this.id = id;
         this.pos = pos.cpy();
         prevPos = pos.cpy();
-        spawnTime = game.getGametime();
+        spawnTime = world.getGame().getGametime();
         collider = new Vector2(type.scale() * .75f, type.scale() * .75f);
         collidingWith = new IntArraySet();
     }
@@ -40,8 +40,8 @@ public abstract class Entity implements Tickable {
         this.pos.set(pos);
     }
 
-    public Game getGame() {
-        return game;
+    public World getWorld() {
+        return world;
     }
 
     public EntityType<? extends Entity> getType() {
@@ -85,7 +85,7 @@ public abstract class Entity implements Tickable {
     }
 
     public void remove() {
-        game.getEntityManager().removeEntity(id);
+        world.getEntityManager().removeEntity(id);
     }
 
     public boolean collides(Entity other) {
@@ -108,12 +108,12 @@ public abstract class Entity implements Tickable {
 
     public void setCollidingWith(Entity entity) {
         if (collidingWith.add(entity.id))
-            collisionEnter((Entity) getGame().getEntityManager().getEntity(entity.getType().group(), entity.id));
+            collisionEnter((Entity) getWorld().getEntityManager().getEntity(entity.getType().group(), entity.id));
     }
 
     public void removeCollidingWith(Entity entity) {
         if (collidingWith.remove(entity.id))
-            collisionExit((Entity) getGame().getEntityManager().getEntity(entity.getType().group(), entity.id));
+            collisionExit((Entity) getWorld().getEntityManager().getEntity(entity.getType().group(), entity.id));
     }
 
     public void collisionEnter(Entity other) {

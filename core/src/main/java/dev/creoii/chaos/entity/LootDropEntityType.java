@@ -4,7 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dev.creoii.chaos.Game;
+import dev.creoii.chaos.World;
 import dev.creoii.chaos.inventory.Inventory;
 import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.provider.booleanprovider.BooleanProvider;
@@ -31,7 +31,7 @@ public record LootDropEntityType(String id, float scale, BooleanProvider removeE
     }
 
     @Override
-    public LootDropEntity create(Game game, int id, Vector2 pos, Map<String, Object> customData) {
-        return new LootDropEntity(game, this, id, pos, new Inventory(2, 4));
+    public LootDropEntity create(World world, int id, Vector2 pos, Map<String, Object> customData) {
+        return new LootDropEntity(world, this, id, pos, new Inventory(2, 4));
     }
 }

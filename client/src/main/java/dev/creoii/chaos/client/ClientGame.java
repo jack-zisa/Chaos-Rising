@@ -15,7 +15,6 @@ import dev.creoii.chaos.network.CreoSerialization;
 import dev.creoii.chaos.network.NetworkQueue;
 import dev.creoii.chaos.network.Networking;
 import dev.creoii.chaos.client.render.Renderer;
-import dev.creoii.chaos.client.render.entity.EntityRenderManager;
 import dev.creoii.chaos.client.render.entity.data.CharacterEntityRenderData;
 import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.logging.Logger;
@@ -34,7 +33,6 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
     protected NetworkQueue<Object> networkQueue;
     private Renderer renderer;
     private AssetManager assetManager;
-    private final EntityRenderManager entityManager;
     private final InputManager inputManager;
     private final ChatManager chatManager;
     private ClientWorld world;
@@ -45,7 +43,6 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
     public ClientGame() throws IOException {
         client = new Client(32768, 32768, new CreoSerialization());
         listener = new ClientListener(this);
-        entityManager = new EntityRenderManager(this);
         inputManager = new InputManager(this);
         chatManager = new ChatManager(this);
         characterId = -1;
@@ -102,10 +99,7 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
 
             if (attackCooldown > 0f) attackCooldown -= delta;
 
-            entityManager.update(delta);
-
-            world.getMapRenderer().setView(renderer.getCamera());
-            world.getMapRenderer().render();
+            world.render(delta, renderer, debug);
 
             renderer.render(delta, debug);
         }
@@ -167,11 +161,6 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
         return assetManager;
     }
 
-    @Override
-    public EntityRenderManager getEntityManager() {
-        return entityManager;
-    }
-
     public InputManager getInputManager() {
         return inputManager;
     }
@@ -189,7 +178,7 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
     }
 
     public CharacterEntityRenderData getCharacter() {
-        return (CharacterEntityRenderData) getEntityManager().getEntityData(EntityGroup.CHARACTER, characterId);
+        return (CharacterEntityRenderData) getWorld().getEntityManager().getEntityData(EntityGroup.CHARACTER, characterId);
     }
 
     public int getCharacterId() {

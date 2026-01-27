@@ -5,11 +5,17 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.utils.Disposable;
 
+import java.util.Random;
+
 public interface World extends Disposable {
     String LAYER_GROUND = "ground";
     String LAYER_OBJECT = "object";
 
     Game getGame();
+
+    Random getRandom();
+
+    EntityManager<?> getEntityManager();
 
     TiledMap getMap();
 

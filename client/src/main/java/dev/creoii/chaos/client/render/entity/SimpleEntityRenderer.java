@@ -20,7 +20,7 @@ public class SimpleEntityRenderer<T extends EntityRenderData> extends EntityRend
 
     @Override
     public void init(EntityRenderManager manager, T entity) {
-        entity.sprite = EntityRenderManager.getSprite((ClientGame) manager.getGame(), entity);
+        entity.sprite = EntityRenderManager.getSprite((ClientGame) manager.getWorld().getGame(), entity);
     }
 
     @Override

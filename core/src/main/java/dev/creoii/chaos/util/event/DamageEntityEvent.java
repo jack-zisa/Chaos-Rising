@@ -1,14 +1,14 @@
 package dev.creoii.chaos.util.event;
 
-import dev.creoii.chaos.Game;
+import dev.creoii.chaos.World;
 
 @FunctionalInterface
 public interface DamageEntityEvent {
-    Event<DamageEntityEvent> EVENT = Event.create(DamageEntityEvent.class, events -> (game, amount, entity, attacker) -> {
+    Event<DamageEntityEvent> EVENT = Event.create(DamageEntityEvent.class, events -> (world, amount, entity, attacker) -> {
         for (DamageEntityEvent event : events) {
-            event.onDamageEntity(game, amount, entity, attacker);
+            event.onDamageEntity(world, amount, entity, attacker);
         }
     });
 
-    void onDamageEntity(Game game, float amount, int entity, int attacker);
+    void onDamageEntity(World world, float amount, int entity, int attacker);
 }

@@ -5,7 +5,7 @@ import com.badlogic.gdx.Input;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dev.creoii.chaos.Game;
+import dev.creoii.chaos.World;
 import dev.creoii.chaos.effect.StatusEffect;
 import dev.creoii.chaos.entity.CharacterEntity;
 import dev.creoii.chaos.inventory.Slot;
@@ -43,17 +43,17 @@ public class ConsumableItem extends Item {
     }
 
     @Override
-    public boolean clickInSlot(Game game, int characterId, Slot slot, ItemStack stack) {
+    public boolean clickInSlot(World world, int characterId, Slot slot, ItemStack stack) {
         if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
-            consume(game, characterId, slot, stack);
+            consume(world, characterId, slot, stack);
             return true;
         }
-        return super.clickInSlot(game, characterId, slot, stack);
+        return super.clickInSlot(world, characterId, slot, stack);
     }
 
-    public void consume(Game game, int characterId, Slot slot, ItemStack stack) {
-        if (!game.isClient()) {
-            CharacterEntity character = (CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, characterId);
+    public void consume(World world, int characterId, Slot slot, ItemStack stack) {
+        if (!world.getGame().isClient()) {
+            CharacterEntity character = (CharacterEntity) world.getEntityManager().getEntity(EntityGroup.CHARACTER, characterId);
             if (getStatBonus() != null) {
                 StatContainer stats = character.getStats();
                 getStatBonus().forEach(modifierEntry -> {

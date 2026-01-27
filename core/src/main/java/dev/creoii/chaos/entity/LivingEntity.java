@@ -1,7 +1,7 @@
 package dev.creoii.chaos.entity;
 
 import com.badlogic.gdx.math.Vector2;
-import dev.creoii.chaos.Game;
+import dev.creoii.chaos.World;
 import dev.creoii.chaos.effect.StatusEffect;
 import dev.creoii.chaos.network.s2c.EntityDamageS2C;
 import dev.creoii.chaos.network.s2c.LivingStatUpdateS2C;
@@ -21,8 +21,8 @@ public abstract class LivingEntity extends Entity {
     private final IntList children;
     private int parentId;
 
-    public LivingEntity(Game game, EntityType<? extends LivingEntity> type, int id, Vector2 pos, StatContainer statContainer, StatContainer maxStatContainer) {
-        super(game, type, id, pos);
+    public LivingEntity(World world, EntityType<? extends LivingEntity> type, int id, Vector2 pos, StatContainer statContainer, StatContainer maxStatContainer) {
+        super(world, type, id, pos);
         this.statContainer = statContainer;
         this.maxStatContainer = maxStatContainer;
         statusEffects = new ArrayList<>();
@@ -74,12 +74,12 @@ public abstract class LivingEntity extends Entity {
         amount = Math.max(0, amount - statContainer.defense().value());
         statContainer.health().set(Math.max(0, statContainer.health().value() - amount));
 
-        DamageEntityEvent.EVENT.invoker().onDamageEntity(getGame(), amount, getId(), -1);
+        DamageEntityEvent.EVENT.invoker().onDamageEntity(getWorld(), amount, getId(), -1);
 
         if (statContainer.health().value() <= 0) {
             remove();
-        } else if (!getGame().isClient()) {
-            getGame().getServer().sendToAllTCP(new EntityDamageS2C(getId(), amount));
+        } else if (!getWorld().getGame().isClient()) {
+            getWorld().getGame().getServer().sendToAllTCP(new EntityDamageS2C(getId(), amount));
         }
     }
 
@@ -88,8 +88,8 @@ public abstract class LivingEntity extends Entity {
             return;
         statContainer.health().set(Math.min(maxStatContainer.health().value(), statContainer.health().value() + amount));
 
-        if (!getGame().isClient()) {
-            getGame().getServer().sendToAllTCP(new LivingStatUpdateS2C(getId(), statContainer.health(), false));
+        if (!getWorld().getGame().isClient()) {
+            getWorld().getGame().getServer().sendToAllTCP(new LivingStatUpdateS2C(getId(), statContainer.health(), false));
         }
     }
 
@@ -99,17 +99,17 @@ public abstract class LivingEntity extends Entity {
 
     public void addStatusEffect(StatusEffect.Instance instance) {
         statusEffects.add(instance);
-        getGame().getServer().sendToAllTCP(new StatusEffectS2C(getId(), instance, true));
+        getWorld().getGame().getServer().sendToAllTCP(new StatusEffectS2C(getId(), instance, true));
     }
 
     public void removeStatusEffect(StatusEffect.Instance instance) {
         statusEffects.remove(instance);
-        getGame().getServer().sendToAllTCP(new StatusEffectS2C(getId(), instance, false));
+        getWorld().getGame().getServer().sendToAllTCP(new StatusEffectS2C(getId(), instance, false));
     }
 
     public void clearStatusEffects() {
         statusEffects.forEach(instance -> {
-            getGame().getServer().sendToAllTCP(new StatusEffectS2C(getId(), instance, false));
+            getWorld().getGame().getServer().sendToAllTCP(new StatusEffectS2C(getId(), instance, false));
         });
         statusEffects.clear();
     }

@@ -27,12 +27,12 @@ public class CollisionManager {
     private static final Long2ObjectArrayMap<int[][]> DIRECTION_OFFSETS = createDirectionOffsets();
     private static final int[] COLLISION_MASKS = new int[EntityGroup.values().length];
     public static final int KEY_OFFSET = 32768;
-    private final ServerGame game;
+    private final ServerWorld world;
     private final Int2ObjectOpenHashMap<ObjectList<Entity>> grid;
     private final Int2ObjectOpenHashMap<ObjectSet<Integer>> collisions;
 
-    public CollisionManager(ServerGame game) {
-        this.game = game;
+    public CollisionManager(ServerWorld world) {
+        this.world = world;
         grid = new Int2ObjectOpenHashMap<>();
         collisions = new Int2ObjectOpenHashMap<>();
 
@@ -43,7 +43,7 @@ public class CollisionManager {
     }
 
     public void checkCollisions() {
-        if (game.getEntityManager().getSize() <= 1)
+        if (world.getEntityManager().getSize() <= 1)
             return;
 
         for (ObjectList<Entity> cellEntities : grid.values()) {
@@ -52,7 +52,7 @@ public class CollisionManager {
         grid.clear();
 
         List<Entity> toCollide = new ArrayList<>();
-        for (Int2ObjectOpenHashMap<Entity> entityMap : game.getEntityManager().getAllEntities().values()) {
+        for (Int2ObjectOpenHashMap<Entity> entityMap : world.getEntityManager().getAllEntities().values()) {
             toCollide.addAll(entityMap.values());
         }
 
@@ -128,7 +128,7 @@ public class CollisionManager {
             while (it.hasNext()) {
                 int id = it.next();
                 if (!currentlyColliding.contains(id)) {
-                    Entity b = game.getEntityManager().getEntity(id);
+                    Entity b = world.getEntityManager().getEntity(id);
                     if (b == null)
                         continue;
                     it.remove();

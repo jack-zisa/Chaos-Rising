@@ -4,7 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.DataManager;
-import dev.creoii.chaos.Game;
+import dev.creoii.chaos.World;
 import dev.creoii.chaos.item.Item;
 import dev.creoii.chaos.item.ItemStack;
 import dev.creoii.chaos.util.provider.Provider;
@@ -20,10 +20,10 @@ public record LootEntry(String item, int weight, NumberProvider count) {
         ).apply(instance, (item, weight, count) -> new LootEntry(item, weight, (NumberProvider) count.optimize()));
     });
 
-    public ItemStack roll(Game game) {
+    public ItemStack roll(World world) {
         Item item = DataManager.getItem(item());
         if (item == null)
             return ItemStack.EMPTY;
-        return new ItemStack(item, count.getInt(new Provider.Context(game, null, game.getGametime(), Vector2.Zero, game.getRandom())));
+        return new ItemStack(item, count.getInt(new Provider.Context(world.getGame(), world, null, world.getGame().getGametime(), Vector2.Zero, world.getRandom())));
     }
 }

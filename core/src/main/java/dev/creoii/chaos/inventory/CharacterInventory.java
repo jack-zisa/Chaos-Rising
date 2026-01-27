@@ -68,16 +68,16 @@ public class CharacterInventory extends Inventory {
     @Override
     public Slot addItem(ItemStack stack) {
         Slot slot = super.addItem(stack);
-        if (slot != null && !character.getGame().isClient())
-            character.getGame().getServer().sendToAllTCP(new InventoryUpdateS2C(character.getId(), InventoryType.MAIN, List.of(slot)));
+        if (slot != null && !character.getWorld().getGame().isClient())
+            character.getWorld().getGame().getServer().sendToAllTCP(new InventoryUpdateS2C(character.getId(), InventoryType.MAIN, List.of(slot)));
         return slot;
     }
 
     @Override
     public void updateSlot(SlotUpdateC2S.Action action, Inventory from, Inventory to, Slot fromSlot, Slot toSlot) {
         super.updateSlot(action, from, to, fromSlot, toSlot);
-        if (!character.getGame().isClient())
-            character.getGame().getServer().sendToAllTCP(new InventoryUpdateS2C(character.getId(), InventoryType.MAIN, List.of(fromSlot, toSlot)));
+        if (!character.getWorld().getGame().isClient())
+            character.getWorld().getGame().getServer().sendToAllTCP(new InventoryUpdateS2C(character.getId(), InventoryType.MAIN, List.of(fromSlot, toSlot)));
     }
 
     public Slot[] getHotbar() {

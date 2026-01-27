@@ -4,7 +4,7 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.DataManager;
-import dev.creoii.chaos.Game;
+import dev.creoii.chaos.World;
 import dev.creoii.chaos.item.ItemStack;
 import dev.creoii.chaos.util.Identifiable;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -51,12 +51,12 @@ public class LootTable implements Identifiable {
         entries.add(entry);
     }
 
-    public List<ItemStack> roll(Game game, int rolls) {
+    public List<ItemStack> roll(World world, int rolls) {
         List<ItemStack> stacks = new ArrayList<>();
         for (int i = 0; i < rolls; ++i) {
             LootEntry entry = getWeightedRandomEntry();
             if (entry != null) {
-                stacks.add(entry.roll(game));
+                stacks.add(entry.roll(world));
             }
         }
         return stacks;

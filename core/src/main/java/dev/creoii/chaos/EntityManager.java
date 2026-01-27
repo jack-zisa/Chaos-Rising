@@ -14,14 +14,14 @@ import java.util.*;
 // TODO: convert to abstract class
 public class EntityManager<T> {
     private static int NEXT_ID = 0;
-    private final Game game;
+    private final World world;
     private final Deque<Integer> freeIds;
     private final Object2ObjectArrayMap<EntityGroup, Int2ObjectOpenHashMap<T>> entities;
     private final Map<EntityGroup, Pool<Entity>> pools;
     private int size;
 
-    public EntityManager(Game game) {
-        this.game = game;
+    public EntityManager(World world) {
+        this.world = world;
         this.freeIds = new ArrayDeque<>();
         entities = new Object2ObjectArrayMap<>();
 
@@ -47,8 +47,8 @@ public class EntityManager<T> {
         return NEXT_ID++;
     }
 
-    public Game getGame() {
-        return game;
+    public World getWorld() {
+        return world;
     }
 
     public int getSize() {
@@ -69,7 +69,7 @@ public class EntityManager<T> {
         E spawned = (E) pool.obtain();
 
         if (spawned == null) {
-            spawned = type.create(game, getNextId(), pos, customData);
+            spawned = type.create(world, getNextId(), pos, customData);
         } else {
             spawned.reinit(getNextId(), pos, customData);
         }
@@ -128,8 +128,8 @@ public class EntityManager<T> {
             if (id != -1 && entry.getValue().containsKey(id)) {
                 Entity entity = (Entity) entry.getValue().remove(id);
                 if (entity != null) {
-                    if (!game.isClient())
-                        game.getServer().sendToAllTCP(new EntityRemoveS2C(id));
+                    if (!world.getGame().isClient())
+                        world.getGame().getServer().sendToAllTCP(new EntityRemoveS2C(id));
                     --size;
                     free(id);
                     pools.get(entity.getType().group()).free(entity);

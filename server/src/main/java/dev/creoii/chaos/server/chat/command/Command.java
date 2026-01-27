@@ -2,17 +2,18 @@ package dev.creoii.chaos.server.chat.command;
 
 import com.badlogic.gdx.graphics.Color;
 import dev.creoii.chaos.server.ServerGame;
+import dev.creoii.chaos.server.ServerWorld;
 import dev.creoii.chaos.util.function.TriFunction;
 
 import java.util.Arrays;
 import java.util.function.BiFunction;
 
-public record Command(TriFunction<ServerGame, Integer, String[], Result> executor, int minArgs) {
-    public Result execute(ServerGame game, int id, String[] args) {
-        return executor.apply(game, id, args);
+public record Command(TriFunction<ServerWorld, Integer, String[], Result> executor, int minArgs) {
+    public Result execute(ServerWorld world, int id, String[] args) {
+        return executor.apply(world, id, args);
     }
 
-    static void register(String id, int minArgs, TriFunction<ServerGame, Integer, String[], Result> executor) {
+    static void register(String id, int minArgs, TriFunction<ServerWorld, Integer, String[], Result> executor) {
         Commands.ALL.put(id, new Command(executor, minArgs));
     }
 

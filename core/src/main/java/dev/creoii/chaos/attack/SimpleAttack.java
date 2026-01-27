@@ -46,7 +46,7 @@ public record SimpleAttack(String bulletId, NumberProvider damage, int bulletCou
             return;
         }
 
-        Provider.Context context = Provider.Context.of(sourceEntity, sourceEntity.getGame().getGametime());
+        Provider.Context context = Provider.Context.of(sourceEntity, sourceEntity.getWorld().getGame().getGametime());
         Vector2 pos = source.isPresent() ? source.get().get(context) : sourcePos.get(context);
         Vector2 direction = target.isPresent() ? target.get().get(context).sub(pos).nor() : item == null ? ONE : targetPos.get(context).sub(pos).nor();
 
@@ -59,7 +59,7 @@ public record SimpleAttack(String bulletId, NumberProvider damage, int bulletCou
 
             BulletEntityType bulletType = DataManager.getBullet(bulletId);
             if (bulletType != null) {
-                BulletEntity bullet = bulletType.create(context.game(), context.game().getEntityManager().getNextId(), pos.cpy(), new HashMap<>());
+                BulletEntity bullet = bulletType.create(sourceEntity.getWorld(), sourceEntity.getWorld().getEntityManager().getNextId(), pos.cpy(), new HashMap<>());
                 bullet.setDamage(sourceEntity instanceof LivingEntity living ? Math.round(damage.getInt(context) * .5f + living.getStats().attack().value() / 50f) : 0);
                 bullet.setIndex(i % 2 == 0 ? 1 : -1);
                 bullet.setDirection(direction.cpy().rotateDeg(angle));
@@ -68,7 +68,7 @@ public record SimpleAttack(String bulletId, NumberProvider damage, int bulletCou
             }
         }
 
-        sourceEntity.getGame().getEntityManager().addEntities(bullets);
+        sourceEntity.getWorld().getEntityManager().addEntities(bullets);
 
         ((Attacker) sourceEntity).setLastAttackTime(System.currentTimeMillis());
     }

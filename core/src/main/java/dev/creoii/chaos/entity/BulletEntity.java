@@ -1,7 +1,7 @@
 package dev.creoii.chaos.entity;
 
 import com.badlogic.gdx.math.Vector2;
-import dev.creoii.chaos.Game;
+import dev.creoii.chaos.World;
 import dev.creoii.chaos.entity.controller.BulletController;
 import dev.creoii.chaos.entity.serialization.BulletData;
 import dev.creoii.chaos.entity.serialization.EntityCustomData;
@@ -18,14 +18,14 @@ public class BulletEntity extends Entity {
     private int index;
     private final BulletController controller;
 
-    public BulletEntity(Game game, EntityType<? extends BulletEntity> type, int id, Vector2 pos, Vector2 direction, int lifetime, int damage, int index) {
-        super(game, type, id, pos);
+    public BulletEntity(World world, EntityType<? extends BulletEntity> type, int id, Vector2 pos, Vector2 direction, int lifetime, int damage, int index) {
+        super(world, type, id, pos);
         this.direction = direction;
         this.lifetime = lifetime;
         this.damage = damage;
         this.index = index;
 
-        if (!game.isClient()) {
+        if (!world.getGame().isClient()) {
             controller = new BulletController(this);
         } else controller = null;
     }
@@ -100,7 +100,7 @@ public class BulletEntity extends Entity {
     public void collisionEnter(Entity other) {
         if (other instanceof LivingEntity living && parent != null && other.getType().group() != parent.getType().group()) {
             living.damage(damage);
-            if (!((BulletEntityType) getType()).piercing().get(Provider.Context.of(this, getGame().getGametime()))) {
+            if (!((BulletEntityType) getType()).piercing().get(Provider.Context.of(this, getWorld().getGame().getGametime()))) {
                 remove();
             }
         }

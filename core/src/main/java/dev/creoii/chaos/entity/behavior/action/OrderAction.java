@@ -36,11 +36,11 @@ public class OrderAction extends Action {
     @Override
     public void start(EntityController<? extends EnemyEntity> controller) {
         LivingEntity living = controller.getEntity();
-        EntityManager<?> entityManager = living.getGame().getEntityManager();
+        EntityManager<?> entityManager = living.getWorld().getEntityManager();
         living.getChildren().forEach(integer -> {
             LivingEntity entity = (LivingEntity) entityManager.getEntity(EntityGroup.ENEMY, integer);
             if (entity instanceof EnemyEntity enemy && enemy.getController().getBehavior() instanceof MultiBehavior multiBehavior) {
-                Provider.Context context = Provider.Context.of(enemy, enemy.getGame().getGametime());
+                Provider.Context context = Provider.Context.of(enemy, enemy.getWorld().getGame().getGametime());
                 Phase target = phase.get(context);
 
                 if (multiBehavior.getPhase(target.getId()) == null)
@@ -48,7 +48,7 @@ public class OrderAction extends Action {
 
                 multiBehavior.getCurrentPhase().end(controller);
                 multiBehavior.setCurrentPhase(target);
-                multiBehavior.getCurrentPhase().start(controller, living.getGame().getGametime());
+                multiBehavior.getCurrentPhase().start(controller, living.getWorld().getGame().getGametime());
             }
         });
     }

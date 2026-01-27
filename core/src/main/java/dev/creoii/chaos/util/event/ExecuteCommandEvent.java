@@ -1,14 +1,14 @@
 package dev.creoii.chaos.util.event;
 
-import dev.creoii.chaos.Game;
+import dev.creoii.chaos.World;
 
 @FunctionalInterface
 public interface ExecuteCommandEvent {
-    Event<ExecuteCommandEvent> EVENT = Event.create(ExecuteCommandEvent.class, events -> (game, entity, command, args) -> {
+    Event<ExecuteCommandEvent> EVENT = Event.create(ExecuteCommandEvent.class, events -> (world, entity, command, args) -> {
         for (ExecuteCommandEvent event : events) {
-            event.onExecuteCommand(game, entity, command, args);
+            event.onExecuteCommand(world, entity, command, args);
         }
     });
 
-    void onExecuteCommand(Game game, int entity, String command, String[] args);
+    void onExecuteCommand(World world, int entity, String command, String[] args);
 }

@@ -17,7 +17,7 @@ public class CharacterEntityRenderer extends EntityRenderer<CharacterEntityRende
 
     @Override
     public void init(EntityRenderManager manager, CharacterEntityRenderData entity) {
-        entity.sprite = EntityRenderManager.getSprite((ClientGame) manager.getGame(), entity);
+        entity.sprite = EntityRenderManager.getSprite((ClientGame) manager.getWorld().getGame(), entity);
     }
 
     @Override

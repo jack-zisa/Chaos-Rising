@@ -2,7 +2,7 @@ package dev.creoii.chaos.entity;
 
 import com.badlogic.gdx.math.Vector2;
 import com.mojang.serialization.Codec;
-import dev.creoii.chaos.Game;
+import dev.creoii.chaos.World;
 import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.Identifiable;
 
@@ -23,5 +23,5 @@ public interface EntityType<T extends Entity> extends Identifiable {
 
     EntityGroup group();
 
-    T create(Game game, int id, Vector2 pos, Map<String, Object> customData);
+    T create(World world, int id, Vector2 pos, Map<String, Object> customData);
 }

@@ -2,7 +2,6 @@ package dev.creoii.chaos.util.provider.entityprovider;
 
 import com.mojang.serialization.MapCodec;
 import dev.creoii.chaos.EntityManager;
-import dev.creoii.chaos.Game;
 import dev.creoii.chaos.entity.CharacterEntity;
 import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.util.EntityGroup;
@@ -22,8 +21,7 @@ public record NearestCharacterEntityProvider() implements EntityProvider {
     @Override
     @Nullable
     public Entity get(Context context) {
-        Game game = context.game();
-        EntityManager<?> entityManager = game.getEntityManager();
+        EntityManager<?> entityManager = context.world().getEntityManager();
         return entityManager.getEntities(EntityGroup.CHARACTER).values().stream()
             .map(o -> (CharacterEntity) o)
             .min(Comparator.comparingDouble(c -> context.entity().getPos().dst2(c.getPos())))

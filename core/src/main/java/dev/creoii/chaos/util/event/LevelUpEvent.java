@@ -1,14 +1,14 @@
 package dev.creoii.chaos.util.event;
 
-import dev.creoii.chaos.Game;
+import dev.creoii.chaos.World;
 
 @FunctionalInterface
 public interface LevelUpEvent {
-    Event<LevelUpEvent> EVENT = Event.create(LevelUpEvent.class, events -> (game, entity, level) -> {
+    Event<LevelUpEvent> EVENT = Event.create(LevelUpEvent.class, events -> (world, entity, level) -> {
         for (LevelUpEvent event : events) {
-            event.onLevelUp(game, entity, level);
+            event.onLevelUp(world, entity, level);
         }
     });
 
-    void onLevelUp(Game game, int entity, int level);
+    void onLevelUp(World world, int entity, int level);
 }
