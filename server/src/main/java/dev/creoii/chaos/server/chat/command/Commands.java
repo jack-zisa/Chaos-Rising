@@ -16,6 +16,7 @@ import dev.creoii.chaos.util.provider.vecprovider.ConstantVecProvider;
 import dev.creoii.chaos.util.provider.vecprovider.RandomBetweenVecProvider;
 import dev.creoii.chaos.util.stat.Stat;
 import dev.creoii.chaos.world.setpiece.Setpiece;
+import dev.creoii.chaos.world.tile.Tile;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -308,17 +309,21 @@ public final class Commands {
                 if (character != null) {
                     int x = Math.round(character.getPos().x / Entity.COORDINATE_SCALE);
                     int y = Math.round(character.getPos().y / Entity.COORDINATE_SCALE);
-                    String tile = args[0];
-                    world.setGround(x, y, tile);
-                    return Command.Result.SUCCESS;
+                    Tile tile = DataManager.getTile(args[0]);
+                    if (tile != null) {
+                        world.setGround(x, y, tile);
+                        return Command.Result.SUCCESS;
+                    }
                 }
             } else if (args.length == 3) {
                 try {
                     int x = Integer.parseInt(args[0]);
                     int y = Integer.parseInt(args[1]);
-                    String tile = args[2];
-                    world.setGround(x, y, tile);
-                    return Command.Result.SUCCESS;
+                    Tile tile = DataManager.getTile(args[2]);
+                    if (tile != null) {
+                        world.setGround(x, y, tile);
+                        return Command.Result.SUCCESS;
+                    }
                 } catch (NumberFormatException e) {
                     return Command.Result.FAIL;
                 }
@@ -326,14 +331,16 @@ public final class Commands {
                 try {
                     int x = Integer.parseInt(args[0]);
                     int y = Integer.parseInt(args[1]);
-                    String tile = args[2];
-                    String layer = args[3];
-                    if (layer.equals("ground")) {
-                        world.setGround(x, y, tile);
-                    } else if (layer.equals("object")) {
-                        world.setObject(x, y, tile);
+                    Tile tile = DataManager.getTile(args[2]);
+                    if (tile != null) {
+                        String layer = args[3];
+                        if (layer.equals("ground")) {
+                            world.setGround(x, y, tile);
+                        } else if (layer.equals("object")) {
+                            world.setObject(x, y, tile);
+                        }
+                        return Command.Result.SUCCESS;
                     }
-                    return Command.Result.SUCCESS;
                 } catch (NumberFormatException e) {
                     return Command.Result.FAIL;
                 }
@@ -343,9 +350,11 @@ public final class Commands {
                     int y1 = Integer.parseInt(args[1]);
                     int x2 = Integer.parseInt(args[2]);
                     int y2 = Integer.parseInt(args[3]);
-                    String tile = args[4];
-                    world.setGroundArea(x1, y1, x2, y2, tile);
-                    return Command.Result.SUCCESS;
+                    Tile tile = DataManager.getTile(args[4]);
+                    if (tile != null) {
+                        world.setGroundArea(x1, y1, x2, y2, tile);
+                        return Command.Result.SUCCESS;
+                    }
                 } catch (NumberFormatException e) {
                     return Command.Result.FAIL;
                 }
@@ -355,13 +364,16 @@ public final class Commands {
                     int y1 = Integer.parseInt(args[1]);
                     int x2 = Integer.parseInt(args[2]);
                     int y2 = Integer.parseInt(args[3]);
-                    String tile = args[4];
-                    String layer = args[5];
-                    if (layer.equals("ground")) {
-                        world.setGroundArea(x1, y1, x2, y2, tile);
-                    } else if (layer.equals("object")) {
-                        world.setObjectArea(x1, y1, x2, y2, tile);
-                    }return Command.Result.SUCCESS;
+                    Tile tile = DataManager.getTile(args[4]);
+                    if (tile != null) {
+                        String layer = args[5];
+                        if (layer.equals("ground")) {
+                            world.setGroundArea(x1, y1, x2, y2, tile);
+                        } else if (layer.equals("object")) {
+                            world.setObjectArea(x1, y1, x2, y2, tile);
+                        }
+                        return Command.Result.SUCCESS;
+                    }
                 } catch (NumberFormatException e) {
                     return Command.Result.FAIL;
                 }
@@ -374,18 +386,22 @@ public final class Commands {
                 CharacterEntity character = ((CharacterEntity) world.getEntityManager().getEntity(EntityGroup.CHARACTER, id));
                 if (character != null) {
                     Setpiece setpiece = DataManager.getSetpiece(args[0]);
-                    int x = Math.round(character.getPos().x / Entity.COORDINATE_SCALE);
-                    int y = Math.round(character.getPos().y / Entity.COORDINATE_SCALE);
-                    world.placeSetpiece(setpiece, x, y);
-                    return Command.Result.SUCCESS;
+                    if (setpiece != null) {
+                        int x = Math.round(character.getPos().x / Entity.COORDINATE_SCALE);
+                        int y = Math.round(character.getPos().y / Entity.COORDINATE_SCALE);
+                        world.placeSetpiece(setpiece, x, y);
+                        return Command.Result.SUCCESS;
+                    }
                 }
             } else if (args.length == 3) {
                 try {
                     Setpiece setpiece = DataManager.getSetpiece(args[0]);
-                    int x = Integer.parseInt(args[1]);
-                    int y = Integer.parseInt(args[2]);
-                    world.placeSetpiece(setpiece, x, y);
-                    return Command.Result.SUCCESS;
+                    if (setpiece != null) {
+                        int x = Integer.parseInt(args[1]);
+                        int y = Integer.parseInt(args[2]);
+                        world.placeSetpiece(setpiece, x, y);
+                        return Command.Result.SUCCESS;
+                    }
                 } catch (NumberFormatException e) {
                     return Command.Result.FAIL;
                 }

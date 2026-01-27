@@ -2,6 +2,7 @@ package dev.creoii.chaos.util.provider.tileprovider;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.chaos.world.tile.Tile;
 
 import java.util.List;
 
@@ -18,7 +19,7 @@ public record RandomTileProvider(List<TileProvider> values) implements TileProvi
     }
 
     @Override
-    public String get(Context context) {
+    public Tile get(Context context) {
         return values.get(context.random().nextInt(values.size())).get(context);
     }
 }

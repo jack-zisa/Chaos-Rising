@@ -6,6 +6,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.utils.Disposable;
 import dev.creoii.chaos.util.event.PlaceSetpieceEvent;
 import dev.creoii.chaos.world.setpiece.Setpiece;
+import dev.creoii.chaos.world.tile.Tile;
 
 import javax.annotation.Nullable;
 import java.util.Random;
@@ -34,9 +35,9 @@ public interface World extends Disposable {
         return getMap().getLayers().get(name);
     }
 
-    void setGround(int x, int y, String tile);
+    void setGround(int x, int y, Tile tile);
 
-    default void setGroundArea(int x1, int y1, int x2, int y2, String tile) {
+    default void setGroundArea(int x1, int y1, int x2, int y2, Tile tile) {
         for (int x = x1; x <= x2; ++x) {
             for (int y = y1; y <= y2; ++y) {
                 setGround(x, y, tile);
@@ -44,9 +45,9 @@ public interface World extends Disposable {
         }
     }
 
-    void setObject(int x, int y, String tile);
+    void setObject(int x, int y, Tile tile);
 
-    default void setObjectArea(int x1, int y1, int x2, int y2, String tile) {
+    default void setObjectArea(int x1, int y1, int x2, int y2, Tile tile) {
         for (int x = x1; x <= x2; ++x) {
             for (int y = y1; y <= y2; ++y) {
                 setObject(x, y, tile);

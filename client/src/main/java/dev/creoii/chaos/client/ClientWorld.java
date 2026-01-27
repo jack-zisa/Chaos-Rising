@@ -13,6 +13,7 @@ import dev.creoii.chaos.client.render.entity.EntityRenderManager;
 import dev.creoii.chaos.client.texture.TextureManager;
 import dev.creoii.chaos.network.NetworkQueue;
 import dev.creoii.chaos.world.setpiece.Setpiece;
+import dev.creoii.chaos.world.tile.Tile;
 
 import java.util.Random;
 
@@ -82,21 +83,21 @@ public class ClientWorld implements World {
     }
 
     @Override
-    public void setGround(int x, int y, String tile) {
+    public void setGround(int x, int y, Tile tile) {
         MapLayer mapLayer = getLayer(LAYER_GROUND);
         if (mapLayer instanceof TiledMapTileLayer tiledMapTileLayer) {
             TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
-            cell.setTile(new StaticTiledMapTile(new TextureRegion(game.getAssetManager().getTextureManager().getTexture(TextureManager.Atlas.ENVIRONMENT, tile))));
+            cell.setTile(new StaticTiledMapTile(new TextureRegion(game.getAssetManager().getTextureManager().getTexture(TextureManager.Atlas.ENVIRONMENT, tile.texture()))));
             tiledMapTileLayer.setCell(x, y, cell);
         }
     }
 
     @Override
-    public void setObject(int x, int y, String tile) {
+    public void setObject(int x, int y, Tile tile) {
         MapLayer mapLayer = getLayer(LAYER_OBJECT);
         if (mapLayer instanceof TiledMapTileLayer tiledMapTileLayer) {
             TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
-            cell.setTile(new StaticTiledMapTile(new TextureRegion(game.getAssetManager().getTextureManager().getTexture(TextureManager.Atlas.ENVIRONMENT, tile))));
+            cell.setTile(new StaticTiledMapTile(new TextureRegion(game.getAssetManager().getTextureManager().getTexture(TextureManager.Atlas.ENVIRONMENT, tile.texture()))));
             tiledMapTileLayer.setCell(x, y, cell);
         }
     }

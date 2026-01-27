@@ -3,15 +3,16 @@ package dev.creoii.chaos.util.provider.tileprovider;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import dev.creoii.chaos.util.provider.Provider;
+import dev.creoii.chaos.world.tile.Tile;
 
 import java.util.function.Function;
 
-public interface TileProvider extends Provider<String> {
+public interface TileProvider extends Provider<Tile> {
     Codec<TileProvider> TYPE_CODEC = Type.CODEC.dispatch(TileProvider::getType, type -> switch (type) {
         case SIMPLE -> SimpleTileProvider.CODEC;
         case RANDOM -> RandomTileProvider.CODEC;
     });
-    Codec<TileProvider> CODEC = Codec.either(Codec.STRING, TYPE_CODEC).xmap(either -> {
+    Codec<TileProvider> CODEC = Codec.either(Tile.ID_CODEC, TYPE_CODEC).xmap(either -> {
         return either.map(SimpleTileProvider::new, Function.identity());
     }, Either::right);
 

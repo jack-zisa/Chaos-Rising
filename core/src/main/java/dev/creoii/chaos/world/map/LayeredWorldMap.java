@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.chaos.DataManager;
 import dev.creoii.chaos.World;
 import dev.creoii.chaos.util.provider.Provider;
 import dev.creoii.chaos.util.provider.tileprovider.SimpleTileProvider;
@@ -17,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 public record LayeredWorldMap(String id, Palette palette, Map<String, Layer> layers) implements WorldMap {
-    public static final LayeredWorldMap DEFAULT = new LayeredWorldMap("default", new Palette(Map.of("G", new SimpleTileProvider("grass"))), buildDefaultLayers());
+    public static final LayeredWorldMap DEFAULT = new LayeredWorldMap("default", new Palette(Map.of("G", new SimpleTileProvider(DataManager.getTile("grass")))), buildDefaultLayers());
     public static final MapCodec<LayeredWorldMap> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
         Codec.STRING.fieldOf("id").forGetter(LayeredWorldMap::id),
         Palette.CODEC.fieldOf("palette").forGetter(LayeredWorldMap::palette),

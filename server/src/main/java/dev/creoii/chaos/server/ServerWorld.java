@@ -8,6 +8,7 @@ import dev.creoii.chaos.network.s2c.SetTileS2C;
 import dev.creoii.chaos.network.s2c.SetTilesS2C;
 import dev.creoii.chaos.world.map.WorldMap;
 import dev.creoii.chaos.world.setpiece.Setpiece;
+import dev.creoii.chaos.world.tile.Tile;
 
 import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -64,23 +65,23 @@ public class ServerWorld implements World {
     }
 
     @Override
-    public void setGround(int x, int y, String tile) {
-        game.getServer().sendToAllTCP(new SetTileS2C(LAYER_GROUND, x, y, tile));
+    public void setGround(int x, int y, Tile tile) {
+        game.getServer().sendToAllTCP(new SetTileS2C(LAYER_GROUND, x, y, tile.id()));
     }
 
     @Override
-    public void setGroundArea(int x1, int y1, int x2, int y2, String tile) {
-        game.getServer().sendToAllTCP(new SetTilesS2C(LAYER_GROUND, x1, y1, x2, y2, tile));
+    public void setGroundArea(int x1, int y1, int x2, int y2, Tile tile) {
+        game.getServer().sendToAllTCP(new SetTilesS2C(LAYER_GROUND, x1, y1, x2, y2, tile.id()));
     }
 
     @Override
-    public void setObject(int x, int y, String tile) {
-        game.getServer().sendToAllTCP(new SetTileS2C(LAYER_OBJECT, x, y, tile));
+    public void setObject(int x, int y, Tile tile) {
+        game.getServer().sendToAllTCP(new SetTileS2C(LAYER_OBJECT, x, y, tile.id()));
     }
 
     @Override
-    public void setObjectArea(int x1, int y1, int x2, int y2, String tile) {
-        game.getServer().sendToAllTCP(new SetTilesS2C(LAYER_OBJECT, x1, y1, x2, y2, tile));
+    public void setObjectArea(int x1, int y1, int x2, int y2, Tile tile) {
+        game.getServer().sendToAllTCP(new SetTilesS2C(LAYER_OBJECT, x1, y1, x2, y2, tile.id()));
     }
 
     @Override

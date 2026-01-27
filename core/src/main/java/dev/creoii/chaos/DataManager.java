@@ -12,6 +12,7 @@ import dev.creoii.chaos.util.Identifiable;
 import dev.creoii.chaos.util.logging.Logger;
 import dev.creoii.chaos.world.map.WorldMap;
 import dev.creoii.chaos.world.setpiece.Setpiece;
+import dev.creoii.chaos.world.tile.Tile;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 
 import javax.annotation.Nullable;
@@ -46,6 +47,10 @@ public class DataManager {
 
     public static Object2ObjectArrayMap<String, Identifiable> getLootTables() {
         return DATA.get(SchemaType.LOOT_TABLE);
+    }
+
+    public static Object2ObjectArrayMap<String, Identifiable> getTiles() {
+        return DATA.get(SchemaType.TILE);
     }
 
     public static Object2ObjectArrayMap<String, Identifiable> getSetpieces() {
@@ -89,6 +94,11 @@ public class DataManager {
     @Nullable
     public static LootTable getLootTable(String id) {
         return (LootTable) getLootTables().getOrDefault(id, null);
+    }
+
+    @Nullable
+    public static Tile getTile(String id) {
+        return (Tile) getTiles().getOrDefault(id, null);
     }
 
     @Nullable
@@ -157,6 +167,7 @@ public class DataManager {
         ITEM("item"),
         ENTITY_TYPE("entity_type"),
         LOOT_TABLE("loot_table"),
+        TILE("tile"),
         SETPIECE("worldgen/setpiece"),
         WORLD_MAP("worldgen/map");
 
@@ -176,6 +187,7 @@ public class DataManager {
         SCHEMA.put(SchemaType.ITEM, Item.CODEC);
         SCHEMA.put(SchemaType.ENTITY_TYPE, EntityType.CODEC);
         SCHEMA.put(SchemaType.LOOT_TABLE, LootTable.OBJECT_CODEC);
+        SCHEMA.put(SchemaType.TILE, Tile.VALUE_CODEC);
         SCHEMA.put(SchemaType.SETPIECE, Setpiece.DISPATCH_CODEC);
         SCHEMA.put(SchemaType.WORLD_MAP, WorldMap.DISPATCH_CODEC);
 

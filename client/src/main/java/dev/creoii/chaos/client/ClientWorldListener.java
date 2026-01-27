@@ -180,18 +180,18 @@ public class ClientWorldListener extends Listener {
             case SetTileS2C(String layer, int x, int y, String tile) -> {
                 if (world != null) {
                     if (Objects.equals(layer, ClientWorld.LAYER_GROUND)) {
-                        world.setGround(x, y, tile);
+                        world.setGround(x, y, DataManager.getTile(tile));
                     } else if (Objects.equals(layer, ClientWorld.LAYER_OBJECT)) {
-                        world.setObject(x, y, tile);
+                        world.setObject(x, y, DataManager.getTile(tile));
                     }
                 }
             }
             case SetTilesS2C(String layer, int x1, int y1, int x2, int y2, String tile) -> {
                 if (world != null) {
                     if (Objects.equals(layer, ClientWorld.LAYER_GROUND)) {
-                        world.setGroundArea(x1, y1, x2, y2, tile);
+                        world.setGroundArea(x1, y1, x2, y2, DataManager.getTile(tile));
                     } else if (Objects.equals(layer, ClientWorld.LAYER_OBJECT)) {
-                        world.setObjectArea(x1, y1, x2, y2, tile);
+                        world.setObjectArea(x1, y1, x2, y2, DataManager.getTile(tile));
                     }
                 }
             }

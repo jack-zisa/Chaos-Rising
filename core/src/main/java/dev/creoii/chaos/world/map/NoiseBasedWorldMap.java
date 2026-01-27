@@ -8,19 +8,17 @@ import dev.creoii.chaos.World;
 import dev.creoii.chaos.util.provider.Provider;
 import dev.creoii.chaos.util.provider.tileprovider.SimpleTileProvider;
 import dev.creoii.chaos.util.provider.tileprovider.TileProvider;
-import dev.creoii.chaos.world.Palette;
 import dev.creoii.chaos.world.noise.FastNoiseLite;
 import dev.creoii.chaos.world.noise.FastNoiseParameters;
+import dev.creoii.chaos.world.tile.Tile;
 
-import java.util.Comparator;
 import java.util.List;
 
-public record NoiseBasedWorldMap(String id, int width, int height, Palette palette, FastNoiseParameters noise, List<Entry> entries) implements WorldMap {
+public record NoiseBasedWorldMap(String id, int width, int height, FastNoiseParameters noise, List<Entry> entries) implements WorldMap {
     public static final MapCodec<NoiseBasedWorldMap> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
         Codec.STRING.fieldOf("id").forGetter(NoiseBasedWorldMap::id),
         Codec.INT.fieldOf("width").forGetter(NoiseBasedWorldMap::width),
         Codec.INT.fieldOf("height").forGetter(NoiseBasedWorldMap::height),
-        Palette.CODEC.fieldOf("palette").forGetter(NoiseBasedWorldMap::palette),
         FastNoiseParameters.CODEC.fieldOf("noise").forGetter(NoiseBasedWorldMap::noise),
         Entry.CODEC.listOf().fieldOf("entries").forGetter(NoiseBasedWorldMap::entries)
     ).apply(instance, NoiseBasedWorldMap::new));
@@ -51,10 +49,9 @@ public record NoiseBasedWorldMap(String id, int width, int height, Palette palet
 
                 for (Entry entry : entries) {
                     if (n <= entry.max()) {
-                        TileProvider tileProvider = palette.entries().getOrDefault(entry.tile, SimpleTileProvider.EMPTY);
+                        TileProvider tileProvider = entry.tile;
                         if (tileProvider != SimpleTileProvider.EMPTY) {
-                            String tile = tileProvider.get(new Provider.Context(world.getGame(), world, null, world.getGame().getGametime(), new Vector2(x, y), world.getRandom()));
-                            System.out.println(n + ": " + entry.toString() + ": " + tile);
+                            Tile tile = tileProvider.get(new Provider.Context(world.getGame(), world, null, world.getGame().getGametime(), new Vector2(x, y), world.getRandom()));
                             world.setGround(x, y, tile);
                             break;
                         }
@@ -64,10 +61,10 @@ public record NoiseBasedWorldMap(String id, int width, int height, Palette palet
         }
     }
 
-    record Entry(float max, String tile) {
+    record Entry(float max, TileProvider tile) {
         public static final Codec<Entry> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.FLOAT.fieldOf("max").forGetter(Entry::max),
-            Codec.STRING.fieldOf("tile").forGetter(Entry::tile)
+            TileProvider.CODEC.fieldOf("tile").forGetter(Entry::tile)
         ).apply(instance, Entry::new));
     }
 }
