@@ -1,0 +1,27 @@
+{
+  "type": "layered_area",
+  "id": "test",
+  "palette": {
+    "G": "grass",
+    "D": "dirt",
+    "ST": "stone",
+    "SA": "sand"
+  },
+  "layers": {
+    "ground": [
+      ["SA","SA","SA","SA","SA","SA","SA","SA","SA","SA","SA","SA","SA","SA","SA","SA","SA","SA","SA","SA"],
+      ["SA","SA","D","D","D","D","D","D","D","D","D","D","D","D","D","D","D","D","SA","SA"],
+      ["SA","D","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","D","SA"],
+      ["SA","D","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","D","SA"],
+      ["SA","D","G","G","G","G","ST","ST","ST","ST","ST","ST","ST","ST","G","G","G","G","D","SA"],
+      ["SA","D","G","G","G","G","ST","ST","ST","ST","ST","ST","ST","ST","G","G","G","G","D","SA"],
+      ["SA","D","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","D","SA"],
+      ["SA","D","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","D","SA"],
+      ["SA","SA","D","D","D","D","D","D","D","D","D","D","D","D","D","D","D","D","SA","SA"],
+      ["SA","SA","SA","SA","SA","SA","SA","SA","SA","SA","SA","SA","SA","SA","SA","SA","SA","SA","SA","SA"]
+    ],
+    "object": [
+      []
+    ]
+  }
+}

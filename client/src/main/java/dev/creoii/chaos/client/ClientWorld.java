@@ -12,11 +12,13 @@ import dev.creoii.chaos.client.render.WorldRenderer;
 import dev.creoii.chaos.client.render.entity.EntityRenderManager;
 import dev.creoii.chaos.client.texture.TextureManager;
 import dev.creoii.chaos.network.NetworkQueue;
+import dev.creoii.chaos.world.map.Setpiece;
 
 import java.util.Random;
 
 public class ClientWorld implements World {
-    private static final Random RANDOM = new Random();
+    private final long seed;
+    private final Random random;
     private final ClientGame game;
     private final WorldRenderer worldRenderer;
     private final ClientWorldListener listener;
@@ -25,9 +27,11 @@ public class ClientWorld implements World {
     private final OrthogonalTiledMapRenderer mapRenderer;
     private final EntityRenderManager entityManager;
 
-    public ClientWorld(ClientGame game, TiledMap map) {
+    public ClientWorld(ClientGame game, TiledMap map, long seed) {
         this.game = game;
         this.map = map;
+        this.seed = seed;
+        random = new Random(seed);
         entityManager = new EntityRenderManager(this);
         worldRenderer = new WorldRenderer(this);
         listener = new ClientWorldListener(this);
@@ -64,7 +68,12 @@ public class ClientWorld implements World {
 
     @Override
     public Random getRandom() {
-        return RANDOM;
+        return random;
+    }
+
+    @Override
+    public long getSeed() {
+        return seed;
     }
 
     @Override
@@ -90,6 +99,12 @@ public class ClientWorld implements World {
             cell.setTile(new StaticTiledMapTile(new TextureRegion(game.getAssetManager().getTextureManager().getTexture(TextureManager.Atlas.ENVIRONMENT, tile))));
             tiledMapTileLayer.setCell(x, y, cell);
         }
+    }
+
+    @Override
+    public void placeSetpiece(Setpiece setpiece, int x, int y) {
+        setpiece.place(this, x, y);
+        World.super.placeSetpiece(setpiece, x, y);
     }
 
     public void render(float delta, Renderer renderer, boolean debug) {

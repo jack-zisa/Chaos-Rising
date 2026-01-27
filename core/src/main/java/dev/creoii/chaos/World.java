@@ -4,7 +4,10 @@ import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.utils.Disposable;
+import dev.creoii.chaos.util.event.PlaceSetpieceEvent;
+import dev.creoii.chaos.world.map.Setpiece;
 
+import javax.annotation.Nullable;
 import java.util.Random;
 
 public interface World extends Disposable {
@@ -13,16 +16,20 @@ public interface World extends Disposable {
 
     Game getGame();
 
+    long getSeed();
+
     Random getRandom();
 
     EntityManager<?> getEntityManager();
 
     TiledMap getMap();
 
+    @Nullable
     default MapLayer getLayer(int index) {
         return getMap().getLayers().get(index);
     }
 
+    @Nullable
     default MapLayer getLayer(String name) {
         return getMap().getLayers().get(name);
     }
@@ -56,5 +63,9 @@ public interface World extends Disposable {
         map.getLayers().add(ground);
         map.getLayers().add(object);
         return map;
+    }
+
+    default void placeSetpiece(Setpiece setpiece, int x, int y) {
+        PlaceSetpieceEvent.EVENT.invoker().onSpawnEntity(this, setpiece, x, y);
     }
 }

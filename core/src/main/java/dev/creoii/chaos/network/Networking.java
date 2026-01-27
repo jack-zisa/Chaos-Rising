@@ -41,6 +41,7 @@ public class Networking {
         kryo.register(GainExperienceS2C.class, PacketSerializer.INSTANCE);
         kryo.register(SetTileS2C.class, PacketSerializer.INSTANCE);
         kryo.register(SetTilesS2C.class, PacketSerializer.INSTANCE);
+        kryo.register(PlaceSetpieceS2C.class, PacketSerializer.INSTANCE);
 
         registerCodecSchema();
     }
@@ -78,5 +79,6 @@ public class Networking {
         PacketSerializer.INSTANCE.register(GainExperienceS2C.class, GainExperienceS2C::write, GainExperienceS2C::read);
         PacketSerializer.INSTANCE.register(SetTileS2C.class, SetTileS2C::write, SetTileS2C::read);
         PacketSerializer.INSTANCE.register(SetTilesS2C.class, SetTilesS2C::write, SetTilesS2C::read);
+        PacketSerializer.INSTANCE.register(PlaceSetpieceS2C.class, PlaceSetpieceS2C::write, PlaceSetpieceS2C::read);
     }
 }

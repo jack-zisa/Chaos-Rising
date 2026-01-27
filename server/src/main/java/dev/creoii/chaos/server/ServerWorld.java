@@ -3,14 +3,17 @@ package dev.creoii.chaos.server;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import dev.creoii.chaos.World;
 import dev.creoii.chaos.network.NetworkQueue;
+import dev.creoii.chaos.network.s2c.PlaceSetpieceS2C;
 import dev.creoii.chaos.network.s2c.SetTileS2C;
 import dev.creoii.chaos.network.s2c.SetTilesS2C;
+import dev.creoii.chaos.world.map.Setpiece;
 
 import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ServerWorld implements World {
-    private static final Random RANDOM = new Random();
+    private final long seed;
+    private final Random random;
     private final ServerGame game;
     private final ServerWorldListener listener;
     protected NetworkQueue<NetworkQueue.QueuedPacket> networkQueue;
@@ -21,6 +24,8 @@ public class ServerWorld implements World {
     public ServerWorld(ServerGame game, TiledMap map) {
         this.game = game;
         this.map = map;
+        seed = game.getRandom().nextLong();
+        random = new Random(seed);
         networkQueue = new NetworkQueue<>(null, new ConcurrentLinkedQueue<>());
         entityManager = new ServerEntityManager(this);
         collisionManager = new CollisionManager(this);
@@ -39,8 +44,13 @@ public class ServerWorld implements World {
     }
 
     @Override
+    public long getSeed() {
+        return seed;
+    }
+
+    @Override
     public Random getRandom() {
-        return RANDOM;
+        return random;
     }
 
     @Override
@@ -70,6 +80,13 @@ public class ServerWorld implements World {
     @Override
     public void setObjectArea(int x1, int y1, int x2, int y2, String tile) {
         game.getServer().sendToAllTCP(new SetTilesS2C(LAYER_OBJECT, x1, y1, x2, y2, tile));
+    }
+
+    @Override
+    public void placeSetpiece(Setpiece setpiece, int x, int y) {
+        setpiece.place(this, x, y);
+        World.super.placeSetpiece(setpiece, x, y);
+        game.getServer().sendToAllTCP(new PlaceSetpieceS2C(setpiece.id(), x, y));
     }
 
     @Override

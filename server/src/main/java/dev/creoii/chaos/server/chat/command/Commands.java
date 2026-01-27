@@ -15,6 +15,7 @@ import dev.creoii.chaos.util.logging.Logger;
 import dev.creoii.chaos.util.provider.vecprovider.ConstantVecProvider;
 import dev.creoii.chaos.util.provider.vecprovider.RandomBetweenVecProvider;
 import dev.creoii.chaos.util.stat.Stat;
+import dev.creoii.chaos.world.map.Setpiece;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -361,6 +362,30 @@ public final class Commands {
                     } else if (layer.equals("object")) {
                         world.setObjectArea(x1, y1, x2, y2, tile);
                     }return Command.Result.SUCCESS;
+                } catch (NumberFormatException e) {
+                    return Command.Result.FAIL;
+                }
+            }
+            return Command.Result.FAIL;
+        });
+
+        Command.register("place", 1, (world, id, args) -> {
+            if (args.length == 1) {
+                CharacterEntity character = ((CharacterEntity) world.getEntityManager().getEntity(EntityGroup.CHARACTER, id));
+                if (character != null) {
+                    Setpiece setpiece = DataManager.getSetpiece(args[0]);
+                    int x = Math.round(character.getPos().x / Entity.COORDINATE_SCALE);
+                    int y = Math.round(character.getPos().y / Entity.COORDINATE_SCALE);
+                    world.placeSetpiece(setpiece, x, y);
+                    return Command.Result.SUCCESS;
+                }
+            } else if (args.length == 3) {
+                try {
+                    Setpiece setpiece = DataManager.getSetpiece(args[0]);
+                    int x = Integer.parseInt(args[1]);
+                    int y = Integer.parseInt(args[2]);
+                    world.placeSetpiece(setpiece, x, y);
+                    return Command.Result.SUCCESS;
                 } catch (NumberFormatException e) {
                     return Command.Result.FAIL;
                 }

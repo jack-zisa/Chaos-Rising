@@ -1,0 +1,13 @@
+{
+  "type": "random_walk",
+  "id": "test_walk",
+  "tile": {
+    "type": "random",
+    "values": [
+      "stone",
+      "sand",
+      "dirt"
+    ]
+  },
+  "steps": 1000
+}

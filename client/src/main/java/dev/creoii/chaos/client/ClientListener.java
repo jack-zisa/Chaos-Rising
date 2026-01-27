@@ -52,7 +52,7 @@ public class ClientListener extends Listener {
 
         switch (object) {
             case ChatMessageReceiveS2C(Message message) -> game.getChatManager().getMessages().add(message);
-            case CharacterJoinS2C(int id, float x, float y, float scale, EntityCustomData customData) -> {
+            case CharacterJoinS2C(int id, float x, float y, float scale, EntityCustomData customData, long seed) -> {
                 EntityGroup group = customData.getGroup();
                 if (group == EntityGroup.CHARACTER) {
                     CharacterData characterData = (CharacterData) customData;
@@ -70,7 +70,7 @@ public class ClientListener extends Listener {
                     game.setCharacterId(id);
                     game.getInputManager().addInput(new CharacterController());
 
-                    game.setWorld(new ClientWorld(game, World.createMapOfSize(100, 100)));
+                    game.setWorld(new ClientWorld(game, World.createMapOfSize(100, 100), seed));
                     game.getWorld().networkQueue = new NetworkQueue<>(connection);
                     game.getWorld().getEntityManager().addEntity(id, character);
 

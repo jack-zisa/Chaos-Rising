@@ -10,6 +10,7 @@ import dev.creoii.chaos.item.Item;
 import dev.creoii.chaos.loot.LootTable;
 import dev.creoii.chaos.util.Identifiable;
 import dev.creoii.chaos.util.logging.Logger;
+import dev.creoii.chaos.world.map.Setpiece;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 
 import javax.annotation.Nullable;
@@ -46,6 +47,10 @@ public class DataManager {
         return DATA.get(SchemaType.LOOT_TABLE);
     }
 
+    public static Object2ObjectArrayMap<String, Identifiable> getSetpieces() {
+        return DATA.get(SchemaType.SETPIECE);
+    }
+
     @Nullable
     public static CharacterClass getCharacterClass(String id) {
         return (CharacterClass) getClasses().getOrDefault(id, null);
@@ -79,6 +84,11 @@ public class DataManager {
     @Nullable
     public static LootTable getLootTable(String id) {
         return (LootTable) getLootTables().getOrDefault(id, null);
+    }
+
+    @Nullable
+    public static Setpiece getSetpiece(String id) {
+        return (Setpiece) getSetpieces().getOrDefault(id, null);
     }
 
     public static void load(Path path) {
@@ -136,7 +146,8 @@ public class DataManager {
         CLASS,
         ITEM,
         ENTITY_TYPE,
-        LOOT_TABLE
+        LOOT_TABLE,
+        SETPIECE
     }
 
     static {
@@ -144,6 +155,7 @@ public class DataManager {
         SCHEMA.put(SchemaType.ITEM, Item.CODEC);
         SCHEMA.put(SchemaType.ENTITY_TYPE, EntityType.CODEC);
         SCHEMA.put(SchemaType.LOOT_TABLE, LootTable.OBJECT_CODEC);
+        SCHEMA.put(SchemaType.SETPIECE, Setpiece.DISPATCH_CODEC);
 
         for (SchemaType schemaType : SCHEMA.keySet()) {
             DATA.put(schemaType, new Object2ObjectArrayMap<>());

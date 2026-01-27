@@ -21,6 +21,7 @@ import dev.creoii.chaos.util.provider.numberprovider.ConstantNumberProvider;
 import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
 import dev.creoii.chaos.util.stat.Stat;
 import dev.creoii.chaos.util.stat.StatContainer;
+import dev.creoii.chaos.world.map.Setpiece;
 
 import java.util.List;
 import java.util.Objects;
@@ -277,6 +278,11 @@ public class ClientWorldListener extends Listener {
                     livingEntityRenderData.statContainer = stats;
                     livingEntityRenderData.maxStatContainer = stats;
                 }
+            }
+            case PlaceSetpieceS2C(String setpiece, int x, int y) -> {
+                Setpiece setpiece1 = DataManager.getSetpiece(setpiece);
+                if (setpiece1 != null)
+                    world.placeSetpiece(setpiece1, x, y);
             }
 
         /*else if (object instanceof LootDropOpenS2C(UUID uuid)) {
