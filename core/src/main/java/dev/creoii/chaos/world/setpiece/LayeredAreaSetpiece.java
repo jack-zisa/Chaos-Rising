@@ -1,4 +1,4 @@
-package dev.creoii.chaos.world.map;
+package dev.creoii.chaos.world.setpiece;
 
 import com.badlogic.gdx.math.Vector2;
 import com.mojang.serialization.Codec;
@@ -8,6 +8,8 @@ import dev.creoii.chaos.World;
 import dev.creoii.chaos.util.provider.Provider;
 import dev.creoii.chaos.util.provider.tileprovider.SimpleTileProvider;
 import dev.creoii.chaos.util.provider.tileprovider.TileProvider;
+import dev.creoii.chaos.world.Layer;
+import dev.creoii.chaos.world.Palette;
 
 import java.util.List;
 import java.util.Map;
@@ -38,7 +40,7 @@ public record LayeredAreaSetpiece(String id, Palette palette, Map<String, Layer>
 
                         TileProvider tile = palette.entries().getOrDefault(id, SimpleTileProvider.EMPTY);
                         if (tile != SimpleTileProvider.EMPTY)
-                            world.setObject(ri + x, ci + y, tile.get(new Provider.Context(world.getGame(), world, null, world.getGame().getGametime(), new Vector2(ri + x, ci + y), world.getRandom())));
+                            world.setGround(ri + x, ci + y, tile.get(new Provider.Context(world.getGame(), world, null, world.getGame().getGametime(), new Vector2(ri + x, ci + y), world.getRandom())));
                     }
                 }
             } else if ("object".equals(s)) {
@@ -57,13 +59,5 @@ public record LayeredAreaSetpiece(String id, Palette palette, Map<String, Layer>
                 }
             }
         });
-    }
-
-    record Layer(List<List<String>> tiles) {
-        public static final Codec<Layer> CODEC = Codec.list(Codec.list(Codec.STRING)).xmap(Layer::new, Layer::tiles);
-    }
-
-    record Palette(Map<String, TileProvider> entries) {
-        public static final Codec<Palette> CODEC = Codec.unboundedMap(Codec.STRING, TileProvider.CODEC).xmap(Palette::new, Palette::entries);
     }
 }

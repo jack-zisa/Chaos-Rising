@@ -1,7 +1,7 @@
 package dev.creoii.chaos.util.event;
 
 import dev.creoii.chaos.World;
-import dev.creoii.chaos.world.map.Setpiece;
+import dev.creoii.chaos.world.setpiece.Setpiece;
 
 @FunctionalInterface
 public interface PlaceSetpieceEvent {

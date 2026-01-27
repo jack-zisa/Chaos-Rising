@@ -15,7 +15,7 @@ import dev.creoii.chaos.util.logging.Logger;
 import dev.creoii.chaos.util.provider.vecprovider.ConstantVecProvider;
 import dev.creoii.chaos.util.provider.vecprovider.RandomBetweenVecProvider;
 import dev.creoii.chaos.util.stat.Stat;
-import dev.creoii.chaos.world.map.Setpiece;
+import dev.creoii.chaos.world.setpiece.Setpiece;
 
 import javax.annotation.Nullable;
 import java.util.*;

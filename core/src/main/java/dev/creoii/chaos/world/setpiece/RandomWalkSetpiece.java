@@ -1,4 +1,4 @@
-package dev.creoii.chaos.world.map;
+package dev.creoii.chaos.world.setpiece;
 
 import com.badlogic.gdx.math.Vector2;
 import com.mojang.serialization.Codec;

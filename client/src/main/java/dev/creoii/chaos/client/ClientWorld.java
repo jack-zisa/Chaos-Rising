@@ -12,7 +12,7 @@ import dev.creoii.chaos.client.render.WorldRenderer;
 import dev.creoii.chaos.client.render.entity.EntityRenderManager;
 import dev.creoii.chaos.client.texture.TextureManager;
 import dev.creoii.chaos.network.NetworkQueue;
-import dev.creoii.chaos.world.map.Setpiece;
+import dev.creoii.chaos.world.setpiece.Setpiece;
 
 import java.util.Random;
 

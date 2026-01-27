@@ -6,7 +6,8 @@ import dev.creoii.chaos.network.NetworkQueue;
 import dev.creoii.chaos.network.s2c.PlaceSetpieceS2C;
 import dev.creoii.chaos.network.s2c.SetTileS2C;
 import dev.creoii.chaos.network.s2c.SetTilesS2C;
-import dev.creoii.chaos.world.map.Setpiece;
+import dev.creoii.chaos.world.map.WorldMap;
+import dev.creoii.chaos.world.setpiece.Setpiece;
 
 import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -101,5 +102,9 @@ public class ServerWorld implements World {
         while ((packet = networkQueue.queue().poll()) != null) {
             listener.handlePacket(packet.connection(), packet.packet());
         }
+    }
+
+    public void load(WorldMap map) {
+        map.place(this);
     }
 }

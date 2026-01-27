@@ -151,7 +151,7 @@ public class ServerWorldListener extends Listener {
         }
 
         else if (object instanceof RequestWorldLoadC2S()) {
-            world.setGroundArea(0, 0, 100, 100, "grass");
+            world.load(DataManager.getWorldMap("test_noise"));
         }
 
         else if (object instanceof CharacterLeaveC2S(int id)) {

@@ -5,7 +5,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.utils.Disposable;
 import dev.creoii.chaos.util.event.PlaceSetpieceEvent;
-import dev.creoii.chaos.world.map.Setpiece;
+import dev.creoii.chaos.world.setpiece.Setpiece;
 
 import javax.annotation.Nullable;
 import java.util.Random;

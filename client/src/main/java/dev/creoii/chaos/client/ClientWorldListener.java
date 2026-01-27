@@ -21,7 +21,7 @@ import dev.creoii.chaos.util.provider.numberprovider.ConstantNumberProvider;
 import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
 import dev.creoii.chaos.util.stat.Stat;
 import dev.creoii.chaos.util.stat.StatContainer;
-import dev.creoii.chaos.world.map.Setpiece;
+import dev.creoii.chaos.world.setpiece.Setpiece;
 
 import java.util.List;
 import java.util.Objects;

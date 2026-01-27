@@ -9,6 +9,8 @@ import dev.creoii.chaos.network.NetworkQueue;
 import dev.creoii.chaos.network.CreoSerialization;
 import dev.creoii.chaos.network.Networking;
 import dev.creoii.chaos.util.logging.Logger;
+import dev.creoii.chaos.world.map.LayeredWorldMap;
+import dev.creoii.chaos.world.map.WorldMap;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -44,7 +46,11 @@ public class ServerGame implements Game {
         tickManager = new TickManager();
 
         worlds = new HashMap<>();
-        worlds.put("main", new ServerWorld(this, World.createMapOfSize(100, 100)));
+
+        WorldMap worldMap = DataManager.getWorldMap("test");
+        if (worldMap == null)
+            worldMap = LayeredWorldMap.DEFAULT;
+        worlds.put("main", new ServerWorld(this, World.createMapOfSize(worldMap.getWidth(), worldMap.getHeight())));
 
         Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
         LOGGER.info("Active Threads:");

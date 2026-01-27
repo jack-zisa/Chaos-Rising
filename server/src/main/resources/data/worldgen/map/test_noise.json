@@ -1,0 +1,36 @@
+{
+  "type": "noise_based",
+  "id": "test_noise",
+  "width": 100,
+  "height": 100,
+  "palette": {
+    "G": "grass",
+    "D": "dirt",
+    "SA": "sand",
+    "ST": "stone"
+  },
+  "noise": {
+    "noise_type": "cellular",
+    "frequency": 0.03,
+    "octaves": 30,
+    "fractal": {
+      "type": "ridged",
+      "octaves": 3,
+      "gain": 0.5,
+      "lacunarity": 0.0,
+      "weighted_strength": 0.0,
+      "ping_pong_strength": 2.0
+    },
+    "cellular": {
+      "distance_function": "euclidean_sq",
+      "jitter_modifier": 1.0,
+      "return_type": "distance"
+    }
+  },
+  "entries": [
+    { "max": -0.75, "tile": "SA" },
+    { "max": -0.35, "tile": "D" },
+    { "max": 0.1, "tile": "G" },
+    { "max": 0.5, "tile": "ST" }
+  ]
+}

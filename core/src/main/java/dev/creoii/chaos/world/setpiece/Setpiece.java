@@ -1,9 +1,8 @@
-package dev.creoii.chaos.world.map;
+package dev.creoii.chaos.world.setpiece;
 
 import com.mojang.serialization.Codec;
 import dev.creoii.chaos.World;
 import dev.creoii.chaos.util.Identifiable;
-import dev.creoii.chaos.util.provider.booleanprovider.*;
 
 public interface Setpiece extends Identifiable {
     Codec<Setpiece> DISPATCH_CODEC = Type.CODEC.dispatch(

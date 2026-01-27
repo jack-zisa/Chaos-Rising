@@ -10,7 +10,8 @@ import dev.creoii.chaos.item.Item;
 import dev.creoii.chaos.loot.LootTable;
 import dev.creoii.chaos.util.Identifiable;
 import dev.creoii.chaos.util.logging.Logger;
-import dev.creoii.chaos.world.map.Setpiece;
+import dev.creoii.chaos.world.map.WorldMap;
+import dev.creoii.chaos.world.setpiece.Setpiece;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 
 import javax.annotation.Nullable;
@@ -49,6 +50,10 @@ public class DataManager {
 
     public static Object2ObjectArrayMap<String, Identifiable> getSetpieces() {
         return DATA.get(SchemaType.SETPIECE);
+    }
+
+    public static Object2ObjectArrayMap<String, Identifiable> getWorldMaps() {
+        return DATA.get(SchemaType.WORLD_MAP);
     }
 
     @Nullable
@@ -91,10 +96,15 @@ public class DataManager {
         return (Setpiece) getSetpieces().getOrDefault(id, null);
     }
 
+    @Nullable
+    public static WorldMap getWorldMap(String id) {
+        return (WorldMap) getWorldMaps().getOrDefault(id, null);
+    }
+
     public static void load(Path path) {
         try {
             for (Map.Entry<SchemaType, Codec<? extends Identifiable>> entry : SCHEMA.entrySet()) {
-                String folder = entry.getKey().name().toLowerCase();
+                String folder = entry.getKey().getPath();
                 Codec<?> codec = entry.getValue();
 
                 Path folderPath = path.resolve(folder);
@@ -143,11 +153,22 @@ public class DataManager {
     }
 
     public enum SchemaType {
-        CLASS,
-        ITEM,
-        ENTITY_TYPE,
-        LOOT_TABLE,
-        SETPIECE
+        CLASS("class"),
+        ITEM("item"),
+        ENTITY_TYPE("entity_type"),
+        LOOT_TABLE("loot_table"),
+        SETPIECE("worldgen/setpiece"),
+        WORLD_MAP("worldgen/map");
+
+        private final String path;
+
+        SchemaType(String path) {
+            this.path = path;
+        }
+
+        public String getPath() {
+            return path;
+        }
     }
 
     static {
@@ -156,6 +177,7 @@ public class DataManager {
         SCHEMA.put(SchemaType.ENTITY_TYPE, EntityType.CODEC);
         SCHEMA.put(SchemaType.LOOT_TABLE, LootTable.OBJECT_CODEC);
         SCHEMA.put(SchemaType.SETPIECE, Setpiece.DISPATCH_CODEC);
+        SCHEMA.put(SchemaType.WORLD_MAP, WorldMap.DISPATCH_CODEC);
 
         for (SchemaType schemaType : SCHEMA.keySet()) {
             DATA.put(schemaType, new Object2ObjectArrayMap<>());

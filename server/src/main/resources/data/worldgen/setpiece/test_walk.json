@@ -5,6 +5,7 @@
     "type": "random",
     "values": [
       "stone",
+      "grass",
       "sand",
       "dirt"
     ]
