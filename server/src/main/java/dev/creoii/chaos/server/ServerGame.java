@@ -11,6 +11,8 @@ import dev.creoii.chaos.network.Networking;
 import dev.creoii.chaos.util.logging.Logger;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -25,7 +27,7 @@ public class ServerGame implements Game {
     private final TickManager tickManager;
     private final CollisionManager collisionManager;
     private final ServerEntityManager entityManager;
-    private final ServerWorld world;
+    private final Map<String, World> worlds;
     private int gametime;
 
     public ServerGame(int tcpPort, int udpPort) throws IOException {
@@ -45,7 +47,8 @@ public class ServerGame implements Game {
         collisionManager = new CollisionManager(this);
         entityManager = new ServerEntityManager(this);
 
-        world = new ServerWorld(this, World.createMapOfSize(100, 100));
+        worlds = new HashMap<>();
+        worlds.put("main", new ServerWorld(this, World.createMapOfSize(100, 100)));
 
         Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
         LOGGER.info("Active Threads:");
@@ -113,9 +116,8 @@ public class ServerGame implements Game {
         return entityManager;
     }
 
-    @Override
-    public ServerWorld getWorld() {
-        return world;
+    public Map<String, World> getWorlds() {
+        return worlds;
     }
 
     @Override

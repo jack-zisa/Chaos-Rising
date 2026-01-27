@@ -9,7 +9,6 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Server;
 import dev.creoii.chaos.Game;
-import dev.creoii.chaos.World;
 import dev.creoii.chaos.client.chat.ChatManager;
 import dev.creoii.chaos.client.input.InputManager;
 import dev.creoii.chaos.network.CreoSerialization;
@@ -79,8 +78,6 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
         assetManager.load();
 
         Gdx.input.setInputProcessor(new InputMultiplexer(chatManager, inputManager, renderer.getStage()));
-
-        world = new ClientWorld(this, World.createMapOfSize(100, 100));
     }
 
     @Override
@@ -97,19 +94,21 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
             listener.handlePacket(networkQueue.connection(), packet);
         }
 
-        float delta = Gdx.graphics.getDeltaTime();
+        if (world != null) {
+            float delta = Gdx.graphics.getDeltaTime();
 
-        chatManager.update();
-        inputManager.update();
+            chatManager.update();
+            inputManager.update();
 
-        if (attackCooldown > 0f) attackCooldown -= delta;
+            if (attackCooldown > 0f) attackCooldown -= delta;
 
-        entityManager.update(delta);
+            entityManager.update(delta);
 
-        world.getMapRenderer().setView(renderer.getCamera());
-        world.getMapRenderer().render();
+            world.getMapRenderer().setView(renderer.getCamera());
+            world.getMapRenderer().render();
 
-        renderer.render(delta, debug);
+            renderer.render(delta, debug);
+        }
     }
 
     @Override
@@ -181,9 +180,12 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
         return chatManager;
     }
 
-    @Override
     public ClientWorld getWorld() {
         return world;
+    }
+
+    public void setWorld(ClientWorld world) {
+        this.world = world;
     }
 
     public CharacterEntityRenderData getCharacter() {

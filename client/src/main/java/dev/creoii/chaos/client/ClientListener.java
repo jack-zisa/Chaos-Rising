@@ -5,6 +5,7 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.FrameworkMessage;
 import com.esotericsoftware.kryonet.Listener;
 import dev.creoii.chaos.DataManager;
+import dev.creoii.chaos.World;
 import dev.creoii.chaos.chat.Message;
 import dev.creoii.chaos.client.render.entity.data.*;
 import dev.creoii.chaos.client.texture.TextureManager;
@@ -17,6 +18,7 @@ import dev.creoii.chaos.inventory.Slot;
 import dev.creoii.chaos.network.NetworkQueue;
 import dev.creoii.chaos.network.c2s.CharacterJoinC2S;
 import dev.creoii.chaos.network.c2s.CharacterLeaveC2S;
+import dev.creoii.chaos.network.c2s.RequestWorldLoadC2S;
 import dev.creoii.chaos.network.s2c.*;
 import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.event.ChangeStatEvent;
@@ -195,17 +197,21 @@ public class ClientListener extends Listener {
             case EntityRemoveS2C(int id) -> game.getEntityManager().removeEntity(id);
             case RemoveEntitiesS2C(List<Integer> ids) -> ids.forEach(integer -> game.getEntityManager().removeEntity(integer));
             case SetTileS2C(String layer, int x, int y, String tile) -> {
-                if (Objects.equals(layer, ClientWorld.LAYER_GROUND)) {
-                    game.getWorld().setGround(x, y, tile);
-                } else if (Objects.equals(layer, ClientWorld.LAYER_OBJECT)) {
-                    game.getWorld().setObject(x, y, tile);
+                if (game.getWorld() != null) {
+                    if (Objects.equals(layer, ClientWorld.LAYER_GROUND)) {
+                        game.getWorld().setGround(x, y, tile);
+                    } else if (Objects.equals(layer, ClientWorld.LAYER_OBJECT)) {
+                        game.getWorld().setObject(x, y, tile);
+                    }
                 }
             }
             case SetTilesS2C(String layer, int x1, int y1, int x2, int y2, String tile) -> {
-                if (Objects.equals(layer, ClientWorld.LAYER_GROUND)) {
-                    game.getWorld().setGroundArea(x1, y1, x2, y2, tile);
-                } else if (Objects.equals(layer, ClientWorld.LAYER_OBJECT)) {
-                    game.getWorld().setObjectArea(x1, y1, x2, y2, tile);
+                if (game.getWorld() != null) {
+                    if (Objects.equals(layer, ClientWorld.LAYER_GROUND)) {
+                        game.getWorld().setGroundArea(x1, y1, x2, y2, tile);
+                    } else if (Objects.equals(layer, ClientWorld.LAYER_OBJECT)) {
+                        game.getWorld().setObjectArea(x1, y1, x2, y2, tile);
+                    }
                 }
             }
             case GainExperienceS2C(int id, int experience, int level) -> {
@@ -318,6 +324,10 @@ public class ClientListener extends Listener {
                     game.setCharacterId(id);
                     game.getEntityManager().addEntity(id, character);
                     game.getInputManager().addInput(new CharacterController());
+
+                    game.setWorld(new ClientWorld(game, World.createMapOfSize(100, 100)));
+
+                    connection.sendTCP(new RequestWorldLoadC2S());
                 }
             }
             case SyncDataS2C(byte[] data) -> {

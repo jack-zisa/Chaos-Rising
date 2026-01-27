@@ -19,6 +19,7 @@ public class Networking {
         kryo.register(UseItemC2S.class, PacketSerializer.INSTANCE);
         kryo.register(AttackC2S.class, PacketSerializer.INSTANCE);
         kryo.register(ChatMessageSendC2S.class, PacketSerializer.INSTANCE);
+        kryo.register(RequestWorldLoadC2S.class, PacketSerializer.INSTANCE);
 
         kryo.register(EntityRemoveS2C.class, PacketSerializer.INSTANCE);
         kryo.register(RemoveEntitiesS2C.class, PacketSerializer.INSTANCE);
@@ -55,6 +56,7 @@ public class Networking {
         PacketSerializer.INSTANCE.register(UseItemC2S.class, UseItemC2S::write, UseItemC2S::read);
         PacketSerializer.INSTANCE.register(AttackC2S.class, AttackC2S::write, AttackC2S::read);
         PacketSerializer.INSTANCE.register(ChatMessageSendC2S.class, ChatMessageSendC2S::write, ChatMessageSendC2S::read);
+        PacketSerializer.INSTANCE.register(RequestWorldLoadC2S.class, RequestWorldLoadC2S::write, RequestWorldLoadC2S::read);
 
         PacketSerializer.INSTANCE.register(EntityRemoveS2C.class, EntityRemoveS2C::write, EntityRemoveS2C::read);
         PacketSerializer.INSTANCE.register(RemoveEntitiesS2C.class, RemoveEntitiesS2C::write, RemoveEntitiesS2C::read);

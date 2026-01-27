@@ -14,6 +14,4 @@ public interface Game {
     Random getRandom();
 
     Server getServer();
-
-    World getWorld();
 }

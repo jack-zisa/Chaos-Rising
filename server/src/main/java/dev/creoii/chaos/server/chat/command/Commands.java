@@ -295,14 +295,78 @@ public final class Commands {
         });
 
         Command.register("levelup", 0, (game, id, args) -> {
-            try {
+            CharacterEntity character = ((CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id));
+            if (character != null) {
+                character.levelUp(true);
+                return Command.Result.SUCCESS;
+            }
+            return Command.Result.FAIL;
+        });
+
+        Command.register("settile", 1, (game, id, args) -> {
+            if (args.length == 1) {
                 CharacterEntity character = ((CharacterEntity) game.getEntityManager().getEntity(EntityGroup.CHARACTER, id));
                 if (character != null) {
-                    character.levelUp(true);
+                    int x = Math.round(character.getPos().x / Entity.COORDINATE_SCALE);
+                    int y = Math.round(character.getPos().y / Entity.COORDINATE_SCALE);
+                    String tile = args[0];
+                    System.out.println(x + "," + y);
+                    game.getWorlds().get("main").setGround(x, y, tile);
                     return Command.Result.SUCCESS;
                 }
-            } catch (NumberFormatException e) {
-                return Command.Result.FAIL;
+            } else if (args.length == 3) {
+                try {
+                    int x = Integer.parseInt(args[0]);
+                    int y = Integer.parseInt(args[1]);
+                    String tile = args[2];
+                    game.getWorlds().get("main").setGround(x, y, tile);
+                    return Command.Result.SUCCESS;
+                } catch (NumberFormatException e) {
+                    return Command.Result.FAIL;
+                }
+            } else if (args.length == 4) {
+                try {
+                    int x = Integer.parseInt(args[0]);
+                    int y = Integer.parseInt(args[1]);
+                    String tile = args[2];
+                    String layer = args[3];
+                    if (layer.equals("ground")) {
+                        game.getWorlds().get("main").setGround(x, y, tile);
+                    } else if (layer.equals("object")) {
+                        game.getWorlds().get("main").setObject(x, y, tile);
+                    }
+                    return Command.Result.SUCCESS;
+                } catch (NumberFormatException e) {
+                    return Command.Result.FAIL;
+                }
+            } else if (args.length == 5) {
+                try {
+                    int x1 = Integer.parseInt(args[0]);
+                    int y1 = Integer.parseInt(args[1]);
+                    int x2 = Integer.parseInt(args[2]);
+                    int y2 = Integer.parseInt(args[3]);
+                    String tile = args[4];
+                    game.getWorlds().get("main").setGroundArea(x1, y1, x2, y2, tile);
+                    return Command.Result.SUCCESS;
+                } catch (NumberFormatException e) {
+                    return Command.Result.FAIL;
+                }
+            } else if (args.length == 6) {
+                try {
+                    int x1 = Integer.parseInt(args[0]);
+                    int y1 = Integer.parseInt(args[1]);
+                    int x2 = Integer.parseInt(args[2]);
+                    int y2 = Integer.parseInt(args[3]);
+                    String tile = args[4];
+                    String layer = args[5];
+                    if (layer.equals("ground")) {
+                        game.getWorlds().get("main").setGroundArea(x1, y1, x2, y2, tile);
+                    } else if (layer.equals("object")) {
+                        game.getWorlds().get("main").setObjectArea(x1, y1, x2, y2, tile);
+                    }return Command.Result.SUCCESS;
+                } catch (NumberFormatException e) {
+                    return Command.Result.FAIL;
+                }
             }
             return Command.Result.FAIL;
         });

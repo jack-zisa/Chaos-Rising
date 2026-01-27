@@ -77,9 +77,6 @@ public class ServerListener extends Listener {
             throw new RuntimeException(e);
         }
         game.getServer().sendToTCP(connection.getID(), new SyncDataS2C(baos.toByteArray()));
-
-        game.getWorld().setGroundArea(0, 0, 100, 100, "grass");
-        game.getWorld().setObjectArea(10, 10, 20, 20, "tree");
     }
 
     @Override
@@ -192,6 +189,11 @@ public class ServerListener extends Listener {
                     game.getServer().sendToTCP(connection.getID(), new SpawnEntitiesS2C(spawnEntries.subList(i, Math.min(i + 50, spawnEntries.size()))));
                 }
             }
+        }
+
+        else if (object instanceof RequestWorldLoadC2S()) {
+            game.getWorlds().get("main").setGroundArea(0, 0, 100, 100, "grass");
+            game.getWorlds().get("main").setObjectArea(10, 10, 20, 20, "tree");
         }
 
         else if (object instanceof CharacterLeaveC2S(int id)) {
