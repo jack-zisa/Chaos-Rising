@@ -4,6 +4,7 @@ import com.esotericsoftware.kryonet.Server;
 import com.esotericsoftware.minlog.Log;
 import dev.creoii.chaos.DataManager;
 import dev.creoii.chaos.Game;
+import dev.creoii.chaos.World;
 import dev.creoii.chaos.network.NetworkQueue;
 import dev.creoii.chaos.network.CreoSerialization;
 import dev.creoii.chaos.network.Networking;
@@ -24,6 +25,7 @@ public class ServerGame implements Game {
     private final TickManager tickManager;
     private final CollisionManager collisionManager;
     private final ServerEntityManager entityManager;
+    private final ServerWorld world;
     private int gametime;
 
     public ServerGame(int tcpPort, int udpPort) throws IOException {
@@ -42,6 +44,8 @@ public class ServerGame implements Game {
         tickManager = new TickManager();
         collisionManager = new CollisionManager(this);
         entityManager = new ServerEntityManager(this);
+
+        world = new ServerWorld(this, World.createMapOfSize(100, 100));
 
         Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
         LOGGER.info("Active Threads:");
@@ -107,6 +111,11 @@ public class ServerGame implements Game {
     @Override
     public ServerEntityManager getEntityManager() {
         return entityManager;
+    }
+
+    @Override
+    public ServerWorld getWorld() {
+        return world;
     }
 
     @Override

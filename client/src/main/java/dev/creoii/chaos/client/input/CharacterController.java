@@ -67,11 +67,20 @@ public record CharacterController() implements Inputtable {
     @Override
     public void touchHeld(InputManager manager, int screenX, int screenY, int pointer, int button) {
         ClientGame game = manager.getGame();
-        if (game.getChatManager().isActive() || game.getCharacter() == null)
+        if (game.getChatManager().isActive() || game.getCharacter() == null || game.getAttackCooldown() > 0)
             return;
 
         Slot weaponSlot = game.getCharacter().getWeaponSlot();
         if (weaponSlot.getStack().getItem() instanceof WeaponItem weaponItem) {
+            float attackSpeed = game.getCharacter().statContainer.attackSpeed().value();
+            if (attackSpeed <= 0f)
+                return;
+
+            float attacks = 1.5f + 6.5f * (attackSpeed / 75f);
+            attacks *= weaponItem.getRateOfFire();
+
+            game.setAttackCooldown(1f / attacks);
+
             Vector3 mousePos = game.getInputManager().getMousePos();
             game.getClient().sendTCP(new AttackC2S(game.getCharacter().id, weaponSlot, mousePos.x - (Entity.COORDINATE_SCALE / 2f), mousePos.y - (Entity.COORDINATE_SCALE / 2f)));
         }

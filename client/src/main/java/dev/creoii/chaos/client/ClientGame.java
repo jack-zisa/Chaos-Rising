@@ -9,6 +9,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Server;
 import dev.creoii.chaos.Game;
+import dev.creoii.chaos.World;
 import dev.creoii.chaos.client.chat.ChatManager;
 import dev.creoii.chaos.client.input.InputManager;
 import dev.creoii.chaos.network.CreoSerialization;
@@ -37,8 +38,10 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
     private final EntityRenderManager entityManager;
     private final InputManager inputManager;
     private final ChatManager chatManager;
+    private ClientWorld world;
     private int characterId;
     private boolean debug;
+    private float attackCooldown = 0f;
 
     public ClientGame() throws IOException {
         client = new Client(32768, 32768, new CreoSerialization());
@@ -76,6 +79,8 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
         assetManager.load();
 
         Gdx.input.setInputProcessor(new InputMultiplexer(chatManager, inputManager, renderer.getStage()));
+
+        world = new ClientWorld(this, World.createMapOfSize(100, 100));
     }
 
     @Override
@@ -96,7 +101,13 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
 
         chatManager.update();
         inputManager.update();
+
+        if (attackCooldown > 0f) attackCooldown -= delta;
+
         entityManager.update(delta);
+
+        world.getMapRenderer().setView(renderer.getCamera());
+        world.getMapRenderer().render();
 
         renderer.render(delta, debug);
     }
@@ -133,6 +144,7 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
 
         renderer.dispose();
         assetManager.dispose();
+        world.dispose();
     }
 
     public Client getClient() {
@@ -169,6 +181,11 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
         return chatManager;
     }
 
+    @Override
+    public ClientWorld getWorld() {
+        return world;
+    }
+
     public CharacterEntityRenderData getCharacter() {
         return (CharacterEntityRenderData) getEntityManager().getEntityData(EntityGroup.CHARACTER, characterId);
     }
@@ -198,5 +215,13 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
     public Server getServer() {
         LOGGER.error("Attempted to access server on client.");
         return null;
+    }
+
+    public float getAttackCooldown() {
+        return attackCooldown;
+    }
+
+    public void setAttackCooldown(float attackCooldown) {
+        this.attackCooldown = attackCooldown;
     }
 }

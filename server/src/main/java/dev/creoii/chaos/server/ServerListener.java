@@ -77,6 +77,9 @@ public class ServerListener extends Listener {
             throw new RuntimeException(e);
         }
         game.getServer().sendToTCP(connection.getID(), new SyncDataS2C(baos.toByteArray()));
+
+        game.getWorld().setGroundArea(0, 0, 100, 100, "grass");
+        game.getWorld().setObjectArea(10, 10, 20, 20, "tree");
     }
 
     @Override
@@ -101,7 +104,7 @@ public class ServerListener extends Listener {
             if (character != null) {
                 ItemStack stack = slot.getStack();
                 if (stack.getItem() instanceof WeaponItem weaponItem) {
-                    weaponItem.getAttack().attack(new ConstantVecProvider(mouseX, mouseY), new SourceVecProvider(), character, weaponItem);
+                    weaponItem.getAttack().attack(new ConstantVecProvider(mouseX, mouseY), SourceVecProvider.INSTANCE, character, weaponItem);
                 }
             }
         }
@@ -111,7 +114,7 @@ public class ServerListener extends Listener {
             if (character != null) {
                 ItemStack stack = slot.getStack();
                 if (stack.getItem() instanceof AbilityItem abilityItem) {
-                    abilityItem.getAttack().attack(ConstantVecProvider.ZERO, new SourceVecProvider(), character, abilityItem);
+                    abilityItem.getAttack().attack(ConstantVecProvider.ZERO, SourceVecProvider.INSTANCE, character, abilityItem);
                 }
             }
         }

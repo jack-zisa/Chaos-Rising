@@ -28,7 +28,7 @@ public record SimpleAttack(String bulletId, NumberProvider damage, int bulletCou
             Codec.INT.fieldOf("arc_gap").orElse(0).forGetter(SimpleAttack::arcGap),
             Codec.FLOAT.fieldOf("predictability").orElse(0f).forGetter(SimpleAttack::predictability),
             NumberProvider.CODEC.fieldOf("angle_offset").orElse(ConstantNumberProvider.ZERO).forGetter(SimpleAttack::angleOffset),
-            VecProvider.CODEC.optionalFieldOf("source").orElse(Optional.of(new SourceVecProvider())).forGetter(SimpleAttack::source),
+            VecProvider.CODEC.optionalFieldOf("source").orElse(Optional.of(SourceVecProvider.INSTANCE)).forGetter(SimpleAttack::source),
             VecProvider.CODEC.optionalFieldOf("target").orElse(Optional.of(ConstantVecProvider.ZERO)).forGetter(SimpleAttack::target)
         ).apply(instance, (bulletId, damage, bulletCount, arcGap, predictability, angleOffset, source, target) -> {
             return new SimpleAttack(bulletId, (NumberProvider) damage.optimize(), bulletCount, arcGap, predictability, (NumberProvider) angleOffset.optimize(), source, target);

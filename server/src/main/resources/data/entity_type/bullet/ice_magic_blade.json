@@ -1,0 +1,11 @@
+{
+  "id": "ice_magic_blade",
+  "type": "bullet",
+  "lifetime": 25,
+  "path": {
+    "type": "simple",
+    "speed": 40
+  },
+  "scale": 1.0,
+  "angle_offset": -45
+}

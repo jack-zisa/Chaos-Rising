@@ -3,7 +3,7 @@
   "texture": "wizard",
   "base_stats": {
     "health": 100,
-    "speed": 25,
+    "speed": 5,
     "attack_speed": 8
   },
   "max_stats": {

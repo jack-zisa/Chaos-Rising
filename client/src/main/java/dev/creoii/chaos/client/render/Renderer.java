@@ -106,7 +106,7 @@ public class Renderer implements Disposable {
         return game;
     }
 
-    public Camera getCamera() {
+    public OrthographicCamera getCamera() {
         return camera;
     }
 

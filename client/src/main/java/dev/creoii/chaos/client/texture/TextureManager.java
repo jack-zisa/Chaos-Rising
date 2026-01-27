@@ -87,7 +87,8 @@ public class TextureManager implements Disposable {
         ITEM,
         LOOT_DROP,
         EFFECT,
-        UI;
+        UI,
+        ENVIRONMENT;
 
         public static Atlas fromEntityGroup(EntityGroup group) {
             return switch (group) {

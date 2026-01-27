@@ -32,6 +32,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -193,6 +194,20 @@ public class ClientListener extends Listener {
             case ChatMessageReceiveS2C(Message message) -> game.getChatManager().getMessages().add(message);
             case EntityRemoveS2C(int id) -> game.getEntityManager().removeEntity(id);
             case RemoveEntitiesS2C(List<Integer> ids) -> ids.forEach(integer -> game.getEntityManager().removeEntity(integer));
+            case SetTileS2C(String layer, int x, int y, String tile) -> {
+                if (Objects.equals(layer, ClientWorld.LAYER_GROUND)) {
+                    game.getWorld().setGround(x, y, tile);
+                } else if (Objects.equals(layer, ClientWorld.LAYER_OBJECT)) {
+                    game.getWorld().setObject(x, y, tile);
+                }
+            }
+            case SetTilesS2C(String layer, int x1, int y1, int x2, int y2, String tile) -> {
+                if (Objects.equals(layer, ClientWorld.LAYER_GROUND)) {
+                    game.getWorld().setGroundArea(x1, y1, x2, y2, tile);
+                } else if (Objects.equals(layer, ClientWorld.LAYER_OBJECT)) {
+                    game.getWorld().setObjectArea(x1, y1, x2, y2, tile);
+                }
+            }
             case GainExperienceS2C(int id, int experience, int level) -> {
                 EntityRenderData entityRenderData = game.getEntityManager().getEntityData(id);
                 if (entityRenderData instanceof CharacterEntityRenderData characterEntityRenderData) {
