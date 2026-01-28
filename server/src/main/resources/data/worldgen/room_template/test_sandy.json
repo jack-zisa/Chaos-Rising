@@ -1,0 +1,18 @@
+{
+  "id": "test_sandy",
+  "type": "simple",
+  "width": {
+    "type": "random",
+    "min": 8,
+    "max": 16
+  },
+  "height": {
+    "type": "random",
+    "min": 8,
+    "max": 16
+  },
+  "floor_provider": "sand",
+  "wall_provider": "stone",
+  "hallway_provider": "sand",
+  "max_connections": 1
+}

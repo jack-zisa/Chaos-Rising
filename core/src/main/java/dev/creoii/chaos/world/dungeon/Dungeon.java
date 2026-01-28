@@ -4,14 +4,14 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.util.Identifiable;
 import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
-import dev.creoii.chaos.world.dungeon.room.RoomTemplate;
+import dev.creoii.chaos.util.provider.roomprovider.RoomProvider;
 
-public record Dungeon(String id, NumberProvider maxDepth, RoomTemplate fallback) implements Identifiable {
+public record Dungeon(String id, NumberProvider maxDepth, RoomProvider fallback) implements Identifiable {
     public static final Codec<Dungeon> CODEC = RecordCodecBuilder.create(instance -> {
         return instance.group(
             Codec.STRING.fieldOf("id").forGetter(Dungeon::id),
             NumberProvider.CODEC.fieldOf("max_depth").forGetter(Dungeon::maxDepth),
-            RoomTemplate.ID_CODEC.fieldOf("fallback").forGetter(Dungeon::fallback)
+            RoomProvider.CODEC.fieldOf("fallback").forGetter(Dungeon::fallback)
         ).apply(instance, Dungeon::new);
     });
 }

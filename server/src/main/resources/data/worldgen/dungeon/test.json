@@ -1,5 +1,11 @@
 {
   "id": "test",
   "max_depth": 50,
-  "fallback": "test_room"
+  "fallback": {
+    "type": "random",
+    "values": [
+      "test_room",
+      "test_sandy"
+    ]
+  }
 }

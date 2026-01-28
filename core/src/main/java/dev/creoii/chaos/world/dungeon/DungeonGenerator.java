@@ -61,7 +61,7 @@ public class DungeonGenerator {
     }
 
     private void beginGenerate(World world) {
-        RoomGenerator generator = new RoomGenerator(dungeon.fallback(), x, y, null);
+        RoomGenerator generator = new RoomGenerator(dungeon.fallback().get(new Provider.Context(world.getGame(), world, null, world.getGame().getGametime(), new Vector2(x, y), world.getRandom())), x, y, null);
 
         PendingRoom pendingRoom = generator.build(world, this);
 
@@ -89,7 +89,7 @@ public class DungeonGenerator {
             return;
         }
 
-        RoomGenerator generator = new RoomGenerator(dungeon.fallback(), parentConnection.x(), parentConnection.y(), parentConnection.direction());
+        RoomGenerator generator = new RoomGenerator(dungeon.fallback().get(new Provider.Context(world.getGame(), world, null, world.getGame().getGametime(), new Vector2(parentConnection.x(), parentConnection.y()), world.getRandom())), parentConnection.x(), parentConnection.y(), parentConnection.direction());
 
         PendingRoom pendingRoom = generator.build(world, this, parent);
 

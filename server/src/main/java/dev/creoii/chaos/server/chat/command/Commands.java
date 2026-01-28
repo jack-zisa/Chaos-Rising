@@ -13,6 +13,7 @@ import dev.creoii.chaos.server.ServerWorld;
 import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.logging.Logger;
 import dev.creoii.chaos.util.provider.numberprovider.ConstantNumberProvider;
+import dev.creoii.chaos.util.provider.roomprovider.SimpleRoomProvider;
 import dev.creoii.chaos.util.provider.vecprovider.ConstantVecProvider;
 import dev.creoii.chaos.util.provider.vecprovider.RandomBetweenVecProvider;
 import dev.creoii.chaos.util.stat.Stat;
@@ -416,7 +417,7 @@ public final class Commands {
                 case "room" -> {
                     RoomTemplate roomTemplate = DataManager.getRoomTemplate(args[1]);
                     if (roomTemplate != null) {
-                        DungeonGenerator dungeonGenerator = new DungeonGenerator(new Dungeon("placeholder", ConstantNumberProvider.ONE, roomTemplate), x, y);
+                        DungeonGenerator dungeonGenerator = new DungeonGenerator(new Dungeon("placeholder", ConstantNumberProvider.ONE, new SimpleRoomProvider(roomTemplate)), x, y);
                         RoomGenerator roomGenerator = new RoomGenerator(roomTemplate, x, y, null);
                         roomGenerator.place(world, dungeonGenerator, roomGenerator.build(world, dungeonGenerator));
                         return Command.Result.SUCCESS;
