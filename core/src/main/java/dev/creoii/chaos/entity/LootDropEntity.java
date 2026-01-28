@@ -45,8 +45,6 @@ public class LootDropEntity extends Entity {
 
     @Override
     public void tick(int gametime, float delta) {
-        super.tick(gametime, delta);
-
         if (gametime - getSpawnTime() >= 2400)
             remove();
     }

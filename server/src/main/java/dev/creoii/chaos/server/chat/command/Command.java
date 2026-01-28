@@ -1,7 +1,6 @@
 package dev.creoii.chaos.server.chat.command;
 
 import com.badlogic.gdx.graphics.Color;
-import dev.creoii.chaos.server.ServerGame;
 import dev.creoii.chaos.server.ServerWorld;
 import dev.creoii.chaos.util.function.TriFunction;
 

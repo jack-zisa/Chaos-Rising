@@ -87,7 +87,9 @@ public class ClientWorld implements World {
         MapLayer mapLayer = getLayer(LAYER_GROUND);
         if (mapLayer instanceof TiledMapTileLayer tiledMapTileLayer) {
             TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
-            cell.setTile(new StaticTiledMapTile(new TextureRegion(game.getAssetManager().getTextureManager().getTexture(TextureManager.Atlas.ENVIRONMENT, tile.texture()))));
+            StaticTiledMapTile tiledMapTile = new StaticTiledMapTile(new TextureRegion(game.getAssetManager().getTextureManager().getTexture(TextureManager.Atlas.ENVIRONMENT, tile.texture())));
+            tiledMapTile.getProperties().put("id", tile.id());
+            cell.setTile(tiledMapTile);
             tiledMapTileLayer.setCell(x, y, cell);
         }
     }
@@ -97,7 +99,9 @@ public class ClientWorld implements World {
         MapLayer mapLayer = getLayer(LAYER_OBJECT);
         if (mapLayer instanceof TiledMapTileLayer tiledMapTileLayer) {
             TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
-            cell.setTile(new StaticTiledMapTile(new TextureRegion(game.getAssetManager().getTextureManager().getTexture(TextureManager.Atlas.ENVIRONMENT, tile.texture()))));
+            StaticTiledMapTile tiledMapTile = new StaticTiledMapTile(new TextureRegion(game.getAssetManager().getTextureManager().getTexture(TextureManager.Atlas.ENVIRONMENT, tile.texture())));
+            tiledMapTile.getProperties().put("id", tile.id());
+            cell.setTile(tiledMapTile);
             tiledMapTileLayer.setCell(x, y, cell);
         }
     }

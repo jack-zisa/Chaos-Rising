@@ -87,8 +87,6 @@ public class BulletEntity extends Entity {
 
     @Override
     public void tick(int gametime, float delta) {
-        super.tick(gametime, delta);
-
         if (gametime - getSpawnTime() >= lifetime) {
             remove();
         }

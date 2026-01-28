@@ -80,10 +80,6 @@ public abstract class Entity implements Tickable {
         return !pos.epsilonEquals(prevPos, .001f);
     }
 
-    @Override
-    public void tick(int gametime, float delta) {
-    }
-
     public void remove() {
         world.getEntityManager().removeEntity(id);
     }

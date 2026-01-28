@@ -120,8 +120,6 @@ public abstract class LivingEntity extends Entity {
 
     @Override
     public void tick(int gametime, float delta) {
-        super.tick(gametime, delta);
-
         for (int i = getStatusEffects().size() - 1; i >= 0; --i) {
             StatusEffect.Instance instance = getStatusEffects().get(i);
 

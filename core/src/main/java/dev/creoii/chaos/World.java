@@ -55,6 +55,22 @@ public interface World extends Disposable {
         }
     }
 
+    @Nullable
+    default Tile getGround(int x, int y) {
+        MapLayer mapLayer = getLayer(LAYER_GROUND);
+        if (mapLayer instanceof TiledMapTileLayer tiledMapTileLayer) {
+            TiledMapTileLayer.Cell cell = tiledMapTileLayer.getCell(x, y);
+            if (cell != null) {
+                Object idObj = cell.getTile().getProperties().get("id");
+
+                if (idObj instanceof String s) {
+                    return DataManager.getTile(s);
+                }
+            }
+        }
+        return null;
+    }
+
     static TiledMap createMapOfSize(int x, int y) {
         TiledMap map = new TiledMap();
         TiledMapTileLayer ground = new TiledMapTileLayer(x, y, 8, 8);
