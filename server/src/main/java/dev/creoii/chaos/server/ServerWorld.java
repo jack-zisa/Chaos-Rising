@@ -6,7 +6,7 @@ import dev.creoii.chaos.network.NetworkQueue;
 import dev.creoii.chaos.network.s2c.PlaceSetpieceS2C;
 import dev.creoii.chaos.network.s2c.SetTileS2C;
 import dev.creoii.chaos.network.s2c.SetTilesS2C;
-import dev.creoii.chaos.world.map.WorldMap;
+import dev.creoii.chaos.world.map.MapGenerator;
 import dev.creoii.chaos.world.setpiece.Setpiece;
 import dev.creoii.chaos.world.tile.Tile;
 
@@ -105,7 +105,7 @@ public class ServerWorld implements World {
         }
     }
 
-    public void load(WorldMap map) {
+    public void load(MapGenerator map) {
         map.place(this);
     }
 }

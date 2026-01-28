@@ -41,7 +41,7 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
     private float attackCooldown = 0f;
 
     public ClientGame() throws IOException {
-        client = new Client(32768, 32768, new CreoSerialization());
+        client = new Client(256 * 1024, 256 * 1024, new CreoSerialization());
         listener = new ClientListener(this);
         inputManager = new InputManager(this);
         chatManager = new ChatManager(this);

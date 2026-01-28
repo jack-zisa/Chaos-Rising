@@ -1,0 +1,16 @@
+{
+  "id": "test_room",
+  "type": "simple",
+  "width": {
+    "type": "random",
+    "min": 6,
+    "max": 12
+  },
+  "height": {
+    "type": "random",
+    "min": 6,
+    "max": 12
+  },
+  "tile_provider": "grass",
+  "max_connections": 10
+}

@@ -10,7 +10,9 @@ import dev.creoii.chaos.item.Item;
 import dev.creoii.chaos.loot.LootTable;
 import dev.creoii.chaos.util.Identifiable;
 import dev.creoii.chaos.util.logging.Logger;
-import dev.creoii.chaos.world.map.WorldMap;
+import dev.creoii.chaos.world.dungeon.Dungeon;
+import dev.creoii.chaos.world.dungeon.room.RoomTemplate;
+import dev.creoii.chaos.world.map.MapGenerator;
 import dev.creoii.chaos.world.setpiece.Setpiece;
 import dev.creoii.chaos.world.tile.Tile;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
@@ -57,8 +59,16 @@ public class DataManager {
         return DATA.get(SchemaType.SETPIECE);
     }
 
-    public static Object2ObjectArrayMap<String, Identifiable> getWorldMaps() {
-        return DATA.get(SchemaType.WORLD_MAP);
+    public static Object2ObjectArrayMap<String, Identifiable> getRoomTemplates() {
+        return DATA.get(SchemaType.ROOM_TEMPLATE);
+    }
+
+    public static Object2ObjectArrayMap<String, Identifiable> getDungeons() {
+        return DATA.get(SchemaType.DUNGEON);
+    }
+
+    public static Object2ObjectArrayMap<String, Identifiable> getMapGenerators() {
+        return DATA.get(SchemaType.MAP_GENERATOR);
     }
 
     @Nullable
@@ -107,8 +117,18 @@ public class DataManager {
     }
 
     @Nullable
-    public static WorldMap getWorldMap(String id) {
-        return (WorldMap) getWorldMaps().getOrDefault(id, null);
+    public static RoomTemplate getRoomTemplate(String id) {
+        return (RoomTemplate) getRoomTemplates().getOrDefault(id, null);
+    }
+
+    @Nullable
+    public static Dungeon getDungeon(String id) {
+        return (Dungeon) getDungeons().getOrDefault(id, null);
+    }
+
+    @Nullable
+    public static MapGenerator getMapGenerator(String id) {
+        return (MapGenerator) getMapGenerators().getOrDefault(id, null);
     }
 
     public static void load(Path path) {
@@ -169,7 +189,9 @@ public class DataManager {
         LOOT_TABLE("loot_table"),
         TILE("tile"),
         SETPIECE("worldgen/setpiece"),
-        WORLD_MAP("worldgen/map");
+        ROOM_TEMPLATE("worldgen/room_template"),
+        DUNGEON("worldgen/dungeon"),
+        MAP_GENERATOR("worldgen/map_generator");
 
         private final String path;
 
@@ -189,7 +211,9 @@ public class DataManager {
         SCHEMA.put(SchemaType.LOOT_TABLE, LootTable.OBJECT_CODEC);
         SCHEMA.put(SchemaType.TILE, Tile.VALUE_CODEC);
         SCHEMA.put(SchemaType.SETPIECE, Setpiece.DISPATCH_CODEC);
-        SCHEMA.put(SchemaType.WORLD_MAP, WorldMap.DISPATCH_CODEC);
+        SCHEMA.put(SchemaType.ROOM_TEMPLATE, RoomTemplate.DISPATCH_CODEC);
+        SCHEMA.put(SchemaType.DUNGEON, Dungeon.CODEC);
+        SCHEMA.put(SchemaType.MAP_GENERATOR, MapGenerator.DISPATCH_CODEC);
 
         for (SchemaType schemaType : SCHEMA.keySet()) {
             DATA.put(schemaType, new Object2ObjectArrayMap<>());

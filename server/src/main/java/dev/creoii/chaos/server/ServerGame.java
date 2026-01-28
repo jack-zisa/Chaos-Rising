@@ -9,8 +9,8 @@ import dev.creoii.chaos.network.NetworkQueue;
 import dev.creoii.chaos.network.CreoSerialization;
 import dev.creoii.chaos.network.Networking;
 import dev.creoii.chaos.util.logging.Logger;
-import dev.creoii.chaos.world.map.LayeredWorldMap;
-import dev.creoii.chaos.world.map.WorldMap;
+import dev.creoii.chaos.world.map.LayeredMapGenerator;
+import dev.creoii.chaos.world.map.MapGenerator;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -31,7 +31,7 @@ public class ServerGame implements Game {
     private int gametime;
 
     public ServerGame(int tcpPort, int udpPort) throws IOException {
-        server = new Server(16384, 8192, new CreoSerialization());
+        server = new Server(256 * 1024, 256 * 1024, new CreoSerialization());
         networkQueue = new NetworkQueue<>(null, new ConcurrentLinkedQueue<>());
         Log.NONE();
         server.start();
@@ -47,10 +47,10 @@ public class ServerGame implements Game {
 
         worlds = new HashMap<>();
 
-        WorldMap worldMap = DataManager.getWorldMap("test");
-        if (worldMap == null)
-            worldMap = LayeredWorldMap.DEFAULT;
-        worlds.put("main", new ServerWorld(this, World.createMapOfSize(worldMap.getWidth(), worldMap.getHeight())));
+        MapGenerator mapGenerator = DataManager.getMapGenerator("test");
+        if (mapGenerator == null)
+            mapGenerator = LayeredMapGenerator.DEFAULT;
+        worlds.put("main", new ServerWorld(this, World.createMapOfSize(mapGenerator.getWidth(), mapGenerator.getHeight())));
 
         Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
         LOGGER.info("Active Threads:");

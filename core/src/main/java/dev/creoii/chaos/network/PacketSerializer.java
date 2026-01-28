@@ -4,6 +4,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.Serializer;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
+import dev.creoii.chaos.network.s2c.SetTileS2C;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -26,13 +27,15 @@ public class PacketSerializer extends Serializer<Object> {
     public void write(Kryo kryo, Output output, Object o) {
         BiConsumer<Output, Object> writer = WRITE_SCHEMA.get(o.getClass());
         writer.accept(output, o);
-        Networking.LOGGER.info("Write " + o.getClass().getSimpleName() + ": " + Arrays.toString(output.toBytes()), 255);
+        if (!"SetTileS2C".equals(o.getClass().getSimpleName()) && !"CharacterMoveC2S".equals(o.getClass().getSimpleName()))
+            Networking.LOGGER.info("Write " + o.getClass().getSimpleName() + ": " + Arrays.toString(output.toBytes()), 255);
     }
 
     @Override
     public Object read(Kryo kryo, Input input, Class<Object> aClass) {
         Function<Input, ?> reader = READ_SCHEMA.get(aClass);
-        Networking.LOGGER.info("Read " + aClass.getSimpleName() + ": pos=" + input.position() + " limit=" + input.limit() + " total=" + input.total());
+        if (!"SetTileS2C".equals(aClass.getSimpleName()) && !"CharacterMoveC2S".equals(aClass.getSimpleName()))
+            Networking.LOGGER.info("Read " + aClass.getSimpleName() + ": pos=" + input.position() + " limit=" + input.limit() + " total=" + input.total());
         return reader.apply(input);
     }
 }

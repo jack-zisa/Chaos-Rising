@@ -12,9 +12,14 @@ import dev.creoii.chaos.item.Item;
 import dev.creoii.chaos.server.ServerWorld;
 import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.logging.Logger;
+import dev.creoii.chaos.util.provider.numberprovider.ConstantNumberProvider;
 import dev.creoii.chaos.util.provider.vecprovider.ConstantVecProvider;
 import dev.creoii.chaos.util.provider.vecprovider.RandomBetweenVecProvider;
 import dev.creoii.chaos.util.stat.Stat;
+import dev.creoii.chaos.world.dungeon.Dungeon;
+import dev.creoii.chaos.world.dungeon.DungeonGenerator;
+import dev.creoii.chaos.world.dungeon.room.RoomGenerator;
+import dev.creoii.chaos.world.dungeon.room.RoomTemplate;
 import dev.creoii.chaos.world.setpiece.Setpiece;
 import dev.creoii.chaos.world.tile.Tile;
 
@@ -381,28 +386,51 @@ public final class Commands {
             return Command.Result.FAIL;
         });
 
-        Command.register("place", 1, (world, id, args) -> {
-            if (args.length == 1) {
+        Command.register("place", 2, (world, id, args) -> {
+            int x = 0;
+            int y = 0;
+
+            if (args.length == 2) {
                 CharacterEntity character = ((CharacterEntity) world.getEntityManager().getEntity(EntityGroup.CHARACTER, id));
                 if (character != null) {
-                    Setpiece setpiece = DataManager.getSetpiece(args[0]);
+                    x = Math.round(character.getPos().x / Entity.COORDINATE_SCALE);
+                    y = Math.round(character.getPos().y / Entity.COORDINATE_SCALE);
+                }
+            } else if (args.length == 4) {
+                try {
+                    x = Integer.parseInt(args[2]);
+                    y = Integer.parseInt(args[3]);
+                } catch (NumberFormatException e) {
+                    return Command.Result.FAIL;
+                }
+            }
+
+            switch (args[0]) {
+                case "setpiece" -> {
+                    Setpiece setpiece = DataManager.getSetpiece(args[1]);
                     if (setpiece != null) {
-                        int x = Math.round(character.getPos().x / Entity.COORDINATE_SCALE);
-                        int y = Math.round(character.getPos().y / Entity.COORDINATE_SCALE);
                         world.placeSetpiece(setpiece, x, y);
                         return Command.Result.SUCCESS;
                     }
                 }
-            } else if (args.length == 3) {
-                try {
-                    Setpiece setpiece = DataManager.getSetpiece(args[0]);
-                    if (setpiece != null) {
-                        int x = Integer.parseInt(args[1]);
-                        int y = Integer.parseInt(args[2]);
-                        world.placeSetpiece(setpiece, x, y);
+                case "room" -> {
+                    RoomTemplate roomTemplate = DataManager.getRoomTemplate(args[1]);
+                    if (roomTemplate != null) {
+                        DungeonGenerator dungeonGenerator = new DungeonGenerator(new Dungeon("placeholder", ConstantNumberProvider.ONE, roomTemplate), x, y);
+                        RoomGenerator roomGenerator = new RoomGenerator(roomTemplate, x, y, null);
+                        roomGenerator.place(world, dungeonGenerator, roomGenerator.build(world, dungeonGenerator));
                         return Command.Result.SUCCESS;
                     }
-                } catch (NumberFormatException e) {
+                }
+                case "dungeon" -> {
+                    Dungeon dungeon = DataManager.getDungeon(args[1]);
+                    if (dungeon != null) {
+                        DungeonGenerator generator = new DungeonGenerator(dungeon, x, y);
+                        generator.generate(world);
+                        return Command.Result.SUCCESS;
+                    }
+                }
+                default -> {
                     return Command.Result.FAIL;
                 }
             }

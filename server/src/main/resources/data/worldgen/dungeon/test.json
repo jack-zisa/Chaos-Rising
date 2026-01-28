@@ -1,0 +1,5 @@
+{
+  "id": "test",
+  "max_depth": 50,
+  "fallback": "test_room"
+}

@@ -4,12 +4,12 @@ import com.mojang.serialization.Codec;
 import dev.creoii.chaos.World;
 import dev.creoii.chaos.util.Identifiable;
 
-public interface WorldMap extends Identifiable {
-    Codec<WorldMap> DISPATCH_CODEC = Type.CODEC.dispatch(
-        WorldMap::getType,
+public interface MapGenerator extends Identifiable {
+    Codec<MapGenerator> DISPATCH_CODEC = Type.CODEC.dispatch(
+        MapGenerator::getType,
         type -> switch (type) {
-            case LAYERED -> LayeredWorldMap.CODEC;
-            case NOISE_BASED -> NoiseBasedWorldMap.CODEC;
+            case LAYERED -> LayeredMapGenerator.CODEC;
+            case NOISE_BASED -> NoiseBasedMapGenerator.CODEC;
         }
     );
 

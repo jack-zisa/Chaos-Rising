@@ -14,14 +14,14 @@ import dev.creoii.chaos.world.tile.Tile;
 
 import java.util.List;
 
-public record NoiseBasedWorldMap(String id, int width, int height, FastNoiseParameters noise, List<Entry> entries) implements WorldMap {
-    public static final MapCodec<NoiseBasedWorldMap> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-        Codec.STRING.fieldOf("id").forGetter(NoiseBasedWorldMap::id),
-        Codec.INT.fieldOf("width").forGetter(NoiseBasedWorldMap::width),
-        Codec.INT.fieldOf("height").forGetter(NoiseBasedWorldMap::height),
-        FastNoiseParameters.CODEC.fieldOf("noise").forGetter(NoiseBasedWorldMap::noise),
-        Entry.CODEC.listOf().fieldOf("entries").forGetter(NoiseBasedWorldMap::entries)
-    ).apply(instance, NoiseBasedWorldMap::new));
+public record NoiseBasedMapGenerator(String id, int width, int height, FastNoiseParameters noise, List<Entry> entries) implements MapGenerator {
+    public static final MapCodec<NoiseBasedMapGenerator> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+        Codec.STRING.fieldOf("id").forGetter(NoiseBasedMapGenerator::id),
+        Codec.INT.fieldOf("width").forGetter(NoiseBasedMapGenerator::width),
+        Codec.INT.fieldOf("height").forGetter(NoiseBasedMapGenerator::height),
+        FastNoiseParameters.CODEC.fieldOf("noise").forGetter(NoiseBasedMapGenerator::noise),
+        Entry.CODEC.listOf().fieldOf("entries").forGetter(NoiseBasedMapGenerator::entries)
+    ).apply(instance, NoiseBasedMapGenerator::new));
 
     @Override
     public Type getType() {

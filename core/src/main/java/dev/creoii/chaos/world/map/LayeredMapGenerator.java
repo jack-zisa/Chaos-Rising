@@ -17,13 +17,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public record LayeredWorldMap(String id, Palette palette, Map<String, Layer> layers) implements WorldMap {
-    public static final LayeredWorldMap DEFAULT = new LayeredWorldMap("default", new Palette(Map.of("G", new SimpleTileProvider(DataManager.getTile("grass")))), buildDefaultLayers());
-    public static final MapCodec<LayeredWorldMap> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-        Codec.STRING.fieldOf("id").forGetter(LayeredWorldMap::id),
-        Palette.CODEC.fieldOf("palette").forGetter(LayeredWorldMap::palette),
-        Codec.unboundedMap(Codec.STRING, Layer.CODEC).fieldOf("layers").forGetter(LayeredWorldMap::layers)
-    ).apply(instance, LayeredWorldMap::new));
+public record LayeredMapGenerator(String id, Palette palette, Map<String, Layer> layers) implements MapGenerator {
+    public static final LayeredMapGenerator DEFAULT = new LayeredMapGenerator("default", new Palette(Map.of("G", new SimpleTileProvider(DataManager.getTile("grass")))), buildDefaultLayers());
+    public static final MapCodec<LayeredMapGenerator> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+        Codec.STRING.fieldOf("id").forGetter(LayeredMapGenerator::id),
+        Palette.CODEC.fieldOf("palette").forGetter(LayeredMapGenerator::palette),
+        Codec.unboundedMap(Codec.STRING, Layer.CODEC).fieldOf("layers").forGetter(LayeredMapGenerator::layers)
+    ).apply(instance, LayeredMapGenerator::new));
 
     @Override
     public Type getType() {
