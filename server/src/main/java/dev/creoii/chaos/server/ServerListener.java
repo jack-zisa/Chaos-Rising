@@ -2,6 +2,7 @@ package dev.creoii.chaos.server;
 
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
+import dev.creoii.chaos.DataManager;
 import dev.creoii.chaos.network.NetworkQueue;
 import dev.creoii.chaos.network.c2s.*;
 import dev.creoii.chaos.network.s2c.*;
@@ -40,23 +41,29 @@ public class ServerListener extends Listener {
             throw new RuntimeException(e);
         }
 
-        ByteArrayOutputStream baos = new ByteArrayOutputStream(32768);
-        try (ZipOutputStream zipOut = new ZipOutputStream(baos)) {
-            try (Stream<Path> paths = Files.walk(dataRoot)) {
-                for (Path path : (Iterable<Path>) paths.filter(Files::isRegularFile)::iterator) {
-                    ZipEntry entry = new ZipEntry(
-                        dataRoot.relativize(path).toString().replace("\\", "/")
-                    );
-                    zipOut.putNextEntry(entry);
-                    Files.copy(path, zipOut);
-                    zipOut.closeEntry();
+        for (DataManager.SchemaType schemaType : DataManager.SchemaType.values()) {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream(32768);
+            try (ZipOutputStream zipOut = new ZipOutputStream(baos)) {
+                Path schemaRoot = dataRoot.resolve(schemaType.getPath());
+                try (Stream<Path> paths = Files.walk(schemaRoot)) {
+                    for (Path path : (Iterable<Path>) paths.filter(Files::isRegularFile)::iterator) {
+                        ZipEntry entry = new ZipEntry(
+                            schemaRoot.relativize(path).toString().replace("\\", "/")
+                        );
+                        zipOut.putNextEntry(entry);
+                        Files.copy(path, zipOut);
+                        zipOut.closeEntry();
+                    }
                 }
+                zipOut.finish();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
-            zipOut.finish();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+
+            game.getServer().sendToTCP(connection.getID(), new SyncDataS2C(baos.toByteArray()));
         }
-        game.getServer().sendToTCP(connection.getID(), new SyncDataS2C(baos.toByteArray()));
+
+        game.getServer().sendToTCP(connection.getID(), new LoadDataS2C());
     }
 
     @Override

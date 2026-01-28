@@ -91,9 +91,8 @@ public class ClientListener extends Listener {
                 } catch (IOException e) {
                     ClientGame.LOGGER.error("Client failed to sync data: " + e);
                 }
-
-                DataManager.load(cacheRoot);
             }
+            case LoadDataS2C() -> DataManager.load(Paths.get(System.getProperty("user.dir"), "cache", "data"));
             default -> {}
         }
     }

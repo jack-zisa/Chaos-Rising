@@ -38,6 +38,7 @@ public class Networking {
         kryo.register(ChatMessageReceiveS2C.class, PacketSerializer.INSTANCE);
         kryo.register(StatusEffectS2C.class, PacketSerializer.INSTANCE);
         kryo.register(SyncDataS2C.class, PacketSerializer.INSTANCE);
+        kryo.register(LoadDataS2C.class, PacketSerializer.INSTANCE);
         kryo.register(GainExperienceS2C.class, PacketSerializer.INSTANCE);
         kryo.register(SetTileS2C.class, PacketSerializer.INSTANCE);
         kryo.register(SetTilesS2C.class, PacketSerializer.INSTANCE);
@@ -76,6 +77,7 @@ public class Networking {
         PacketSerializer.INSTANCE.register(ChatMessageReceiveS2C.class, ChatMessageReceiveS2C::write, ChatMessageReceiveS2C::read);
         PacketSerializer.INSTANCE.register(StatusEffectS2C.class, StatusEffectS2C::write, StatusEffectS2C::read);
         PacketSerializer.INSTANCE.register(SyncDataS2C.class, SyncDataS2C::write, SyncDataS2C::read);
+        PacketSerializer.INSTANCE.register(LoadDataS2C.class, LoadDataS2C::write, LoadDataS2C::read);
         PacketSerializer.INSTANCE.register(GainExperienceS2C.class, GainExperienceS2C::write, GainExperienceS2C::read);
         PacketSerializer.INSTANCE.register(SetTileS2C.class, SetTileS2C::write, SetTileS2C::read);
         PacketSerializer.INSTANCE.register(SetTilesS2C.class, SetTilesS2C::write, SetTilesS2C::read);

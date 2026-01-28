@@ -193,6 +193,7 @@ public class DataManager {
         DUNGEON("worldgen/dungeon"),
         MAP_GENERATOR("worldgen/map_generator");
 
+        public static final Codec<SchemaType> CODEC = Codec.STRING.xmap(s -> SchemaType.valueOf(s.toUpperCase()), type -> type.name().toLowerCase());
         private final String path;
 
         SchemaType(String path) {
