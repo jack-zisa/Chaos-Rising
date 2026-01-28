@@ -3,6 +3,7 @@ package dev.creoii.chaos.util.provider.numberprovider;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.chaos.util.context.ContextProvider;
 
 public record ConstantNumberProvider(float value) implements NumberProvider {
     public static final ConstantNumberProvider ZERO = new ConstantNumberProvider(0);
@@ -28,7 +29,7 @@ public record ConstantNumberProvider(float value) implements NumberProvider {
     }
 
     @Override
-    public Float get(Context context) {
+    public Float get(ContextProvider context) {
         return value;
     }
 

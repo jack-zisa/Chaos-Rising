@@ -1,6 +1,8 @@
 package dev.creoii.chaos.util.provider.numberprovider;
 
 import com.mojang.serialization.MapCodec;
+import dev.creoii.chaos.util.context.ComponentTypes;
+import dev.creoii.chaos.util.context.ContextProvider;
 
 public record SpawnTimeNumberProvider() implements NumberProvider {
     private static final SpawnTimeNumberProvider INSTANCE = new SpawnTimeNumberProvider();
@@ -12,8 +14,11 @@ public record SpawnTimeNumberProvider() implements NumberProvider {
     }
 
     @Override
-    public Float get(Context context) {
-        return (float) context.entity().getSpawnTime();
+    public Float get(ContextProvider context) {
+        if (context.has(ComponentTypes.ENTITY)) {
+            return (float) context.get(ComponentTypes.ENTITY).getSpawnTime();
+        }
+        return 0f;
     }
 
     @Override

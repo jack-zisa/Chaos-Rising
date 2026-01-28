@@ -2,6 +2,7 @@ package dev.creoii.chaos.util.provider.stringprovider;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.chaos.util.context.ContextProvider;
 import dev.creoii.chaos.util.provider.Provider;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public record ConcatStringProvider(List<StringProvider> values) implements Strin
     }
 
     @Override
-    public String get(Context context) {
+    public String get(ContextProvider context) {
         return String.join("", values.stream().map(s -> s.get(context)).toList());
     }
 

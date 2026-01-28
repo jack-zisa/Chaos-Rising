@@ -2,6 +2,7 @@ package dev.creoii.chaos.util.provider.booleanprovider;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.chaos.util.context.ContextProvider;
 import dev.creoii.chaos.util.provider.Provider;
 
 public record NotBooleanProvider(BooleanProvider value) implements BooleanProvider {
@@ -17,7 +18,7 @@ public record NotBooleanProvider(BooleanProvider value) implements BooleanProvid
     }
 
     @Override
-    public Boolean get(Context context) {
+    public Boolean get(ContextProvider context) {
         return !value.get(context);
     }
 

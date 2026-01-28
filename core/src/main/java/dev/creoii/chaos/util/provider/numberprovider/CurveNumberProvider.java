@@ -3,6 +3,7 @@ package dev.creoii.chaos.util.provider.numberprovider;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.chaos.util.context.ContextProvider;
 
 public class CurveNumberProvider implements NumberProvider {
     public static final MapCodec<CurveNumberProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
@@ -70,7 +71,7 @@ public class CurveNumberProvider implements NumberProvider {
     }
 
     @Override
-    public Float get(Context context) {
+    public Float get(ContextProvider context) {
         if (value == null) {
             value = start.get(context);
             progress = 0f;

@@ -3,6 +3,7 @@ package dev.creoii.chaos.util.provider.vecprovider;
 import com.badlogic.gdx.math.Vector2;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.chaos.util.context.ContextProvider;
 import dev.creoii.chaos.util.provider.Operation;
 import dev.creoii.chaos.util.provider.Provider;
 
@@ -84,7 +85,7 @@ public record BinaryVecProvider(VecProvider a, VecProvider b, Operation operatio
     }
 
     @Override
-    public Vector2 get(Context context) {
+    public Vector2 get(ContextProvider context) {
         Vector2 av = a.get(context), bv = b.get(context);
         return switch (operation) {
             case ADD -> av.add(bv);

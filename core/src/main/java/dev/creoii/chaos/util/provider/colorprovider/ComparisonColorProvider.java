@@ -3,6 +3,7 @@ package dev.creoii.chaos.util.provider.colorprovider;
 import com.badlogic.gdx.graphics.Color;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.chaos.util.context.ContextProvider;
 import dev.creoii.chaos.util.provider.Provider;
 import dev.creoii.chaos.util.provider.booleanprovider.BooleanProvider;
 import dev.creoii.chaos.util.provider.booleanprovider.ConstantBooleanProvider;
@@ -30,7 +31,7 @@ public record ComparisonColorProvider(BooleanProvider comparison, ColorProvider 
     }
 
     @Override
-    public Color get(Context context) {
+    public Color get(ContextProvider context) {
         return comparison.get(context) ? trueValue.get(context) : falseValue.get(context);
     }
 }

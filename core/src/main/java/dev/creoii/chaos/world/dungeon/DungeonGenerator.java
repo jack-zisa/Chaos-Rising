@@ -1,30 +1,39 @@
 package dev.creoii.chaos.world.dungeon;
 
 import com.badlogic.gdx.math.Vector2;
+import dev.creoii.chaos.Game;
 import dev.creoii.chaos.World;
 import dev.creoii.chaos.util.Direction;
-import dev.creoii.chaos.util.provider.Provider;
+import dev.creoii.chaos.util.context.ComponentTypes;
+import dev.creoii.chaos.util.context.Context;
+import dev.creoii.chaos.util.context.ContextProvider;
 import dev.creoii.chaos.world.dungeon.room.Connection;
 import dev.creoii.chaos.world.dungeon.room.Room;
 import dev.creoii.chaos.world.dungeon.room.RoomGenerator;
 
 import java.util.*;
 
-public class DungeonGenerator {
+public class DungeonGenerator implements ContextProvider {
+    private final World world;
     private final Dungeon dungeon;
     private final int x, y;
     private final Map<String, Integer> roomCounts;
     private final Set<PlacedRoom> rooms;
     private int depth;
     private int maxDepth;
+    private final Context context;
+    private final Context roomContext;
 
-    public DungeonGenerator(Dungeon dungeon, int x, int y) {
+    public DungeonGenerator(World world, Dungeon dungeon, int x, int y) {
+        this.world = world;
         this.dungeon = dungeon;
         this.x = x;
         this.y = y;
         roomCounts = new HashMap<>();
         rooms = new HashSet<>();
         depth = 0;
+        context = Context.rootOf(world).with(ComponentTypes.POS, new Vector2(x, y)).with(ComponentTypes.DUNGEON, this);
+        roomContext = context.child();
     }
 
     public Dungeon getDungeon() {
@@ -55,13 +64,18 @@ public class DungeonGenerator {
         return maxDepth;
     }
 
-    public void generate(World world) {
-        maxDepth = dungeon.maxDepth().getInt(new Provider.Context(world.getGame(), world, null, world.getGame().getGametime(), new Vector2(x, y), world.getRandom()));
-        beginGenerate(world);
+    public void generate() {
+        maxDepth = dungeon.maxDepth().getInt(context.child().with(ComponentTypes.POS, new Vector2(x, y)));
+        beginGenerate();
     }
 
-    private void beginGenerate(World world) {
-        RoomGenerator generator = new RoomGenerator(dungeon.fallback().get(new Provider.Context(world.getGame(), world, null, world.getGame().getGametime(), new Vector2(x, y), world.getRandom())), x, y, null);
+    private void beginGenerate() {
+        roomContext.clearLocal();
+        roomContext.set(ComponentTypes.POS, new Vector2(x, y));
+
+        RoomGenerator generator = new RoomGenerator(dungeon.fallback().get(roomContext), x, y, null, depth + 1);
+
+        roomContext.set(ComponentTypes.ROOM, generator);
 
         PendingRoom pendingRoom = generator.build(world, this);
 
@@ -75,7 +89,6 @@ public class DungeonGenerator {
         }
 
         PlacedRoom placedRoom = generator.place(world, this, pendingRoom);
-
         rooms.add(placedRoom);
         ++depth;
 
@@ -89,7 +102,12 @@ public class DungeonGenerator {
             return;
         }
 
-        RoomGenerator generator = new RoomGenerator(dungeon.fallback().get(new Provider.Context(world.getGame(), world, null, world.getGame().getGametime(), new Vector2(parentConnection.x(), parentConnection.y()), world.getRandom())), parentConnection.x(), parentConnection.y(), parentConnection.direction());
+        roomContext.clearLocal();
+        roomContext.set(ComponentTypes.POS, new Vector2(x, y));
+
+        RoomGenerator generator = new RoomGenerator(dungeon.fallback().get(roomContext), parentConnection.x(), parentConnection.y(), parentConnection.direction(), depth + 1);
+
+        roomContext.set(ComponentTypes.ROOM, generator);
 
         PendingRoom pendingRoom = generator.build(world, this, parent);
 
@@ -103,7 +121,6 @@ public class DungeonGenerator {
         }
 
         PlacedRoom placedRoom = generator.place(world, this, pendingRoom);
-
         rooms.add(placedRoom);
         ++depth;
 
@@ -112,11 +129,21 @@ public class DungeonGenerator {
         }
     }
 
+    @Override
+    public Game getGame() {
+        return world.getGame();
+    }
+
+    @Override
+    public Context getContext() {
+        return context;
+    }
+
     public record PendingRoom(int x, int y, int width, int height, Direction direction) implements Room { }
 
-    public record PlacedRoom(int x, int y, int width, int height, Direction direction) implements Room {
-        public PlacedRoom(PendingRoom pendingRoom) {
-            this(pendingRoom.x(), pendingRoom.y(), pendingRoom.width(), pendingRoom.height(), pendingRoom.direction());
+    public record PlacedRoom(int x, int y, int width, int height, Direction direction, int depth) implements Room {
+        public PlacedRoom(PendingRoom pendingRoom, int depth) {
+            this(pendingRoom.x(), pendingRoom.y(), pendingRoom.width(), pendingRoom.height(), pendingRoom.direction(), depth);
         }
     }
 }

@@ -5,7 +5,8 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.World;
-import dev.creoii.chaos.util.provider.Provider;
+import dev.creoii.chaos.util.context.ComponentTypes;
+import dev.creoii.chaos.util.context.Context;
 import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
 import dev.creoii.chaos.util.provider.tileprovider.TileProvider;
 
@@ -23,7 +24,8 @@ public record RandomWalkSetpiece(String id, String layer, TileProvider tile, Num
     }
 
     public void place(World world, int x, int y) {
-        int steps = this.steps.getInt(new Provider.Context(world.getGame(), world, null, world.getGame().getGametime(), new Vector2(x, y), world.getRandom()));
+        Context context = Context.rootOf(world);
+        int steps = this.steps.getInt(context.child().with(ComponentTypes.POS, new Vector2(x, y)));
         for (int i = 0; i < steps; ++i) {
             int direction = world.getRandom().nextInt(4);
 
@@ -33,9 +35,9 @@ public record RandomWalkSetpiece(String id, String layer, TileProvider tile, Num
             else --y;
 
             if ("ground".equals(layer)) {
-                world.setGround(x, y, tile.get(new Provider.Context(world.getGame(), world, null, world.getGame().getGametime(), new Vector2(x, y), world.getRandom())));
+                world.setGround(x, y, tile.get(context.child().with(ComponentTypes.POS, new Vector2(x, y))));
             } else if ("object".equals(layer)) {
-                world.setObject(x, y, tile.get(new Provider.Context(world.getGame(), world, null, world.getGame().getGametime(), new Vector2(x, y), world.getRandom())));
+                world.setObject(x, y, tile.get(context.child().with(ComponentTypes.POS, new Vector2(x, y))));
             }
         }
     }

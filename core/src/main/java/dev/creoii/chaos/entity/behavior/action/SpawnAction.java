@@ -8,7 +8,7 @@ import dev.creoii.chaos.entity.EnemyEntity;
 import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.entity.LivingEntity;
 import dev.creoii.chaos.entity.controller.EntityController;
-import dev.creoii.chaos.util.provider.Provider;
+import dev.creoii.chaos.util.context.Context;
 import dev.creoii.chaos.util.provider.booleanprovider.BooleanProvider;
 import dev.creoii.chaos.util.provider.booleanprovider.ConstantBooleanProvider;
 import dev.creoii.chaos.util.provider.entityprovider.EntityProvider;
@@ -55,7 +55,7 @@ public class SpawnAction extends Action {
         LivingEntity entity = controller.getEntity();
         World world = entity.getWorld();
         if (!world.getGame().isClient()) {
-            Provider.Context context = Provider.Context.of(entity, world.getGame().getGametime());
+            Context context = Context.rootOf(entity);
             Entity spawned = this.entity.get(context);
             if (world.getEntityManager().getEntity(spawned.getType().group(), spawned.getId()) != null)
                 return;

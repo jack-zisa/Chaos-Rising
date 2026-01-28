@@ -2,13 +2,13 @@ package dev.creoii.chaos.entity.behavior.transition;
 
 import com.mojang.serialization.Codec;
 import dev.creoii.chaos.entity.behavior.phase.Phase;
-import dev.creoii.chaos.util.provider.Provider;
+import dev.creoii.chaos.util.context.ContextProvider;
 import dev.creoii.chaos.util.provider.phaseprovider.PhaseProvider;
 
 public interface Transition {
     Codec<Transition> CODEC = Transition.Type.CODEC.dispatch(Transition::getType, type -> switch (type) {
         case AFTER -> AfterTransition.CODEC;
-        case FOREVER -> ForeverTransition.CODEC;
+        case NEVER -> NeverTransition.CODEC;
         case RANDOM -> RandomTransition.CODEC;
         case CONDITION -> ConditionTransition.CODEC;
         case BINARY -> BinaryTransition.CODEC;
@@ -22,15 +22,15 @@ public interface Transition {
 
     PhaseProvider target();
 
-    boolean shouldTransition(Provider.Context context, int time);
+    boolean shouldTransition(ContextProvider context, int time);
 
-    default Phase getTarget(Provider.Context context) {
+    default Phase getTarget(ContextProvider context) {
         return target().get(context);
     }
 
     enum Type {
         AFTER,
-        FOREVER,
+        NEVER,
         RANDOM,
         CONDITION,
         BINARY, AND, OR, XOR,

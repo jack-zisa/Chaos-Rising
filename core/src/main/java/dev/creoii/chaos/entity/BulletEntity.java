@@ -5,7 +5,7 @@ import dev.creoii.chaos.World;
 import dev.creoii.chaos.entity.controller.BulletController;
 import dev.creoii.chaos.entity.serialization.BulletData;
 import dev.creoii.chaos.entity.serialization.EntityCustomData;
-import dev.creoii.chaos.util.provider.Provider;
+import dev.creoii.chaos.util.context.Context;
 
 import javax.annotation.Nullable;
 import java.util.Map;
@@ -98,7 +98,7 @@ public class BulletEntity extends Entity {
     public void collisionEnter(Entity other) {
         if (other instanceof LivingEntity living && parent != null && other.getType().group() != parent.getType().group()) {
             living.damage(damage);
-            if (!((BulletEntityType) getType()).piercing().get(Provider.Context.of(this, getWorld().getGame().getGametime()))) {
+            if (!((BulletEntityType) getType()).piercing().get(Context.rootOf(this))) {
                 remove();
             }
         }

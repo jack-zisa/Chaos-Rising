@@ -3,6 +3,7 @@ package dev.creoii.chaos.util.provider.numberprovider;
 import com.badlogic.gdx.math.Vector2;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.chaos.util.context.ContextProvider;
 import dev.creoii.chaos.util.provider.Provider;
 
 public record CycleNumberProvider(NumberProvider value, NumberProvider max) implements NumberProvider {
@@ -27,7 +28,7 @@ public record CycleNumberProvider(NumberProvider value, NumberProvider max) impl
     }
 
     @Override
-    public Float get(Context context) {
+    public Float get(ContextProvider context) {
         return value.get(context) % max.get(context);
     }
 

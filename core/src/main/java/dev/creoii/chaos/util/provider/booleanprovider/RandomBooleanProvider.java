@@ -1,6 +1,8 @@
 package dev.creoii.chaos.util.provider.booleanprovider;
 
 import com.mojang.serialization.MapCodec;
+import dev.creoii.chaos.util.context.ComponentTypes;
+import dev.creoii.chaos.util.context.ContextProvider;
 
 public record RandomBooleanProvider() implements BooleanProvider {
     private static final RandomBooleanProvider INSTANCE = new RandomBooleanProvider();
@@ -12,8 +14,8 @@ public record RandomBooleanProvider() implements BooleanProvider {
     }
 
     @Override
-    public Boolean get(Context context) {
-        return context.random().nextBoolean();
+    public Boolean get(ContextProvider context) {
+        return context.has(ComponentTypes.RANDOM) && context.get(ComponentTypes.RANDOM).nextBoolean();
     }
 
     @Override

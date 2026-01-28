@@ -1,6 +1,7 @@
 package dev.creoii.chaos.util.provider.numberprovider;
 
 import com.mojang.serialization.MapCodec;
+import dev.creoii.chaos.util.context.ContextProvider;
 
 public record TimeNumberProvider() implements NumberProvider {
     private static final TimeNumberProvider INSTANCE = new TimeNumberProvider();
@@ -12,8 +13,8 @@ public record TimeNumberProvider() implements NumberProvider {
     }
 
     @Override
-    public Float get(Context context) {
-        return (float) context.game().getGametime();
+    public Float get(ContextProvider context) {
+        return (float) context.getGame().getGametime();
     }
 
     @Override

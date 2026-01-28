@@ -4,18 +4,18 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.entity.EnemyEntity;
 import dev.creoii.chaos.entity.behavior.transition.AfterTransition;
-import dev.creoii.chaos.entity.behavior.transition.ForeverTransition;
+import dev.creoii.chaos.entity.behavior.transition.NeverTransition;
 import dev.creoii.chaos.entity.controller.EntityController;
 import dev.creoii.chaos.entity.behavior.action.Action;
 import dev.creoii.chaos.entity.behavior.transition.Transition;
-import dev.creoii.chaos.util.provider.Provider;
+import dev.creoii.chaos.util.context.ContextProvider;
 
 import java.util.List;
 
 public class Phase {
     public static final Codec<Phase> CODEC = RecordCodecBuilder.create(instance -> {
         return instance.group(
-            Transition.CODEC.fieldOf("transition").orElse(ForeverTransition.INSTANCE).forGetter(Phase::getTransition),
+            Transition.CODEC.fieldOf("transition").orElse(NeverTransition.INSTANCE).forGetter(Phase::getTransition),
             Action.CODEC.listOf().fieldOf("actions").forGetter(Phase::getActions)
         ).apply(instance, Phase::new);
     });
@@ -72,7 +72,7 @@ public class Phase {
         }
     }
 
-    public boolean shouldTransition(Provider.Context context, int time) {
+    public boolean shouldTransition(ContextProvider context, int time) {
         return transition.shouldTransition(context, time);
     }
 }

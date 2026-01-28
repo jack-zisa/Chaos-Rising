@@ -5,7 +5,8 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.World;
-import dev.creoii.chaos.util.provider.Provider;
+import dev.creoii.chaos.util.context.ComponentTypes;
+import dev.creoii.chaos.util.context.Context;
 import dev.creoii.chaos.util.provider.tileprovider.SimpleTileProvider;
 import dev.creoii.chaos.util.provider.tileprovider.TileProvider;
 import dev.creoii.chaos.world.Layer;
@@ -27,6 +28,7 @@ public record LayeredAreaSetpiece(String id, Palette palette, Map<String, Layer>
     }
 
     public void place(World world, int x, int y) {
+        Context context = Context.rootOf(world);
         layers().forEach((s, layer) -> {
             Palette palette = palette();
             if ("ground".equals(s)) {
@@ -40,7 +42,7 @@ public record LayeredAreaSetpiece(String id, Palette palette, Map<String, Layer>
 
                         TileProvider tile = palette.entries().getOrDefault(id, SimpleTileProvider.EMPTY);
                         if (tile != SimpleTileProvider.EMPTY)
-                            world.setGround(ri + x, ci + y, tile.get(new Provider.Context(world.getGame(), world, null, world.getGame().getGametime(), new Vector2(ri + x, ci + y), world.getRandom())));
+                            world.setGround(ri + x, ci + y, tile.get(context.child().with(ComponentTypes.POS, new Vector2(ri + x, ci + y))));
                     }
                 }
             } else if ("object".equals(s)) {
@@ -54,7 +56,7 @@ public record LayeredAreaSetpiece(String id, Palette palette, Map<String, Layer>
 
                         TileProvider tile = palette.entries().getOrDefault(id, SimpleTileProvider.EMPTY);
                         if (tile != SimpleTileProvider.EMPTY)
-                            world.setObject(ri + x, ci + y, tile.get(new Provider.Context(world.getGame(), world, null, world.getGame().getGametime(), new Vector2(ri + x, ci + y), world.getRandom())));
+                            world.setObject(ri + x, ci + y, tile.get(context.child().with(ComponentTypes.POS, new Vector2(ri + x, ci + y))));
                     }
                 }
             }

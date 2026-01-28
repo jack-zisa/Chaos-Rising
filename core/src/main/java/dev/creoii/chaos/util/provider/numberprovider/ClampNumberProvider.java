@@ -2,6 +2,7 @@ package dev.creoii.chaos.util.provider.numberprovider;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.chaos.util.context.ContextProvider;
 import dev.creoii.chaos.util.provider.Provider;
 
 import java.util.Optional;
@@ -37,7 +38,7 @@ public record ClampNumberProvider(NumberProvider value, Optional<NumberProvider>
     }
 
     @Override
-    public Float get(Context context) {
+    public Float get(ContextProvider context) {
         float value = this.value.get(context);
 
         if (max.isPresent()) {

@@ -28,6 +28,14 @@ public enum Direction {
         return axis == Axis.X ? random.nextBoolean() ? EAST : WEST : random.nextBoolean() ? NORTH : SOUTH;
     }
 
+    public int getUnitX() {
+        return (int) unit.x;
+    }
+
+    public int getUnitY() {
+        return (int) unit.y;
+    }
+
     public Vector2 getUnit() {
         return unit;
     }

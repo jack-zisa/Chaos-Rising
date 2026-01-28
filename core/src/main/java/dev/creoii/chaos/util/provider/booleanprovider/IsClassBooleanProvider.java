@@ -5,6 +5,8 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.entity.CharacterEntity;
 import dev.creoii.chaos.entity.CharacterEntityType;
+import dev.creoii.chaos.util.context.ComponentTypes;
+import dev.creoii.chaos.util.context.ContextProvider;
 
 public record IsClassBooleanProvider(String classId) implements BooleanProvider {
     public static final MapCodec<IsClassBooleanProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
@@ -19,8 +21,8 @@ public record IsClassBooleanProvider(String classId) implements BooleanProvider 
     }
 
     @Override
-    public Boolean get(Context context) {
-        if (context.entity() instanceof CharacterEntity character) {
+    public Boolean get(ContextProvider context) {
+        if (context.get(ComponentTypes.ENTITY) instanceof CharacterEntity character) {
             return ((CharacterEntityType) character.getType()).characterClass().get().id().equals(classId);
         }
         return false;

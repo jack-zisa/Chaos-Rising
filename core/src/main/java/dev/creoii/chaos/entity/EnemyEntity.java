@@ -10,7 +10,7 @@ import dev.creoii.chaos.entity.serialization.EntityCustomData;
 import dev.creoii.chaos.loot.LootTable;
 import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.LootUtils;
-import dev.creoii.chaos.util.provider.Provider;
+import dev.creoii.chaos.util.context.Context;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -86,7 +86,7 @@ public class EnemyEntity extends LivingEntity implements Attacker {
             }
         }
 
-        float experience = ((EnemyEntityType) getType()).experience().get(Provider.Context.of(this, getWorld().getGame().getGametime()));
+        float experience = ((EnemyEntityType) getType()).experience().get(Context.rootOf(this));
         if (experience > 0f) {
             getWorld().getEntityManager().getEntities(EntityGroup.CHARACTER).forEach((id, o) -> {
                 if (o instanceof CharacterEntity character) {

@@ -1,0 +1,10 @@
+{
+  "id": "test_room",
+  "type": "simple",
+  "width": 20,
+  "height": 20,
+  "floor_provider": "grass",
+  "wall_provider": "stone",
+  "hallway_provider": "grass",
+  "max_connections": 4
+}

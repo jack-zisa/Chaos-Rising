@@ -3,10 +3,11 @@ package dev.creoii.chaos.util.provider.phaseprovider;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.entity.EnemyEntity;
-import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.entity.behavior.Behavior;
 import dev.creoii.chaos.entity.behavior.MultiBehavior;
 import dev.creoii.chaos.entity.behavior.phase.Phase;
+import dev.creoii.chaos.util.context.ComponentTypes;
+import dev.creoii.chaos.util.context.ContextProvider;
 import dev.creoii.chaos.util.provider.numberprovider.ConstantNumberProvider;
 import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
 
@@ -32,9 +33,8 @@ public record OffsetPhaseProvider(NumberProvider offset) implements PhaseProvide
 
     @Override
     @Nullable
-    public Phase get(Context context) {
-        Entity entity = context.entity();
-        if (entity instanceof EnemyEntity enemy) {
+    public Phase get(ContextProvider context) {
+        if (context.get(ComponentTypes.ENTITY) instanceof EnemyEntity enemy) {
             Behavior behavior = enemy.getController().getBehavior();
             if (behavior.getType() == Behavior.Type.MULTI) {
                 MultiBehavior multiBehavior = (MultiBehavior) behavior;

@@ -7,7 +7,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.DataManager;
 import dev.creoii.chaos.entity.*;
 import dev.creoii.chaos.item.EquipmentItem;
-import dev.creoii.chaos.util.provider.Provider;
+import dev.creoii.chaos.util.context.Context;
 import dev.creoii.chaos.util.provider.numberprovider.ConstantNumberProvider;
 import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
 import dev.creoii.chaos.util.provider.vecprovider.ConstantVecProvider;
@@ -46,7 +46,7 @@ public record SimpleAttack(String bulletId, NumberProvider damage, int bulletCou
             return;
         }
 
-        Provider.Context context = Provider.Context.of(sourceEntity, sourceEntity.getWorld().getGame().getGametime());
+        Context context = Context.rootOf(sourceEntity);
         Vector2 pos = source.isPresent() ? source.get().get(context) : sourcePos.get(context);
         Vector2 direction = target.isPresent() ? target.get().get(context).sub(pos).nor() : item == null ? ONE : targetPos.get(context).sub(pos).nor();
 

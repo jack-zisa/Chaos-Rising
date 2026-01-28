@@ -3,6 +3,7 @@ package dev.creoii.chaos.util.provider.vecprovider;
 import com.badlogic.gdx.math.Vector2;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.chaos.util.context.ContextProvider;
 import dev.creoii.chaos.util.provider.Provider;
 
 public record PerpendicularVecProvider(VecProvider value) implements VecProvider {
@@ -26,7 +27,7 @@ public record PerpendicularVecProvider(VecProvider value) implements VecProvider
     }
 
     @Override
-    public Vector2 get(Context context) {
+    public Vector2 get(ContextProvider context) {
         Vector2 vector2 = value.get(context);
         return new Vector2(-vector2.y, vector2.x).nor().cpy();
     }

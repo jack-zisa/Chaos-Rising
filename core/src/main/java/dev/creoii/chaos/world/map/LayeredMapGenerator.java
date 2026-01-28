@@ -6,7 +6,8 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.DataManager;
 import dev.creoii.chaos.World;
-import dev.creoii.chaos.util.provider.Provider;
+import dev.creoii.chaos.util.context.ComponentTypes;
+import dev.creoii.chaos.util.context.Context;
 import dev.creoii.chaos.util.provider.tileprovider.SimpleTileProvider;
 import dev.creoii.chaos.util.provider.tileprovider.TileProvider;
 import dev.creoii.chaos.world.Layer;
@@ -53,6 +54,7 @@ public record LayeredMapGenerator(String id, Palette palette, Map<String, Layer>
     }
 
     public void place(World world) {
+        Context context = Context.rootOf(world);
         layers().forEach((s, layer) -> {
             Palette palette = palette();
             if ("ground".equals(s)) {
@@ -66,7 +68,7 @@ public record LayeredMapGenerator(String id, Palette palette, Map<String, Layer>
 
                         TileProvider tile = palette.entries().getOrDefault(id, SimpleTileProvider.EMPTY);
                         if (tile != SimpleTileProvider.EMPTY)
-                            world.setGround(ri, ci, tile.get(new Provider.Context(world.getGame(), world, null, world.getGame().getGametime(), new Vector2(ri, ci), world.getRandom())));
+                            world.setGround(ri, ci, tile.get(context.child().with(ComponentTypes.POS, new Vector2(ri, ci))));
                     }
                 }
             } else if ("object".equals(s)) {
@@ -80,7 +82,7 @@ public record LayeredMapGenerator(String id, Palette palette, Map<String, Layer>
 
                         TileProvider tile = palette.entries().getOrDefault(id, SimpleTileProvider.EMPTY);
                         if (tile != SimpleTileProvider.EMPTY)
-                            world.setObject(ri, ci, tile.get(new Provider.Context(world.getGame(), world, null, world.getGame().getGametime(), new Vector2(ri, ci), world.getRandom())));
+                            world.setObject(ri, ci, tile.get(context.child().with(ComponentTypes.POS, new Vector2(ri, ci))));
                     }
                 }
             }

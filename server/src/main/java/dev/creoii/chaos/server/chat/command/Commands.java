@@ -417,8 +417,8 @@ public final class Commands {
                 case "room" -> {
                     RoomTemplate roomTemplate = DataManager.getRoomTemplate(args[1]);
                     if (roomTemplate != null) {
-                        DungeonGenerator dungeonGenerator = new DungeonGenerator(new Dungeon("placeholder", ConstantNumberProvider.ONE, new SimpleRoomProvider(roomTemplate)), x, y);
-                        RoomGenerator roomGenerator = new RoomGenerator(roomTemplate, x, y, null);
+                        DungeonGenerator dungeonGenerator = new DungeonGenerator(world, new Dungeon("placeholder", ConstantNumberProvider.ONE, new SimpleRoomProvider(roomTemplate)), x, y);
+                        RoomGenerator roomGenerator = new RoomGenerator(roomTemplate, x, y, null, 0);
                         roomGenerator.place(world, dungeonGenerator, roomGenerator.build(world, dungeonGenerator));
                         return Command.Result.SUCCESS;
                     }
@@ -426,8 +426,8 @@ public final class Commands {
                 case "dungeon" -> {
                     Dungeon dungeon = DataManager.getDungeon(args[1]);
                     if (dungeon != null) {
-                        DungeonGenerator generator = new DungeonGenerator(dungeon, x, y);
-                        generator.generate(world);
+                        DungeonGenerator generator = new DungeonGenerator(world, dungeon, x, y);
+                        generator.generate();
                         return Command.Result.SUCCESS;
                     }
                 }

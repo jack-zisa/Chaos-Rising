@@ -5,6 +5,7 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.chaos.util.context.ContextProvider;
 
 import java.util.List;
 
@@ -32,7 +33,7 @@ public record ConstantColorProvider(Color color) implements ColorProvider {
     }
 
     @Override
-    public Color get(Context context) {
+    public Color get(ContextProvider context) {
         return color;
     }
 

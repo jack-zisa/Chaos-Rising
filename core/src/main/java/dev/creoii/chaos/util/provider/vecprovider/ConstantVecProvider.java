@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.chaos.util.context.ContextProvider;
 
 public record ConstantVecProvider(Vector2 pos) implements VecProvider {
     public static final ConstantVecProvider ZERO = new ConstantVecProvider(Vector2.Zero.cpy());
@@ -32,7 +33,7 @@ public record ConstantVecProvider(Vector2 pos) implements VecProvider {
     }
 
     @Override
-    public Vector2 get(Context context) {
+    public Vector2 get(ContextProvider context) {
         return pos;
     }
 

@@ -3,6 +3,7 @@ package dev.creoii.chaos.util.provider.colorprovider;
 import com.badlogic.gdx.graphics.Color;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.chaos.util.context.ContextProvider;
 import dev.creoii.chaos.util.provider.Provider;
 import dev.creoii.chaos.util.provider.numberprovider.ConstantNumberProvider;
 import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
@@ -30,7 +31,7 @@ public record BlendColorProvider(ColorProvider a, ColorProvider b, NumberProvide
     }
 
     @Override
-    public Color get(Context context) {
+    public Color get(ContextProvider context) {
         return a.get(context).lerp(b.get(context), factor.get(context));
     }
 }

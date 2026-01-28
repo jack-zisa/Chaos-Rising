@@ -2,6 +2,7 @@ package dev.creoii.chaos.util.provider.booleanprovider;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.chaos.util.context.ContextProvider;
 import dev.creoii.chaos.util.provider.Comparison;
 import dev.creoii.chaos.util.provider.Provider;
 import dev.creoii.chaos.util.provider.numberprovider.ConstantNumberProvider;
@@ -22,7 +23,7 @@ public record NumberComparisonBooleanProvider(NumberProvider a, NumberProvider b
     }
 
     @Override
-    public Boolean get(Context context) {
+    public Boolean get(ContextProvider context) {
         float av = a.get(context), bv = b.get(context);
         return switch (comparison) {
             case LT -> av < bv;

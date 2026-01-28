@@ -1,0 +1,18 @@
+{
+  "id": "test_room_small",
+  "type": "simple",
+  "width": {
+    "type": "random",
+    "min": 4,
+    "max": 6
+  },
+  "height": {
+    "type": "random",
+    "min": 4,
+    "max": 6
+  },
+  "floor_provider": "dirt",
+  "wall_provider": "stone",
+  "hallway_provider": "dirt",
+  "max_connections": 2
+}

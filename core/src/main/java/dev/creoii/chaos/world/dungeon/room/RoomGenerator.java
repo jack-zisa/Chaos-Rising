@@ -13,14 +13,16 @@ public class RoomGenerator implements Room {
     private final List<Connection> connections;
     private final int x;
     private final int y;
+    private final int depth;
     private int width = -1, height = -1;
 
-    public RoomGenerator(RoomTemplate roomTemplate, int x, int y, Direction direction) {
+    public RoomGenerator(RoomTemplate roomTemplate, int x, int y, Direction direction, int depth) {
         this.roomTemplate = roomTemplate;
         this.x = x;
         this.y = y;
         this.direction = direction;
         this.connections = new ArrayList<>();
+        this.depth = depth;
     }
 
     public RoomTemplate getRoom() {
@@ -33,6 +35,10 @@ public class RoomGenerator implements Room {
 
     public int y() {
         return y;
+    }
+
+    public int depth() {
+        return depth;
     }
 
     public int width() {
@@ -75,6 +81,6 @@ public class RoomGenerator implements Room {
             dungeonGenerator.getRoomCounts().put(roomId, dungeonGenerator.getRoomCounts().get(roomId) + 1);
         } else dungeonGenerator.getRoomCounts().put(roomId, 1);
 
-        return roomTemplate.place(world, dungeonGenerator, this, pendingRoom);
+        return roomTemplate.place(world, dungeonGenerator, this, pendingRoom, depth);
     }
 }

@@ -2,7 +2,8 @@ package dev.creoii.chaos.entity.behavior.transition;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dev.creoii.chaos.util.provider.Provider;
+import dev.creoii.chaos.util.context.ComponentTypes;
+import dev.creoii.chaos.util.context.ContextProvider;
 import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
 import dev.creoii.chaos.util.provider.phaseprovider.PhaseProvider;
 
@@ -20,7 +21,10 @@ public record RandomTransition(NumberProvider chance, PhaseProvider target) impl
     }
 
     @Override
-    public boolean shouldTransition(Provider.Context context, int time) {
-        return context.random().nextInt(100) <= chance.get(context);
+    public boolean shouldTransition(ContextProvider context, int time) {
+        if (context.has(ComponentTypes.RANDOM)) {
+            return context.get(ComponentTypes.RANDOM).nextInt(100) <= chance.get(context);
+        }
+        return true;
     }
 }

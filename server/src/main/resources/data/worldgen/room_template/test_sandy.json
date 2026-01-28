@@ -14,5 +14,5 @@
   "floor_provider": "sand",
   "wall_provider": "stone",
   "hallway_provider": "sand",
-  "max_connections": 2
+  "max_connections": 5
 }

@@ -3,6 +3,7 @@ package dev.creoii.chaos.util.provider.booleanprovider;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.chaos.util.context.ContextProvider;
 
 public record ConstantBooleanProvider(boolean value) implements BooleanProvider {
     public static final ConstantBooleanProvider TRUE = new ConstantBooleanProvider(true);
@@ -22,7 +23,7 @@ public record ConstantBooleanProvider(boolean value) implements BooleanProvider 
     }
 
     @Override
-    public Boolean get(Context context) {
+    public Boolean get(ContextProvider context) {
         return value;
     }
 

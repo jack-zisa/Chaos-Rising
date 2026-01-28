@@ -3,6 +3,7 @@ package dev.creoii.chaos.util.provider.vecprovider;
 import com.badlogic.gdx.math.Vector2;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.chaos.util.context.ContextProvider;
 import dev.creoii.chaos.util.provider.Provider;
 
 public record RotatedOffsetVecProvider(VecProvider from, VecProvider to, VecProvider offset) implements VecProvider {
@@ -29,7 +30,7 @@ public record RotatedOffsetVecProvider(VecProvider from, VecProvider to, VecProv
     }
 
     @Override
-    public Vector2 get(Context context) {
+    public Vector2 get(ContextProvider context) {
         Vector2 direction = to.get(context).sub(from.get(context));
         return offset.get(context).rotateRad(direction.angleRad());
     }

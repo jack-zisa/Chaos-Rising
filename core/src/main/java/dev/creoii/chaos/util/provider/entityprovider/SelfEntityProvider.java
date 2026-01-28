@@ -2,6 +2,10 @@ package dev.creoii.chaos.util.provider.entityprovider;
 
 import com.mojang.serialization.MapCodec;
 import dev.creoii.chaos.entity.Entity;
+import dev.creoii.chaos.util.context.ComponentTypes;
+import dev.creoii.chaos.util.context.ContextProvider;
+
+import javax.annotation.Nullable;
 
 public record SelfEntityProvider() implements EntityProvider {
     public static final SelfEntityProvider INSTANCE = new SelfEntityProvider();
@@ -13,7 +17,8 @@ public record SelfEntityProvider() implements EntityProvider {
     }
 
     @Override
-    public Entity get(Context context) {
-        return context.entity();
+    @Nullable
+    public Entity get(ContextProvider context) {
+        return context.get(ComponentTypes.ENTITY, null);
     }
 }

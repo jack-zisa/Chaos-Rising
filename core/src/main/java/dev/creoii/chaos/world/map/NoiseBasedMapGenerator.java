@@ -5,7 +5,8 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.World;
-import dev.creoii.chaos.util.provider.Provider;
+import dev.creoii.chaos.util.context.ComponentTypes;
+import dev.creoii.chaos.util.context.Context;
 import dev.creoii.chaos.util.provider.tileprovider.SimpleTileProvider;
 import dev.creoii.chaos.util.provider.tileprovider.TileProvider;
 import dev.creoii.chaos.world.noise.FastNoiseLite;
@@ -42,6 +43,7 @@ public record NoiseBasedMapGenerator(String id, int width, int height, FastNoise
         if (entries.isEmpty())
             return;
 
+        Context context = Context.rootOf(world);
         FastNoiseLite fastNoiseLite = new FastNoiseLite(noise).seed(world.getSeed());
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
@@ -51,7 +53,7 @@ public record NoiseBasedMapGenerator(String id, int width, int height, FastNoise
                     if (n <= entry.max()) {
                         TileProvider tileProvider = entry.tile;
                         if (tileProvider != SimpleTileProvider.EMPTY) {
-                            Tile tile = tileProvider.get(new Provider.Context(world.getGame(), world, null, world.getGame().getGametime(), new Vector2(x, y), world.getRandom()));
+                            Tile tile = tileProvider.get(context.child().with(ComponentTypes.POS, new Vector2(x, y)));
                             world.setGround(x, y, tile);
                             break;
                         }

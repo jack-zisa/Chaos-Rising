@@ -5,10 +5,11 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.entity.EnemyEntity;
-import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.entity.behavior.Behavior;
 import dev.creoii.chaos.entity.behavior.MultiBehavior;
 import dev.creoii.chaos.entity.behavior.phase.Phase;
+import dev.creoii.chaos.util.context.ComponentTypes;
+import dev.creoii.chaos.util.context.ContextProvider;
 import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
 import dev.creoii.chaos.util.provider.stringprovider.StringProvider;
 
@@ -28,8 +29,8 @@ public record ToPhaseProvider(Either<StringProvider, NumberProvider> to) impleme
 
     @Override
     @Nullable
-    public Phase get(Context context) {
-        if (context.entity() instanceof EnemyEntity enemy) {
+    public Phase get(ContextProvider context) {
+        if (context.get(ComponentTypes.ENTITY) instanceof EnemyEntity enemy) {
             Behavior behavior = enemy.getController().getBehavior();
             if (behavior.getType() == Behavior.Type.MULTI) {
                 MultiBehavior multiBehavior = (MultiBehavior) behavior;

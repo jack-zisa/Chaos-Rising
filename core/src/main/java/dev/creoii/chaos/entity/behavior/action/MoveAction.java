@@ -6,21 +6,24 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.entity.EnemyEntity;
 import dev.creoii.chaos.entity.LivingEntity;
 import dev.creoii.chaos.entity.controller.EntityController;
-import dev.creoii.chaos.util.provider.Provider;
+import dev.creoii.chaos.util.context.ComponentTypes;
+import dev.creoii.chaos.util.context.Context;
+import dev.creoii.chaos.util.context.ContextProvider;
 import dev.creoii.chaos.util.provider.vecprovider.VecProvider;
 
-public class MoveAction extends Action {
+public class MoveAction extends Action implements ContextProvider {
     public static final MapCodec<MoveAction> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(
             VecProvider.CODEC.fieldOf("movement").forGetter(MoveAction::getMovement)
         ).apply(instance, movement -> new MoveAction((VecProvider) movement.optimize()));
     });
     private final VecProvider movement;
-    private Provider.Context context;
     private float speed;
+    private Context context;
 
     public MoveAction(VecProvider movement) {
         this.movement = movement;
+        context = null;
     }
 
     @Override
@@ -33,17 +36,22 @@ public class MoveAction extends Action {
     }
 
     @Override
+    public Context getContext() {
+        return context;
+    }
+
+    @Override
     public void start(EntityController<? extends EnemyEntity> controller) {
-        context = Provider.Context.of(controller.getEntity(), controller.getEntity().getWorld().getGame().getGametime());
+        context = Context.rootOf(controller.getEntity());
         speed = (controller.getEntity() instanceof LivingEntity living ? living.getStats().speed().value() : 1f);
     }
 
     @Override
     public void update(EntityController<? extends EnemyEntity> controller, int time, float delta) {
         if (context == null) {
-            context = Provider.Context.of(controller.getEntity(), controller.getEntity().getWorld().getGame().getGametime());
+            return;
         }
-        context.setTime(controller.getEntity().getWorld().getGame().getGametime());
+        context.set(ComponentTypes.TIME, controller.getEntity().getWorld().getGame().getGametime());
         Vector2 move = movement.get(context);
         controller.getEntity().getPos().add(move.scl(speed * delta));
     }

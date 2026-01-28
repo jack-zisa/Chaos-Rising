@@ -1,18 +1,18 @@
 {
-  "id": "test_room",
+  "id": "test_room_big",
   "type": "simple",
   "width": {
     "type": "random",
-    "min": 5,
-    "max": 10
+    "min": 10,
+    "max": 18
   },
   "height": {
     "type": "random",
-    "min": 5,
-    "max": 10
+    "min": 10,
+    "max": 18
   },
-  "floor_provider": "grass",
+  "floor_provider": "dirt",
   "wall_provider": "stone",
   "hallway_provider": "dirt",
-  "max_connections": 10
+  "max_connections": 8
 }

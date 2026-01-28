@@ -3,7 +3,10 @@ package dev.creoii.chaos.util.provider.entityprovider;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.entity.Entity;
+import dev.creoii.chaos.util.context.ComponentTypes;
+import dev.creoii.chaos.util.context.ContextProvider;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public record RandomEntityProvider(List<EntityProvider> entities) implements EntityProvider {
@@ -17,7 +20,11 @@ public record RandomEntityProvider(List<EntityProvider> entities) implements Ent
     }
 
     @Override
-    public Entity get(Context context) {
-        return entities.get(context.random().nextInt(entities.size())).get(context);
+    @Nullable
+    public Entity get(ContextProvider context) {
+        if (context.has(ComponentTypes.RANDOM)) {
+            return entities.get(context.get(ComponentTypes.RANDOM).nextInt(entities.size())).get(context);
+        }
+        return null;
     }
 }

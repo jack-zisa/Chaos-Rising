@@ -2,7 +2,7 @@ package dev.creoii.chaos.entity.behavior.transition;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dev.creoii.chaos.util.provider.Provider;
+import dev.creoii.chaos.util.context.ContextProvider;
 import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
 import dev.creoii.chaos.util.provider.phaseprovider.PhaseProvider;
 
@@ -45,7 +45,7 @@ public class AfterTransition implements Transition {
     }
 
     @Override
-    public boolean shouldTransition(Provider.Context context, int time) {
+    public boolean shouldTransition(ContextProvider context, int time) {
         return time - startTime >= after.get(context);
     }
 }

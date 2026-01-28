@@ -10,7 +10,7 @@ import dev.creoii.chaos.entity.behavior.phase.Phase;
 import dev.creoii.chaos.entity.behavior.phase.PhaseKey;
 import dev.creoii.chaos.entity.behavior.transition.Transition;
 import dev.creoii.chaos.entity.controller.EnemyController;
-import dev.creoii.chaos.util.provider.Provider;
+import dev.creoii.chaos.util.context.Context;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -100,8 +100,8 @@ public class MultiBehavior implements Behavior {
     public void update(EnemyController controller, int time, float delta) {
         currentPhase.update(controller, time, delta);
 
-        if (currentPhase.getTransition().getType() != Transition.Type.FOREVER) {
-            Provider.Context context = Provider.Context.of(controller.getEntity(), time);
+        if (currentPhase.getTransition().getType() != Transition.Type.NEVER) {
+            Context context = Context.rootOf(controller.getEntity());
             if (currentPhase.shouldTransition(context, time)) {
                 currentPhase.end(controller);
                 setCurrentPhase(currentPhase.getTransition().getTarget(context));

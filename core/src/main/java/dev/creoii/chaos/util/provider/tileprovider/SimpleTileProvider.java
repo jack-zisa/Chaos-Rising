@@ -3,6 +3,7 @@ package dev.creoii.chaos.util.provider.tileprovider;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.DataManager;
+import dev.creoii.chaos.util.context.ContextProvider;
 import dev.creoii.chaos.world.tile.Tile;
 
 public record SimpleTileProvider(Tile value) implements TileProvider {
@@ -19,7 +20,7 @@ public record SimpleTileProvider(Tile value) implements TileProvider {
     }
 
     @Override
-    public Tile get(Context context) {
+    public Tile get(ContextProvider context) {
         return value;
     }
 }

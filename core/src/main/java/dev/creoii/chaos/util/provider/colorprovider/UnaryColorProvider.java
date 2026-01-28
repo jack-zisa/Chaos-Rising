@@ -3,6 +3,7 @@ package dev.creoii.chaos.util.provider.colorprovider;
 import com.badlogic.gdx.graphics.Color;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.chaos.util.context.ContextProvider;
 import dev.creoii.chaos.util.provider.Provider;
 import dev.creoii.chaos.util.provider.UnaryOperation;
 
@@ -50,7 +51,7 @@ public record UnaryColorProvider(UnaryOperation operation, ColorProvider value) 
     }
 
     @Override
-    public Color get(Context context) {
+    public Color get(ContextProvider context) {
         Color v = value.get(context);
         return switch (operation) {
             case SIN -> sin(v);

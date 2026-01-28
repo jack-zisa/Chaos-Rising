@@ -3,6 +3,7 @@ package dev.creoii.chaos.util.provider.numberprovider;
 import com.badlogic.gdx.math.Vector2;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.chaos.util.context.ContextProvider;
 import dev.creoii.chaos.util.provider.Provider;
 import dev.creoii.chaos.util.provider.vecprovider.ConstantVecProvider;
 import dev.creoii.chaos.util.provider.vecprovider.VecProvider;
@@ -29,7 +30,7 @@ public record DistanceNumberProvider(VecProvider a, VecProvider b) implements Nu
     }
 
     @Override
-    public Float get(Context context) {
+    public Float get(ContextProvider context) {
         return a.get(context).dst(b.get(context));
     }
 

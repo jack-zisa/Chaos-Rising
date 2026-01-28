@@ -3,6 +3,8 @@ package dev.creoii.chaos.util.provider.numberprovider;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.entity.LivingEntity;
+import dev.creoii.chaos.util.context.ComponentTypes;
+import dev.creoii.chaos.util.context.ContextProvider;
 import dev.creoii.chaos.util.stat.Stat;
 
 public record StatNumberProvider(Stat.Type statType) implements NumberProvider {
@@ -18,8 +20,8 @@ public record StatNumberProvider(Stat.Type statType) implements NumberProvider {
     }
 
     @Override
-    public Float get(Context context) {
-        if (context.entity() instanceof LivingEntity livingEntity) {
+    public Float get(ContextProvider context) {
+        if (context.get(ComponentTypes.ENTITY) instanceof LivingEntity livingEntity) {
             switch (statType) {
                 case HEALTH -> livingEntity.getStats().health().value();
                 case ATTACK_SPEED -> livingEntity.getStats().attackSpeed().value();

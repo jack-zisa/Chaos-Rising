@@ -3,6 +3,7 @@ package dev.creoii.chaos.util.provider.vecprovider;
 import com.badlogic.gdx.math.Vector2;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.chaos.util.context.ContextProvider;
 import dev.creoii.chaos.util.provider.Provider;
 
 public record DirectionToVecProvider(VecProvider from, VecProvider to) implements VecProvider {
@@ -27,7 +28,7 @@ public record DirectionToVecProvider(VecProvider from, VecProvider to) implement
     }
 
     @Override
-    public Vector2 get(Context context) {
+    public Vector2 get(ContextProvider context) {
         return to.get(context).sub(from.get(context)).nor().cpy();
     }
 

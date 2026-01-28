@@ -2,6 +2,7 @@ package dev.creoii.chaos.util.provider.numberprovider;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.chaos.util.context.ContextProvider;
 import dev.creoii.chaos.util.provider.Provider;
 import dev.creoii.chaos.util.provider.UnaryOperation;
 
@@ -64,7 +65,7 @@ public record UnaryNumberProvider(UnaryOperation operation, NumberProvider value
     }
 
     @Override
-    public Float get(Context context) {
+    public Float get(ContextProvider context) {
         float v = value.get(context);
         return switch (operation) {
             case SIN -> (float) Math.sin(v);

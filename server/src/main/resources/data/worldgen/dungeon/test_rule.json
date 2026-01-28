@@ -1,0 +1,53 @@
+{
+  "id": "test_rule",
+  "max_depth": 16,
+  "fallback": {
+    "type": "rule_based",
+    "entries": [
+      {
+        "test": {
+          "type": "number_comparison",
+          "comparison": "lt",
+          "a": {
+            "type": "dungeon_depth"
+          },
+          "b": 4
+        },
+        "room": "test_grassy"
+      },
+      {
+        "test": {
+          "type": "number_comparison",
+          "comparison": "lt",
+          "a": {
+            "type": "dungeon_depth"
+          },
+          "b": 8
+        },
+        "room": "test_dirty"
+      },
+      {
+        "test": {
+          "type": "number_comparison",
+          "comparison": "lt",
+          "a": {
+            "type": "dungeon_depth"
+          },
+          "b": 12
+        },
+        "room": "test_sandy"
+      },
+      {
+        "test": {
+          "type": "number_comparison",
+          "comparison": "lt",
+          "a": {
+            "type": "dungeon_depth"
+          },
+          "b": 16
+        },
+        "room": "test_stony"
+      }
+    ]
+  }
+}

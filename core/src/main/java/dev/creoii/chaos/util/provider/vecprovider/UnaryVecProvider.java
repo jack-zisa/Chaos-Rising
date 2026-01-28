@@ -3,6 +3,7 @@ package dev.creoii.chaos.util.provider.vecprovider;
 import com.badlogic.gdx.math.Vector2;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.chaos.util.context.ContextProvider;
 import dev.creoii.chaos.util.provider.Provider;
 import dev.creoii.chaos.util.provider.UnaryOperation;
 
@@ -65,7 +66,7 @@ public record UnaryVecProvider(UnaryOperation operation, VecProvider value) impl
     }
 
     @Override
-    public Vector2 get(Context context) {
+    public Vector2 get(ContextProvider context) {
         Vector2 v = value.get(context);
         return switch (operation) {
             case SIN -> new Vector2((float) Math.sin(v.x), (float) Math.sin(v.y));

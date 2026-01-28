@@ -1,0 +1,11 @@
+{
+  "id": "test_small",
+  "max_depth": 40,
+  "fallback": {
+    "type": "random",
+    "rooms": [
+      "test_room_small",
+      "test_sandy"
+    ]
+  }
+}

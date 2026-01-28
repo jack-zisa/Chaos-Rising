@@ -6,7 +6,8 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.World;
 import dev.creoii.chaos.util.Direction;
-import dev.creoii.chaos.util.provider.Provider;
+import dev.creoii.chaos.util.context.ComponentTypes;
+import dev.creoii.chaos.util.context.Context;
 import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
 import dev.creoii.chaos.util.provider.tileprovider.TileProvider;
 import dev.creoii.chaos.world.dungeon.DungeonGenerator;
@@ -41,7 +42,7 @@ public record SimpleRoomTemplate(String id, NumberProvider width, NumberProvider
         Direction direction = room.direction();
 
         // sample width & height @ start pos
-        Provider.Context context = new Provider.Context(world.getGame(), world, null, world.getGame().getGametime(), new Vector2(x, y), world.getRandom());
+        Context context = Context.rootOf(world).with(ComponentTypes.POS, new Vector2(x, y));
 
         int width = this.width.getInt(context);
         int height = this.height.getInt(context);
@@ -109,34 +110,37 @@ public record SimpleRoomTemplate(String id, NumberProvider width, NumberProvider
     }
 
     @Override
-    public DungeonGenerator.PlacedRoom place(World world, DungeonGenerator dungeon, RoomGenerator room, DungeonGenerator.PendingRoom pendingRoom) {
+    public DungeonGenerator.PlacedRoom place(World world, DungeonGenerator dungeon, RoomGenerator room, DungeonGenerator.PendingRoom pendingRoom, int depth) {
+        Context context = Context.rootOf(world);
         for (int rx = 0; rx < pendingRoom.width(); ++rx) {
             for (int ry = 0; ry < pendingRoom.height(); ++ry) {
-                Provider.Context context = new Provider.Context(world.getGame(), world, null, world.getGame().getGametime(), new Vector2(pendingRoom.x() + rx, pendingRoom.y() + ry), world.getRandom());
+                Context child = context.child().with(ComponentTypes.POS, new Vector2(pendingRoom.x() + rx, pendingRoom.y() + ry));
                 if (rx == 0 || ry == 0 || rx == pendingRoom.width() - 1 || ry == pendingRoom.height() - 1) {
-                    world.setGround(pendingRoom.x() + rx, pendingRoom.y() + ry, wallProvider.get(context));
+                    world.setGround(pendingRoom.x() + rx, pendingRoom.y() + ry, wallProvider.get(child));
                 } else {
-                    world.setGround(pendingRoom.x() + rx, pendingRoom.y() + ry, floorProvider.get(context));
+                    world.setGround(pendingRoom.x() + rx, pendingRoom.y() + ry, floorProvider.get(child));
                 }
             }
         }
 
         room.getConnections().forEach(connection -> {
             if (connection.isConnected()) {
-                Provider.Context context = new Provider.Context(world.getGame(), world, null, world.getGame().getGametime(), new Vector2(connection.x(), connection.y()), world.getRandom());
-                world.setGround(connection.x(), connection.y(), hallwayProvider.get(context));
+                Context child = context.child().with(ComponentTypes.POS, new Vector2(connection.x(), connection.y()));
+                Context backChild = context.child().with(ComponentTypes.POS, new Vector2(connection.x() + connection.direction().getUnitX(), connection.y() + connection.direction().getUnitY()));
+                world.setGround(connection.x(), connection.y(), hallwayProvider.get(child));
+                world.setGround(connection.x() + connection.direction().getUnitX(), connection.y() + connection.direction().getUnitY(), hallwayProvider.get(backChild));
             }
         });
 
-        return new DungeonGenerator.PlacedRoom(pendingRoom);
+        return new DungeonGenerator.PlacedRoom(pendingRoom, depth);
     }
 
     private static Connection createEdgeConnection(int x, int y, int width, int height, Direction direction, World world) {
         return switch (direction) {
-            case NORTH -> new Connection(world.getRandom().nextInt(width), height - 1, x + world.getRandom().nextInt(width), y + (height - 1), Direction.NORTH);
-            case SOUTH -> new Connection(world.getRandom().nextInt(width), 0, x + world.getRandom().nextInt(width), y, Direction.SOUTH);
-            case WEST -> new Connection(0, world.getRandom().nextInt(height), x, y + world.getRandom().nextInt(height), Direction.WEST);
-            case EAST -> new Connection(width - 1, world.getRandom().nextInt(height), x + (width - 1), y + world.getRandom().nextInt(height), Direction.EAST);
+            case NORTH -> new Connection(world.getRandom().nextInt(width - 2) + 1, height - 1, x + (world.getRandom().nextInt(width - 2) + 1), y + (height - 1), Direction.NORTH);
+            case SOUTH -> new Connection(world.getRandom().nextInt(width - 2) + 1, 0, x + (world.getRandom().nextInt(width - 2) + 1), y, Direction.SOUTH);
+            case WEST -> new Connection(0, world.getRandom().nextInt(height - 2) + 1, x, y + (world.getRandom().nextInt(height - 2) + 1), Direction.WEST);
+            case EAST -> new Connection(width - 1, world.getRandom().nextInt(height - 2) + 1, x + (width - 1), y + (world.getRandom().nextInt(height - 2) + 1), Direction.EAST);
         };
     }
 }

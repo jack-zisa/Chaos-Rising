@@ -2,6 +2,8 @@ package dev.creoii.chaos.util.provider.vecprovider;
 
 import com.badlogic.gdx.math.Vector2;
 import com.mojang.serialization.MapCodec;
+import dev.creoii.chaos.util.context.ComponentTypes;
+import dev.creoii.chaos.util.context.ContextProvider;
 
 public record SourceVecProvider() implements VecProvider {
     public static final SourceVecProvider INSTANCE = new SourceVecProvider();
@@ -13,8 +15,10 @@ public record SourceVecProvider() implements VecProvider {
     }
 
     @Override
-    public Vector2 get(Context context) {
-        return context.entity().getPos().cpy();
+    public Vector2 get(ContextProvider context) {
+        if (context.has(ComponentTypes.ENTITY))
+            return context.get(ComponentTypes.ENTITY).getPos().cpy();
+        return null;
     }
 
     @Override

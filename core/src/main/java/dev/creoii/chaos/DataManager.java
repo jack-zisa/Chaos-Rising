@@ -71,64 +71,112 @@ public class DataManager {
         return DATA.get(SchemaType.MAP_GENERATOR);
     }
 
-    @Nullable
     public static CharacterClass getCharacterClass(String id) {
-        return (CharacterClass) getClasses().getOrDefault(id, null);
+        CharacterClass value = (CharacterClass) getClasses().get(id);
+        if (value == null) {
+            LOGGER.error("Unknown CharacterClass: '" + id + "'");
+            return null;
+        }
+        return value;
     }
 
-    @Nullable
     public static EnemyEntityType getEnemy(String id) {
-        return (EnemyEntityType) getEntities().getOrDefault(id, null);
+        EnemyEntityType value = (EnemyEntityType) getEntities().get(id);
+        if (value == null) {
+            LOGGER.error("Unknown Enemy: '" + id + "'");
+            return null;
+        }
+        return value;
     }
 
-    @Nullable
     public static ObjectEntityType getObject(String id) {
-        return (ObjectEntityType) getEntities().getOrDefault(id, null);
+        ObjectEntityType value = (ObjectEntityType) getEntities().get(id);
+        if (value == null) {
+            LOGGER.error("Unknown Object: '" + id + "'");
+            return null;
+        }
+        return value;
     }
 
-    @Nullable
     public static BulletEntityType getBullet(String id) {
-        return (BulletEntityType) getEntities().getOrDefault(id, null);
+        BulletEntityType value = (BulletEntityType) getEntities().get(id);
+        if (value == null) {
+            LOGGER.error("Unknown Bullet: '" + id + "'");
+            return null;
+        }
+        return value;
     }
 
-    @Nullable
     public static LootDropEntityType getLootDrop(String id) {
-        return (LootDropEntityType) getEntities().getOrDefault(id, null);
+        LootDropEntityType value = (LootDropEntityType) getEntities().get(id);
+        if (value == null) {
+            LOGGER.error("Unknown LootDrop: '" + id + "'");
+            return null;
+        }
+        return value;
     }
 
-    @Nullable
     public static Item getItem(String id) {
-        return (Item) getItems().getOrDefault(id, null);
+        Item value = (Item) getItems().get(id);
+        if (value == null) {
+            LOGGER.error("Unknown Item: '" + id + "'");
+            return null;
+        }
+        return value;
     }
 
-    @Nullable
     public static LootTable getLootTable(String id) {
-        return (LootTable) getLootTables().getOrDefault(id, null);
+        LootTable value = (LootTable) getLootTables().get(id);
+        if (value == null) {
+            LOGGER.error("Unknown LootTable: '" + id + "'");
+            return null;
+        }
+        return value;
     }
 
-    @Nullable
     public static Tile getTile(String id) {
-        return (Tile) getTiles().getOrDefault(id, null);
+        Tile value = (Tile) getTiles().get(id);
+        if (value == null) {
+            LOGGER.error("Unknown Tile: '" + id + "'");
+            return null;
+        }
+        return value;
     }
 
-    @Nullable
     public static Setpiece getSetpiece(String id) {
-        return (Setpiece) getSetpieces().getOrDefault(id, null);
+        Setpiece value = (Setpiece) getSetpieces().get(id);
+        if (value == null) {
+            LOGGER.error("Unknown Setpiece: '" + id + "'");
+            return null;
+        }
+        return value;
     }
 
-    @Nullable
     public static RoomTemplate getRoomTemplate(String id) {
-        return (RoomTemplate) getRoomTemplates().getOrDefault(id, null);
+        RoomTemplate value = (RoomTemplate) getRoomTemplates().get(id);
+        if (value == null) {
+            LOGGER.error("Unknown RoomTemplate: '" + id + "'");
+            return null;
+        }
+        return value;
     }
 
-    @Nullable
     public static Dungeon getDungeon(String id) {
-        return (Dungeon) getDungeons().getOrDefault(id, null);
+        Dungeon value = (Dungeon) getDungeons().get(id);
+        if (value == null) {
+            LOGGER.error("Unknown Dungeon: '" + id + "'");
+            return null;
+        }
+        return value;
     }
 
-    @Nullable
     public static MapGenerator getMapGenerator(String id) {
-        return (MapGenerator) getMapGenerators().getOrDefault(id, null);
+        MapGenerator value = (MapGenerator) getMapGenerators().get(id);
+        if (value == null) {
+            LOGGER.error("Unknown MapGenerator: '" + id + "'");
+            return null;
+        }
+        return value;
     }
 
     public static void load(Path path) {

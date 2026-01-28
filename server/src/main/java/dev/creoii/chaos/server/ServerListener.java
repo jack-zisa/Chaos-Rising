@@ -47,9 +47,7 @@ public class ServerListener extends Listener {
                 Path schemaRoot = dataRoot.resolve(schemaType.getPath());
                 try (Stream<Path> paths = Files.walk(schemaRoot)) {
                     for (Path path : (Iterable<Path>) paths.filter(Files::isRegularFile)::iterator) {
-                        ZipEntry entry = new ZipEntry(
-                            schemaRoot.relativize(path).toString().replace("\\", "/")
-                        );
+                        ZipEntry entry = new ZipEntry(dataRoot.relativize(path).toString().replace("\\", "/"));
                         zipOut.putNextEntry(entry);
                         Files.copy(path, zipOut);
                         zipOut.closeEntry();

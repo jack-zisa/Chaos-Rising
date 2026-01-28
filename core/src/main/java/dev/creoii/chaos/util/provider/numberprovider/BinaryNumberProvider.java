@@ -2,6 +2,7 @@ package dev.creoii.chaos.util.provider.numberprovider;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.chaos.util.context.ContextProvider;
 import dev.creoii.chaos.util.provider.Operation;
 import dev.creoii.chaos.util.provider.Provider;
 
@@ -71,7 +72,7 @@ public record BinaryNumberProvider(NumberProvider a, NumberProvider b, Operation
     }
 
     @Override
-    public Float get(Context context) {
+    public Float get(ContextProvider context) {
         float av = a.get(context), bv = b.get(context);
         return switch (operation) {
             case ADD -> av + bv;

@@ -2,8 +2,8 @@ package dev.creoii.chaos.entity.behavior.transition;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.chaos.util.context.ContextProvider;
 import dev.creoii.chaos.util.provider.BinaryOperation;
-import dev.creoii.chaos.util.provider.Provider;
 import dev.creoii.chaos.util.provider.phaseprovider.PhaseProvider;
 
 public record BinaryTransition(Transition a, Transition b, BinaryOperation operation, PhaseProvider target) implements Transition {
@@ -43,7 +43,7 @@ public record BinaryTransition(Transition a, Transition b, BinaryOperation opera
     }
 
     @Override
-    public boolean shouldTransition(Provider.Context context, int time) {
+    public boolean shouldTransition(ContextProvider context, int time) {
         return switch (operation) {
             case AND -> a.shouldTransition(context, time) && b.shouldTransition(context, time);
             case OR -> a.shouldTransition(context, time) || b.shouldTransition(context, time);

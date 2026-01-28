@@ -2,6 +2,7 @@ package dev.creoii.chaos.util.provider.booleanprovider;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.chaos.util.context.ContextProvider;
 import dev.creoii.chaos.util.provider.BinaryOperation;
 import dev.creoii.chaos.util.provider.Provider;
 
@@ -38,7 +39,7 @@ public record BinaryBooleanProvider(BooleanProvider a, BooleanProvider b, Binary
     }
 
     @Override
-    public Boolean get(Context context) {
+    public Boolean get(ContextProvider context) {
         boolean av = a.get(context), bv = b.get(context);
         return switch (operation) {
             case AND -> av && bv;

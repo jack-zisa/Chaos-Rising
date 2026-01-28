@@ -2,6 +2,8 @@ package dev.creoii.chaos.util.provider.numberprovider;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.chaos.util.context.ComponentTypes;
+import dev.creoii.chaos.util.context.ContextProvider;
 
 public record RandomNumberProvider(NumberProvider min, NumberProvider max) implements NumberProvider {
     public static final MapCodec<RandomNumberProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
@@ -17,10 +19,13 @@ public record RandomNumberProvider(NumberProvider min, NumberProvider max) imple
     }
 
     @Override
-    public Float get(Context context) {
-        float max = this.max.get(context);
-        float min = this.min.get(context);
-        return context.random().nextFloat() * (max - min) + min;
+    public Float get(ContextProvider context) {
+        if (context.has(ComponentTypes.RANDOM)) {
+            float max = this.max.get(context);
+            float min = this.min.get(context);
+            return context.get(ComponentTypes.RANDOM).nextFloat() * (max - min) + min;
+        }
+        return -1f;
     }
 
     @Override

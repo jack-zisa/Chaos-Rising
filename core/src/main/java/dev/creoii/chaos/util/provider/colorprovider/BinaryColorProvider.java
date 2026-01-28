@@ -3,6 +3,7 @@ package dev.creoii.chaos.util.provider.colorprovider;
 import com.badlogic.gdx.graphics.Color;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.chaos.util.context.ContextProvider;
 import dev.creoii.chaos.util.provider.Operation;
 
 public record BinaryColorProvider(ColorProvider a, ColorProvider b, Operation operation) implements ColorProvider {
@@ -56,7 +57,7 @@ public record BinaryColorProvider(ColorProvider a, ColorProvider b, Operation op
     }
 
     @Override
-    public Color get(Context context) {
+    public Color get(ContextProvider context) {
         Color av = a.get(context), bv = b.get(context);
         return switch (operation) {
             case ADD -> av.add(bv);

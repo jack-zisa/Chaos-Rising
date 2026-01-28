@@ -3,6 +3,7 @@ package dev.creoii.chaos.util.provider.booleanprovider;
 import com.badlogic.gdx.math.Vector2;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.chaos.util.context.ContextProvider;
 import dev.creoii.chaos.util.provider.Provider;
 import dev.creoii.chaos.util.provider.numberprovider.ConstantNumberProvider;
 import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
@@ -24,7 +25,7 @@ public record InRangeBooleanProvider(NumberProvider distance2, VecProvider a, Ve
     }
 
     @Override
-    public Boolean get(Context context) {
+    public Boolean get(ContextProvider context) {
         return Math.abs(a.get(context).dst2(b.get(context))) <= distance2.get(context);
     }
 

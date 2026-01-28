@@ -9,8 +9,9 @@ import dev.creoii.chaos.entity.serialization.EntityCustomData;
 import dev.creoii.chaos.network.s2c.*;
 import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.Tickable;
+import dev.creoii.chaos.util.context.ComponentTypes;
+import dev.creoii.chaos.util.context.Context;
 import dev.creoii.chaos.util.event.SpawnEntityEvent;
-import dev.creoii.chaos.util.provider.Provider;
 import dev.creoii.chaos.util.provider.vecprovider.VecProvider;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
@@ -70,8 +71,9 @@ public class ServerEntityManager extends EntityManager<Entity> implements Tickab
     public <E extends Entity, T extends EntityType<E>> void addEntities(T type, VecProvider posProvider, Map<String, Object> customData, int count) {
         List<SpawnEntitiesS2C.Entry> spawnedEntities = new ArrayList<>();
 
+        Context context = Context.rootOf(getWorld()).with(ComponentTypes.POS, Vector2.Zero.cpy());
         for (int i = 0; i < count; ++i) {
-            Vector2 pos = posProvider.get(new Provider.Context(getWorld().getGame(), getWorld(), null, getWorld().getGame().getGametime(), Vector2.Zero, getWorld().getRandom()));
+            Vector2 pos = posProvider.get(context);
             E spawned = type.create(getWorld(), getNextId(), pos, customData);
             getEntities(type.group()).put(spawned.getId(), spawned);
 

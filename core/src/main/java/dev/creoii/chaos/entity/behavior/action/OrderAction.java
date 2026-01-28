@@ -9,7 +9,7 @@ import dev.creoii.chaos.entity.behavior.MultiBehavior;
 import dev.creoii.chaos.entity.behavior.phase.Phase;
 import dev.creoii.chaos.entity.controller.EntityController;
 import dev.creoii.chaos.util.EntityGroup;
-import dev.creoii.chaos.util.provider.Provider;
+import dev.creoii.chaos.util.context.Context;
 import dev.creoii.chaos.util.provider.phaseprovider.PhaseProvider;
 
 public class OrderAction extends Action {
@@ -40,7 +40,7 @@ public class OrderAction extends Action {
         living.getChildren().forEach(integer -> {
             LivingEntity entity = (LivingEntity) entityManager.getEntity(EntityGroup.ENEMY, integer);
             if (entity instanceof EnemyEntity enemy && enemy.getController().getBehavior() instanceof MultiBehavior multiBehavior) {
-                Provider.Context context = Provider.Context.of(enemy, enemy.getWorld().getGame().getGametime());
+                Context context = Context.rootOf(enemy);
                 Phase target = phase.get(context);
 
                 if (multiBehavior.getPhase(target.getId()) == null)
@@ -55,11 +55,9 @@ public class OrderAction extends Action {
 
     @Override
     public void update(EntityController<? extends EnemyEntity> controller, int time, float delta) {
-
     }
 
     @Override
     public void end(EntityController<? extends EnemyEntity> controller) {
-
     }
 }

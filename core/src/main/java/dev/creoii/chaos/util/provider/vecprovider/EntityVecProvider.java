@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.entity.Entity;
+import dev.creoii.chaos.util.context.ContextProvider;
 import dev.creoii.chaos.util.provider.entityprovider.EntityProvider;
 
 public record EntityVecProvider(EntityProvider entity) implements VecProvider {
@@ -17,7 +18,7 @@ public record EntityVecProvider(EntityProvider entity) implements VecProvider {
     }
 
     @Override
-    public Vector2 get(Context context) {
+    public Vector2 get(ContextProvider context) {
         Entity entity = this.entity.get(context);
         if (entity == null)
             return Vector2.Zero;

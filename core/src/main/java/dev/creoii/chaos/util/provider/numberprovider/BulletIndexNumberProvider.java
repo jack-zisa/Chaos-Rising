@@ -2,6 +2,8 @@ package dev.creoii.chaos.util.provider.numberprovider;
 
 import com.mojang.serialization.MapCodec;
 import dev.creoii.chaos.entity.BulletEntity;
+import dev.creoii.chaos.util.context.ComponentTypes;
+import dev.creoii.chaos.util.context.ContextProvider;
 
 public record BulletIndexNumberProvider() implements NumberProvider {
     private static final BulletIndexNumberProvider INSTANCE = new BulletIndexNumberProvider();
@@ -13,8 +15,11 @@ public record BulletIndexNumberProvider() implements NumberProvider {
     }
 
     @Override
-    public Float get(Context context) {
-        return context.entity() instanceof BulletEntity bullet ? (float) bullet.getIndex() : 1f;
+    public Float get(ContextProvider context) {
+        if (context.get(ComponentTypes.ENTITY) instanceof BulletEntity bullet) {
+            return (float) bullet.getIndex();
+        }
+        return 1f;
     }
 
     @Override

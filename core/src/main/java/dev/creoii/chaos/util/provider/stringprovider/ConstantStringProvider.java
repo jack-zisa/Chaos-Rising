@@ -3,6 +3,7 @@ package dev.creoii.chaos.util.provider.stringprovider;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.chaos.util.context.ContextProvider;
 
 public record ConstantStringProvider(String value) implements StringProvider {
     public static final MapCodec<ConstantStringProvider> CODEC = RecordCodecBuilder.mapCodec(instance ->
@@ -17,7 +18,7 @@ public record ConstantStringProvider(String value) implements StringProvider {
     }
 
     @Override
-    public String get(Context context) {
+    public String get(ContextProvider context) {
         return value;
     }
 }

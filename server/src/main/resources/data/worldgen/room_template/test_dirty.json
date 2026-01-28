@@ -1,0 +1,18 @@
+{
+  "id": "test_dirty",
+  "type": "simple",
+  "width": {
+    "type": "random",
+    "min": 8,
+    "max": 16
+  },
+  "height": {
+    "type": "random",
+    "min": 8,
+    "max": 16
+  },
+  "floor_provider": "dirt",
+  "wall_provider": "stone",
+  "hallway_provider": "dirt",
+  "max_connections": 5
+}

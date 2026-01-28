@@ -10,6 +10,7 @@ import java.util.function.Function;
 public interface RoomProvider extends Provider<RoomTemplate> {
     Codec<RoomProvider> TYPE_CODEC = Type.CODEC.dispatch(RoomProvider::getType, type -> switch (type) {
         case SIMPLE -> SimpleRoomProvider.CODEC;
+        case RULE_BASED -> RuleBasedRoomProvider.CODEC;
         case RANDOM -> RandomRoomProvider.CODEC;
     });
     Codec<RoomProvider> CODEC = Codec.either(RoomTemplate.ID_CODEC, TYPE_CODEC).xmap(either -> {
@@ -20,6 +21,7 @@ public interface RoomProvider extends Provider<RoomTemplate> {
 
     enum Type {
         SIMPLE,
+        RULE_BASED,
         RANDOM;
 
         public static final Codec<Type> CODEC = Codec.STRING.xmap(s -> Type.valueOf(s.toUpperCase()), type -> type.name().toLowerCase());

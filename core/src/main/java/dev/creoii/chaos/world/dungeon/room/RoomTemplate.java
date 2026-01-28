@@ -24,11 +24,17 @@ public interface RoomTemplate extends Identifiable {
         return build(world, dungeon, room, null);
     }
 
+    /**
+     * Setup exact placement information of the room, including position, size & direction
+     */
     @Nullable
     DungeonGenerator.PendingRoom build(World world, DungeonGenerator dungeon, RoomGenerator room, @Nullable RoomGenerator parent);
 
+    /**
+     * Place tiles based on placement information created in {@link RoomTemplate#build(World, DungeonGenerator, RoomGenerator, RoomGenerator)}
+     */
     @Nullable
-    DungeonGenerator.PlacedRoom place(World world, DungeonGenerator dungeon, RoomGenerator room, DungeonGenerator.PendingRoom pendingRoom);
+    DungeonGenerator.PlacedRoom place(World world, DungeonGenerator dungeon, RoomGenerator room, DungeonGenerator.PendingRoom pendingRoom, int depth);
 
     enum Type {
         SIMPLE;

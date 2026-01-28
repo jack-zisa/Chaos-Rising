@@ -2,8 +2,11 @@ package dev.creoii.chaos.util.provider.tileprovider;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.chaos.util.context.ComponentTypes;
+import dev.creoii.chaos.util.context.ContextProvider;
 import dev.creoii.chaos.world.tile.Tile;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public record RandomTileProvider(List<TileProvider> values) implements TileProvider {
@@ -19,7 +22,8 @@ public record RandomTileProvider(List<TileProvider> values) implements TileProvi
     }
 
     @Override
-    public Tile get(Context context) {
-        return values.get(context.random().nextInt(values.size())).get(context);
+    @Nullable
+    public Tile get(ContextProvider context) {
+        return context.has(ComponentTypes.RANDOM) ? values.get(context.get(ComponentTypes.RANDOM).nextInt(values.size())).get(context) : null;
     }
 }

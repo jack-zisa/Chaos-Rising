@@ -4,6 +4,8 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.effect.StatusEffect;
 import dev.creoii.chaos.entity.LivingEntity;
+import dev.creoii.chaos.util.context.ComponentTypes;
+import dev.creoii.chaos.util.context.ContextProvider;
 
 public record HasEffectBooleanProvider(StatusEffect.Type effect) implements BooleanProvider {
     public static final MapCodec<HasEffectBooleanProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
@@ -18,8 +20,8 @@ public record HasEffectBooleanProvider(StatusEffect.Type effect) implements Bool
     }
 
     @Override
-    public Boolean get(Context context) {
-        if (context.entity() instanceof LivingEntity livingEntity) {
+    public Boolean get(ContextProvider context) {
+        if (context.get(ComponentTypes.ENTITY) instanceof LivingEntity livingEntity) {
             return livingEntity.hasStatusEffect(effect);
         }
         return false;

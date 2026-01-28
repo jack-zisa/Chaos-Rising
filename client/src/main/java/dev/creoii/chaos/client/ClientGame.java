@@ -17,6 +17,7 @@ import dev.creoii.chaos.network.Networking;
 import dev.creoii.chaos.client.render.Renderer;
 import dev.creoii.chaos.client.render.entity.data.CharacterEntityRenderData;
 import dev.creoii.chaos.util.EntityGroup;
+import dev.creoii.chaos.util.context.ComponentTypes;
 import dev.creoii.chaos.util.logging.Logger;
 
 import java.io.IOException;
@@ -71,6 +72,8 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
         Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
         LOGGER.info("Active Threads:");
         threadSet.forEach(thread -> LOGGER.info("    " + thread.getName()));
+
+        ComponentTypes.init();
 
         assetManager.load();
 

@@ -5,6 +5,8 @@ import dev.creoii.chaos.EntityManager;
 import dev.creoii.chaos.entity.CharacterEntity;
 import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.util.EntityGroup;
+import dev.creoii.chaos.util.context.ComponentTypes;
+import dev.creoii.chaos.util.context.ContextProvider;
 
 import javax.annotation.Nullable;
 import java.util.Comparator;
@@ -20,11 +22,14 @@ public record NearestCharacterEntityProvider() implements EntityProvider {
 
     @Override
     @Nullable
-    public Entity get(Context context) {
-        EntityManager<?> entityManager = context.world().getEntityManager();
-        return entityManager.getEntities(EntityGroup.CHARACTER).values().stream()
-            .map(o -> (CharacterEntity) o)
-            .min(Comparator.comparingDouble(c -> context.entity().getPos().dst2(c.getPos())))
-            .orElse(null);
+    public Entity get(ContextProvider context) {
+        if (context.has(ComponentTypes.WORLD, ComponentTypes.ENTITY)) {
+            EntityManager<?> entityManager = context.get(ComponentTypes.WORLD).getEntityManager();
+            return entityManager.getEntities(EntityGroup.CHARACTER).values().stream()
+                .map(o -> (CharacterEntity) o)
+                .min(Comparator.comparingDouble(c -> context.get(ComponentTypes.ENTITY).getPos().dst2(c.getPos())))
+                .orElse(null);
+        }
+        return null;
     }
 }

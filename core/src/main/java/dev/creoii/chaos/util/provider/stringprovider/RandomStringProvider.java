@@ -2,6 +2,8 @@ package dev.creoii.chaos.util.provider.stringprovider;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.creoii.chaos.util.context.ComponentTypes;
+import dev.creoii.chaos.util.context.ContextProvider;
 
 import java.util.List;
 
@@ -18,7 +20,7 @@ public record RandomStringProvider(List<StringProvider> values) implements Strin
     }
 
     @Override
-    public String get(Context context) {
-        return values.get(context.random().nextInt(values.size())).get(context);
+    public String get(ContextProvider context) {
+        return context.has(ComponentTypes.RANDOM) ? values.get(context.get(ComponentTypes.RANDOM).nextInt(values.size())).get(context) : "";
     }
 }
