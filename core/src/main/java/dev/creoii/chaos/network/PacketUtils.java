@@ -65,6 +65,7 @@ public final class PacketUtils {
     public static <E extends Enum<E>> void writeEnum(Output output, E e) {
         output.writeVarInt(e.ordinal(), true);
     }
+
     public static Slot readSlot(Input input) {
         return new Slot(input.readInt(), input.readInt(), readEnum(Slot.Type.class, input), readItemStack(input));
     }

@@ -3,7 +3,6 @@ package dev.creoii.chaos.client.render.entity;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import dev.creoii.chaos.client.ClientGame;
 import dev.creoii.chaos.client.render.Renderer;
@@ -34,11 +33,11 @@ public class SimpleEntityRenderer<T extends EntityRenderData> extends EntityRend
                 renderStatusEffects(renderer.getGame(), batch, livingEntityRenderData);
             }
 
-            float pixelW = 1f / (8f * EntityRenderManager.BORDER_SIZE_MOD);
-            float pixelH = 1f / (8f * EntityRenderManager.BORDER_SIZE_MOD);
+            sprite.setPosition(entity.renderX, entity.renderY);
 
-            TextureRegion region = new TextureRegion(sprite.getTexture(), entity.renderX - pixelW, entity.renderY - pixelH, sprite.getRegionWidth() + pixelW * 2f, sprite.getRegionHeight() + pixelH * 2f);
-            batch.draw(region, entity.renderX - pixelW, entity.renderY - pixelH, sprite.getRegionWidth() + pixelW * 2f, sprite.getRegionHeight() + pixelH * 2f);
+            batch.disableBlending();
+            sprite.draw(batch);
+            batch.enableBlending();
         }
 
         if (debug && shapeRenderer != null) {
@@ -58,7 +57,10 @@ public class SimpleEntityRenderer<T extends EntityRenderData> extends EntityRend
             float y = baseY + ((i / 4f) * 8f) + 4f;
 
             effectSprite.setPosition(x, y);
+
+            batch.disableBlending();
             effectSprite.draw(batch);
+            batch.enableBlending();
         }
     }
 }

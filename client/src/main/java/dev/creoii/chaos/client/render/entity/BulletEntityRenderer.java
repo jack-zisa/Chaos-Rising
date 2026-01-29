@@ -34,7 +34,9 @@ public class BulletEntityRenderer extends SimpleEntityRenderer<BulletEntityRende
             sprite.setOriginCenter();
             sprite.setRotation((MathUtils.atan2(entity.yv, entity.xv) * MathUtils.radiansToDegrees) + entity.angleOffset.get(context));
 
+            batch.disableBlending();
             sprite.draw(batch);
+            batch.enableBlending();
         }
 
         if (debug && shapeRenderer != null) {

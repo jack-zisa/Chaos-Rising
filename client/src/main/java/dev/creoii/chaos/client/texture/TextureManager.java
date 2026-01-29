@@ -61,7 +61,7 @@ public class TextureManager implements Disposable {
                 TextureLoader.TextureParameter params = null;
 
                 if (atlas.hasOutline()) {
-                    params = new ConditionalPaddedTextureLoader.PaddedTextureParameter(2);
+                    params = new ConditionalPaddedTextureLoader.PaddedTextureParameter(1);
                 }
 
                 assetManager.load(path, Texture.class, params);

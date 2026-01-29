@@ -1,6 +1,7 @@
 package dev.creoii.chaos.client.render.screen.widget;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -8,6 +9,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.client.ClientGame;
 import dev.creoii.chaos.client.input.InputManager;
+import dev.creoii.chaos.client.render.entity.EntityRenderManager;
 import dev.creoii.chaos.inventory.InventoryType;
 import dev.creoii.chaos.inventory.Slot;
 import dev.creoii.chaos.item.ItemStack;
@@ -76,26 +78,41 @@ public class InventoryWidget extends Widget {
                 return;
             }
 
+            batch.setShader(EntityRenderManager.BORDER_SHADER);
+            float border = (1f / 8f) * ((float) Math.pow(renderer.getZoom(), .85f)) / EntityRenderManager.BORDER_SIZE_MOD;
+            EntityRenderManager.BORDER_SHADER.setUniformf("u_pixelSize", border, border);
+            EntityRenderManager.BORDER_SHADER.setUniformf("u_borderColor", Color.BLACK);
+
             for (int r = 0; r < getInventory().length; ++r) {
                 for (int c = 0; c < getInventory()[r].length; ++c) {
                     Slot slot = getInventory()[r][c];
                     Sprite sprite = slot.hasItem() ? InventoryScreen.SLOT_SPRITES.get(Slot.Type.NONE.ordinal()) : InventoryScreen.SLOT_SPRITES.get(slot.getType().ordinal());
                     sprite.setPosition(getPos().x + (c * SLOT_SIZE), getPos().y + (r * SLOT_SIZE));
+
+                    batch.disableBlending();
                     sprite.draw(batch);
+                    batch.enableBlending();
+
                     if (slot.hasItem()) {
                         ItemRenderer.renderItem(renderer.getGame(), batch, slot.getStack().getItem().id(), new Vector2(getPos().x + (c * SLOT_SIZE) + 6, getPos().y + (r * SLOT_SIZE) + 6), ITEM_SCALE);
                     }
                 }
             }
 
+            batch.setShader(null);
+
             if (mouseOverSlot != null && mouseOverSlot.hasItem()) {
                 ItemRenderer.renderTooltip(batch, null, mouseOverSlot.getStack().getItem());
             }
+
+            batch.setShader(EntityRenderManager.BORDER_SHADER);
 
             if (dragStack != null && dragStack != ItemStack.EMPTY) {
                 Vector2 mousePos = new Vector2(Gdx.input.getX() - (ITEM_SCALE / 2f), Gdx.graphics.getHeight() - Gdx.input.getY() - (ITEM_SCALE / 2f));
                 ItemRenderer.renderItem(renderer.getGame(), batch, dragStack.getItem().id(), mousePos, ITEM_SCALE);
             }
+
+            batch.setShader(null);
         }
     }
 

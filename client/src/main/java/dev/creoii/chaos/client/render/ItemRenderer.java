@@ -2,14 +2,12 @@ package dev.creoii.chaos.client.render;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
 import dev.creoii.chaos.client.ClientGame;
+import dev.creoii.chaos.client.render.entity.EntityRenderManager;
 import dev.creoii.chaos.client.texture.TextureManager;
 import dev.creoii.chaos.item.Item;
 import dev.creoii.chaos.item.tooltip.Tooltip;
@@ -22,17 +20,26 @@ import java.util.Map;
 public class ItemRenderer implements Disposable {
     private static final float TOOLTIP_OFFSCREEN_PADDING = 4f;
     private static final BitmapFont SECTION_FONT = new BitmapFont();
+    private static final Map<String, Sprite> SPRITE_CACHE = new HashMap<>();
     private static final Map<Tooltip.Section, BitmapFont> FONTS = new HashMap<>();
 
     public static void renderItem(ClientGame game, SpriteBatch batch, @Nullable String id, Vector2 pos, float scale) {
         if (id == null || id.isBlank())
             return;
-        Sprite sprite = new Sprite(game.getAssetManager().getTextureManager().getTexture(TextureManager.Atlas.ITEM, id));
-        sprite.setPosition(pos.x, pos.y);
-        sprite.setSize(scale, scale);
-        batch.enableBlending();
-        sprite.draw(batch);
-        batch.disableBlending();
+        float border = (1f / 8f) * scale / EntityRenderManager.BORDER_SIZE_MOD;
+
+        Sprite sprite = SPRITE_CACHE.get(id);
+        if (sprite == null)
+            sprite = SPRITE_CACHE.put(id, new Sprite(game.getAssetManager().getTextureManager().getTexture(TextureManager.Atlas.ITEM, id)));
+
+        if (sprite != null) {
+            sprite.setPosition(pos.x - border, pos.y - border);
+            sprite.setSize(scale + border * 2f, scale + border * 2f);
+
+            batch.enableBlending();
+            sprite.draw(batch);
+            batch.disableBlending();
+        }
     }
 
     public static void renderTooltip(@Nullable SpriteBatch batch, @Nullable ShapeRenderer shapeRenderer, @Nullable Item item) {

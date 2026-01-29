@@ -25,8 +25,11 @@ public class CharacterEntityRenderer extends EntityRenderer<CharacterEntityRende
         Sprite sprite = entity.sprite;
         if (batch != null) {
             sprite.setPosition(entity.renderX, entity.renderY);
-            sprite.draw(batch);
             sprite.setFlip(!entity.facingRight, false);
+
+            batch.disableBlending();
+            sprite.draw(batch);
+            batch.enableBlending();
 
             SimpleEntityRenderer.renderStatusEffects(renderer.getGame(), batch, entity);
         }

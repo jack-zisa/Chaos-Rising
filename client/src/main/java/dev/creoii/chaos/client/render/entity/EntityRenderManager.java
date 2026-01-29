@@ -30,7 +30,7 @@ public class EntityRenderManager extends EntityManager<EntityRenderData> impleme
     private static final float RENDER_DISTANCE = 17578.125f * Entity.COORDINATE_SCALE; // sqrt(17578.125 * 32) = 750 units
     private final ObjectList<EntityRenderData> visibleEntities = new ObjectArrayList<>();
     private int visibleSize;
-    private static final ShaderProgram BORDER_SHADER = new ShaderProgram(Gdx.files.internal("shaders/border.vert"), Gdx.files.internal("shaders/border.frag"));
+    public static final ShaderProgram BORDER_SHADER = new ShaderProgram(Gdx.files.internal("shaders/border.vert"), Gdx.files.internal("shaders/border.frag"));
     public static final float BORDER_SIZE_MOD = 2f;
 
     public EntityRenderManager(ClientWorld world) {
