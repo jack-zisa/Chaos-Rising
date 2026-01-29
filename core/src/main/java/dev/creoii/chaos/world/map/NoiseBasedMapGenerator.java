@@ -39,6 +39,11 @@ public record NoiseBasedMapGenerator(String id, int width, int height, FastNoise
         return height;
     }
 
+    @Override
+    public void build(World world) {
+
+    }
+
     public void place(World world) {
         if (entries.isEmpty())
             return;

@@ -10,6 +10,8 @@ import dev.creoii.chaos.util.context.ContextProvider;
 import dev.creoii.chaos.world.dungeon.room.Connection;
 import dev.creoii.chaos.world.dungeon.room.Room;
 import dev.creoii.chaos.world.dungeon.room.RoomGenerator;
+import dev.creoii.chaos.world.dungeon.room.RoomTemplate;
+import it.unimi.dsi.fastutil.Pair;
 
 import java.util.*;
 
@@ -18,8 +20,7 @@ public class DungeonGenerator implements ContextProvider {
     private final Dungeon dungeon;
     private final int x, y;
     private final Map<String, Integer> roomCounts;
-    private final Set<PlacedRoom> rooms;
-    private int depth;
+    private final Set<Pair<RoomGenerator, PendingRoom>> pendingRooms;
     private int maxDepth;
     private final Context context;
     private final Context roomContext;
@@ -30,8 +31,7 @@ public class DungeonGenerator implements ContextProvider {
         this.x = x;
         this.y = y;
         roomCounts = new HashMap<>();
-        rooms = new HashSet<>();
-        depth = 0;
+        pendingRooms = new HashSet<>();
         context = Context.rootOf(world).with(ComponentTypes.POS, new Vector2(x, y)).with(ComponentTypes.DUNGEON, this);
         roomContext = context.child();
     }
@@ -52,28 +52,25 @@ public class DungeonGenerator implements ContextProvider {
         return roomCounts;
     }
 
-    public Set<PlacedRoom> getRooms() {
-        return rooms;
-    }
-
-    public int getDepth() {
-        return depth;
-    }
-
     public int getMaxDepth() {
         return maxDepth;
     }
 
-    public void generate() {
-        maxDepth = dungeon.maxDepth().getInt(context.child().with(ComponentTypes.POS, new Vector2(x, y)));
-        beginGenerate();
+    public Set<Pair<RoomGenerator, PendingRoom>> getPendingRooms() {
+        return pendingRooms;
     }
 
-    private void beginGenerate() {
+    public void build() {
+        maxDepth = dungeon.maxDepth().getInt(context.child().with(ComponentTypes.POS, new Vector2(x, y)));
+        beginBuild();
+    }
+
+    private void beginBuild() {
         roomContext.clearLocal();
         roomContext.set(ComponentTypes.POS, new Vector2(x, y));
+        roomContext.set(ComponentTypes.ROOM_DEPTH, 0);
 
-        RoomGenerator generator = new RoomGenerator(dungeon.fallback().get(roomContext), x, y, null, depth + 1);
+        RoomGenerator generator = new RoomGenerator(dungeon.fallback().get(roomContext), x, y, null, 0);
 
         roomContext.set(ComponentTypes.ROOM, generator);
 
@@ -82,15 +79,13 @@ public class DungeonGenerator implements ContextProvider {
         if (pendingRoom == null)
             return;
 
-        for (PlacedRoom other : rooms) {
-            if (Room.intersects(other, pendingRoom)) {
+        for (Pair<RoomGenerator, PendingRoom> other : pendingRooms) {
+            if (Room.intersects(other.right(), pendingRoom)) {
                 return;
             }
         }
 
-        PlacedRoom placedRoom = generator.place(world, this, pendingRoom);
-        rooms.add(placedRoom);
-        ++depth;
+        pendingRooms.add(Pair.of(generator, pendingRoom));
 
         for (Connection connection : generator.getConnections()) {
             generateRoom(world, generator, connection);
@@ -98,14 +93,15 @@ public class DungeonGenerator implements ContextProvider {
     }
 
     public void generateRoom(World world, RoomGenerator parent, Connection parentConnection) {
-        if (depth >= maxDepth) {
-            return;
-        }
-
         roomContext.clearLocal();
         roomContext.set(ComponentTypes.POS, new Vector2(x, y));
+        roomContext.set(ComponentTypes.ROOM_DEPTH, parent.depth() + 1);
 
-        RoomGenerator generator = new RoomGenerator(dungeon.fallback().get(roomContext), parentConnection.x(), parentConnection.y(), parentConnection.direction(), depth + 1);
+        RoomTemplate template = dungeon.fallback().get(roomContext);
+        if (template == null)
+            return;
+
+        RoomGenerator generator = new RoomGenerator(template, parentConnection.x(), parentConnection.y(), parentConnection.direction(), parent.depth() + 1);
 
         roomContext.set(ComponentTypes.ROOM, generator);
 
@@ -114,18 +110,25 @@ public class DungeonGenerator implements ContextProvider {
         if (pendingRoom == null)
             return;
 
-        for (PlacedRoom other : rooms) {
-            if (Room.intersects(other, pendingRoom)) {
+        for (Pair<RoomGenerator, PendingRoom> other : pendingRooms) {
+            if (Room.intersects(other.right(), pendingRoom)) {
                 return;
             }
         }
 
-        PlacedRoom placedRoom = generator.place(world, this, pendingRoom);
-        rooms.add(placedRoom);
-        ++depth;
+        pendingRooms.add(Pair.of(generator, pendingRoom));
+
+        if (generator.depth() >= maxDepth)
+            return;
 
         for (Connection childConnection : generator.getConnections()) {
             generateRoom(world, generator, childConnection);
+        }
+    }
+
+    public void place() {
+        for (Pair<RoomGenerator, PendingRoom> pair : pendingRooms) {
+            pair.left().place(world, this, pair.right());
         }
     }
 
@@ -139,7 +142,49 @@ public class DungeonGenerator implements ContextProvider {
         return context;
     }
 
-    public record PendingRoom(int x, int y, int width, int height, Direction direction) implements Room { }
+    public static class PendingRoom implements Room {
+        private int x, y;
+        private final int width, height;
+        private final Direction direction;
+
+        public PendingRoom(int x, int y, int width, int height, Direction direction) {
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.height = height;
+            this.direction = direction;
+        }
+
+        @Override
+        public int x() {
+            return x;
+        }
+
+        @Override
+        public int y() {
+            return y;
+        }
+
+        public void setPos(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+
+        @Override
+        public int width() {
+            return width;
+        }
+
+        @Override
+        public int height() {
+            return height;
+        }
+
+        @Override
+        public Direction direction() {
+            return direction;
+        }
+    }
 
     public record PlacedRoom(int x, int y, int width, int height, Direction direction, int depth) implements Room {
         public PlacedRoom(PendingRoom pendingRoom, int depth) {

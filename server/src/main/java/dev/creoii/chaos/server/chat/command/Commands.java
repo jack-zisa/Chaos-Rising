@@ -427,7 +427,8 @@ public final class Commands {
                     Dungeon dungeon = DataManager.getDungeon(args[1]);
                     if (dungeon != null) {
                         DungeonGenerator generator = new DungeonGenerator(world, dungeon, x, y);
-                        generator.generate();
+                        generator.build();
+                        generator.place();
                         return Command.Result.SUCCESS;
                     }
                 }

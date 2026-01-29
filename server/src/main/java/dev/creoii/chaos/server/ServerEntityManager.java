@@ -107,7 +107,7 @@ public class ServerEntityManager extends EntityManager<Entity> implements Tickab
         getEntities(type.group()).put(spawned.getId(), spawned);
 
         EntityCustomData data = spawned.getCustomPacketData();
-        getWorld().getGame().getServer().sendToTCP(connectionId, new CharacterJoinS2C(spawned.getId(), pos.x, pos.y, type.scale(), data, getWorld().getSeed()));
+        getWorld().getGame().getServer().sendToTCP(connectionId, new CharacterJoinS2C(spawned.getId(), pos.x, pos.y, type.scale(), data));
         getWorld().getGame().getServer().sendToAllExceptTCP(connectionId, new EntitySpawnS2C(spawned.getId(), pos.x, pos.y, type.scale(), data));
 
         SpawnEntityEvent.EVENT.invoker().onSpawnEntity(getWorld(), spawned.getId());

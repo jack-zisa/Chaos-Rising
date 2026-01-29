@@ -53,6 +53,11 @@ public record LayeredMapGenerator(String id, Palette palette, Map<String, Layer>
         return maxHeight;
     }
 
+    @Override
+    public void build(World world) {
+
+    }
+
     public void place(World world) {
         Context context = Context.rootOf(world);
         layers().forEach((s, layer) -> {
@@ -100,9 +105,8 @@ public record LayeredMapGenerator(String id, Palette palette, Map<String, Layer>
             ground.add(row);
         }
         Layer groundLayer = new Layer(ground);
-        Layer objectLayer = new Layer(new ArrayList<>());
         layers.put("ground", groundLayer);
-        layers.put("object", objectLayer);
+        layers.put("object", new Layer(new ArrayList<>()));
         return layers;
     }
 }

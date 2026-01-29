@@ -13,7 +13,7 @@ public record NumberComparisonBooleanProvider(NumberProvider a, NumberProvider b
         return instance.group(
             NumberProvider.CODEC.fieldOf("a").forGetter(NumberComparisonBooleanProvider::a),
             NumberProvider.CODEC.fieldOf("b").forGetter(NumberComparisonBooleanProvider::b),
-            Comparison.CODEC.fieldOf("comparison").orElse(Comparison.E).forGetter(NumberComparisonBooleanProvider::comparison)
+            Comparison.CODEC.fieldOf("comparison").orElse(Comparison.EQ).forGetter(NumberComparisonBooleanProvider::comparison)
         ).apply(instance, NumberComparisonBooleanProvider::new);
     });
 
@@ -31,7 +31,7 @@ public record NumberComparisonBooleanProvider(NumberProvider a, NumberProvider b
             case LTEQ -> av <= bv;
             case GTEQ -> av >= bv;
             case NE -> av != bv;
-            case E -> av == bv;
+            case EQ -> av == bv;
         };
     }
 
@@ -44,7 +44,7 @@ public record NumberComparisonBooleanProvider(NumberProvider a, NumberProvider b
                 case LTEQ -> value <= value1;
                 case GTEQ -> value >= value1;
                 case NE -> value != value1;
-                case E -> value == value1;
+                case EQ -> value == value1;
             });
         }
         return BooleanProvider.super.optimize();

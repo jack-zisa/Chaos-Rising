@@ -9,6 +9,7 @@ public interface MapGenerator extends Identifiable {
         MapGenerator::getType,
         type -> switch (type) {
             case LAYERED -> LayeredMapGenerator.CODEC;
+            case DUNGEON -> DungeonMapGenerator.CODEC;
             case NOISE_BASED -> NoiseBasedMapGenerator.CODEC;
         }
     );
@@ -19,10 +20,13 @@ public interface MapGenerator extends Identifiable {
 
     int getHeight();
 
+    void build(World world);
+
     void place(World world);
 
     enum Type {
         LAYERED,
+        DUNGEON,
         NOISE_BASED;
 
         public static final Codec<Type> CODEC = Codec.STRING.xmap(s -> Type.valueOf(s.toUpperCase()), type -> type.name().toLowerCase());

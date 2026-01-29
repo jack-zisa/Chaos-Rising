@@ -8,7 +8,7 @@ public enum Comparison {
     LTEQ,
     GTEQ,
     NE,
-    E;
+    EQ;
 
     public static final Codec<Comparison> CODEC = Codec.STRING.xmap(s -> Comparison.valueOf(s.toUpperCase()), comparison -> comparison.name().toLowerCase());
 }

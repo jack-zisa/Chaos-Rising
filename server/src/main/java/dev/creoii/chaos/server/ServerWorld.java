@@ -22,13 +22,15 @@ public class ServerWorld implements World {
     private final ServerGame game;
     private final ServerWorldListener listener;
     protected NetworkQueue<NetworkQueue.QueuedPacket> networkQueue;
+    private final MapGenerator mapGenerator;
     private final TiledMap map;
+    private final int width, height;
     private final ServerEntityManager entityManager;
     private final CollisionManager collisionManager;
 
-    public ServerWorld(ServerGame game, TiledMap map) {
+    public ServerWorld(ServerGame game, MapGenerator mapGenerator) {
         this.game = game;
-        this.map = map;
+        this.mapGenerator = mapGenerator;
         seed = game.getRandom().nextLong();
         random = new Random(seed);
         networkQueue = new NetworkQueue<>(null, new ConcurrentLinkedQueue<>());
@@ -36,11 +38,28 @@ public class ServerWorld implements World {
         collisionManager = new CollisionManager(this);
 
         game.getServer().addListener(listener = new ServerWorldListener(this));
+
+        this.mapGenerator.build(this);
+        width = this.mapGenerator.getWidth();
+        height = this.mapGenerator.getHeight();
+        this.map = World.createMapOfSize(this.mapGenerator.getWidth(), this.mapGenerator.getHeight());
+    }
+
+    public MapGenerator getMapGenerator() {
+        return mapGenerator;
     }
 
     @Override
     public TiledMap getMap() {
         return map;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
     }
 
     @Override
@@ -69,6 +88,8 @@ public class ServerWorld implements World {
 
     @Override
     public void setGround(int x, int y, Tile tile) {
+        if (tile == null)
+            return;
         game.getServer().sendToAllTCP(new SetTileS2C(LAYER_GROUND, x, y, tile.id()));
 
         MapLayer mapLayer = getLayer(LAYER_GROUND);
@@ -83,6 +104,8 @@ public class ServerWorld implements World {
 
     @Override
     public void setGroundArea(int x1, int y1, int x2, int y2, Tile tile) {
+        if (tile == null)
+            return;
         game.getServer().sendToAllTCP(new SetTilesS2C(LAYER_GROUND, x1, y1, x2, y2, tile.id()));
 
         MapLayer mapLayer = getLayer(LAYER_GROUND);
@@ -101,6 +124,8 @@ public class ServerWorld implements World {
 
     @Override
     public void setObject(int x, int y, Tile tile) {
+        if (tile == null)
+            return;
         game.getServer().sendToAllTCP(new SetTileS2C(LAYER_OBJECT, x, y, tile.id()));
 
         MapLayer mapLayer = getLayer(LAYER_OBJECT);
@@ -115,6 +140,8 @@ public class ServerWorld implements World {
 
     @Override
     public void setObjectArea(int x1, int y1, int x2, int y2, Tile tile) {
+        if (tile == null)
+            return;
         game.getServer().sendToAllTCP(new SetTilesS2C(LAYER_OBJECT, x1, y1, x2, y2, tile.id()));
 
         MapLayer mapLayer = getLayer(LAYER_OBJECT);
@@ -152,7 +179,7 @@ public class ServerWorld implements World {
         }
     }
 
-    public void load(MapGenerator map) {
-        map.place(this);
+    public void load() {
+        mapGenerator.place(this);
     }
 }

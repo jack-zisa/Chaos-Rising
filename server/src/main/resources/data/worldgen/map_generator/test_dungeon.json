@@ -1,0 +1,5 @@
+{
+  "type": "dungeon",
+  "id": "test_dungeon",
+  "dungeon": "test_rule"
+}

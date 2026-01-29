@@ -31,7 +31,7 @@ public interface NumberProvider extends Provider<Float> {
         case SPAWN_TIME -> SpawnTimeNumberProvider.CODEC;
         case STAT -> StatNumberProvider.CODEC;
         case TIME -> TimeNumberProvider.CODEC;
-        case DUNGEON_DEPTH -> DungeonDepthNumberProvider.CODEC;
+        case ROOM_DEPTH -> RoomDepthNumberProvider.CODEC;
         case UNARY -> UnaryNumberProvider.CODEC;
         case SIN -> UnaryNumberProvider.SIN_CODEC;
         case COS -> UnaryNumberProvider.COS_CODEC;
@@ -77,7 +77,7 @@ public interface NumberProvider extends Provider<Float> {
         SPAWN_TIME,
         STAT,
         TIME,
-        DUNGEON_DEPTH,
+        ROOM_DEPTH,
         UNARY, SIN, COS, TAN, SQRT, CBRT, ABS;
 
         public static final Codec<Type> CODEC = Codec.STRING.xmap(s -> Type.valueOf(s.toUpperCase()), type -> type.name().toLowerCase());

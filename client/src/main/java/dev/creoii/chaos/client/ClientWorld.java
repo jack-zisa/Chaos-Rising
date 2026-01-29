@@ -84,6 +84,8 @@ public class ClientWorld implements World {
 
     @Override
     public void setGround(int x, int y, Tile tile) {
+        if (tile == null)
+            return;
         MapLayer mapLayer = getLayer(LAYER_GROUND);
         if (mapLayer instanceof TiledMapTileLayer tiledMapTileLayer) {
             TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
@@ -96,6 +98,8 @@ public class ClientWorld implements World {
 
     @Override
     public void setObject(int x, int y, Tile tile) {
+        if (tile == null)
+            return;
         MapLayer mapLayer = getLayer(LAYER_OBJECT);
         if (mapLayer instanceof TiledMapTileLayer tiledMapTileLayer) {
             TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();

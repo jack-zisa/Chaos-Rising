@@ -87,7 +87,7 @@ public record SimpleRoomTemplate(String id, NumberProvider width, NumberProvider
             if (parentConnection == null || childConnection == null)
                 return null;
 
-            parentConnection.setConnected();
+            //parentConnection.setConnected();
             childConnection.setConnected();
 
             // match positions

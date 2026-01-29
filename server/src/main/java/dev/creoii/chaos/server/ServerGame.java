@@ -45,21 +45,19 @@ public class ServerGame implements Game {
         server.addListener(listener = new ServerListener(this));
 
         ComponentTypes.init();
+        DataManager.load();
 
         tickManager = new TickManager();
-
         worlds = new HashMap<>();
 
-        MapGenerator mapGenerator = DataManager.getMapGenerator("test");
+        MapGenerator mapGenerator = DataManager.getMapGenerator("test_dungeon");
         if (mapGenerator == null)
             mapGenerator = LayeredMapGenerator.DEFAULT;
-        worlds.put("main", new ServerWorld(this, World.createMapOfSize(mapGenerator.getWidth(), mapGenerator.getHeight())));
+        worlds.put("main", new ServerWorld(this, mapGenerator));
 
         Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
         LOGGER.info("Active Threads:");
         threadSet.forEach(thread -> LOGGER.info("    " + thread.getName()));
-
-        DataManager.load();
 
         long nextTick = System.nanoTime();
         long tickInterval = 50_000_000L;

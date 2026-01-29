@@ -7,9 +7,20 @@
       {
         "test": {
           "type": "number_comparison",
+          "comparison": "eq",
+          "a": {
+            "type": "room_depth"
+          },
+          "b": 0
+        },
+        "room": "test_start"
+      },
+      {
+        "test": {
+          "type": "number_comparison",
           "comparison": "lt",
           "a": {
-            "type": "dungeon_depth"
+            "type": "room_depth"
           },
           "b": 4
         },
@@ -20,7 +31,7 @@
           "type": "number_comparison",
           "comparison": "lt",
           "a": {
-            "type": "dungeon_depth"
+            "type": "room_depth"
           },
           "b": 8
         },
@@ -31,7 +42,7 @@
           "type": "number_comparison",
           "comparison": "lt",
           "a": {
-            "type": "dungeon_depth"
+            "type": "room_depth"
           },
           "b": 12
         },
@@ -42,7 +53,7 @@
           "type": "number_comparison",
           "comparison": "lt",
           "a": {
-            "type": "dungeon_depth"
+            "type": "room_depth"
           },
           "b": 16
         },

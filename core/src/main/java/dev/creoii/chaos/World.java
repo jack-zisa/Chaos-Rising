@@ -38,6 +38,8 @@ public interface World extends Disposable {
     void setGround(int x, int y, Tile tile);
 
     default void setGroundArea(int x1, int y1, int x2, int y2, Tile tile) {
+        if (tile == null)
+            return;
         for (int x = x1; x <= x2; ++x) {
             for (int y = y1; y <= y2; ++y) {
                 setGround(x, y, tile);
@@ -48,6 +50,8 @@ public interface World extends Disposable {
     void setObject(int x, int y, Tile tile);
 
     default void setObjectArea(int x1, int y1, int x2, int y2, Tile tile) {
+        if (tile == null)
+            return;
         for (int x = x1; x <= x2; ++x) {
             for (int y = y1; y <= y2; ++y) {
                 setObject(x, y, tile);

@@ -18,6 +18,7 @@ import dev.creoii.chaos.network.NetworkQueue;
 import dev.creoii.chaos.network.c2s.*;
 import dev.creoii.chaos.network.s2c.ChatMessageReceiveS2C;
 import dev.creoii.chaos.network.s2c.MoveEntityS2C;
+import dev.creoii.chaos.network.s2c.SetupWorldS2C;
 import dev.creoii.chaos.network.s2c.SpawnEntitiesS2C;
 import dev.creoii.chaos.server.chat.command.Command;
 import dev.creoii.chaos.server.chat.command.Commands;
@@ -131,6 +132,8 @@ public class ServerWorldListener extends Listener {
         }
 
         else if (object instanceof CharacterJoinC2S()) {
+            world.getGame().getServer().sendToTCP(connection.getID(), new SetupWorldS2C(world.getWidth(), world.getHeight(), world.getSeed()));
+
             Object2ObjectArrayMap<String, Object> customData = new Object2ObjectArrayMap<>();
             customData.put("connection_id", connection.getID());
             CharacterEntity character = world.getEntityManager().addCharacter(connection.getID(), new CharacterEntityType(new Mutable<>(DataManager.getCharacterClass("wizard"))), new Vector2(0, 0), customData);
@@ -151,7 +154,8 @@ public class ServerWorldListener extends Listener {
         }
 
         else if (object instanceof RequestWorldLoadC2S()) {
-            world.load(DataManager.getMapGenerator("test"));
+            ServerGame.LOGGER.info("Loading world '" + world.getMapGenerator().id() + "' of type '" + world.getMapGenerator().getType().name() + "'");
+            world.load();
         }
 
         else if (object instanceof CharacterLeaveC2S(int id)) {
