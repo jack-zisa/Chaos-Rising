@@ -1,10 +1,13 @@
 package dev.creoii.chaos.client.render.entity;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import dev.creoii.chaos.client.ClientGame;
 import dev.creoii.chaos.EntityManager;
@@ -27,6 +30,8 @@ public class EntityRenderManager extends EntityManager<EntityRenderData> impleme
     private static final float RENDER_DISTANCE = 17578.125f * Entity.COORDINATE_SCALE; // sqrt(17578.125 * 32) = 750 units
     private final ObjectList<EntityRenderData> visibleEntities = new ObjectArrayList<>();
     private int visibleSize;
+    private static final ShaderProgram BORDER_SHADER = new ShaderProgram(Gdx.files.internal("shaders/border.vert"), Gdx.files.internal("shaders/border.frag"));
+    public static final float BORDER_SIZE_MOD = 2f;
 
     public EntityRenderManager(ClientWorld world) {
         super(world);
@@ -95,6 +100,13 @@ public class EntityRenderManager extends EntityManager<EntityRenderData> impleme
         visibleSize = 0;
         visibleEntities.clear();
 
+        if (batch != null) {
+            batch.setShader(BORDER_SHADER);
+            float border = (1f / 8f) * ((float) Math.pow(renderer.getZoom(), .85f)) / BORDER_SIZE_MOD;
+            BORDER_SHADER.setUniformf("u_pixelSize", border, border);
+            BORDER_SHADER.setUniformf("u_borderColor", Color.BLACK);
+        }
+
         for (Int2ObjectOpenHashMap<EntityRenderData> map : getAllEntities().values()) {
             for (Int2ObjectMap.Entry<EntityRenderData> entry : map.int2ObjectEntrySet()) {
                 if (isEntityInView(renderer, entry.getValue())) {
@@ -107,6 +119,10 @@ public class EntityRenderManager extends EntityManager<EntityRenderData> impleme
         for (EntityRenderData entity : visibleEntities) {
             ++visibleSize;
             EntityRenderers.getRenderer(entity).render(entity, renderer, batch, shapeRenderer, font, delta, debug);
+        }
+
+        if (batch != null) {
+            batch.setShader(null);
         }
     }
 

@@ -18,8 +18,10 @@ public class WorldRenderer implements Disposable {
     }
 
     public void render(float delta, Renderer renderer, boolean debug) {
+        renderer.getBatch().disableBlending();
         world.getMapRenderer().setView(renderer.getCamera());
         world.getMapRenderer().render();
+        renderer.getBatch().enableBlending();
     }
 
     public StatusTextManager getStatusTextManager() {

@@ -2,6 +2,8 @@ package dev.creoii.chaos.client.texture;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.TextureLoader;
+import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -37,6 +39,11 @@ public class TextureManager implements Disposable {
             return;
         }
 
+        assetManager.setLoader(
+            Texture.class,
+            new ConditionalPaddedTextureLoader(new InternalFileHandleResolver())
+        );
+
         FileHandle assets = Gdx.files.internal("assets.txt");
 
         for (String line : assets.readString().split("\\R")) {
@@ -50,7 +57,14 @@ public class TextureManager implements Disposable {
 
             try {
                 Atlas atlas = Atlas.valueOf(parts[1].toUpperCase());
-                assetManager.load(path, Texture.class);
+
+                TextureLoader.TextureParameter params = null;
+
+                if (atlas.hasOutline()) {
+                    params = new ConditionalPaddedTextureLoader.PaddedTextureParameter(2);
+                }
+
+                assetManager.load(path, Texture.class, params);
 
                 if (!atlases.containsKey(atlas.ordinal())) {
                     atlases.put(atlas.ordinal(), new DynamicTextureAtlas());
@@ -81,14 +95,28 @@ public class TextureManager implements Disposable {
     }
 
     public enum Atlas {
-        CHARACTER,
-        ENEMY,
-        BULLET,
-        ITEM,
-        LOOT_DROP,
+        CHARACTER(true),
+        ENEMY(true),
+        BULLET(true),
+        ITEM(true),
+        LOOT_DROP(true),
         EFFECT,
         UI,
         ENVIRONMENT;
+
+        private final boolean hasOutline;
+
+        Atlas(boolean hasOutline) {
+            this.hasOutline = hasOutline;
+        }
+
+        Atlas() {
+            this(false);
+        }
+
+        public boolean hasOutline() {
+            return hasOutline;
+        }
 
         public static Atlas fromEntityGroup(EntityGroup group) {
             return switch (group) {
