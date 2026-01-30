@@ -10,18 +10,21 @@ import dev.creoii.chaos.inventory.Slot;
 import dev.creoii.chaos.item.AbilityItem;
 import dev.creoii.chaos.item.WeaponItem;
 import dev.creoii.chaos.network.c2s.AttackC2S;
-import dev.creoii.chaos.network.c2s.CharacterMoveC2S;
+import dev.creoii.chaos.network.c2s.CharacterMoveEndC2S;
+import dev.creoii.chaos.network.c2s.CharacterMoveStartC2S;
 import dev.creoii.chaos.network.c2s.UseItemC2S;
 import dev.creoii.chaos.client.util.Inputtable;
 
 public record CharacterController() implements Inputtable {
     @Override
-    public void keyHeld(InputManager manager, int keycode) {
+    public boolean keyDown(InputManager manager, int keycode) {
         ClientGame game = manager.getGame();
-        if (game.getChatManager().isActive() || game.getCharacter() == null)
-            return;
+        CharacterEntityRenderData character = game.getCharacter();
 
-        if (game.getCharacter().canMove()) {
+        if (game.getChatManager().isActive() || character == null)
+            return false;
+
+        if (character.canMove()) {
             float dx = 0f;
             float dy = 0f;
 
@@ -29,9 +32,9 @@ public record CharacterController() implements Inputtable {
                 dx -= 1;
             if (keycode == OptionsManager.RIGHT_KEY.intValue())
                 dx += 1;
-            if (keycode == OptionsManager.FORWARDS_KEY.intValue())
+            if (keycode == OptionsManager.UP_KEY.intValue())
                 dy += 1;
-            if (keycode == OptionsManager.BACKWARDS_KEY.intValue())
+            if (keycode == OptionsManager.DOWN_KEY.intValue())
                 dy -= 1;
 
             if (dx != 0f || dy != 0f) {
@@ -42,8 +45,7 @@ public record CharacterController() implements Inputtable {
                     positive = dy > 0f;
                 } else positive = dx > 0f;
 
-                CharacterEntityRenderData character = game.getCharacter();
-                game.getClient().sendUDP(new CharacterMoveC2S(character.id, axis, positive));
+                game.getClient().sendUDP(new CharacterMoveStartC2S(character.id, axis, positive));
 
                 Vector2 newPos = new Vector2(character.x, character.y).add(new Vector2(dx, dy).scl(character.statContainer.speed().value() / 8f));
 
@@ -53,15 +55,56 @@ public record CharacterController() implements Inputtable {
                 character.y = newPos.y;
                 character.renderX = newPos.x;
                 character.renderY = newPos.y;
+                return true;
             }
         }
 
+        return false;
+    }
+
+    @Override
+    public void keyHeld(InputManager manager, int keycode) {
+        ClientGame game = manager.getGame();
+        CharacterEntityRenderData character = game.getCharacter();
+
+        if (game.getChatManager().isActive() || character == null)
+            return;
+
         if (keycode == OptionsManager.ABILITY_KEY.intValue()) {
-            Slot abilitySlot = game.getCharacter().getAbilitySlot();
+            Slot abilitySlot = character.getAbilitySlot();
             if (abilitySlot.getStack().getItem() instanceof AbilityItem abilityItem) {
-                game.getClient().sendTCP(new UseItemC2S(game.getCharacter().id, abilitySlot));
+                game.getClient().sendTCP(new UseItemC2S(character.id, abilitySlot));
             }
         }
+    }
+
+    @Override
+    public boolean keyUp(InputManager manager, int keycode) {
+        ClientGame game = manager.getGame();
+        CharacterEntityRenderData character = game.getCharacter();
+
+        if (character == null)
+            return false;
+
+        boolean axis;
+        boolean positive;
+
+        if (keycode == OptionsManager.LEFT_KEY.intValue()) {
+            axis = true;
+            positive = false;
+        } else if (keycode == OptionsManager.RIGHT_KEY.intValue()) {
+            axis = true;
+            positive = true;
+        } else if (keycode == OptionsManager.UP_KEY.intValue()) {
+            axis = false;
+            positive = true;
+        } else if (keycode == OptionsManager.DOWN_KEY.intValue()) {
+            axis = false;
+            positive = false;
+        } else return false;
+
+        game.getClient().sendUDP(new CharacterMoveEndC2S(character.id, axis, positive));
+        return true;
     }
 
     @Override

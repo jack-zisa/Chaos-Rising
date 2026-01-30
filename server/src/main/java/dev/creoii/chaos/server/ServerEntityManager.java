@@ -143,18 +143,17 @@ public class ServerEntityManager extends EntityManager<Entity> implements Tickab
             removedEntities.clear();
         }
 
-        if (getSize() <= 0 || gametime % 2 == 0)
+        if (getSize() <= 0)
             return;
+
         for (Int2ObjectOpenHashMap<Entity> map : getAllEntities().values()) {
             for (Entity entity : map.clone().values()) {
                 entity.tick(gametime, delta);
 
-                if (!entity.canMove() || entity.getType().group() == EntityGroup.CHARACTER)
-                    continue;
-
-                Vector2 velocity = entity.getVelocity();
-                if (velocity.x != 0f || velocity.y != 0f) {
-                    moveEntries.add(new MoveEntitiesS2C.Entry(entity.getId(), entity.getPos().x, entity.getPos().y, velocity.x, velocity.y));
+                Vector2 resolved = CollisionManager.resolve(entity);
+                if (entity.canMove()) {
+                    entity.setPrevPos(entity.getPos().x, entity.getPos().y);
+                    moveEntries.add(new MoveEntitiesS2C.Entry(entity.getId(), entity.getPos().x, entity.getPos().y, resolved.x, resolved.y));
                 }
             }
         }

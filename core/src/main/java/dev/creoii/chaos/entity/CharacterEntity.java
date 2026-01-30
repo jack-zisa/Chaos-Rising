@@ -23,6 +23,11 @@ public class CharacterEntity extends LivingEntity implements Attacker {
     private int experience = 0;
     private int level = 0;
 
+    private boolean moveLeft;
+    private boolean moveRight;
+    private boolean moveUp;
+    private boolean moveDown;
+
     public CharacterEntity(World world, EntityType<? extends CharacterEntity> type, int id, Vector2 pos, int connectionId) {
         super(world, type, id, pos, ((CharacterEntityType) type).characterClass().get().baseStatContainer().copy(), ((CharacterEntityType) type).characterClass().get().baseStatContainer().copy());
         this.connectionId = connectionId;
@@ -143,5 +148,48 @@ public class CharacterEntity extends LivingEntity implements Attacker {
 
     public void levelUp() {
         levelUp(false);
+    }
+
+    public boolean isMoving() {
+        return moveLeft || moveRight || moveUp || moveDown;
+    }
+
+    @Override
+    public void tick(int gametime, float delta) {
+        super.tick(gametime, delta);
+
+        if (isMoving()) {
+            float speed = getStats().speed().value();
+
+            float vx = 0f;
+            float vy = 0f;
+
+            if (moveLeft) vx -= speed;
+            if (moveRight) vx += speed;
+            if (moveUp) vy += speed;
+            if (moveDown) vy -= speed;
+
+            setVelocity(vx, vy);
+        } else setVelocity(0f, 0f);
+    }
+
+    public void stopMovement(boolean axis, boolean positive) {
+        if (axis) {
+            if (positive) moveRight = false;
+            else moveLeft = false;
+        } else {
+            if (positive) moveUp = false;
+            else moveDown = false;
+        }
+    }
+
+    public void updateMovement(boolean axis, boolean positive) {
+        if (axis) {
+            if (positive) moveRight = true;
+            else moveLeft = true;
+        } else {
+            if (positive) moveUp = true;
+            else moveDown = true;
+        }
     }
 }

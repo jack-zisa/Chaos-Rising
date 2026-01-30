@@ -9,6 +9,7 @@ import dev.creoii.chaos.World;
 import dev.creoii.chaos.entity.controller.bulletpath.BulletPath;
 import dev.creoii.chaos.entity.controller.bulletpath.EmptyBulletPath;
 import dev.creoii.chaos.util.EntityGroup;
+import dev.creoii.chaos.util.context.Context;
 import dev.creoii.chaos.util.provider.booleanprovider.BooleanProvider;
 import dev.creoii.chaos.util.provider.booleanprovider.ConstantBooleanProvider;
 import dev.creoii.chaos.util.provider.numberprovider.ConstantNumberProvider;
@@ -40,6 +41,8 @@ public record BulletEntityType(String id, float scale, int lifetime, NumberProvi
 
     @Override
     public BulletEntity create(World world, int id, Vector2 pos, Map<String, Object> customData) {
-        return new BulletEntity(world, this, id, pos.cpy(), Vector2.Zero, lifetime, 0, 0);
+        BulletEntity bullet = new BulletEntity(world, this, id, pos.cpy(), Vector2.Zero, lifetime, 0, 0);
+        bullet.setAngleOffset(angleOffset.get(Context.rootOf(bullet)));
+        return bullet;
     }
 }

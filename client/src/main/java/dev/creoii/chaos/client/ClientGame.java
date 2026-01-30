@@ -64,7 +64,7 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
         client.start();
 
         try {
-            client.connect(5000, "localhost", 54555, 54777);
+            client.connect(5000, "localhost", 54556, 54778);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

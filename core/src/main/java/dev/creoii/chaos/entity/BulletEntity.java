@@ -16,6 +16,7 @@ public class BulletEntity extends Entity {
     private int lifetime;
     private int damage;
     private int index;
+    private float angleOffset;
     private final BulletController controller;
 
     public BulletEntity(World world, EntityType<? extends BulletEntity> type, int id, Vector2 pos, Vector2 direction, int lifetime, int damage, int index) {
@@ -42,7 +43,7 @@ public class BulletEntity extends Entity {
     @Nullable
     @Override
     public EntityCustomData getCustomPacketData() {
-        return new BulletData(getType().id(), 0f, 0f);
+        return new BulletData(getType().id(), direction.x, direction.y, angleOffset);
     }
 
     public Entity getParent() {
@@ -83,6 +84,14 @@ public class BulletEntity extends Entity {
 
     public void setIndex(int index) {
         this.index = index;
+    }
+
+    public float getAngleOffset() {
+        return angleOffset;
+    }
+
+    public void setAngleOffset(float angleOffset) {
+        this.angleOffset = angleOffset;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package dev.creoii.chaos.client;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.MathUtils;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.FrameworkMessage;
 import com.esotericsoftware.kryonet.Listener;
@@ -8,7 +9,6 @@ import dev.creoii.chaos.DataManager;
 import dev.creoii.chaos.client.render.entity.data.*;
 import dev.creoii.chaos.client.texture.TextureManager;
 import dev.creoii.chaos.effect.StatusEffect;
-import dev.creoii.chaos.entity.BulletEntityType;
 import dev.creoii.chaos.entity.serialization.*;
 import dev.creoii.chaos.entity.serialization.CharacterData;
 import dev.creoii.chaos.inventory.InventoryType;
@@ -17,8 +17,6 @@ import dev.creoii.chaos.network.s2c.*;
 import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.event.ChangeStatEvent;
 import dev.creoii.chaos.util.event.DamageEntityEvent;
-import dev.creoii.chaos.util.provider.numberprovider.ConstantNumberProvider;
-import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
 import dev.creoii.chaos.util.stat.Stat;
 import dev.creoii.chaos.util.stat.StatContainer;
 import dev.creoii.chaos.world.setpiece.Setpiece;
@@ -51,14 +49,9 @@ public class ClientWorldListener extends Listener {
                     case BULLET -> {
                         BulletData bulletData = (BulletData) customData;
 
-                        NumberProvider angleOffset;
+                        float angle = MathUtils.atan2(bulletData.yd(), bulletData.xd()) * MathUtils.radiansToDegrees;
 
-                        BulletEntityType bulletEntityType = DataManager.getBullet(bulletData.textureId());
-                        if (bulletEntityType != null) {
-                            angleOffset = bulletEntityType.angleOffset();
-                        } else angleOffset = ConstantNumberProvider.ZERO;
-
-                        world.getEntityManager().addEntity(id, new BulletEntityRenderData(id, x, y, 0f, 0f, bulletData.textureId(), scale, bulletData.xd(), bulletData.yd(), angleOffset));
+                        world.getEntityManager().addEntity(id, new BulletEntityRenderData(id, x, y, 0f, 0f, bulletData.textureId(), scale, bulletData.xd(), bulletData.yd(), angle));
                     }
                     case ENEMY -> {
                         EnemyData enemyData = (EnemyData) customData;
@@ -96,14 +89,9 @@ public class ClientWorldListener extends Listener {
                     case BULLET -> {
                         BulletData bulletData = (BulletData) entry.customData();
 
-                        NumberProvider angleOffset;
+                        float angle = (MathUtils.atan2(bulletData.yd(), bulletData.xd()) * MathUtils.radiansToDegrees) + bulletData.angleOffset();
 
-                        BulletEntityType bulletEntityType = DataManager.getBullet(bulletData.textureId());
-                        if (bulletEntityType != null) {
-                            angleOffset = bulletEntityType.angleOffset();
-                        } else angleOffset = ConstantNumberProvider.ZERO;
-
-                        world.getEntityManager().addEntity(id, new BulletEntityRenderData(id, x, y, 0f, 0f, bulletData.textureId(), scale, bulletData.xd(), bulletData.yd(), angleOffset));
+                        world.getEntityManager().addEntity(id, new BulletEntityRenderData(id, x, y, 0f, 0f, bulletData.textureId(), scale, bulletData.xd(), bulletData.yd(), angle));
                     }
                     case ENEMY -> {
                         EnemyData enemyData = (EnemyData) entry.customData();
@@ -138,11 +126,6 @@ public class ClientWorldListener extends Listener {
                     entityRenderData.y = entry.y();
                     entityRenderData.xv = entry.xv();
                     entityRenderData.yv = entry.yv();
-
-                    if (entityRenderData instanceof CharacterEntityRenderData) {
-                        entityRenderData.renderX = entry.x();
-                        entityRenderData.renderY = entry.y();
-                    }
                 }
             });
             case MoveEntityS2C(int id, float x, float y, float xv, float yv) -> {
@@ -152,11 +135,6 @@ public class ClientWorldListener extends Listener {
                     entityRenderData.y = y;
                     entityRenderData.xv = xv;
                     entityRenderData.yv = yv;
-
-                    if (entityRenderData instanceof CharacterEntityRenderData) {
-                        entityRenderData.renderX = x;
-                        entityRenderData.renderY = y;
-                    }
                 }
             }
             case EntityDisplayS2C(int id, String textureId, float scale) -> {

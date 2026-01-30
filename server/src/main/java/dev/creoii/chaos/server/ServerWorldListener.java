@@ -17,7 +17,6 @@ import dev.creoii.chaos.item.WeaponItem;
 import dev.creoii.chaos.network.NetworkQueue;
 import dev.creoii.chaos.network.c2s.*;
 import dev.creoii.chaos.network.s2c.ChatMessageReceiveS2C;
-import dev.creoii.chaos.network.s2c.MoveEntityS2C;
 import dev.creoii.chaos.network.s2c.SetupWorldS2C;
 import dev.creoii.chaos.network.s2c.SpawnEntitiesS2C;
 import dev.creoii.chaos.server.chat.command.Command;
@@ -45,14 +44,17 @@ public class ServerWorldListener extends Listener {
     }
 
     public void handlePacket(Connection connection, Object object) {
-        if (object instanceof CharacterMoveC2S(int id, boolean axis, boolean positive)) {
+        if (object instanceof CharacterMoveStartC2S(int id, boolean axis, boolean positive)) {
             CharacterEntity character = (CharacterEntity) world.getEntityManager().getEntity(EntityGroup.CHARACTER, id);
             if (character != null) {
-                character.setPrevPos(character.getPos().x, character.getPos().y);
-                float x = (axis ? positive ? 1f : -1f : 0f) * (character.getStats().speed().value() / 8f);
-                float y = (axis ? 0f : positive ? 1f : -1f) * (character.getStats().speed().value() / 8f);
-                Vector2 newPos = character.getPos().add(x, y);
-                world.getGame().getServer().sendToAllExceptUDP(connection.getID(), new MoveEntityS2C(id, newPos.x, newPos.y, newPos.x - character.getPrevPos().x, newPos.y - character.getPrevPos().y));
+                character.updateMovement(axis, positive);
+            }
+        }
+
+        else if (object instanceof CharacterMoveEndC2S(int id, boolean axis, boolean positive)) {
+            CharacterEntity character = (CharacterEntity) world.getEntityManager().getEntity(EntityGroup.CHARACTER, id);
+            if (character != null) {
+                character.stopMovement(axis, positive);
             }
         }
 

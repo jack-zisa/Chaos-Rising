@@ -1,5 +1,6 @@
 package dev.creoii.chaos.entity;
 
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.World;
 import dev.creoii.chaos.entity.serialization.EntityCustomData;
@@ -17,6 +18,7 @@ public abstract class Entity implements Tickable {
     private int id;
     private final Vector2 pos;
     private final Vector2 prevPos;
+    private final Vector2 velocity;
     private final int spawnTime;
     private final Vector2 collider;
     private final IntSet collidingWith;
@@ -27,6 +29,7 @@ public abstract class Entity implements Tickable {
         this.id = id;
         this.pos = pos.cpy();
         prevPos = pos.cpy();
+        velocity = Vector2.Zero.cpy();
         spawnTime = world.getGame().getGametime();
         collider = new Vector2(type.scale() * .75f, type.scale() * .75f);
         collidingWith = new IntArraySet();
@@ -69,7 +72,27 @@ public abstract class Entity implements Tickable {
     }
 
     public Vector2 getVelocity() {
-        return pos.cpy().sub(prevPos);
+        return velocity;
+    }
+
+    public void setVelocity(float x, float y) {
+        velocity.set(x, y);
+    }
+
+    public float left() {
+        return pos.x + (type.scale() - collider.x) * 0.5f;
+    }
+
+    public float right() {
+        return left() + collider.x;
+    }
+
+    public float bottom() {
+        return pos.y + (type.scale() - collider.y) * 0.5f;
+    }
+
+    public float top() {
+        return bottom() + collider.y;
     }
 
     public int getSpawnTime() {
@@ -85,17 +108,32 @@ public abstract class Entity implements Tickable {
     }
 
     public boolean collides(Entity other) {
-        float ax1 = pos.x + (type.scale() - collider.x) * .5f;
-        float ay1 = pos.y + (type.scale() - collider.y) * .5f;
+        Rectangle a = new Rectangle();
+        Rectangle b = new Rectangle();
+
+        getAABB(a);
+        other.getAABB(b);
+
+        return a.overlaps(b);
+    }
+
+    public boolean collidesTile(int tileX, int tileY) {
+        float ax1 = pos.x + (type.scale() - collider.x) * 0.5f;
+        float ay1 = pos.y + (type.scale() - collider.y) * 0.5f;
         float ax2 = ax1 + collider.x;
         float ay2 = ay1 + collider.y;
 
-        float bx1 = other.pos.x + (other.type.scale() - other.collider.x) * .5f;
-        float by1 = other.pos.y + (other.type.scale() - other.collider.y) * .5f;
-        float bx2 = bx1 + other.collider.x;
-        float by2 = by1 + other.collider.y;
+        float tx2 = tileX + 1f;
+        float ty2 = tileY + 1f;
 
-        return ax1 < bx2 && ax2 > bx1 && ay1 < by2 && ay2 > by1;
+        return ax1 < tx2 && ax2 > (float) tileX && ay1 < ty2 && ay2 > (float) tileY;
+    }
+
+    private void getAABB(Rectangle out) {
+        float x1 = pos.x + (type.scale() - collider.x) * 0.5f;
+        float y1 = pos.y + (type.scale() - collider.y) * 0.5f;
+
+        out.set(x1, y1, collider.x, collider.y);
     }
 
     public IntSet getCollidingWith() {
@@ -119,7 +157,7 @@ public abstract class Entity implements Tickable {
     }
 
     public boolean canMove() {
-        return false;
+        return !velocity.isZero();
     }
 
     @Override

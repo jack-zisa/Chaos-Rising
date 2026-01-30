@@ -64,7 +64,7 @@ public abstract class LivingEntity extends Entity {
 
     @Override
     public boolean canMove() {
-        return statContainer.speed().value() > 0;
+        return super.canMove() && statContainer.speed().value() > 0;
     }
 
     public void damage(int amount) {

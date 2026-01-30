@@ -1,6 +1,8 @@
 package dev.creoii.chaos.server;
 
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
+import dev.creoii.chaos.World;
 import dev.creoii.chaos.entity.BulletEntity;
 import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.util.EntityGroup;
@@ -15,9 +17,6 @@ import java.util.*;
 import java.util.function.BiFunction;
 
 public class CollisionManager {
-    private static final int[][] FORWARD_NEIGHBORS = {
-        {1, 0}, {1, 1}, {0, 1}, {-1, 1}
-    };
     private static final int[][] ALL_NEIGHBORS = {
         {-1,-1},{0,-1},{1,-1},
         {-1, 0},        {1, 0},
@@ -28,11 +27,13 @@ public class CollisionManager {
     private static final int[] COLLISION_MASKS = new int[EntityGroup.values().length];
     public static final int KEY_OFFSET = 32768;
     private final ServerWorld world;
+    private final ObjectList<Entity> toCollide;
     private final Int2ObjectOpenHashMap<ObjectList<Entity>> grid;
     private final Int2ObjectOpenHashMap<ObjectSet<Integer>> collisions;
 
     public CollisionManager(ServerWorld world) {
         this.world = world;
+        toCollide = new ObjectArrayList<>();
         grid = new Int2ObjectOpenHashMap<>();
         collisions = new Int2ObjectOpenHashMap<>();
 
@@ -43,15 +44,24 @@ public class CollisionManager {
     }
 
     public void checkCollisions() {
-        if (world.getEntityManager().getSize() <= 1)
-            return;
+        if (world.getEntityManager().getSize() > 0) {
+            start();
+            checkTileCollisions();
+            if (world.getEntityManager().getSize() > 1) {
+                checkEntityCollisions();
+            }
+            end();
+        }
+    }
 
+    public void start() {
         for (ObjectList<Entity> cellEntities : grid.values()) {
             cellEntities.clear();
         }
         grid.clear();
 
-        List<Entity> toCollide = new ArrayList<>();
+        toCollide.clear();
+
         for (Int2ObjectOpenHashMap<Entity> entityMap : world.getEntityManager().getAllEntities().values()) {
             toCollide.addAll(entityMap.values());
         }
@@ -68,7 +78,31 @@ public class CollisionManager {
             }
             entities.add(entity);
         }
+    }
 
+    public void checkTileCollisions() {
+        for (Map.Entry<Integer, ObjectList<Entity>> entry : grid.int2ObjectEntrySet()) {
+            int key = entry.getKey();
+
+            int x = ((key >>> 16) & 0xffff) - KEY_OFFSET;
+            int y = (key & 0xffff) - KEY_OFFSET;
+
+            if (world.getMap().getLayers().get(World.LAYER_GROUND) instanceof TiledMapTileLayer tiledMapTileLayer) {
+                TiledMapTileLayer.Cell cell = tiledMapTileLayer.getCell(x, y);
+
+                if (cell == null || cell.getTile() == null)
+                    continue;
+
+                for (Entity entity : entry.getValue()) {
+                    if (entity.collidesTile(x, y)) {
+                        System.out.println("collides");
+                    }
+                }
+            }
+        }
+    }
+
+    public void checkEntityCollisions() {
         for (Map.Entry<Integer, ObjectList<Entity>> entry : grid.int2ObjectEntrySet()) {
             ObjectList<Entity> entities = entry.getValue();
 
@@ -131,14 +165,101 @@ public class CollisionManager {
                     Entity b = world.getEntityManager().getEntity(id);
                     if (b == null)
                         continue;
+
                     it.remove();
                     entity.removeCollidingWith(b);
                     b.removeCollidingWith(entity);
                 }
             }
         }
+    }
 
+    public void end() {
         collisions.clear();
+    }
+
+    public static Vector2 resolve(Entity entity) {
+        float dx = resolveX(entity);
+        entity.getPos().x += dx;
+
+        float dy = resolveY(entity);
+        entity.getPos().y += dy;
+
+        return new Vector2(dx, dy);
+    }
+
+    public static float resolveX(Entity entity) {
+        float dx = entity.getVelocity().x;
+        if (dx == 0f) return 0f;
+
+        float sign = Math.signum(dx);
+        float move = dx;
+
+        float yMin = entity.bottom();
+        float yMax = entity.top();
+
+        float edgeX = (sign > 0) ? entity.right() : entity.left();
+
+        int tileY0 = (int) Math.floor(yMin);
+        int tileY1 = (int) Math.floor(yMax - 0.0001f);
+
+        int targetTileX = (int) Math.floor(edgeX + dx);
+
+        for (int ty = tileY0; ty <= tileY1; ty++) {
+            if (isSolid(targetTileX, ty)) {
+                if (sign > 0) {
+                    move = Math.min(move, targetTileX - edgeX);
+                } else {
+                    move = Math.max(move, (targetTileX + 1) - edgeX);
+                }
+                break;
+            }
+        }
+
+        return move;
+    }
+
+    public static float resolveY(Entity entity) {
+        float dy = entity.getVelocity().y;
+        if (dy == 0f) return 0f;
+
+        float sign = Math.signum(dy);
+        float move = dy;
+
+        float xMin = entity.left();
+        float xMax = entity.right();
+
+        float edgeY = (sign > 0) ? entity.top() : entity.bottom();
+
+        int tileX0 = (int) Math.floor(xMin);
+        int tileX1 = (int) Math.floor(xMax - 0.0001f);
+
+        int targetTileY = (int) Math.floor(edgeY + dy);
+
+        for (int tx = tileX0; tx <= tileX1; tx++) {
+            if (isSolid(tx, targetTileY)) {
+                if (sign > 0) {
+                    move = Math.min(move, targetTileY - edgeY);
+                } else {
+                    move = Math.max(move, (targetTileY + 1) - edgeY);
+                }
+                break;
+            }
+        }
+
+        return move;
+    }
+
+    private static boolean isSolid(int x, int y) {
+        return true;
+        /*
+        if (!(world.getMap().getLayers().get(World.LAYER_GROUND)
+            instanceof TiledMapTileLayer layer)) return false;
+
+        TiledMapTileLayer.Cell cell = layer.getCell(x, y);
+        if (cell == null || cell.getTile() == null) return false;
+
+        return Boolean.TRUE.equals(cell.getTile().getProperties().get("solid", Boolean.class));*/
     }
 
     private static int[][] getBulletForwardNeighbors(BulletEntity bullet) {

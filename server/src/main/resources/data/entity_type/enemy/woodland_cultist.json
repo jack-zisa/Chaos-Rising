@@ -51,7 +51,13 @@
               "bullet_id": "fireball_blast",
               "damage": 15,
               "bullet_count": 3,
-              "arc_gap": 25
+              "arc_gap": 25,
+              "target": {
+                "type": "entity",
+                "entity": {
+                  "type": "nearest_character"
+                }
+              }
             }
           }
         ]
@@ -94,7 +100,13 @@
               "bullet_id": "fireball_blast",
               "damage": 15,
               "bullet_count": 2,
-              "arc_gap": 25
+              "arc_gap": 25,
+              "target": {
+                "type": "entity",
+                "entity": {
+                  "type": "nearest_character"
+                }
+              }
             }
           },
           {

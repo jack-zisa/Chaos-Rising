@@ -1,13 +1,10 @@
 package dev.creoii.chaos.client.render;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -18,6 +15,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import dev.creoii.chaos.client.ClientGame;
+import dev.creoii.chaos.client.render.entity.data.CharacterEntityRenderData;
 import dev.creoii.chaos.client.render.screen.Screen;
 import dev.creoii.chaos.client.util.Renderable;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -26,7 +24,6 @@ import it.unimi.dsi.fastutil.objects.ObjectList;
 import java.util.Arrays;
 
 public class Renderer implements Disposable {
-    private static final float CAMERA_LOOK_OFFSET = 10f;
     private final ClientGame game;
     private final OrthographicCamera camera;
     private final FitViewport viewport;
@@ -133,7 +130,7 @@ public class Renderer implements Disposable {
         if (game.getCharacter() == null)
             return;
 
-        updateCameraSeek();
+        updateCamera();
 
         for (RenderSpace space : RenderSpace.values()) {
             ObjectMap<RenderLayer, ObjectList<Renderable>> renderLayers = renderables.get(space);
@@ -171,18 +168,12 @@ public class Renderer implements Disposable {
         }
     }
 
-    private void updateCameraSeek() {
-        Vector3 mousePos = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+    private void updateCamera() {
+        CharacterEntityRenderData character = game.getCharacter();
+        camera.position.x = character.renderX + character.sprite.getWidth() / 2f;
+        camera.position.y = character.renderY + character.sprite.getHeight() / 2f;
 
-        Vector2 direction = new Vector2(mousePos.x - game.getCharacter().x, mousePos.y - game.getCharacter().y);
-        if (direction.len2() > 1e-4f)
-            direction.nor().scl(CAMERA_LOOK_OFFSET);
-
-        camera.position.x += ((game.getCharacter().x + direction.x) - camera.position.x) * .2f;
-        camera.position.y += ((game.getCharacter().y + direction.y) - camera.position.y) * .2f;
-
-        camera.zoom += (zoom - camera.zoom) * .2f;
-
+        camera.zoom = zoom;
         camera.update();
     }
 

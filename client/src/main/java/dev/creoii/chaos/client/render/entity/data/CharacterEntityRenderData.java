@@ -38,9 +38,8 @@ public class CharacterEntityRenderData extends LivingEntityRenderData {
 
     @Override
     public void tick(float delta) {
-        if (!canMove())
-            return;
-
+        super.tick(delta);
+        
         if (xv > .01f) {
             facingRight = true;
         } else if (xv < -.01f) {

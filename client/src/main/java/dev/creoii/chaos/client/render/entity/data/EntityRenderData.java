@@ -38,11 +38,9 @@ public class EntityRenderData {
         if (!canMove())
             return;
 
-        float predictedX = x + xv * delta;
-        float predictedY = y + yv * delta;
+        float alpha = Math.min(1f, delta * 15f);
 
-        float alpha = Math.min(1f, delta * 17.5f);
-        renderX += (predictedX - renderX) * alpha;
-        renderY += (predictedY - renderY) * alpha;
+        renderX += (x - renderX) * alpha;
+        renderY += (y - renderY) * alpha;
     }
 }

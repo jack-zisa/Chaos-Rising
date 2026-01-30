@@ -11,7 +11,8 @@ public class Networking {
     public static void register(Kryo kryo) {
         kryo.register(CharacterJoinC2S.class, PacketSerializer.INSTANCE);
         kryo.register(CharacterLeaveC2S.class, PacketSerializer.INSTANCE);
-        kryo.register(CharacterMoveC2S.class, PacketSerializer.INSTANCE);
+        kryo.register(CharacterMoveStartC2S.class, PacketSerializer.INSTANCE);
+        kryo.register(CharacterMoveEndC2S.class, PacketSerializer.INSTANCE);
         kryo.register(DropSlotItemC2S.class, PacketSerializer.INSTANCE);
         kryo.register(ExecuteCommandC2S.class, PacketSerializer.INSTANCE);
         kryo.register(LootDropCloseC2S.class, PacketSerializer.INSTANCE);
@@ -51,7 +52,8 @@ public class Networking {
     private static void registerCodecSchema() {
         PacketSerializer.INSTANCE.register(CharacterJoinC2S.class, CharacterJoinC2S::write, CharacterJoinC2S::read);
         PacketSerializer.INSTANCE.register(CharacterLeaveC2S.class, CharacterLeaveC2S::write, CharacterLeaveC2S::read);
-        PacketSerializer.INSTANCE.register(CharacterMoveC2S.class, CharacterMoveC2S::write, CharacterMoveC2S::read);
+        PacketSerializer.INSTANCE.register(CharacterMoveStartC2S.class, CharacterMoveStartC2S::write, CharacterMoveStartC2S::read);
+        PacketSerializer.INSTANCE.register(CharacterMoveEndC2S.class, CharacterMoveEndC2S::write, CharacterMoveEndC2S::read);
         PacketSerializer.INSTANCE.register(DropSlotItemC2S.class, DropSlotItemC2S::write, DropSlotItemC2S::read);
         PacketSerializer.INSTANCE.register(ExecuteCommandC2S.class, ExecuteCommandC2S::write, ExecuteCommandC2S::read);
         PacketSerializer.INSTANCE.register(LootDropCloseC2S.class, LootDropCloseC2S::write, LootDropCloseC2S::read);
