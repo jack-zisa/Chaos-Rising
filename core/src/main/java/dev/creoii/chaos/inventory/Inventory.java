@@ -85,4 +85,10 @@ public class Inventory {
             to.addItem(toSlot.takeStack());
         }
     }
+
+    public void clearSlot(int r, int c) {
+        Slot slot = slots[r][c];
+        onRemoveItemFromSlot(slot, slot.getStack());
+        slot.setStack(ItemStack.EMPTY);
+    }
 }

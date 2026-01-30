@@ -205,10 +205,18 @@ public class ClientWorldListener extends Listener {
                     }
                 } else if (entityRenderData instanceof LootDropEntityRenderData lootDrop) {
                     for (Slot slot : slots) {
-                        if (type == InventoryType.MAIN) {
+                        if (type == InventoryType.LOOT) {
                             lootDrop.slots[slot.getR()][slot.getC()] = slot;
                         }
                     }
+                }
+            }
+            case SlotUpdateS2C(int id, InventoryType inventory, Slot slot) -> {
+                EntityRenderData entityRenderData = world.getEntityManager().getEntityData(id);
+                if (entityRenderData instanceof CharacterEntityRenderData character) {
+                    character.slots[slot.getR()][slot.getC()] = slot;
+                } else if (entityRenderData instanceof LootDropEntityRenderData lootDrop) {
+                    lootDrop.slots[slot.getR()][slot.getC()] = slot;
                 }
             }
             case LivingStatUpdateS2C(int id, Stat stat, boolean setMax) -> {

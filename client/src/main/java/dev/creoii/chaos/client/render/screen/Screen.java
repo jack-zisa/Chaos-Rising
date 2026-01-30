@@ -127,6 +127,12 @@ public abstract class Screen implements Renderable, Inputtable {
     }
 
     @Override
+    public void touchHeld(InputManager manager, int screenX, int screenY, int pointer, int button) {
+        widgets.forEach((key, widget) -> widget.touchHeld(manager, screenX, screenY, pointer, button));
+        Inputtable.super.touchHeld(manager, screenX, screenY, pointer, button);
+    }
+
+    @Override
     public boolean mouseMoved(InputManager manager, int screenX, int screenY) {
         widgets.forEach((key, widget) -> widget.mouseMoved(manager, screenX, screenY));
         return Inputtable.super.mouseMoved(manager, screenX, screenY);

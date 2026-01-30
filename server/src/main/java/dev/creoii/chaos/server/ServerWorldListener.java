@@ -12,6 +12,7 @@ import dev.creoii.chaos.inventory.Inventory;
 import dev.creoii.chaos.inventory.InventoryType;
 import dev.creoii.chaos.inventory.Slot;
 import dev.creoii.chaos.item.AbilityItem;
+import dev.creoii.chaos.item.ConsumableItem;
 import dev.creoii.chaos.item.ItemStack;
 import dev.creoii.chaos.item.WeaponItem;
 import dev.creoii.chaos.network.NetworkQueue;
@@ -55,6 +56,13 @@ public class ServerWorldListener extends Listener {
             CharacterEntity character = (CharacterEntity) world.getEntityManager().getEntity(EntityGroup.CHARACTER, id);
             if (character != null) {
                 character.stopMovement(axis, positive);
+            }
+        }
+
+        else if (object instanceof CharacterStopMoveC2S(int id)) {
+            CharacterEntity character = (CharacterEntity) world.getEntityManager().getEntity(EntityGroup.CHARACTER, id);
+            if (character != null) {
+                character.stopMovement();
             }
         }
 
@@ -152,6 +160,14 @@ public class ServerWorldListener extends Listener {
                 for (int i = 0; i < size; i += 50) {
                     world.getGame().getServer().sendToTCP(connection.getID(), new SpawnEntitiesS2C(spawnEntries.subList(i, Math.min(i + 50, spawnEntries.size()))));
                 }
+            }
+        }
+
+        else if (object instanceof ClickSlotC2S(int id, Slot slot, boolean consume)) {
+            CharacterEntity character = (CharacterEntity) world.getEntityManager().getEntity(EntityGroup.CHARACTER, id);
+            if (character != null) {
+                ItemStack stack = character.getInventory().getSlot(slot.getR(), slot.getC()).getStack();
+                stack.clickInSlot(world, id, slot);
             }
         }
 

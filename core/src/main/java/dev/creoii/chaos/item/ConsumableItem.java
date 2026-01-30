@@ -1,7 +1,5 @@
 package dev.creoii.chaos.item;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -44,16 +42,16 @@ public class ConsumableItem extends Item {
 
     @Override
     public boolean clickInSlot(World world, int characterId, Slot slot, ItemStack stack) {
-        if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
+        if (!world.getGame().isClient()) {
             consume(world, characterId, slot, stack);
             return true;
         }
-        return super.clickInSlot(world, characterId, slot, stack);
+        return true;
     }
 
     public void consume(World world, int characterId, Slot slot, ItemStack stack) {
-        if (!world.getGame().isClient()) {
-            CharacterEntity character = (CharacterEntity) world.getEntityManager().getEntity(EntityGroup.CHARACTER, characterId);
+        CharacterEntity character = (CharacterEntity) world.getEntityManager().getEntity(EntityGroup.CHARACTER, characterId);
+        if (character != null) {
             if (getStatBonus() != null) {
                 StatContainer stats = character.getStats();
                 getStatBonus().forEach(modifierEntry -> {
@@ -76,8 +74,8 @@ public class ConsumableItem extends Item {
             if (!getStatusEffects().isEmpty()) {
                 instances.forEach(character::addStatusEffect);
             }
+            character.getInventory().clearSlot(slot.getR(), slot.getC());
         }
-        slot.setStack(ItemStack.EMPTY);
     }
 
     @Override

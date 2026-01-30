@@ -15,7 +15,10 @@ import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.stat.Stat;
 import dev.creoii.chaos.util.stat.StatContainer;
 
+import javax.annotation.Nullable;
+
 public final class PacketUtils {
+    @Nullable
     public static Item readItem(Input input) {
         String id = input.readString();
         return DataManager.getItem(id);
@@ -28,6 +31,8 @@ public final class PacketUtils {
     public static ItemStack readItemStack(Input input) {
         Item item = readItem(input);
         int count = input.readInt();
+        if (item == null)
+            return ItemStack.EMPTY;
         return new ItemStack(item, count);
     }
 

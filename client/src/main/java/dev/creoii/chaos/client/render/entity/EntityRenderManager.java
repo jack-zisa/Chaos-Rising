@@ -133,8 +133,8 @@ public class EntityRenderManager extends EntityManager<EntityRenderData> impleme
         Camera camera = renderer.getCamera();
         float zoom = camera instanceof OrthographicCamera orthographicCamera ? orthographicCamera.zoom : 1f;
 
-        float halfWidth = (renderer.getCamera().viewportWidth * .5f) * zoom;
-        float halfHeight = (renderer.getCamera().viewportHeight * .5f) * zoom;
+        float halfWidth = (renderer.getCamera().viewportWidth * .6f) * zoom;
+        float halfHeight = (renderer.getCamera().viewportHeight * .6f) * zoom;
 
         float viewMinX = camera.position.x - halfWidth;
         float viewMaxX = camera.position.x + halfWidth;

@@ -5,14 +5,13 @@ import com.badlogic.gdx.math.Vector3;
 import dev.creoii.chaos.OptionsManager;
 import dev.creoii.chaos.client.ClientGame;
 import dev.creoii.chaos.client.render.entity.data.CharacterEntityRenderData;
+import dev.creoii.chaos.client.render.screen.InventoryScreen;
+import dev.creoii.chaos.client.render.screen.Screen;
 import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.inventory.Slot;
 import dev.creoii.chaos.item.AbilityItem;
 import dev.creoii.chaos.item.WeaponItem;
-import dev.creoii.chaos.network.c2s.AttackC2S;
-import dev.creoii.chaos.network.c2s.CharacterMoveEndC2S;
-import dev.creoii.chaos.network.c2s.CharacterMoveStartC2S;
-import dev.creoii.chaos.network.c2s.UseItemC2S;
+import dev.creoii.chaos.network.c2s.*;
 import dev.creoii.chaos.client.util.Inputtable;
 
 public record CharacterController() implements Inputtable {
@@ -86,6 +85,11 @@ public record CharacterController() implements Inputtable {
         if (character == null)
             return false;
 
+        if (game.getChatManager().isActive()) {
+            game.getClient().sendUDP(new CharacterStopMoveC2S(character.id));
+            return false;
+        }
+
         boolean axis;
         boolean positive;
 
@@ -110,11 +114,15 @@ public record CharacterController() implements Inputtable {
     @Override
     public void touchHeld(InputManager manager, int screenX, int screenY, int pointer, int button) {
         ClientGame game = manager.getGame();
-        if (game.getChatManager().isActive() || game.getCharacter() == null || game.getAttackCooldown() > 0)
+        if (game.getChatManager().isActive() || game.getCharacter() == null)
             return;
 
         Slot weaponSlot = game.getCharacter().getWeaponSlot();
-        if (weaponSlot.getStack().getItem() instanceof WeaponItem weaponItem) {
+        if (weaponSlot.getStack().getItem() instanceof WeaponItem weaponItem && game.getAttackCooldown() <= 0) {
+            Screen screen = game.getRenderer().getCurrentScreen();
+            if (screen instanceof InventoryScreen inventoryScreen && inventoryScreen.getMouseOverSlot() != null)
+                return;
+
             float attackSpeed = game.getCharacter().statContainer.attackSpeed().value();
             if (attackSpeed <= 0f)
                 return;

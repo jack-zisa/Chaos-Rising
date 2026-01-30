@@ -13,6 +13,7 @@ public class Networking {
         kryo.register(CharacterLeaveC2S.class, PacketSerializer.INSTANCE);
         kryo.register(CharacterMoveStartC2S.class, PacketSerializer.INSTANCE);
         kryo.register(CharacterMoveEndC2S.class, PacketSerializer.INSTANCE);
+        kryo.register(CharacterStopMoveC2S.class, PacketSerializer.INSTANCE);
         kryo.register(DropSlotItemC2S.class, PacketSerializer.INSTANCE);
         kryo.register(ExecuteCommandC2S.class, PacketSerializer.INSTANCE);
         kryo.register(LootDropCloseC2S.class, PacketSerializer.INSTANCE);
@@ -21,6 +22,7 @@ public class Networking {
         kryo.register(AttackC2S.class, PacketSerializer.INSTANCE);
         kryo.register(ChatMessageSendC2S.class, PacketSerializer.INSTANCE);
         kryo.register(RequestWorldLoadC2S.class, PacketSerializer.INSTANCE);
+        kryo.register(ClickSlotC2S.class, PacketSerializer.INSTANCE);
 
         kryo.register(EntityRemoveS2C.class, PacketSerializer.INSTANCE);
         kryo.register(RemoveEntitiesS2C.class, PacketSerializer.INSTANCE);
@@ -32,6 +34,7 @@ public class Networking {
         kryo.register(EntityDisplayS2C.class, PacketSerializer.INSTANCE);
         kryo.register(EntityDamageS2C.class, PacketSerializer.INSTANCE);
         kryo.register(InventoryUpdateS2C.class, PacketSerializer.INSTANCE);
+        kryo.register(SlotUpdateS2C.class, PacketSerializer.INSTANCE);
         kryo.register(LivingStatUpdateS2C.class, PacketSerializer.INSTANCE);
         kryo.register(LivingStatsUpdateS2C.class, PacketSerializer.INSTANCE);
         kryo.register(LootDropCloseS2C.class, PacketSerializer.INSTANCE);
@@ -54,6 +57,7 @@ public class Networking {
         PacketSerializer.INSTANCE.register(CharacterLeaveC2S.class, CharacterLeaveC2S::write, CharacterLeaveC2S::read);
         PacketSerializer.INSTANCE.register(CharacterMoveStartC2S.class, CharacterMoveStartC2S::write, CharacterMoveStartC2S::read);
         PacketSerializer.INSTANCE.register(CharacterMoveEndC2S.class, CharacterMoveEndC2S::write, CharacterMoveEndC2S::read);
+        PacketSerializer.INSTANCE.register(CharacterStopMoveC2S.class, CharacterStopMoveC2S::write, CharacterStopMoveC2S::read);
         PacketSerializer.INSTANCE.register(DropSlotItemC2S.class, DropSlotItemC2S::write, DropSlotItemC2S::read);
         PacketSerializer.INSTANCE.register(ExecuteCommandC2S.class, ExecuteCommandC2S::write, ExecuteCommandC2S::read);
         PacketSerializer.INSTANCE.register(LootDropCloseC2S.class, LootDropCloseC2S::write, LootDropCloseC2S::read);
@@ -62,6 +66,7 @@ public class Networking {
         PacketSerializer.INSTANCE.register(AttackC2S.class, AttackC2S::write, AttackC2S::read);
         PacketSerializer.INSTANCE.register(ChatMessageSendC2S.class, ChatMessageSendC2S::write, ChatMessageSendC2S::read);
         PacketSerializer.INSTANCE.register(RequestWorldLoadC2S.class, RequestWorldLoadC2S::write, RequestWorldLoadC2S::read);
+        PacketSerializer.INSTANCE.register(ClickSlotC2S.class, ClickSlotC2S::write, ClickSlotC2S::read);
 
         PacketSerializer.INSTANCE.register(EntityRemoveS2C.class, EntityRemoveS2C::write, EntityRemoveS2C::read);
         PacketSerializer.INSTANCE.register(RemoveEntitiesS2C.class, RemoveEntitiesS2C::write, RemoveEntitiesS2C::read);
@@ -73,6 +78,7 @@ public class Networking {
         PacketSerializer.INSTANCE.register(EntityDisplayS2C.class, EntityDisplayS2C::write, EntityDisplayS2C::read);
         PacketSerializer.INSTANCE.register(EntityDamageS2C.class, EntityDamageS2C::write, EntityDamageS2C::read);
         PacketSerializer.INSTANCE.register(InventoryUpdateS2C.class, InventoryUpdateS2C::write, InventoryUpdateS2C::read);
+        PacketSerializer.INSTANCE.register(SlotUpdateS2C.class, SlotUpdateS2C::write, SlotUpdateS2C::read);
         PacketSerializer.INSTANCE.register(LivingStatUpdateS2C.class, LivingStatUpdateS2C::write, LivingStatUpdateS2C::read);
         PacketSerializer.INSTANCE.register(LivingStatsUpdateS2C.class, LivingStatsUpdateS2C::write, LivingStatsUpdateS2C::read);
         PacketSerializer.INSTANCE.register(LootDropCloseS2C.class, LootDropCloseS2C::write, LootDropCloseS2C::read);

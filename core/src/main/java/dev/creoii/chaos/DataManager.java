@@ -71,6 +71,7 @@ public class DataManager {
         return DATA.get(SchemaType.MAP_GENERATOR);
     }
 
+    @Nullable
     public static CharacterClass getCharacterClass(String id) {
         CharacterClass value = (CharacterClass) getClasses().get(id);
         if (value == null) {
@@ -80,6 +81,7 @@ public class DataManager {
         return value;
     }
 
+    @Nullable
     public static EnemyEntityType getEnemy(String id) {
         EnemyEntityType value = (EnemyEntityType) getEntities().get(id);
         if (value == null) {
@@ -89,6 +91,7 @@ public class DataManager {
         return value;
     }
 
+    @Nullable
     public static ObjectEntityType getObject(String id) {
         ObjectEntityType value = (ObjectEntityType) getEntities().get(id);
         if (value == null) {
@@ -98,6 +101,7 @@ public class DataManager {
         return value;
     }
 
+    @Nullable
     public static BulletEntityType getBullet(String id) {
         BulletEntityType value = (BulletEntityType) getEntities().get(id);
         if (value == null) {
@@ -107,6 +111,7 @@ public class DataManager {
         return value;
     }
 
+    @Nullable
     public static LootDropEntityType getLootDrop(String id) {
         LootDropEntityType value = (LootDropEntityType) getEntities().get(id);
         if (value == null) {
@@ -116,6 +121,7 @@ public class DataManager {
         return value;
     }
 
+    @Nullable
     public static Item getItem(String id) {
         Item value = (Item) getItems().get(id);
         if (value == null) {
@@ -125,6 +131,7 @@ public class DataManager {
         return value;
     }
 
+    @Nullable
     public static LootTable getLootTable(String id) {
         LootTable value = (LootTable) getLootTables().get(id);
         if (value == null) {
@@ -134,6 +141,7 @@ public class DataManager {
         return value;
     }
 
+    @Nullable
     public static Tile getTile(String id) {
         Tile value = (Tile) getTiles().get(id);
         if (value == null) {
@@ -143,6 +151,7 @@ public class DataManager {
         return value;
     }
 
+    @Nullable
     public static Setpiece getSetpiece(String id) {
         Setpiece value = (Setpiece) getSetpieces().get(id);
         if (value == null) {
@@ -152,6 +161,7 @@ public class DataManager {
         return value;
     }
 
+    @Nullable
     public static RoomTemplate getRoomTemplate(String id) {
         RoomTemplate value = (RoomTemplate) getRoomTemplates().get(id);
         if (value == null) {
@@ -161,6 +171,7 @@ public class DataManager {
         return value;
     }
 
+    @Nullable
     public static Dungeon getDungeon(String id) {
         Dungeon value = (Dungeon) getDungeons().get(id);
         if (value == null) {
@@ -170,6 +181,7 @@ public class DataManager {
         return value;
     }
 
+    @Nullable
     public static MapGenerator getMapGenerator(String id) {
         MapGenerator value = (MapGenerator) getMapGenerators().get(id);
         if (value == null) {

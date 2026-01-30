@@ -5,6 +5,7 @@ import dev.creoii.chaos.item.EquipmentItem;
 import dev.creoii.chaos.item.ItemStack;
 import dev.creoii.chaos.network.c2s.SlotUpdateC2S;
 import dev.creoii.chaos.network.s2c.InventoryUpdateS2C;
+import dev.creoii.chaos.network.s2c.SlotUpdateS2C;
 import dev.creoii.chaos.util.stat.ModifierEntry;
 
 import javax.annotation.Nullable;
@@ -78,6 +79,13 @@ public class CharacterInventory extends Inventory {
         super.updateSlot(action, from, to, fromSlot, toSlot);
         if (!character.getWorld().getGame().isClient())
             character.getWorld().getGame().getServer().sendToAllTCP(new InventoryUpdateS2C(character.getId(), InventoryType.MAIN, List.of(fromSlot, toSlot)));
+    }
+
+    @Override
+    public void clearSlot(int r, int c) {
+        super.clearSlot(r, c);
+        if (!character.getWorld().getGame().isClient())
+            character.getWorld().getGame().getServer().sendToAllTCP(new SlotUpdateS2C(character.getId(), InventoryType.MAIN, getSlots()[r][c]));
     }
 
     public Slot[] getHotbar() {

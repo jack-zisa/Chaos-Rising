@@ -13,6 +13,7 @@ import dev.creoii.chaos.client.render.entity.EntityRenderManager;
 import dev.creoii.chaos.inventory.InventoryType;
 import dev.creoii.chaos.inventory.Slot;
 import dev.creoii.chaos.item.ItemStack;
+import dev.creoii.chaos.network.c2s.ClickSlotC2S;
 import dev.creoii.chaos.network.c2s.DropSlotItemC2S;
 import dev.creoii.chaos.network.c2s.SlotUpdateC2S;
 import dev.creoii.chaos.client.render.ItemRenderer;
@@ -36,6 +37,7 @@ public class InventoryWidget extends Widget {
         super(parent, pos, (slots.length + 1) * SLOT_SIZE, (slots[0].length + 1) * SLOT_SIZE);
         this.slots = slots;
         this.activePredicate = activePredicate;
+        dragStack = ItemStack.EMPTY;
     }
 
     public InventoryWidget(Screen parent, Vector2 pos, Slot[][] slots) {
@@ -107,12 +109,25 @@ public class InventoryWidget extends Widget {
 
             batch.setShader(EntityRenderManager.BORDER_SHADER);
 
-            if (dragStack != null && dragStack != ItemStack.EMPTY) {
+            if (dragStack != ItemStack.EMPTY) {
                 Vector2 mousePos = new Vector2(Gdx.input.getX() - (ITEM_SCALE / 2f), Gdx.graphics.getHeight() - Gdx.input.getY() - (ITEM_SCALE / 2f));
                 ItemRenderer.renderItem(renderer.getGame(), batch, dragStack.getItem().id(), mousePos, ITEM_SCALE);
             }
 
             batch.setShader(null);
+        }
+    }
+
+    @Override
+    public void touchHeld(InputManager manager, int screenX, int screenY, int pointer, int button) {
+        if (!isActive(manager.getGame()))
+            return;
+        if (getParent() instanceof InventoryScreen inventoryScreen && isMouseOver()) {
+            Slot touched = inventoryScreen.getMouseOverSlot();
+            if (touched != null && dragStack.isEmpty() && touched.hasItem() && manager.getGame().getInputManager().isMouseMoving()) {
+                dragSource = touched;
+                dragStack = touched.takeStack();
+            }
         }
     }
 
@@ -123,11 +138,10 @@ public class InventoryWidget extends Widget {
         if (getParent() instanceof InventoryScreen inventoryScreen && isMouseOver()) {
             Slot touched = inventoryScreen.getMouseOverSlot();
             if (touched != null && touched.hasItem()) {
-                if (!touched.getStack().clickInSlot(manager.getGame().getWorld(), manager.getGame().getCharacterId(), touched)) {
-                    dragSource = touched;
-                    dragStack = touched.takeStack();
+                if (touched.getStack().clickInSlot(manager.getGame().getWorld(), manager.getGame().getCharacterId(), touched)) {
+                    manager.getGame().getClient().sendTCP(new ClickSlotC2S(manager.getGame().getCharacterId(), touched.copy(), InputManager.isShiftDown()));
+                    return true;
                 }
-                return true;
             }
         }
         return super.touchDown(manager, screenX, screenY, pointer, button);
@@ -137,7 +151,7 @@ public class InventoryWidget extends Widget {
     public boolean touchUp(InputManager manager, int screenX, int screenY, int pointer, int button) {
         if (!isActive(manager.getGame()))
             return false;
-        if (dragStack != null && getParent() instanceof InventoryScreen inventoryScreen) {
+        if (!dragStack.isEmpty() && getParent() instanceof InventoryScreen inventoryScreen) {
             ClientGame game = manager.getGame();
             Slot touched = inventoryScreen.getMouseOverSlot();
             if (touched != null) {
@@ -163,7 +177,7 @@ public class InventoryWidget extends Widget {
             } else {
                 game.getClient().sendTCP(new DropSlotItemC2S(manager.getGame().getCharacterId(), dragSource));
             }
-            dragStack = null;
+            dragStack = ItemStack.EMPTY;
         }
 
         return super.touchUp(manager, screenX, screenY, pointer, button);

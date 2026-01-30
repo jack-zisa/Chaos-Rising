@@ -177,10 +177,20 @@ public class CharacterEntity extends LivingEntity implements Attacker {
         if (axis) {
             if (positive) moveRight = false;
             else moveLeft = false;
+            getVelocity().x = 0f;
         } else {
             if (positive) moveUp = false;
             else moveDown = false;
+            getVelocity().y = 0f;
         }
+    }
+
+    public void stopMovement() {
+        moveRight = false;
+        moveLeft = false;
+        moveUp = false;
+        moveDown = false;
+        setVelocity(0f, 0f);
     }
 
     public void updateMovement(boolean axis, boolean positive) {

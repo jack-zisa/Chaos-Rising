@@ -21,6 +21,7 @@ public class InputManager extends InputAdapter {
     private final ClientGame game;
     private final List<Inputtable> inputs;
     private final Vector3 mousePos = new Vector3();
+    private final Vector3 prevMousePos = new Vector3();
     private final Set<Integer> keysHeld;
     private final Set<TouchEntry> mouseKeysHeld;
     private boolean dragging;
@@ -35,6 +36,10 @@ public class InputManager extends InputAdapter {
 
     public ClientGame getGame() {
         return game;
+    }
+
+    public static boolean isShiftDown() {
+        return Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT);
     }
 
     public boolean isKeyHeld() {
@@ -73,13 +78,23 @@ public class InputManager extends InputAdapter {
         return mousePos;
     }
 
+    public Vector3 getPrevMousePos() {
+        return prevMousePos;
+    }
+
+    public boolean isMouseMoving() {
+        return mousePos.dst2(prevMousePos) > .01f;
+    }
+
     public void update() {
+        updateMouse(Gdx.input.getX(), Gdx.input.getY());
+
         for (int keycode : keysHeld) {
             keyHeld(keycode);
         }
 
         for (TouchEntry touchEntry : mouseKeysHeld) {
-            touchHeld(touchEntry.screenX, touchEntry.screenY, touchEntry.pointer, touchEntry.button);
+            touchHeld(touchEntry.pointer, touchEntry.button);
         }
     }
 
@@ -91,8 +106,6 @@ public class InputManager extends InputAdapter {
 
     @Override
     public boolean keyDown(int keycode) {
-        game.getRenderer().getCamera().unproject(mousePos.set(Gdx.input.getX(), Gdx.input.getY(), 0));
-
         keysHeld.add(keycode);
         if (keycode == OptionsManager.DEBUG_KEY.intValue()) {
             game.setDebug(!game.isDebug());
@@ -101,8 +114,7 @@ public class InputManager extends InputAdapter {
             Renderer renderer = game.getRenderer();
             if (renderer.getCurrentScreen() == null) {
                 renderer.setCurrentScreen(new InventoryScreen(game, new Vector2(1084, 400), game.getCharacter().slots));
-            } else
-                renderer.clearCurrentScreen();
+            } else renderer.clearCurrentScreen();
             return true;
         }
 
@@ -111,15 +123,11 @@ public class InputManager extends InputAdapter {
     }
 
     public void keyHeld(int keycode) {
-        game.getRenderer().getCamera().unproject(mousePos.set(Gdx.input.getX(), Gdx.input.getY(), 0));
-
         forEach(inputtable -> inputtable.keyHeld(this, keycode));
     }
 
     @Override
     public boolean keyUp(int keycode) {
-        game.getRenderer().getCamera().unproject(mousePos.set(Gdx.input.getX(), Gdx.input.getY(), 0));
-
         keysHeld.remove(keycode);
         forEach(inputtable -> inputtable.keyUp(this, keycode));
         return super.keyUp(keycode);
@@ -129,7 +137,7 @@ public class InputManager extends InputAdapter {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         if (button != Input.Buttons.LEFT || pointer > 0)
             return false;
-        game.getRenderer().getCamera().unproject(mousePos.set(screenX, screenY, 0));
+
         dragging = true;
         mouseKeysHeld.add(new TouchEntry(screenX, screenY, pointer, button));
         forEach(inputtable -> inputtable.touchDown(this, screenX, screenY, pointer, button));
@@ -139,7 +147,6 @@ public class InputManager extends InputAdapter {
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
         dragging = true;
-        game.getRenderer().getCamera().unproject(mousePos.set(screenX, screenY, 0));
         forEach(inputtable -> inputtable.touchDragged(this, screenX, screenY, pointer));
         return super.touchDragged(screenX, screenY, pointer);
     }
@@ -148,15 +155,14 @@ public class InputManager extends InputAdapter {
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         if (button != Input.Buttons.LEFT || pointer > 0)
             return false;
-        game.getRenderer().getCamera().unproject(mousePos.set(screenX, screenY, 0));
+
         dragging = false;
         mouseKeysHeld.removeIf(touchEntry -> touchEntry.button == button && touchEntry.pointer == pointer);
         forEach(inputtable -> inputtable.touchUp(this, screenX, screenY, pointer, button));
         return super.touchUp(screenX, screenY, pointer, button);
     }
 
-    public void touchHeld(int screenX, int screenY, int pointer, int button) {
-        game.getRenderer().getCamera().unproject(mousePos.set(Gdx.input.getX(), Gdx.input.getY(), 0));
+    public void touchHeld(int pointer, int button) {
         forEach(inputtable -> inputtable.touchHeld(this, Gdx.input.getX(), Gdx.input.getY(), pointer, button));
     }
 
@@ -174,6 +180,12 @@ public class InputManager extends InputAdapter {
         return super.scrolled(amountX, amountY);
     }
 
-    private record TouchEntry(int screenX, int screenY, int pointer, int button) {
+    private void updateMouse(int screenX, int screenY) {
+        prevMousePos.set(mousePos.x, mousePos.y, 0f);
+        mousePos.set(screenX, screenY, 0f);
+        game.getRenderer().getCamera().unproject(prevMousePos);
+        game.getRenderer().getCamera().unproject(mousePos);
     }
+
+    private record TouchEntry(int screenX, int screenY, int pointer, int button) { }
 }
