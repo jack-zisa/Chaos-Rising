@@ -11,6 +11,7 @@ import dev.creoii.chaos.network.s2c.GainExperienceS2C;
 import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.Mutable;
 import dev.creoii.chaos.util.event.LevelUpEvent;
+import dev.creoii.chaos.world.tile.Tile;
 
 import javax.annotation.Nullable;
 import java.util.Map;

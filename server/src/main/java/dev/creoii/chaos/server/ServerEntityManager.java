@@ -150,9 +150,9 @@ public class ServerEntityManager extends EntityManager<Entity> implements Tickab
             for (Entity entity : map.clone().values()) {
                 entity.tick(gametime, delta);
 
-                Vector2 resolved = CollisionManager.resolve(entity);
+                Vector2 resolved = ((ServerWorld) getWorld()).getCollisionManager().resolve(entity);
+                entity.setPrevPos(entity.getPos().x, entity.getPos().y);
                 if (entity.canMove()) {
-                    entity.setPrevPos(entity.getPos().x, entity.getPos().y);
                     moveEntries.add(new MoveEntitiesS2C.Entry(entity.getId(), entity.getPos().x, entity.getPos().y, resolved.x, resolved.y));
                 }
             }

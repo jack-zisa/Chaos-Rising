@@ -4,6 +4,7 @@ import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.utils.Disposable;
+import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.util.event.PlaceSetpieceEvent;
 import dev.creoii.chaos.world.setpiece.Setpiece;
 import dev.creoii.chaos.world.tile.Tile;
@@ -60,13 +61,12 @@ public interface World extends Disposable {
     }
 
     @Nullable
-    default Tile getGround(int x, int y) {
+    default Tile getGround(int tileX, int tileY) {
         MapLayer mapLayer = getLayer(LAYER_GROUND);
         if (mapLayer instanceof TiledMapTileLayer tiledMapTileLayer) {
-            TiledMapTileLayer.Cell cell = tiledMapTileLayer.getCell(x, y);
+            TiledMapTileLayer.Cell cell = tiledMapTileLayer.getCell(tileX, tileY);
             if (cell != null) {
                 Object idObj = cell.getTile().getProperties().get("id");
-
                 if (idObj instanceof String s) {
                     return DataManager.getTile(s);
                 }
