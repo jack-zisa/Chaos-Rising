@@ -61,8 +61,9 @@ public class SimpleBulletPath implements BulletPath {
         if (speed == 0)
             return;
 
-        Vector2 forward = new Vector2(controller.getEntity().getDirection()).scl(speed * dt);
-        controller.getEntity().getPos().add(forward).add(offset.get(context));
+        Vector2 forward = new Vector2(controller.getEntity().getDirection()).scl(speed * dt).add(offset.get(context));
+
+        controller.getEntity().setVelocity(forward.x, forward.y);
 
         float angle = (float) (Math.atan2(controller.getEntity().getDirection().y, controller.getEntity().getDirection().x) + arcSpeed.init(gametime).get(context));
         controller.getEntity().getDirection().set((float) Math.cos(angle), (float) Math.sin(angle));

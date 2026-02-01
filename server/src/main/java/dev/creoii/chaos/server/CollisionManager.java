@@ -164,6 +164,9 @@ public class CollisionManager {
     public Vector2 resolveXY(Entity entity) {
         Vector2 move = entity.getVelocity().cpy();
 
+        if (entity.getTileCollisionType() == Entity.TileCollisionType.PASS)
+            return move;
+
         if (move.x != 0f) {
             float signX = Math.signum(move.x);
             float edgeX = signX > 0f ? entity.right() : entity.left();
@@ -176,10 +179,10 @@ public class CollisionManager {
 
             for (int ty = y0; ty <= y1; ty++) {
                 if (isSolid(tileX, ty)) {
-                    float tileEdgeWorldX = signX > 0f ? tileX * Entity.COORDINATE_SCALE : (tileX + 1f) * Entity.COORDINATE_SCALE;
-                    move.x = signX > 0f
-                        ? tileEdgeWorldX - edgeX - SKIN
-                        : tileEdgeWorldX - edgeX + SKIN;
+                    if (entity.getTileCollisionType() == Entity.TileCollisionType.STOP) {
+                        float tileEdgeWorldX = signX > 0f ? tileX * Entity.COORDINATE_SCALE : (tileX + 1f) * Entity.COORDINATE_SCALE;
+                        move.x = signX > 0f ? tileEdgeWorldX - edgeX - SKIN : tileEdgeWorldX - edgeX + SKIN;
+                    } else entity.remove();
                     break;
                 }
             }
@@ -201,10 +204,10 @@ public class CollisionManager {
 
             for (int tx = x0; tx <= x1; tx++) {
                 if (isSolid(tx, tileY)) {
-                    float tileEdgeWorldY = signY > 0f ? tileY * Entity.COORDINATE_SCALE : (tileY + 1f) * Entity.COORDINATE_SCALE;
-                    move.y = signY > 0f
-                        ? tileEdgeWorldY - edgeY - SKIN
-                        : tileEdgeWorldY - edgeY + SKIN;
+                    if (entity.getTileCollisionType() == Entity.TileCollisionType.STOP) {
+                        float tileEdgeWorldY = signY > 0f ? tileY * Entity.COORDINATE_SCALE : (tileY + 1f) * Entity.COORDINATE_SCALE;
+                        move.y = signY > 0f ? tileEdgeWorldY - edgeY - SKIN : tileEdgeWorldY - edgeY + SKIN;
+                    } else entity.remove();
                     break;
                 }
             }

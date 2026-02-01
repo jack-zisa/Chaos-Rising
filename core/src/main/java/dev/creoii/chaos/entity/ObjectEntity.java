@@ -54,4 +54,9 @@ public class ObjectEntity extends LivingEntity {
 
         super.remove();
     }
+
+    @Override
+    public TileCollisionType getTileCollisionType() {
+        return TileCollisionType.STOP;
+    }
 }

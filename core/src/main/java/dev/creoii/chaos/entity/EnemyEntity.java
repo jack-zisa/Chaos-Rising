@@ -102,4 +102,9 @@ public class EnemyEntity extends LivingEntity implements Attacker {
     public boolean canMove() {
         return controller.getBehavior().getType() != Behavior.Type.EMPTY;
     }
+
+    @Override
+    public TileCollisionType getTileCollisionType() {
+        return TileCollisionType.STOP;
+    }
 }

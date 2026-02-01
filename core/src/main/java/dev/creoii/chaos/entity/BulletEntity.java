@@ -6,18 +6,20 @@ import dev.creoii.chaos.entity.controller.BulletController;
 import dev.creoii.chaos.entity.serialization.BulletData;
 import dev.creoii.chaos.entity.serialization.EntityCustomData;
 import dev.creoii.chaos.util.context.Context;
+import dev.creoii.chaos.util.context.ContextProvider;
 
 import javax.annotation.Nullable;
 import java.util.Map;
 
-public class BulletEntity extends Entity {
-    private Entity parent;
+public class BulletEntity extends Entity implements ContextProvider {
+    private Entity shooter;
     private Vector2 direction;
     private int lifetime;
     private int damage;
     private int index;
     private float angleOffset;
     private final BulletController controller;
+    private Context context;
 
     public BulletEntity(World world, EntityType<? extends BulletEntity> type, int id, Vector2 pos, Vector2 direction, int lifetime, int damage, int index) {
         super(world, type, id, pos);
@@ -26,9 +28,9 @@ public class BulletEntity extends Entity {
         this.damage = damage;
         this.index = index;
 
-        if (!world.getGame().isClient()) {
-            controller = new BulletController(this);
-        } else controller = null;
+        controller = new BulletController(this);
+
+        context = Context.rootOf(this);
     }
 
     @Override
@@ -38,6 +40,7 @@ public class BulletEntity extends Entity {
         lifetime = (int) data.getOrDefault("lifetime", 0);
         damage = (int) data.getOrDefault("damage", 0);
         index = (int) data.getOrDefault("index", 0);
+        context = Context.rootOf(this);
     }
 
     @Nullable
@@ -46,12 +49,17 @@ public class BulletEntity extends Entity {
         return new BulletData(getType().id(), direction.x, direction.y, angleOffset);
     }
 
-    public Entity getParent() {
-        return parent;
+    @Override
+    public Context getContext() {
+        return context;
     }
 
-    public void setParent(Entity parent) {
-        this.parent = parent;
+    public Entity getShooter() {
+        return shooter;
+    }
+
+    public void setShooter(Entity shooter) {
+        this.shooter = shooter;
     }
 
     public Vector2 getDirection() {
@@ -105,7 +113,7 @@ public class BulletEntity extends Entity {
 
     @Override
     public void collisionEnter(Entity other) {
-        if (other instanceof LivingEntity living && parent != null && other.getType().group() != parent.getType().group()) {
+        if (other instanceof LivingEntity living && shooter != null && other.getType().group() != shooter.getType().group()) {
             living.damage(damage);
             if (!((BulletEntityType) getType()).piercing().get(Context.rootOf(this))) {
                 remove();
@@ -116,5 +124,10 @@ public class BulletEntity extends Entity {
     @Override
     public boolean canMove() {
         return controller.getPath().speed(controller) > 0f;
+    }
+
+    @Override
+    public TileCollisionType getTileCollisionType() {
+        return ((BulletEntityType) getType()).ignoresWalls().get(context) ? TileCollisionType.PASS : TileCollisionType.REMOVE;
     }
 }

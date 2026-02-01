@@ -17,7 +17,7 @@ import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
 
 import java.util.Map;
 
-public record BulletEntityType(String id, float scale, int lifetime, NumberProvider angleOffset, BulletPath path, BooleanProvider piercing) implements EntityType<BulletEntity> {
+public record BulletEntityType(String id, float scale, int lifetime, NumberProvider angleOffset, BulletPath path, BooleanProvider piercing, BooleanProvider ignoresWalls) implements EntityType<BulletEntity> {
     public static final MapCodec<BulletEntityType> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(
             Codec.STRING.fieldOf("id").forGetter(BulletEntityType::id),
@@ -25,8 +25,9 @@ public record BulletEntityType(String id, float scale, int lifetime, NumberProvi
             Codec.INT.fieldOf("lifetime").orElse(1).forGetter(BulletEntityType::lifetime),
             NumberProvider.CODEC.fieldOf("angle_offset").orElse(ConstantNumberProvider.ZERO).forGetter(BulletEntityType::angleOffset),
             BulletPath.CODEC.fieldOf("path").orElse(EmptyBulletPath.INSTANCE).forGetter(BulletEntityType::path),
-            BooleanProvider.CODEC.fieldOf("piercing").orElse(ConstantBooleanProvider.FALSE).forGetter(BulletEntityType::piercing)
-        ).apply(instance, (id, scale, lifetime, angleOffset, path, piercing) -> new BulletEntityType(id, scale, lifetime, (NumberProvider) angleOffset.optimize(), path, (BooleanProvider) piercing.optimize()));
+            BooleanProvider.CODEC.fieldOf("piercing").orElse(ConstantBooleanProvider.FALSE).forGetter(BulletEntityType::piercing),
+            BooleanProvider.CODEC.fieldOf("ignores_walls").orElse(ConstantBooleanProvider.FALSE).forGetter(BulletEntityType::ignoresWalls)
+        ).apply(instance, (id, scale, lifetime, angleOffset, path, piercing, ignoresWalls) -> new BulletEntityType(id, scale, lifetime, (NumberProvider) angleOffset.optimize(), path, (BooleanProvider) piercing.optimize(), (BooleanProvider) ignoresWalls.optimize()));
     });
 
     @Override

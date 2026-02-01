@@ -167,4 +167,12 @@ public abstract class Entity implements Tickable {
         }
         return false;
     }
+
+    public abstract TileCollisionType getTileCollisionType();
+
+    public enum TileCollisionType {
+        STOP,
+        REMOVE,
+        PASS
+    }
 }

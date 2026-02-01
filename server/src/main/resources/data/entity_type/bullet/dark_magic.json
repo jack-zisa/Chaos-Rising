@@ -6,5 +6,6 @@
     "type": "simple",
     "speed": 10
   },
-  "scale": 1.5
+  "scale": 1.5,
+  "ignores_walls": true
 }

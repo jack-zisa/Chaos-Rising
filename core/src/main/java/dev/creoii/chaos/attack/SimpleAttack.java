@@ -63,7 +63,7 @@ public record SimpleAttack(String bulletId, NumberProvider damage, int bulletCou
                 bullet.setDamage(sourceEntity instanceof LivingEntity living ? Math.round(damage.getInt(context) * .5f + living.getStats().attack().value() / 50f) : 0);
                 bullet.setIndex(i % 2 == 0 ? 1 : -1);
                 bullet.setDirection(direction.cpy().rotateDeg(angle));
-                bullet.setParent(sourceEntity);
+                bullet.setShooter(sourceEntity);
                 bullets.add(bullet);
             }
         }

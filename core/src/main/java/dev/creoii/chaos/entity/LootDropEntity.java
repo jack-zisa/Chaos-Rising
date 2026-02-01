@@ -48,4 +48,9 @@ public class LootDropEntity extends Entity {
         if (gametime - getSpawnTime() >= 2400)
             remove();
     }
+
+    @Override
+    public TileCollisionType getTileCollisionType() {
+        return TileCollisionType.STOP;
+    }
 }

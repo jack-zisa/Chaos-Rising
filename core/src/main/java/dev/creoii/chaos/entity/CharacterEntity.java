@@ -203,4 +203,9 @@ public class CharacterEntity extends LivingEntity implements Attacker {
             else moveDown = true;
         }
     }
+
+    @Override
+    public TileCollisionType getTileCollisionType() {
+        return TileCollisionType.STOP;
+    }
 }
