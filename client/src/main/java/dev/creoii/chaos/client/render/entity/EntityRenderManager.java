@@ -107,6 +107,8 @@ public class EntityRenderManager extends EntityManager<EntityRenderData> impleme
             BORDER_SHADER.setUniformf("u_borderColor", Color.BLACK);
         }
 
+
+
         for (Int2ObjectOpenHashMap<EntityRenderData> map : getAllEntities().values()) {
             for (Int2ObjectMap.Entry<EntityRenderData> entry : map.int2ObjectEntrySet()) {
                 if (isEntityInView(renderer, entry.getValue())) {
@@ -114,7 +116,10 @@ public class EntityRenderManager extends EntityManager<EntityRenderData> impleme
                 }
             }
         }
-        visibleEntities.sort((a, b) -> Float.compare(b.renderY, a.renderY));
+        visibleEntities.sort((a, b) -> {
+            int group = Integer.compare(getRenderPriority(a.group), getRenderPriority(b.group));
+            return group != 0 ? group : Float.compare(b.renderY, a.renderY);
+        });
 
         for (EntityRenderData entity : visibleEntities) {
             ++visibleSize;
@@ -124,6 +129,16 @@ public class EntityRenderManager extends EntityManager<EntityRenderData> impleme
         if (batch != null) {
             batch.setShader(null);
         }
+    }
+
+    private static int getRenderPriority(EntityGroup group) {
+        return switch (group) {
+            case LOOT_DROP -> 0;
+            case OBJECT -> 1;
+            case BULLET -> 2;
+            case ENEMY -> 3;
+            case CHARACTER -> 4;
+        };
     }
 
     private boolean isEntityInView(Renderer renderer, EntityRenderData entity) {

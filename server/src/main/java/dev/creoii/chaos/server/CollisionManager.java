@@ -156,13 +156,34 @@ public class CollisionManager {
     }
 
     public Vector2 resolve(Entity entity) {
-        Vector2 move = resolveXY(entity);
-        entity.getPos().y += move.y;
-        return move;
+        Vector2 remaining = entity.getVelocity().cpy();
+        Vector2 applied = new Vector2();
+
+        float maxStep = Entity.COORDINATE_SCALE * .5f;
+
+        while (remaining.len2() > .000001f) {
+            Vector2 step = remaining.cpy();
+
+            if (step.len() > maxStep)
+                step.setLength(maxStep);
+
+            Vector2 resolved = resolveStep(entity, step);
+
+            entity.getPos().x += resolved.x;
+            entity.getPos().y += resolved.y;
+            applied.add(resolved);
+
+            remaining.sub(resolved);
+
+            if (!resolved.epsilonEquals(step, .0001f))
+                break;
+        }
+
+        return applied;
     }
 
-    public Vector2 resolveXY(Entity entity) {
-        Vector2 move = entity.getVelocity().cpy();
+    public Vector2 resolveStep(Entity entity, Vector2 step) {
+        Vector2 move = step.cpy();
 
         if (entity.getTileCollisionType() == Entity.TileCollisionType.PASS)
             return move;
@@ -172,47 +193,41 @@ public class CollisionManager {
             float edgeX = signX > 0f ? entity.right() : entity.left();
             float targetX = edgeX + move.x;
 
-            int tileX = (int) Math.floor((signX > 0f ? targetX : targetX - .0001f) / Entity.COORDINATE_SCALE);
+            int tileX = (int) Math.floor((signX > 0f ? targetX : targetX - SKIN) / Entity.COORDINATE_SCALE);
 
             int y0 = (int) Math.floor(entity.bottom() / Entity.COORDINATE_SCALE);
-            int y1 = (int) Math.floor((entity.top() - .0001f) / Entity.COORDINATE_SCALE);
+            int y1 = (int) Math.floor((entity.top() - SKIN) / Entity.COORDINATE_SCALE);
 
             for (int ty = y0; ty <= y1; ty++) {
                 if (isSolid(tileX, ty)) {
                     if (entity.getTileCollisionType() == Entity.TileCollisionType.STOP) {
                         float tileEdgeWorldX = signX > 0f ? tileX * Entity.COORDINATE_SCALE : (tileX + 1f) * Entity.COORDINATE_SCALE;
-                        move.x = signX > 0f ? tileEdgeWorldX - edgeX - SKIN : tileEdgeWorldX - edgeX + SKIN;
+                        move.x = tileEdgeWorldX - edgeX - signX * SKIN;
                     } else entity.remove();
                     break;
                 }
             }
-
-            if (Math.signum(move.x) != signX) move.x = 0;
         }
-
-        entity.getPos().x += move.x;
 
         if (move.y != 0f) {
             float signY = Math.signum(move.y);
             float edgeY = signY > 0f ? entity.top() : entity.bottom();
             float targetY = edgeY + move.y;
 
-            int tileY = (int) Math.floor((signY > 0f ? targetY : targetY - .0001f) / Entity.COORDINATE_SCALE);
+            int tileY = (int) Math.floor((signY > 0f ? targetY : targetY - SKIN) / Entity.COORDINATE_SCALE);
 
             int x0 = (int) Math.floor(entity.left() / Entity.COORDINATE_SCALE);
-            int x1 = (int) Math.floor((entity.right() - .0001f) / Entity.COORDINATE_SCALE);
+            int x1 = (int) Math.floor((entity.right() - SKIN) / Entity.COORDINATE_SCALE);
 
             for (int tx = x0; tx <= x1; tx++) {
                 if (isSolid(tx, tileY)) {
                     if (entity.getTileCollisionType() == Entity.TileCollisionType.STOP) {
                         float tileEdgeWorldY = signY > 0f ? tileY * Entity.COORDINATE_SCALE : (tileY + 1f) * Entity.COORDINATE_SCALE;
-                        move.y = signY > 0f ? tileEdgeWorldY - edgeY - SKIN : tileEdgeWorldY - edgeY + SKIN;
+                        move.y = tileEdgeWorldY - edgeY - signY * SKIN;
                     } else entity.remove();
                     break;
                 }
             }
-
-            if (Math.signum(move.y) != signY) move.y = 0;
         }
 
         return move;
