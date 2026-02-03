@@ -9,6 +9,7 @@ import dev.creoii.chaos.network.s2c.PlaceSetpieceS2C;
 import dev.creoii.chaos.network.s2c.SetTileS2C;
 import dev.creoii.chaos.network.s2c.SetTilesS2C;
 import dev.creoii.chaos.server.util.ServerTiledMapTile;
+import dev.creoii.chaos.util.Tickable;
 import dev.creoii.chaos.world.map.MapGenerator;
 import dev.creoii.chaos.world.setpiece.Setpiece;
 import dev.creoii.chaos.world.tile.Tile;
@@ -16,7 +17,7 @@ import dev.creoii.chaos.world.tile.Tile;
 import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class ServerWorld implements World {
+public class ServerWorld implements World, Tickable {
     private final long seed;
     private final Random random;
     private final ServerGame game;
@@ -170,7 +171,8 @@ public class ServerWorld implements World {
         map.dispose();
     }
 
-    public void update() {
+    @Override
+    public void tick(int gametime, float delta) {
         collisionManager.checkCollisions();
 
         NetworkQueue.QueuedPacket packet;

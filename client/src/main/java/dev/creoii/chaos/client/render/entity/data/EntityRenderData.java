@@ -43,4 +43,13 @@ public class EntityRenderData {
         renderX += (x - renderX) * alpha;
         renderY += (y - renderY) * alpha;
     }
+
+    public boolean isMoving() {
+        return xv != 0f && yv != 0f;
+    }
+
+    public void stopMoving() {
+        xv = 0f;
+        yv = 0f;
+    }
 }

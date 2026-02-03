@@ -53,7 +53,7 @@ public class ServerGame implements Game {
         MapGenerator mapGenerator = DataManager.getMapGenerator("test_dungeon");
         if (mapGenerator == null)
             mapGenerator = LayeredMapGenerator.DEFAULT;
-        worlds.put("main", new ServerWorld(this, mapGenerator));
+        addWorld("main", new ServerWorld(this, mapGenerator));
 
         Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
         LOGGER.info("Active Threads:");
@@ -93,8 +93,13 @@ public class ServerGame implements Game {
         while ((packet = networkQueue.queue().poll()) != null) {
             listener.handlePacket(packet.connection(), packet.packet());
         }
+    }
 
-        worlds.forEach((_, world) -> ((ServerWorld) world).update());
+    public void addWorld(String key, World world) {
+        if (world instanceof ServerWorld serverWorld) {
+            worlds.put(key, serverWorld);
+            tickManager.addTickable(serverWorld);
+        }
     }
 
     @Override

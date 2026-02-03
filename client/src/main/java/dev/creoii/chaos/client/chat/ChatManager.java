@@ -110,8 +110,9 @@ public class ChatManager extends InputAdapter {
             return true;
         }
 
-        if (character == '\b' && !input.isEmpty()) {
-            input.deleteCharAt(input.length() - 1);
+        if (character == '\b') {
+            if (!input.isEmpty())
+                input.deleteCharAt(input.length() - 1);
         } else {
             input.append(character);
             return true;
