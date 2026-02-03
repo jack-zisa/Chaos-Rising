@@ -52,8 +52,8 @@ public class MoveAction extends Action implements ContextProvider {
             return;
         }
         context.set(ComponentTypes.TIME, controller.getEntity().getWorld().getGame().getGametime());
-        Vector2 move = movement.get(context);
-        controller.getEntity().getPos().add(move.scl(speed * delta));
+        Vector2 move = movement.get(context).scl(speed * delta);
+        controller.getEntity().setVelocity(move.x, move.y);
     }
 
     @Override
