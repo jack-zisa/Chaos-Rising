@@ -7,7 +7,7 @@ import dev.creoii.chaos.Game;
 import dev.creoii.chaos.World;
 import dev.creoii.chaos.network.NetworkQueue;
 import dev.creoii.chaos.network.CreoSerialization;
-import dev.creoii.chaos.network.Networking;
+import dev.creoii.chaos.network.PacketRegistry;
 import dev.creoii.chaos.util.context.ComponentTypes;
 import dev.creoii.chaos.util.logging.Logger;
 import dev.creoii.chaos.world.map.LayeredMapGenerator;
@@ -40,7 +40,7 @@ public class ServerGame implements Game {
 
         LOGGER.info("Server started on ports: TCP " + tcpPort + " | UDP " + udpPort);
 
-        Networking.register(server.getKryo());
+        PacketRegistry.register(server.getKryo());
 
         server.addListener(listener = new ServerListener(this));
 

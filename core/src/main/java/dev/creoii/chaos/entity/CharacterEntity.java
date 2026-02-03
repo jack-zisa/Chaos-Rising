@@ -6,12 +6,14 @@ import dev.creoii.chaos.World;
 import dev.creoii.chaos.entity.serialization.CharacterData;
 import dev.creoii.chaos.entity.serialization.EntityCustomData;
 import dev.creoii.chaos.inventory.CharacterInventory;
+import dev.creoii.chaos.inventory.Slot;
+import dev.creoii.chaos.item.EquipmentItem;
 import dev.creoii.chaos.item.ItemStack;
 import dev.creoii.chaos.network.s2c.GainExperienceS2C;
+import dev.creoii.chaos.network.s2c.SyncAttacksS2C;
 import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.Mutable;
 import dev.creoii.chaos.util.event.LevelUpEvent;
-import dev.creoii.chaos.world.tile.Tile;
 
 import javax.annotation.Nullable;
 import java.util.Map;
@@ -34,6 +36,7 @@ public class CharacterEntity extends LivingEntity implements Attacker {
         this.connectionId = connectionId;
         inventory = new CharacterInventory(this);
         lastAttackTime = 0L;
+        syncAttacks();
     }
 
     @Override
@@ -42,6 +45,7 @@ public class CharacterEntity extends LivingEntity implements Attacker {
         connectionId = (int) data.get("connection_id");
         inventory = new CharacterInventory(this);
         lastAttackTime = 0L;
+        syncAttacks();
     }
 
     @Override
@@ -57,6 +61,12 @@ public class CharacterEntity extends LivingEntity implements Attacker {
     @Override
     public void setLastAttackTime(long attackTime) {
         lastAttackTime = attackTime;
+    }
+
+    public void syncAttacks() {
+        Slot slot = inventory.getWeaponSlot();
+        if (slot.hasItem() && slot.getStack().getItem() instanceof EquipmentItem equipmentItem)
+            getWorld().getGame().getServer().sendToTCP(connectionId, new SyncAttacksS2C(Attacker.getAttacks(this, equipmentItem)));
     }
 
     @Nullable

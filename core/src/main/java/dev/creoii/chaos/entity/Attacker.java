@@ -25,14 +25,22 @@ public interface Attacker {
             return false;
         }
 
+        return canAttack(attacker, item);
+    }
+
+    static float getAttacks(Attacker attacker, @Nullable EquipmentItem item) {
         float attackSpeed = attacker.getAttackSpeed();
         if (attackSpeed <= 0f)
-            return false;
+            return 0f;
 
         float attacks = 1.5f + 6.5f * (attackSpeed / 75f);
         if (item instanceof WeaponItem weaponItem)
             attacks *= weaponItem.getRateOfFire();
 
-        return attacker.canAttack(1000f / attacks);
+        return 1000f / attacks;
+    }
+
+    static boolean canAttack(Attacker attacker, @Nullable EquipmentItem item) {
+        return attacker.canAttack(getAttacks(attacker, item));
     }
 }

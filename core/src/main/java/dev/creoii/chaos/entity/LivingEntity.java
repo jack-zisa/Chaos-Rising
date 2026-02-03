@@ -3,6 +3,7 @@ package dev.creoii.chaos.entity;
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.World;
 import dev.creoii.chaos.effect.StatusEffect;
+import dev.creoii.chaos.effect.StatusEffects;
 import dev.creoii.chaos.network.s2c.EntityDamageS2C;
 import dev.creoii.chaos.network.s2c.LivingStatUpdateS2C;
 import dev.creoii.chaos.network.s2c.StatusEffectS2C;
@@ -100,17 +101,24 @@ public abstract class LivingEntity extends Entity {
     public void addStatusEffect(StatusEffect.Instance instance) {
         statusEffects.add(instance);
         getWorld().getGame().getServer().sendToAllTCP(new StatusEffectS2C(getId(), instance, true));
+        if (instance.getEffect() == StatusEffects.DAZED && this instanceof CharacterEntity character)
+            character.syncAttacks();
     }
 
     public void removeStatusEffect(StatusEffect.Instance instance) {
         statusEffects.remove(instance);
         getWorld().getGame().getServer().sendToAllTCP(new StatusEffectS2C(getId(), instance, false));
+        if (instance.getEffect() == StatusEffects.DAZED && this instanceof CharacterEntity character)
+            character.syncAttacks();
     }
 
     public void clearStatusEffects() {
         statusEffects.forEach(instance -> {
             getWorld().getGame().getServer().sendToAllTCP(new StatusEffectS2C(getId(), instance, false));
+            if (instance.getEffect() == StatusEffects.DAZED && this instanceof CharacterEntity character) /* use tag eventually */
+                character.syncAttacks();
         });
+
         statusEffects.clear();
     }
 

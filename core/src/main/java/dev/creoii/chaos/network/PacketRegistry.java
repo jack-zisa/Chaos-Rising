@@ -5,8 +5,8 @@ import dev.creoii.chaos.network.c2s.*;
 import dev.creoii.chaos.network.s2c.*;
 import dev.creoii.chaos.util.logging.Logger;
 
-public class Networking {
-    public static final Logger LOGGER = new Logger(Networking.class.getSimpleName());
+public class PacketRegistry {
+    public static final Logger LOGGER = new Logger(PacketRegistry.class.getSimpleName());
 
     public static void register(Kryo kryo) {
         kryo.register(CharacterJoinC2S.class, PacketSerializer.INSTANCE);
@@ -48,6 +48,7 @@ public class Networking {
         kryo.register(SetTilesS2C.class, PacketSerializer.INSTANCE);
         kryo.register(PlaceSetpieceS2C.class, PacketSerializer.INSTANCE);
         kryo.register(SetupWorldS2C.class, PacketSerializer.INSTANCE);
+        kryo.register(SyncAttacksS2C.class, PacketSerializer.INSTANCE);
 
         registerCodecSchema();
     }
@@ -92,5 +93,6 @@ public class Networking {
         PacketSerializer.INSTANCE.register(SetTilesS2C.class, SetTilesS2C::write, SetTilesS2C::read);
         PacketSerializer.INSTANCE.register(PlaceSetpieceS2C.class, PlaceSetpieceS2C::write, PlaceSetpieceS2C::read);
         PacketSerializer.INSTANCE.register(SetupWorldS2C.class, SetupWorldS2C::write, SetupWorldS2C::read);
+        PacketSerializer.INSTANCE.register(SyncAttacksS2C.class, SyncAttacksS2C::write, SyncAttacksS2C::read);
     }
 }

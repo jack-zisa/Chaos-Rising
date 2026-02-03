@@ -145,6 +145,7 @@ public class ClientWorldListener extends Listener {
                     entityRenderData.sprite.setTexture(world.getGame().getAssetManager().getTextureManager().getTexture(TextureManager.Atlas.CHARACTER, textureId));
                 }
             }
+            case SyncAttacksS2C(float attacks) -> world.getGame().setAttacks(attacks / 2f); // divide by 2 for leeway
             case EntityDamageS2C(int id, float amount) -> {
                 EntityRenderData entityRenderData = world.getEntityManager().getEntityData(id);
                 if (entityRenderData instanceof LivingEntityRenderData livingEntityRenderData) {

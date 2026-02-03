@@ -16,6 +16,7 @@ public final class StatusEffects {
         entity.damage(statusEffect.getAmplifier());
     });
     public static final StatusEffect INVULNERABLE = register(StatusEffect.Type.INVULNERABLE);
+    public static final StatusEffect DAZED = null; // temp for logic
 
     static StatusEffect register(StatusEffect.Type type, BiConsumer<LivingEntity, StatusEffect.Instance> starter, BiConsumer<LivingEntity, StatusEffect.Instance> applier, BiConsumer<LivingEntity, StatusEffect.Instance> remover) {
         return ALL.put(type, new StatusEffect(type, starter, applier, remover));

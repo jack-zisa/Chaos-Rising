@@ -12,7 +12,6 @@ import dev.creoii.chaos.inventory.Inventory;
 import dev.creoii.chaos.inventory.InventoryType;
 import dev.creoii.chaos.inventory.Slot;
 import dev.creoii.chaos.item.AbilityItem;
-import dev.creoii.chaos.item.ConsumableItem;
 import dev.creoii.chaos.item.ItemStack;
 import dev.creoii.chaos.item.WeaponItem;
 import dev.creoii.chaos.network.NetworkQueue;

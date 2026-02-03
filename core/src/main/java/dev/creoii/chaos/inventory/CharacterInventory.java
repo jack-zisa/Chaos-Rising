@@ -69,23 +69,33 @@ public class CharacterInventory extends Inventory {
     @Override
     public Slot addItem(ItemStack stack) {
         Slot slot = super.addItem(stack);
-        if (slot != null && !character.getWorld().getGame().isClient())
+        if (slot != null && !character.getWorld().getGame().isClient()) {
+            if (slot == getWeaponSlot())
+                character.syncAttacks();
             character.getWorld().getGame().getServer().sendToAllTCP(new InventoryUpdateS2C(character.getId(), InventoryType.MAIN, List.of(slot)));
+        }
         return slot;
     }
 
     @Override
     public void updateSlot(SlotUpdateC2S.Action action, Inventory from, Inventory to, Slot fromSlot, Slot toSlot) {
         super.updateSlot(action, from, to, fromSlot, toSlot);
-        if (!character.getWorld().getGame().isClient())
+        if (!character.getWorld().getGame().isClient()) {
+            if (fromSlot == getWeaponSlot() || toSlot == getWeaponSlot())
+                character.syncAttacks();
             character.getWorld().getGame().getServer().sendToAllTCP(new InventoryUpdateS2C(character.getId(), InventoryType.MAIN, List.of(fromSlot, toSlot)));
+        }
     }
 
     @Override
     public void clearSlot(int r, int c) {
         super.clearSlot(r, c);
-        if (!character.getWorld().getGame().isClient())
-            character.getWorld().getGame().getServer().sendToAllTCP(new SlotUpdateS2C(character.getId(), InventoryType.MAIN, getSlots()[r][c]));
+        if (!character.getWorld().getGame().isClient()) {
+            Slot slot = getSlots()[r][c];
+            if (slot == getWeaponSlot())
+                character.syncAttacks();
+            character.getWorld().getGame().getServer().sendToAllTCP(new SlotUpdateS2C(character.getId(), InventoryType.MAIN, slot));
+        }
     }
 
     public Slot[] getHotbar() {

@@ -13,7 +13,7 @@ import dev.creoii.chaos.client.chat.ChatManager;
 import dev.creoii.chaos.client.input.InputManager;
 import dev.creoii.chaos.network.CreoSerialization;
 import dev.creoii.chaos.network.NetworkQueue;
-import dev.creoii.chaos.network.Networking;
+import dev.creoii.chaos.network.PacketRegistry;
 import dev.creoii.chaos.client.render.Renderer;
 import dev.creoii.chaos.client.render.entity.data.CharacterEntityRenderData;
 import dev.creoii.chaos.util.EntityGroup;
@@ -37,16 +37,15 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
     private final InputManager inputManager;
     private final ChatManager chatManager;
     private ClientWorld world;
-    private int characterId;
-    private boolean debug;
-    private float attackCooldown = 0f;
+    private int characterId = -1;
+    private boolean debug = false;
+    private float attacks = 0f;
 
     public ClientGame() throws IOException {
         client = new Client(256 * 1024, 256 * 1024, new CreoSerialization());
         listener = new ClientListener(this);
         inputManager = new InputManager(this);
         chatManager = new ChatManager(this);
-        characterId = -1;
     }
 
     @Override
@@ -59,7 +58,7 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
         renderer = new Renderer(this);
         assetManager = new AssetManager();
 
-        Networking.register(client.getKryo());
+        PacketRegistry.register(client.getKryo());
         client.addListener(listener);
         client.start();
 
@@ -99,8 +98,6 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
 
             chatManager.update();
             inputManager.update();
-
-            if (attackCooldown > 0f) attackCooldown -= delta;
 
             world.render(delta, renderer, debug);
 
@@ -205,17 +202,17 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
         this.debug = debug;
     }
 
+    public float getAttacks() {
+        return attacks;
+    }
+
+    public void setAttacks(float attacks) {
+        this.attacks = attacks;
+    }
+
     @Override
     public Server getServer() {
         LOGGER.error("Attempted to access server on client.");
         return null;
-    }
-
-    public float getAttackCooldown() {
-        return attackCooldown;
-    }
-
-    public void setAttackCooldown(float attackCooldown) {
-        this.attackCooldown = attackCooldown;
     }
 }
