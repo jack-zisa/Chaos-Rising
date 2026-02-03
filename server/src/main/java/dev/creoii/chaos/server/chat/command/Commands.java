@@ -84,6 +84,7 @@ public final class Commands {
                     case ATTACK_SPEED -> {
                         character.getStats().setAttackSpeed(value);
                         character.getMaxStats().setAttackSpeed(value);
+                        character.syncAttacks();
                     }
                     case DEFENSE -> {
                         character.getStats().setDefense(value);
