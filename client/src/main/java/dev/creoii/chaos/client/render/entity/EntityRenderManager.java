@@ -107,8 +107,6 @@ public class EntityRenderManager extends EntityManager<EntityRenderData> impleme
             BORDER_SHADER.setUniformf("u_borderColor", Color.BLACK);
         }
 
-
-
         for (Int2ObjectOpenHashMap<EntityRenderData> map : getAllEntities().values()) {
             for (Int2ObjectMap.Entry<EntityRenderData> entry : map.int2ObjectEntrySet()) {
                 if (isEntityInView(renderer, entry.getValue())) {

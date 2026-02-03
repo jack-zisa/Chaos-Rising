@@ -85,7 +85,7 @@ public record CharacterController() implements Inputtable {
         if (character == null)
             return false;
 
-        if (game.getChatManager().isActive() && character.isMoving()) {
+        if (game.getChatManager().isActive() && character.isMoving() && OptionsManager.isMovementKey(keycode)) {
             character.stopMoving();
             game.getClient().sendUDP(new CharacterStopMoveC2S(character.id));
             return false;

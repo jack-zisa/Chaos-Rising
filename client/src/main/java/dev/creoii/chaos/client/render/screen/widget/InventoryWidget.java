@@ -80,8 +80,8 @@ public class InventoryWidget extends Widget {
                 return;
             }
 
+            float border = ((1f / 8f) / EntityRenderManager.BORDER_SIZE_MOD) / 2f;
             batch.setShader(EntityRenderManager.BORDER_SHADER);
-            float border = (1f / 8f) * ((float) Math.pow(renderer.getZoom(), .85f)) / EntityRenderManager.BORDER_SIZE_MOD;
             EntityRenderManager.BORDER_SHADER.setUniformf("u_pixelSize", border, border);
             EntityRenderManager.BORDER_SHADER.setUniformf("u_borderColor", Color.BLACK);
 

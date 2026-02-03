@@ -14,6 +14,10 @@ public final class OptionsManager {
     public static final Option<Integer> BACK_KEY = new Option<>("key_back", Input.Keys.ESCAPE);
     public static final Option<Integer> ABILITY_KEY = new Option<>("key_ability", Input.Keys.SPACE);
 
+    public static boolean isMovementKey(int keycode) {
+        return keycode == UP_KEY.intValue() || keycode == DOWN_KEY.intValue() || keycode == LEFT_KEY.intValue() || keycode == RIGHT_KEY.intValue();
+    }
+
     public static class Option<T extends Number> {
         private final String key;
         private Number value;
