@@ -14,6 +14,8 @@ public abstract class Action {
         case ORDER -> OrderAction.CODEC;
         case MESSAGE -> MessageAction.CODEC;
         case KILL -> KillAction.CODEC;
+        case PLACE_TILE -> PlaceTileAction.CODEC;
+        case PLACE_SETPIECE -> PlaceSetpieceAction.CODEC;
         case WAIT -> WaitAction.CODEC;
     });
 
@@ -36,6 +38,8 @@ public abstract class Action {
         ORDER,
         MESSAGE,
         KILL,
+        PLACE_TILE,
+        PLACE_SETPIECE,
         WAIT;
 
         public static final Codec<Type> CODEC = Codec.STRING.xmap(s -> Type.valueOf(s.toUpperCase()), type -> type.name().toLowerCase());
