@@ -8,7 +8,7 @@ public class Connection {
     private int x;
     private int y;
     private final Direction direction;
-    private boolean connected;
+    private Connection connection = null;
 
     public Connection(int localX, int localY, int x, int y, Direction direction) {
         this.localX = localX;
@@ -16,7 +16,6 @@ public class Connection {
         this.x = x;
         this.y = y;
         this.direction = direction;
-        connected = false;
     }
 
     public int x() {
@@ -50,10 +49,10 @@ public class Connection {
     }
 
     public boolean isConnected() {
-        return connected;
+        return connection != null;
     }
 
-    public void setConnected() {
-        connected = true;
+    public void setConnected(Connection connection) {
+        this.connection = connection
     }
 }
