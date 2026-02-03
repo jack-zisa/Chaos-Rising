@@ -22,6 +22,7 @@ import it.unimi.dsi.fastutil.objects.ObjectList;
 import java.util.*;
 
 public class ServerEntityManager extends EntityManager<Entity> implements Tickable {
+    private static final float MOVE_EPSILON = .001f;
     private final IntList removedEntities;
     private final ObjectList<MoveEntitiesS2C.Entry> moveEntries;
 
@@ -150,10 +151,17 @@ public class ServerEntityManager extends EntityManager<Entity> implements Tickab
             for (Entity entity : map.clone().values()) {
                 entity.tick(gametime, delta);
 
-                Vector2 resolved = ((ServerWorld) getWorld()).getCollisionManager().resolve(entity);
                 entity.setPrevPos(entity.getPos().x, entity.getPos().y);
-                if (entity.canMove()) {
-                    moveEntries.add(new MoveEntitiesS2C.Entry(entity.getId(), entity.getPos().x, entity.getPos().y, resolved.x, resolved.y));
+                Vector2 resolved = ((ServerWorld) getWorld()).getCollisionManager().resolve(entity);
+
+                if (entity.canMove() && resolved.len2() > MOVE_EPSILON * MOVE_EPSILON) {
+                    float dx = entity.getPos().x - entity.getPrevPos().x;
+                    float dy = entity.getPos().y - entity.getPrevPos().y;
+
+                    if (Math.abs(dx) < MOVE_EPSILON) dx = 0f;
+                    if (Math.abs(dy) < MOVE_EPSILON) dy = 0f;
+
+                    moveEntries.add(new MoveEntitiesS2C.Entry(entity.getId(), entity.getPrevPos().x, entity.getPrevPos().y, dx, dy));
                 }
             }
         }

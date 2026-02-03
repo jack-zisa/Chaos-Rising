@@ -2,6 +2,7 @@ package dev.creoii.chaos.server;
 
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.entity.BulletEntity;
+import dev.creoii.chaos.entity.CharacterEntity;
 import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.world.tile.Tile;
@@ -185,15 +186,19 @@ public class CollisionManager {
     public Vector2 resolveStep(Entity entity, Vector2 step) {
         Vector2 move = step.cpy();
 
-        if (entity.getTileCollisionType() == Entity.TileCollisionType.PASS)
+        if (entity.getTileCollisionType() == Entity.TileCollisionType.PASS || move.isZero())
             return move;
 
         if (move.x != 0f) {
             float signX = Math.signum(move.x);
+
+            if (entity.collidingLeft && signX > 0f) entity.collidingLeft = false;
+            if (entity.collidingRight && signX < 0f) entity.collidingRight = false;
+
             float edgeX = signX > 0f ? entity.right() : entity.left();
             float targetX = edgeX + move.x;
 
-            int tileX = (int) Math.floor((signX > 0f ? targetX : targetX - SKIN) / Entity.COORDINATE_SCALE);
+            int tileX = (int) Math.floor(targetX / Entity.COORDINATE_SCALE);
 
             int y0 = (int) Math.floor(entity.bottom() / Entity.COORDINATE_SCALE);
             int y1 = (int) Math.floor((entity.top() - SKIN) / Entity.COORDINATE_SCALE);
@@ -203,18 +208,29 @@ public class CollisionManager {
                     if (entity.getTileCollisionType() == Entity.TileCollisionType.STOP) {
                         float tileEdgeWorldX = signX > 0f ? tileX * Entity.COORDINATE_SCALE : (tileX + 1f) * Entity.COORDINATE_SCALE;
                         move.x = tileEdgeWorldX - edgeX - signX * SKIN;
+
+                        entity.collidingLeft = signX < 0f;
+                        entity.collidingRight = signX > 0f;
                     } else entity.remove();
+
                     break;
                 }
             }
+        } else {
+            entity.collidingLeft = false;
+            entity.collidingRight = false;
         }
 
         if (move.y != 0f) {
             float signY = Math.signum(move.y);
+
+            if (entity.collidingDown && signY > 0f) entity.collidingDown = false;
+            if (entity.collidingUp && signY < 0f) entity.collidingUp = false;
+
             float edgeY = signY > 0f ? entity.top() : entity.bottom();
             float targetY = edgeY + move.y;
 
-            int tileY = (int) Math.floor((signY > 0f ? targetY : targetY - SKIN) / Entity.COORDINATE_SCALE);
+            int tileY = (int) Math.floor(targetY / Entity.COORDINATE_SCALE);
 
             int x0 = (int) Math.floor(entity.left() / Entity.COORDINATE_SCALE);
             int x1 = (int) Math.floor((entity.right() - SKIN) / Entity.COORDINATE_SCALE);
@@ -224,10 +240,16 @@ public class CollisionManager {
                     if (entity.getTileCollisionType() == Entity.TileCollisionType.STOP) {
                         float tileEdgeWorldY = signY > 0f ? tileY * Entity.COORDINATE_SCALE : (tileY + 1f) * Entity.COORDINATE_SCALE;
                         move.y = tileEdgeWorldY - edgeY - signY * SKIN;
+
+                        entity.collidingUp = signY > 0f;
+                        entity.collidingDown = signY < 0f;
                     } else entity.remove();
                     break;
                 }
             }
+        } else {
+            entity.collidingUp = false;
+            entity.collidingDown = false;
         }
 
         return move;

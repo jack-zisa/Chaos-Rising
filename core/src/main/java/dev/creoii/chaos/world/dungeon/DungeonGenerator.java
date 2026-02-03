@@ -73,10 +73,7 @@ public class DungeonGenerator implements ContextProvider {
 
     public void build() {
         maxDepth = dungeon.maxDepth().getInt(context.child().with(ComponentTypes.POS, new Vector2(x, y)));
-        beginBuild();
-    }
 
-    private void beginBuild() {
         roomContext.clearLocal();
         roomContext.set(ComponentTypes.POS, new Vector2(x, y));
         roomContext.set(ComponentTypes.ROOM_DEPTH, 0);

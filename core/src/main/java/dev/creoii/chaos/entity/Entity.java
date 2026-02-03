@@ -22,6 +22,10 @@ public abstract class Entity implements Tickable {
     private final int spawnTime;
     private final Vector2 collider;
     private final IntSet collidingWith;
+    public boolean collidingLeft;
+    public boolean collidingRight;
+    public boolean collidingUp;
+    public boolean collidingDown;
 
     public Entity(World world, EntityType<? extends Entity> type, int id, Vector2 pos) {
         this.world = world;
@@ -101,6 +105,10 @@ public abstract class Entity implements Tickable {
 
     public boolean isMoving() {
         return !pos.epsilonEquals(prevPos, .001f);
+    }
+
+    public boolean isColliding() {
+        return collidingLeft || collidingRight || collidingUp || collidingDown;
     }
 
     public void remove() {
