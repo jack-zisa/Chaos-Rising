@@ -7,7 +7,7 @@ import dev.creoii.chaos.entity.EnemyEntity;
 import dev.creoii.chaos.entity.controller.EntityController;
 import dev.creoii.chaos.network.s2c.ChatMessageReceiveS2C;
 
-public class MessageAction extends Action {
+public class MessageAction extends InstantAction {
     public static final MapCodec<MessageAction> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(
             Message.CODEC.fieldOf("message").forGetter(MessageAction::getMessage)
@@ -29,16 +29,6 @@ public class MessageAction extends Action {
         if (!controller.getEntity().getWorld().getGame().isClient()) {
             controller.getEntity().getWorld().getGame().getServer().sendToAllTCP(new ChatMessageReceiveS2C(message));
         }
-    }
-
-    @Override
-    public void update(EntityController<? extends EnemyEntity> controller, int time, float delta) {
-
-    }
-
-    @Override
-    public void end(EntityController<? extends EnemyEntity> controller) {
-
     }
 
     public Message getMessage() {

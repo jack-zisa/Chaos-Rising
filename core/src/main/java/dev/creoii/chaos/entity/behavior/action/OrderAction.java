@@ -12,7 +12,7 @@ import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.context.Context;
 import dev.creoii.chaos.util.provider.phaseprovider.PhaseProvider;
 
-public class OrderAction extends Action {
+public class OrderAction extends InstantAction {
     public static final MapCodec<OrderAction> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(
             PhaseProvider.CODEC.fieldOf("phase").forGetter(OrderAction::getPhase)
@@ -51,13 +51,5 @@ public class OrderAction extends Action {
                 multiBehavior.getCurrentPhase().start(controller, living.getWorld().getGame().getGametime());
             }
         });
-    }
-
-    @Override
-    public void update(EntityController<? extends EnemyEntity> controller, int time, float delta) {
-    }
-
-    @Override
-    public void end(EntityController<? extends EnemyEntity> controller) {
     }
 }

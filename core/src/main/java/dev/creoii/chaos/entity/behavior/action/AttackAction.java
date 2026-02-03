@@ -6,9 +6,7 @@ import dev.creoii.chaos.attack.Attack;
 import dev.creoii.chaos.entity.Attacker;
 import dev.creoii.chaos.entity.EnemyEntity;
 import dev.creoii.chaos.entity.controller.EntityController;
-import dev.creoii.chaos.util.provider.entityprovider.NearestCharacterEntityProvider;
 import dev.creoii.chaos.util.provider.entityprovider.SelfEntityProvider;
-import dev.creoii.chaos.util.provider.vecprovider.ConstantVecProvider;
 import dev.creoii.chaos.util.provider.vecprovider.EntityVecProvider;
 
 public class AttackAction extends Action {
@@ -45,5 +43,10 @@ public class AttackAction extends Action {
 
     @Override
     public void end(EntityController<? extends EnemyEntity> controller) {
+    }
+
+    @Override
+    public boolean isInstant() {
+        return false;
     }
 }

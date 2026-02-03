@@ -60,4 +60,9 @@ public class MoveAction extends Action implements ContextProvider {
     public void end(EntityController<? extends EnemyEntity> controller) {
         speed = (controller.getEntity() instanceof LivingEntity living ? living.getStats().speed().value() : 1f);
     }
+
+    @Override
+    public boolean isInstant() {
+        return false;
+    }
 }

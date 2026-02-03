@@ -1,22 +1,9 @@
 package dev.creoii.chaos.entity.behavior.action;
 
-import com.mojang.serialization.MapCodec;
 import dev.creoii.chaos.entity.EnemyEntity;
 import dev.creoii.chaos.entity.controller.EntityController;
 
-public class WaitAction extends Action {
-    public static final WaitAction INSTANCE = new WaitAction();
-    public static final MapCodec<WaitAction> CODEC = MapCodec.unit(INSTANCE);
-
-    @Override
-    public Type getType() {
-        return Type.WAIT;
-    }
-
-    @Override
-    public void start(EntityController<? extends EnemyEntity> controller) {
-    }
-
+public abstract class InstantAction extends Action {
     @Override
     public void update(EntityController<? extends EnemyEntity> controller, int time, float delta) {
     }
@@ -27,6 +14,6 @@ public class WaitAction extends Action {
 
     @Override
     public boolean isInstant() {
-        return false;
+        return true;
     }
 }

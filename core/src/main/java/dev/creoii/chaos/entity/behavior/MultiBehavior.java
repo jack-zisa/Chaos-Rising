@@ -6,6 +6,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.entity.EnemyEntity;
+import dev.creoii.chaos.entity.behavior.action.Action;
 import dev.creoii.chaos.entity.behavior.phase.Phase;
 import dev.creoii.chaos.entity.behavior.phase.PhaseKey;
 import dev.creoii.chaos.entity.behavior.transition.Transition;
@@ -14,6 +15,7 @@ import dev.creoii.chaos.util.context.Context;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MultiBehavior implements Behavior {
@@ -116,7 +118,9 @@ public class MultiBehavior implements Behavior {
         int index = 0;
         for (int i = 0; i < phases.length; ++i) {
             Phase toCopy = getPhase(i);
-            Phase phase = new Phase(toCopy.getTransition(), new ArrayList<>(toCopy.getActions()));
+            List<Action> actions = new ArrayList<>(toCopy.getInstantActions());
+            actions.addAll(toCopy.getUpdateActions());
+            Phase phase = new Phase(toCopy.getTransition(), actions);
             phase.setId(toCopy.getId());
             map.put(new PhaseKey(phase.getId(), index++), phase);
         }

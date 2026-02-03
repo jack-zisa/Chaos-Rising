@@ -9,7 +9,7 @@ import dev.creoii.chaos.network.s2c.MoveEntityS2C;
 import dev.creoii.chaos.util.context.Context;
 import dev.creoii.chaos.util.provider.vecprovider.VecProvider;
 
-public class TeleportAction extends Action {
+public class TeleportAction extends InstantAction {
     public static final MapCodec<TeleportAction> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(
             VecProvider.CODEC.fieldOf("pos").forGetter(TeleportAction::getPos)
@@ -37,13 +37,5 @@ public class TeleportAction extends Action {
         if (!controller.getEntity().getWorld().getGame().isClient()) {
             controller.getEntity().getWorld().getGame().getServer().sendToAllTCP(new MoveEntityS2C(controller.getEntity().getId(), pos.x, pos.y, 0f, 0f));
         }
-    }
-
-    @Override
-    public void update(EntityController<? extends EnemyEntity> controller, int time, float delta) {
-    }
-
-    @Override
-    public void end(EntityController<? extends EnemyEntity> controller) {
     }
 }

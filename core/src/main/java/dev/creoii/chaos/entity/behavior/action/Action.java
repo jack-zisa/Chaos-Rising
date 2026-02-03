@@ -25,6 +25,8 @@ public abstract class Action {
 
     public abstract void end(EntityController<? extends EnemyEntity> controller);
 
+    public abstract boolean isInstant();
+
     public enum Type {
         ATTACK,
         SPAWN,

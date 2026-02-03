@@ -15,7 +15,7 @@ import dev.creoii.chaos.util.provider.entityprovider.EntityProvider;
 import dev.creoii.chaos.util.provider.vecprovider.SourceVecProvider;
 import dev.creoii.chaos.util.provider.vecprovider.VecProvider;
 
-public class SpawnAction extends Action {
+public class SpawnAction extends InstantAction {
     public static final MapCodec<SpawnAction> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(
             EntityProvider.CODEC.fieldOf("entity").forGetter(SpawnAction::getEntity),
@@ -69,13 +69,5 @@ public class SpawnAction extends Action {
             spawned.setPos(pos.x, pos.y);
             world.getEntityManager().addEntity(spawned);
         }
-    }
-
-    @Override
-    public void update(EntityController<? extends EnemyEntity> controller, int time, float delta) {
-    }
-
-    @Override
-    public void end(EntityController<? extends EnemyEntity> controller) {
     }
 }

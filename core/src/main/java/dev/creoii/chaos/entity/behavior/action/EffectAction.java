@@ -48,4 +48,9 @@ public class EffectAction extends Action {
         if (remove)
             controller.getEntity().removeStatusEffect(effect);
     }
+
+    @Override
+    public boolean isInstant() {
+        return false;
+    }
 }
