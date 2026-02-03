@@ -124,9 +124,9 @@ public class DungeonGenerator implements ContextProvider {
         incrementRoomCount(template.id());
 
         pendingRoom.getConnections().stream().filter(Connection::isConnected).forEach(connection -> {
-                connection.getConnected().setConnected(connection)
+                connection.getConnected().setConnected(connection);
             }
-        )
+        );
 
         if (generator.depth() >= maxDepth)
             return;
