@@ -45,7 +45,7 @@ public class EntityRenderData {
     }
 
     public boolean isMoving() {
-        return xv != 0f && yv != 0f;
+        return xv != 0f || yv != 0f;
     }
 
     public void stopMoving() {
