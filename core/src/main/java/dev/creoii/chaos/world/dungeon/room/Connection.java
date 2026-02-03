@@ -53,6 +53,10 @@ public class Connection {
     }
 
     public void setConnected(Connection connection) {
-        this.connection = connection
+        this.connection = connection;
+    }
+
+    public void getConnected() {
+        return connection;
     }
 }
