@@ -109,4 +109,9 @@ public record LayeredMapGenerator(String id, Palette palette, Map<String, Layer>
         layers.put("object", new Layer(new ArrayList<>()));
         return layers;
     }
+
+    @Override
+    public Vector2 getSpawnPos() {
+        return Vector2.Zero;
+    }
 }

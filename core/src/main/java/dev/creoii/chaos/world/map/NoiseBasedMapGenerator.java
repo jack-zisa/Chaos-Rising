@@ -74,4 +74,9 @@ public record NoiseBasedMapGenerator(String id, int width, int height, FastNoise
             TileProvider.CODEC.fieldOf("tile").forGetter(Entry::tile)
         ).apply(instance, Entry::new));
     }
+
+    @Override
+    public Vector2 getSpawnPos() {
+        return Vector2.Zero;
+    }
 }

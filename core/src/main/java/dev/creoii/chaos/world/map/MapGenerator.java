@@ -1,5 +1,6 @@
 package dev.creoii.chaos.world.map;
 
+import com.badlogic.gdx.math.Vector2;
 import com.mojang.serialization.Codec;
 import dev.creoii.chaos.World;
 import dev.creoii.chaos.util.Identifiable;
@@ -23,6 +24,8 @@ public interface MapGenerator extends Identifiable {
     void build(World world);
 
     void place(World world);
+
+    Vector2 getSpawnPos();
 
     enum Type {
         LAYERED,

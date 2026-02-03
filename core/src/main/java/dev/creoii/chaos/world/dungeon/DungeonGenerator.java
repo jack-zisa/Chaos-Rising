@@ -24,6 +24,7 @@ public class DungeonGenerator implements ContextProvider {
     private int maxDepth;
     private final Context context;
     private final Context roomContext;
+    private PlacedRoom startRoom;
 
     public DungeonGenerator(World world, Dungeon dungeon, int x, int y) {
         this.world = world;
@@ -58,6 +59,10 @@ public class DungeonGenerator implements ContextProvider {
 
     public Set<Pair<RoomGenerator, PendingRoom>> getPendingRooms() {
         return pendingRooms;
+    }
+
+    public PlacedRoom getStartRoom() {
+        return startRoom;
     }
 
     public void build() {
@@ -128,7 +133,11 @@ public class DungeonGenerator implements ContextProvider {
 
     public void place() {
         for (Pair<RoomGenerator, PendingRoom> pair : pendingRooms) {
-            pair.left().place(world, this, pair.right());
+            PlacedRoom placedRoom = pair.left().place(world, this, pair.right());
+
+            if (pair.left().depth() == 0) {
+                startRoom = placedRoom;
+            }
         }
     }
 

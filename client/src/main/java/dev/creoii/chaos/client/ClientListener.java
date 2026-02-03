@@ -76,9 +76,7 @@ public class ClientListener extends Listener {
                     connection.sendTCP(new RequestWorldLoadC2S());
                 }
             }
-            case SetupWorldS2C(int width, int height, long seed) -> {
-                game.setWorld(new ClientWorld(game, World.createMapOfSize(width, height), seed));
-            }
+            case SetupWorldS2C(int width, int height, long seed) -> game.setWorld(new ClientWorld(game, World.createMapOfSize(width, height), seed));
             case SyncDataS2C(byte[] data) -> {
                 Path cacheRoot = Paths.get(System.getProperty("user.dir"), "cache", "data");
 

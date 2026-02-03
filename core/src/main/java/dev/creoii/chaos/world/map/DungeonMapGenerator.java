@@ -1,5 +1,6 @@
 package dev.creoii.chaos.world.map;
 
+import com.badlogic.gdx.math.Vector2;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -22,6 +23,7 @@ public class DungeonMapGenerator implements MapGenerator {
     private int minY = Integer.MAX_VALUE;
     private int maxX = Integer.MIN_VALUE;
     private int maxY = Integer.MIN_VALUE;
+    private Vector2 spawnPos = Vector2.Zero;
 
     public DungeonMapGenerator(String id, Dungeon dungeon) {
         this.id = id;
@@ -86,5 +88,13 @@ public class DungeonMapGenerator implements MapGenerator {
 
     public void place(World world) {
         generator.place();
+        DungeonGenerator.PlacedRoom placedRoom = generator.getStartRoom();
+        if (placedRoom != null)
+            spawnPos = new Vector2(placedRoom.x() + (placedRoom.width() / 2f), placedRoom.y() + (placedRoom.height() / 2f));
+    }
+
+    @Override
+    public Vector2 getSpawnPos() {
+        return spawnPos;
     }
 }

@@ -1,12 +1,13 @@
 package dev.creoii.chaos.server;
 
-import com.badlogic.gdx.math.Vector2;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import dev.creoii.chaos.DataManager;
+import dev.creoii.chaos.World;
 import dev.creoii.chaos.chat.Message;
 import dev.creoii.chaos.entity.CharacterEntity;
 import dev.creoii.chaos.entity.CharacterEntityType;
+import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.entity.LootDropEntity;
 import dev.creoii.chaos.inventory.Inventory;
 import dev.creoii.chaos.inventory.InventoryType;
@@ -16,9 +17,7 @@ import dev.creoii.chaos.item.ItemStack;
 import dev.creoii.chaos.item.WeaponItem;
 import dev.creoii.chaos.network.NetworkQueue;
 import dev.creoii.chaos.network.c2s.*;
-import dev.creoii.chaos.network.s2c.ChatMessageReceiveS2C;
-import dev.creoii.chaos.network.s2c.SetupWorldS2C;
-import dev.creoii.chaos.network.s2c.SpawnEntitiesS2C;
+import dev.creoii.chaos.network.s2c.*;
 import dev.creoii.chaos.server.chat.command.Command;
 import dev.creoii.chaos.server.chat.command.Commands;
 import dev.creoii.chaos.util.EntityGroup;
@@ -27,9 +26,13 @@ import dev.creoii.chaos.util.event.ExecuteCommandEvent;
 import dev.creoii.chaos.util.event.MessageChatEvent;
 import dev.creoii.chaos.util.provider.vecprovider.ConstantVecProvider;
 import dev.creoii.chaos.util.provider.vecprovider.SourceVecProvider;
+import dev.creoii.chaos.world.tile.Tile;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ServerWorldListener extends Listener {
     private final ServerWorld world;
@@ -145,7 +148,7 @@ public class ServerWorldListener extends Listener {
 
             Object2ObjectArrayMap<String, Object> customData = new Object2ObjectArrayMap<>();
             customData.put("connection_id", connection.getID());
-            CharacterEntity character = world.getEntityManager().addCharacter(connection.getID(), new CharacterEntityType(new Mutable<>(DataManager.getCharacterClass("wizard"))), new Vector2(0, 0), customData);
+            CharacterEntity character = world.getEntityManager().addCharacter(connection.getID(), new CharacterEntityType(new Mutable<>(DataManager.getCharacterClass("wizard"))), world.getMapGenerator().getSpawnPos().cpy().scl(Entity.COORDINATE_SCALE), customData);
 
             ObjectList<SpawnEntitiesS2C.Entry> spawnEntries = new ObjectArrayList<>();
             world.getEntityManager().getAllEntities().values().forEach(uuidEntityMap -> uuidEntityMap.values().forEach(entity -> {
@@ -171,8 +174,24 @@ public class ServerWorldListener extends Listener {
         }
 
         else if (object instanceof RequestWorldLoadC2S()) {
-            ServerGame.LOGGER.info("Loading world '" + world.getMapGenerator().id() + "' of type '" + world.getMapGenerator().getType().name() + "'");
-            world.load();
+            for (int w = 0; w < world.getWidth(); w += World.CHUNK_SIZE) {
+                for (int h = 0; h < world.getHeight(); h += World.CHUNK_SIZE) {
+                    List<SyncWorldSectionS2C.Entry> entries = new ArrayList<>();
+
+                    for (int x = w; x < w + World.CHUNK_SIZE; ++x) {
+                        for (int y = h; y < h + World.CHUNK_SIZE; ++y) {
+                            Tile tile = world.getGround(x, y);
+                            if (tile != null) {
+                                entries.add(new SyncWorldSectionS2C.Entry(x, y, tile.id()));
+                            }
+                        }
+                    }
+
+                    if (!entries.isEmpty()) {
+                        world.getGame().getServer().sendToTCP(connection.getID(), new SyncWorldSectionS2C(entries));
+                    }
+                }
+            }
         }
 
         else if (object instanceof CharacterLeaveC2S(int id)) {

@@ -174,6 +174,11 @@ public class ClientWorldListener extends Listener {
                     }
                 }
             }
+            case SyncWorldSectionS2C(List<SyncWorldSectionS2C.Entry> tiles) -> {
+                if (world != null) {
+                    tiles.forEach(entry -> world.setGround(entry.x(), entry.y(), DataManager.getTile(entry.tile())));
+                }
+            }
             case GainExperienceS2C(int id, int experience, int level) -> {
                 EntityRenderData entityRenderData = world.getEntityManager().getEntityData(id);
                 if (entityRenderData instanceof CharacterEntityRenderData characterEntityRenderData) {

@@ -44,6 +44,9 @@ public class ServerWorld implements World, Tickable {
         width = this.mapGenerator.getWidth();
         height = this.mapGenerator.getHeight();
         this.map = World.createMapOfSize(this.mapGenerator.getWidth(), this.mapGenerator.getHeight());
+
+        ServerGame.LOGGER.info("Loading world '" + mapGenerator.id() + "' of type '" + mapGenerator.getType().name() + "'");
+        mapGenerator.place(this);
     }
 
     public MapGenerator getMapGenerator() {
@@ -179,9 +182,5 @@ public class ServerWorld implements World, Tickable {
         while ((packet = networkQueue.queue().poll()) != null) {
             listener.handlePacket(packet.connection(), packet.packet());
         }
-    }
-
-    public void load() {
-        mapGenerator.place(this);
     }
 }

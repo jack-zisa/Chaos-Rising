@@ -49,6 +49,7 @@ public class PacketRegistry {
         kryo.register(PlaceSetpieceS2C.class, PacketSerializer.INSTANCE);
         kryo.register(SetupWorldS2C.class, PacketSerializer.INSTANCE);
         kryo.register(SyncAttacksS2C.class, PacketSerializer.INSTANCE);
+        kryo.register(SyncWorldSectionS2C.class, PacketSerializer.INSTANCE);
 
         registerCodecSchema();
     }
@@ -94,5 +95,6 @@ public class PacketRegistry {
         PacketSerializer.INSTANCE.register(PlaceSetpieceS2C.class, PlaceSetpieceS2C::write, PlaceSetpieceS2C::read);
         PacketSerializer.INSTANCE.register(SetupWorldS2C.class, SetupWorldS2C::write, SetupWorldS2C::read);
         PacketSerializer.INSTANCE.register(SyncAttacksS2C.class, SyncAttacksS2C::write, SyncAttacksS2C::read);
+        PacketSerializer.INSTANCE.register(SyncWorldSectionS2C.class, SyncWorldSectionS2C::write, SyncWorldSectionS2C::read);
     }
 }

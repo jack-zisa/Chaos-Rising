@@ -13,6 +13,7 @@ import javax.annotation.Nullable;
 import java.util.Random;
 
 public interface World extends Disposable {
+    int CHUNK_SIZE = 32;
     String LAYER_GROUND = "ground";
     String LAYER_OBJECT = "object";
 
