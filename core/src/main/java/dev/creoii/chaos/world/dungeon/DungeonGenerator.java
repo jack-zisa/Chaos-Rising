@@ -65,6 +65,12 @@ public class DungeonGenerator implements ContextProvider {
         return startRoom;
     }
 
+    public void incrementRoomCount(String id) {
+        if (roomCounts.containsKey(id)) {
+            roomCounts.put(id, roomCounts.get(id) + 1);
+        } else roomCounts.put(id, 1);
+    }
+
     public void build() {
         maxDepth = dungeon.maxDepth().getInt(context.child().with(ComponentTypes.POS, new Vector2(x, y)));
         beginBuild();
@@ -75,7 +81,8 @@ public class DungeonGenerator implements ContextProvider {
         roomContext.set(ComponentTypes.POS, new Vector2(x, y));
         roomContext.set(ComponentTypes.ROOM_DEPTH, 0);
 
-        RoomGenerator generator = new RoomGenerator(dungeon.fallback().get(roomContext), x, y, null, 0);
+        RoomTemplate template = dungeon.fallback().get(roomContext);
+        RoomGenerator generator = new RoomGenerator(template, x, y, null, 0);
 
         roomContext.set(ComponentTypes.ROOM, generator);
 
@@ -84,13 +91,8 @@ public class DungeonGenerator implements ContextProvider {
         if (pendingRoom == null)
             return;
 
-        for (Pair<RoomGenerator, PendingRoom> other : pendingRooms) {
-            if (Room.intersects(other.right(), pendingRoom)) {
-                return;
-            }
-        }
-
         pendingRooms.add(Pair.of(generator, pendingRoom));
+        incrementRoomCount(template.id());
 
         for (Connection connection : generator.getConnections()) {
             generateRoom(world, generator, connection);
@@ -122,6 +124,7 @@ public class DungeonGenerator implements ContextProvider {
         }
 
         pendingRooms.add(Pair.of(generator, pendingRoom));
+        incrementRoomCount(template.id());
 
         if (generator.depth() >= maxDepth)
             return;
