@@ -34,6 +34,11 @@ public class DataManager {
     public static final Logger LOGGER = new Logger(DataManager.class.getSimpleName());
     private static final EnumMap<SchemaType, Codec<? extends Identifiable>> SCHEMA = new EnumMap<>(SchemaType.class);
     private static final EnumMap<SchemaType, Object2ObjectArrayMap<String, Identifiable>> DATA = new EnumMap<>(SchemaType.class);
+    private static boolean DEBUG = false;
+
+    public static void setDebug(boolean debug) {
+        DataManager.DEBUG = debug;
+    }
 
     public static Object2ObjectArrayMap<String, Identifiable> getClasses() {
         return DATA.get(SchemaType.CLASS);
@@ -75,7 +80,7 @@ public class DataManager {
     public static CharacterClass getCharacterClass(String id) {
         CharacterClass value = (CharacterClass) getClasses().get(id);
         if (value == null) {
-            LOGGER.error("Unknown CharacterClass: '" + id + "'");
+            if (DEBUG) LOGGER.error("Unknown CharacterClass: '" + id + "'");
             return null;
         }
         return value;
@@ -85,7 +90,7 @@ public class DataManager {
     public static EnemyEntityType getEnemy(String id) {
         EnemyEntityType value = (EnemyEntityType) getEntities().get(id);
         if (value == null) {
-            LOGGER.error("Unknown Enemy: '" + id + "'");
+            if (DEBUG) LOGGER.error("Unknown Enemy: '" + id + "'");
             return null;
         }
         return value;
@@ -95,7 +100,7 @@ public class DataManager {
     public static ObjectEntityType getObject(String id) {
         ObjectEntityType value = (ObjectEntityType) getEntities().get(id);
         if (value == null) {
-            LOGGER.error("Unknown Object: '" + id + "'");
+            if (DEBUG) LOGGER.error("Unknown Object: '" + id + "'");
             return null;
         }
         return value;
@@ -105,7 +110,7 @@ public class DataManager {
     public static BulletEntityType getBullet(String id) {
         BulletEntityType value = (BulletEntityType) getEntities().get(id);
         if (value == null) {
-            LOGGER.error("Unknown Bullet: '" + id + "'");
+            if (DEBUG) LOGGER.error("Unknown Bullet: '" + id + "'");
             return null;
         }
         return value;
@@ -115,7 +120,7 @@ public class DataManager {
     public static LootDropEntityType getLootDrop(String id) {
         LootDropEntityType value = (LootDropEntityType) getEntities().get(id);
         if (value == null) {
-            LOGGER.error("Unknown LootDrop: '" + id + "'");
+            if (DEBUG) LOGGER.error("Unknown LootDrop: '" + id + "'");
             return null;
         }
         return value;
@@ -125,7 +130,7 @@ public class DataManager {
     public static Item getItem(String id) {
         Item value = (Item) getItems().get(id);
         if (value == null) {
-            LOGGER.error("Unknown Item: '" + id + "'");
+            if (DEBUG) LOGGER.error("Unknown Item: '" + id + "'");
             return null;
         }
         return value;
@@ -135,7 +140,7 @@ public class DataManager {
     public static LootTable getLootTable(String id) {
         LootTable value = (LootTable) getLootTables().get(id);
         if (value == null) {
-            LOGGER.error("Unknown LootTable: '" + id + "'");
+            if (DEBUG) LOGGER.error("Unknown LootTable: '" + id + "'");
             return null;
         }
         return value;
@@ -145,7 +150,7 @@ public class DataManager {
     public static Tile getTile(String id) {
         Tile value = (Tile) getTiles().get(id);
         if (value == null) {
-            LOGGER.error("Unknown Tile: '" + id + "'");
+            if (DEBUG) LOGGER.error("Unknown Tile: '" + id + "'");
             return null;
         }
         return value;
@@ -155,7 +160,7 @@ public class DataManager {
     public static Setpiece getSetpiece(String id) {
         Setpiece value = (Setpiece) getSetpieces().get(id);
         if (value == null) {
-            LOGGER.error("Unknown Setpiece: '" + id + "'");
+            if (DEBUG) LOGGER.error("Unknown Setpiece: '" + id + "'");
             return null;
         }
         return value;
@@ -165,7 +170,7 @@ public class DataManager {
     public static RoomTemplate getRoomTemplate(String id) {
         RoomTemplate value = (RoomTemplate) getRoomTemplates().get(id);
         if (value == null) {
-            LOGGER.error("Unknown RoomTemplate: '" + id + "'");
+            if (DEBUG) LOGGER.error("Unknown RoomTemplate: '" + id + "'");
             return null;
         }
         return value;
@@ -175,7 +180,7 @@ public class DataManager {
     public static Dungeon getDungeon(String id) {
         Dungeon value = (Dungeon) getDungeons().get(id);
         if (value == null) {
-            LOGGER.error("Unknown Dungeon: '" + id + "'");
+            if (DEBUG) LOGGER.error("Unknown Dungeon: '" + id + "'");
             return null;
         }
         return value;
@@ -185,7 +190,7 @@ public class DataManager {
     public static MapGenerator getMapGenerator(String id) {
         MapGenerator value = (MapGenerator) getMapGenerators().get(id);
         if (value == null) {
-            LOGGER.error("Unknown MapGenerator: '" + id + "'");
+            if (DEBUG) LOGGER.error("Unknown MapGenerator: '" + id + "'");
             return null;
         }
         return value;
