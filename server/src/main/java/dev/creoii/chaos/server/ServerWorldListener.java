@@ -144,7 +144,7 @@ public class ServerWorldListener extends Listener {
         }
 
         else if (object instanceof CharacterJoinC2S()) {
-            world.getGame().getServer().sendToTCP(connection.getID(), new SetupWorldS2C(world.getWidth(), world.getHeight(), world.getSeed()));
+            world.getGame().getServer().sendToTCP(connection.getID(), new SetupWorldS2C(world.getWidth(), world.getHeight(), world.getSeed(), world.getMapGenerator().getAmbientLight()));
 
             Object2ObjectArrayMap<String, Object> customData = new Object2ObjectArrayMap<>();
             customData.put("connection_id", connection.getID());

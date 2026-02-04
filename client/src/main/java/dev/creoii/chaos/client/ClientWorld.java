@@ -11,6 +11,7 @@ import dev.creoii.chaos.client.render.Renderer;
 import dev.creoii.chaos.client.render.WorldRenderer;
 import dev.creoii.chaos.client.render.entity.EntityRenderManager;
 import dev.creoii.chaos.client.texture.TextureManager;
+import dev.creoii.chaos.light.CreoRayHandler;
 import dev.creoii.chaos.network.NetworkQueue;
 import dev.creoii.chaos.world.setpiece.Setpiece;
 import dev.creoii.chaos.world.tile.Tile;
@@ -27,6 +28,7 @@ public class ClientWorld implements World {
     private final TiledMap map;
     private final OrthogonalTiledMapRenderer mapRenderer;
     private final EntityRenderManager entityManager;
+    private final CreoRayHandler rayHandler;
 
     public ClientWorld(ClientGame game, TiledMap map, long seed) {
         this.game = game;
@@ -37,6 +39,7 @@ public class ClientWorld implements World {
         worldRenderer = new WorldRenderer(this);
         listener = new ClientWorldListener(this);
         mapRenderer = new OrthogonalTiledMapRenderer(map, 4f);
+        rayHandler = new CreoRayHandler();
 
         game.getClient().addListener(listener);
     }
@@ -80,6 +83,10 @@ public class ClientWorld implements World {
     @Override
     public EntityRenderManager getEntityManager() {
         return entityManager;
+    }
+
+    public CreoRayHandler getRayHandler() {
+        return rayHandler;
     }
 
     @Override
@@ -127,6 +134,8 @@ public class ClientWorld implements World {
         }
 
         worldRenderer.render(delta, renderer, debug);
+
+        rayHandler.updateAndRender();
     }
 
     @Override

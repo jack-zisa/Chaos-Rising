@@ -18,12 +18,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public record LayeredMapGenerator(String id, Palette palette, Map<String, Layer> layers) implements MapGenerator {
-    public static final LayeredMapGenerator DEFAULT = new LayeredMapGenerator("default", new Palette(Map.of("G", new SimpleTileProvider(DataManager.getTile("grass")))), buildDefaultLayers());
+public record LayeredMapGenerator(String id, Palette palette, Map<String, Layer> layers, float ambientLight) implements MapGenerator {
+    public static final LayeredMapGenerator DEFAULT = new LayeredMapGenerator("default", new Palette(Map.of("G", new SimpleTileProvider(DataManager.getTile("grass")))), buildDefaultLayers(), 1f);
     public static final MapCodec<LayeredMapGenerator> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
         Codec.STRING.fieldOf("id").forGetter(LayeredMapGenerator::id),
         Palette.CODEC.fieldOf("palette").forGetter(LayeredMapGenerator::palette),
-        Codec.unboundedMap(Codec.STRING, Layer.CODEC).fieldOf("layers").forGetter(LayeredMapGenerator::layers)
+        Codec.unboundedMap(Codec.STRING, Layer.CODEC).fieldOf("layers").forGetter(LayeredMapGenerator::layers),
+        Codec.FLOAT.fieldOf("ambient_light").orElse(1f).forGetter(LayeredMapGenerator::ambientLight)
     ).apply(instance, LayeredMapGenerator::new));
 
     @Override
@@ -113,5 +114,10 @@ public record LayeredMapGenerator(String id, Palette palette, Map<String, Layer>
     @Override
     public Vector2 getSpawnPos() {
         return Vector2.Zero;
+    }
+
+    @Override
+    public float getAmbientLight() {
+        return ambientLight;
     }
 }

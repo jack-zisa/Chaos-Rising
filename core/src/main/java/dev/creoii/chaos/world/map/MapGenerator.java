@@ -27,6 +27,8 @@ public interface MapGenerator extends Identifiable {
 
     Vector2 getSpawnPos();
 
+    float getAmbientLight();
+
     enum Type {
         LAYERED,
         DUNGEON,

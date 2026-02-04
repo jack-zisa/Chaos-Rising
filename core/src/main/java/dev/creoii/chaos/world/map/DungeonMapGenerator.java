@@ -14,10 +14,12 @@ import it.unimi.dsi.fastutil.Pair;
 public class DungeonMapGenerator implements MapGenerator {
     public static final MapCodec<DungeonMapGenerator> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
         Codec.STRING.fieldOf("id").forGetter(DungeonMapGenerator::id),
-        Dungeon.ID_CODEC.fieldOf("dungeon").forGetter(DungeonMapGenerator::getDungeon)
+        Dungeon.ID_CODEC.fieldOf("dungeon").forGetter(DungeonMapGenerator::getDungeon),
+        Codec.FLOAT.fieldOf("ambient_light").orElse(1f).forGetter(DungeonMapGenerator::getAmbientLight)
     ).apply(instance, DungeonMapGenerator::new));
     private final String id;
     private final Dungeon dungeon;
+    private final float ambientLight;
     private DungeonGenerator generator;
     private int minX = Integer.MAX_VALUE;
     private int minY = Integer.MAX_VALUE;
@@ -25,9 +27,10 @@ public class DungeonMapGenerator implements MapGenerator {
     private int maxY = Integer.MIN_VALUE;
     private Vector2 spawnPos = Vector2.Zero;
 
-    public DungeonMapGenerator(String id, Dungeon dungeon) {
+    public DungeonMapGenerator(String id, Dungeon dungeon, float ambientLight) {
         this.id = id;
         this.dungeon = dungeon;
+        this.ambientLight = ambientLight;
     }
 
     @Override
@@ -37,6 +40,11 @@ public class DungeonMapGenerator implements MapGenerator {
 
     public Dungeon getDungeon() {
         return dungeon;
+    }
+
+    @Override
+    public float getAmbientLight() {
+        return ambientLight;
     }
 
     @Override

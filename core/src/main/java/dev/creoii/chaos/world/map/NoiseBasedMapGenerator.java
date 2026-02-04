@@ -15,13 +15,14 @@ import dev.creoii.chaos.world.tile.Tile;
 
 import java.util.List;
 
-public record NoiseBasedMapGenerator(String id, int width, int height, FastNoiseParameters noise, List<Entry> entries) implements MapGenerator {
+public record NoiseBasedMapGenerator(String id, int width, int height, FastNoiseParameters noise, List<Entry> entries, float ambientLight) implements MapGenerator {
     public static final MapCodec<NoiseBasedMapGenerator> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
         Codec.STRING.fieldOf("id").forGetter(NoiseBasedMapGenerator::id),
         Codec.INT.fieldOf("width").forGetter(NoiseBasedMapGenerator::width),
         Codec.INT.fieldOf("height").forGetter(NoiseBasedMapGenerator::height),
         FastNoiseParameters.CODEC.fieldOf("noise").forGetter(NoiseBasedMapGenerator::noise),
-        Entry.CODEC.listOf().fieldOf("entries").forGetter(NoiseBasedMapGenerator::entries)
+        Entry.CODEC.listOf().fieldOf("entries").forGetter(NoiseBasedMapGenerator::entries),
+        Codec.FLOAT.fieldOf("ambient_light").orElse(1f).forGetter(NoiseBasedMapGenerator::ambientLight)
     ).apply(instance, NoiseBasedMapGenerator::new));
 
     @Override
@@ -78,5 +79,10 @@ public record NoiseBasedMapGenerator(String id, int width, int height, FastNoise
     @Override
     public Vector2 getSpawnPos() {
         return Vector2.Zero;
+    }
+
+    @Override
+    public float getAmbientLight() {
+        return ambientLight;
     }
 }
