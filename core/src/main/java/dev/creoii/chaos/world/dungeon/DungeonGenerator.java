@@ -123,7 +123,7 @@ public class DungeonGenerator implements ContextProvider {
         pendingRooms.add(Pair.of(generator, pendingRoom));
         incrementRoomCount(template.id());
 
-        pendingRoom.getConnections().stream().filter(Connection::isConnected).forEach(connection -> {
+        generator.getConnections().stream().filter(Connection::isConnected).forEach(connection -> {
                 connection.getConnected().setConnected(connection);
             }
         );

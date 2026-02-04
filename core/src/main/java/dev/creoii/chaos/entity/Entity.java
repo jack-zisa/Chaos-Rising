@@ -125,22 +125,9 @@ public abstract class Entity implements Tickable {
         return a.overlaps(b);
     }
 
-    public boolean collidesTile(int tileX, int tileY) {
-        float ax1 = pos.x + (type.scale() - collider.x) * 0.5f;
-        float ay1 = pos.y + (type.scale() - collider.y) * 0.5f;
-        float ax2 = ax1 + collider.x;
-        float ay2 = ay1 + collider.y;
-
-        float tx2 = tileX + 1f;
-        float ty2 = tileY + 1f;
-
-        return ax1 < tx2 && ax2 > (float) tileX && ay1 < ty2 && ay2 > (float) tileY;
-    }
-
     private void getAABB(Rectangle out) {
-        float x1 = pos.x + (type.scale() - collider.x) * 0.5f;
-        float y1 = pos.y + (type.scale() - collider.y) * 0.5f;
-
+        float x1 = pos.x + (type.scale() - collider.x) * .5f;
+        float y1 = pos.y + (type.scale() - collider.y) * .5f;
         out.set(x1, y1, collider.x, collider.y);
     }
 

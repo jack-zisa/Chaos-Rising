@@ -3,8 +3,8 @@ package dev.creoii.chaos.world.dungeon.room;
 import dev.creoii.chaos.util.Direction;
 
 public class Connection {
-    private int localX;
-    private int localY;
+    private final int localX;
+    private final int localY;
     private int x;
     private int y;
     private final Direction direction;
@@ -39,11 +39,6 @@ public class Connection {
         this.y = y;
     }
 
-    public void setLocalPos(int x, int y) {
-        this.localX = x;
-        this.localY = y;
-    }
-
     public Direction direction() {
         return direction;
     }
@@ -56,7 +51,7 @@ public class Connection {
         this.connection = connection;
     }
 
-    public void getConnected() {
+    public Connection getConnected() {
         return connection;
     }
 }
