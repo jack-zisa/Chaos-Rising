@@ -1,8 +1,7 @@
 package dev.creoii.chaos.client.input;
 
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import dev.creoii.chaos.OptionsManager;
+import dev.creoii.chaos.client.option.OptionsManager;
 import dev.creoii.chaos.client.ClientGame;
 import dev.creoii.chaos.client.render.entity.data.CharacterEntityRenderData;
 import dev.creoii.chaos.client.render.screen.InventoryScreen;
@@ -27,13 +26,13 @@ public record CharacterController() implements Inputtable {
             float dx = 0f;
             float dy = 0f;
 
-            if (keycode == OptionsManager.LEFT_KEY.intValue())
+            if (keycode == OptionsManager.LEFT_KEY.value())
                 dx -= 1;
-            if (keycode == OptionsManager.RIGHT_KEY.intValue())
+            if (keycode == OptionsManager.RIGHT_KEY.value())
                 dx += 1;
-            if (keycode == OptionsManager.UP_KEY.intValue())
+            if (keycode == OptionsManager.UP_KEY.value())
                 dy += 1;
-            if (keycode == OptionsManager.DOWN_KEY.intValue())
+            if (keycode == OptionsManager.DOWN_KEY.value())
                 dy -= 1;
 
             if (dx != 0f || dy != 0f) {
@@ -60,7 +59,7 @@ public record CharacterController() implements Inputtable {
         if (game.getWorld().getChatManager().isActive() || character == null)
             return;
 
-        if (keycode == OptionsManager.ABILITY_KEY.intValue()) {
+        if (keycode == OptionsManager.ABILITY_KEY.value()) {
             Slot abilitySlot = character.getAbilitySlot();
             if (abilitySlot.getStack().getItem() instanceof AbilityItem abilityItem) {
                 game.getClient().sendTCP(new UseItemC2S(character.id, abilitySlot));
@@ -85,16 +84,16 @@ public record CharacterController() implements Inputtable {
                 boolean axis;
                 boolean positive;
 
-                if (keycode == OptionsManager.LEFT_KEY.intValue()) {
+                if (keycode == OptionsManager.LEFT_KEY.value()) {
                     axis = true;
                     positive = false;
-                } else if (keycode == OptionsManager.RIGHT_KEY.intValue()) {
+                } else if (keycode == OptionsManager.RIGHT_KEY.value()) {
                     axis = true;
                     positive = true;
-                } else if (keycode == OptionsManager.UP_KEY.intValue()) {
+                } else if (keycode == OptionsManager.UP_KEY.value()) {
                     axis = false;
                     positive = true;
-                } else if (keycode == OptionsManager.DOWN_KEY.intValue()) {
+                } else if (keycode == OptionsManager.DOWN_KEY.value()) {
                     axis = false;
                     positive = false;
                 } else return false;

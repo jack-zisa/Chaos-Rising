@@ -5,7 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import dev.creoii.chaos.OptionsManager;
+import dev.creoii.chaos.client.option.OptionsManager;
 import dev.creoii.chaos.client.ClientGame;
 import dev.creoii.chaos.client.render.Renderer;
 import dev.creoii.chaos.client.render.screen.InventoryScreen;
@@ -107,16 +107,16 @@ public class InputManager extends InputAdapter {
     @Override
     public boolean keyDown(int keycode) {
         keysHeld.add(keycode);
-        if (keycode == OptionsManager.DEBUG_KEY.intValue()) {
+        if (keycode == OptionsManager.DEBUG_KEY.value()) {
             game.setDebug(!game.isDebug());
             return true;
-        } else if (keycode == OptionsManager.INVENTORY_KEY.intValue() && !game.getWorld().getChatManager().isActive()) {
+        } else if (keycode == OptionsManager.INVENTORY_KEY.value() && !game.getWorld().getChatManager().isActive()) {
             Renderer renderer = game.getRenderer();
             if (renderer.getCurrentScreen() == null) {
                 renderer.setCurrentScreen(new InventoryScreen(game, new Vector2(1084, 400), game.getCharacter().slots));
             } else renderer.clearCurrentScreen();
             return true;
-        } else if (keycode == OptionsManager.FULLSCREEN_KEY.intValue()) {
+        } else if (keycode == OptionsManager.FULLSCREEN_KEY.value()) {
             if (Gdx.graphics.isFullscreen()) Gdx.graphics.setWindowedMode(1280, 720);
             else Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
             return true;

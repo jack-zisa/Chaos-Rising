@@ -2,7 +2,7 @@ package dev.creoii.chaos.client.chat;
 
 import com.badlogic.gdx.Input;
 import dev.creoii.chaos.ChatManager;
-import dev.creoii.chaos.OptionsManager;
+import dev.creoii.chaos.client.option.OptionsManager;
 import dev.creoii.chaos.chat.Message;
 import dev.creoii.chaos.client.ClientWorld;
 import dev.creoii.chaos.client.input.InputManager;
@@ -61,13 +61,13 @@ public class ClientChatManager implements ChatManager, Inputtable {
     @Override
     public boolean keyDown(InputManager manager, int keycode) {
         if (!active) {
-            if (keycode == OptionsManager.COMMAND_KEY.intValue()) {
+            if (keycode == OptionsManager.COMMAND_KEY.value()) {
                 active = true;
                 input.setLength(0);
                 input.append('/');
                 suppressNextChar = true;
                 return true;
-            } else if (keycode == OptionsManager.CHAT_KEY.intValue()) {
+            } else if (keycode == OptionsManager.CHAT_KEY.value()) {
                 active = true;
                 input.setLength(0);
                 suppressNextChar = true;

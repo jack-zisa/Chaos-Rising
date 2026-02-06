@@ -155,12 +155,24 @@ public class ServerEntityManager extends EntityManager<Entity> implements Tickab
                 entity.tick(gametime, delta);
 
                 if (entity.canMove()) {
-                    Vector2 resolved = ((ServerWorld) getWorld()).getCollisionManager().resolve(entity);
-                    float dx = resolved.x - entity.getPos().x;
-                    float dy = resolved.y - entity.getPos().y;
+                    CollisionManager.CollisionResult resolved = ((ServerWorld) getWorld()).getCollisionManager().resolve(entity);
+
+                    float dx = entity.getVelocity().x;
+                    float dy = entity.getVelocity().y;
+
+                    if (resolved.hitX()) {
+                        dx = resolved.position().x - entity.getPos().x;
+                        entity.getVelocity().x = 0f;
+                    }
+
+                    if (resolved.hitY()) {
+                        dy = resolved.position().y - entity.getPos().y;
+                        entity.getVelocity().y = 0f;
+                    }
+
                     if (dx * dx + dy * dy > EP2) {
                         entity.setPrevPos(entity.getPos().x, entity.getPos().y);
-                        entity.setPos(resolved.x, resolved.y);
+                        entity.setPos(resolved.position().x, resolved.position().y);
                         dx = entity.getPos().x - entity.getPrevPos().x;
                         dy = entity.getPos().y - entity.getPrevPos().y;
                         moveEntries.add(new MoveEntitiesS2C.Entry(entity.getId(), entity.getPos().x, entity.getPos().y, dx, dy));

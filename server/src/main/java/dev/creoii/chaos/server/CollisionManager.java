@@ -26,7 +26,9 @@ public class CollisionManager {
     private static final Long2ObjectArrayMap<int[][]> DIRECTION_OFFSETS = createDirectionOffsets();
     private static final int[] COLLISION_MASKS = new int[EntityGroup.values().length];
     public static final int KEY_OFFSET = 32768;
-    private static final float SKIN = .001f;
+    private static final float PADDING = Entity.COORDINATE_SCALE / 8f;
+    private static final float STEP_SIZE = Entity.COORDINATE_SCALE * .2f;
+    private static final float EPS = .001f;
     private final ServerWorld world;
     private final ObjectList<Entity> toCollide;
     private final Int2ObjectOpenHashMap<ObjectList<Entity>> grid;
@@ -160,74 +162,80 @@ public class CollisionManager {
         return MathUtils.floor(worldCoord / Entity.COORDINATE_SCALE);
     }
 
-    public Vector2 resolve(Entity entity) {
-        Vector2 start = entity.getPos().cpy();
-        Vector2 velocity = entity.getVelocity().cpy();
+    public CollisionResult resolve(Entity entity) {
+        entity.collidingLeft = false;
+        entity.collidingRight = false;
+        entity.collidingUp = false;
+        entity.collidingDown = false;
+
+        Vector2 pos = entity.getPos().cpy();
+        Vector2 vel = entity.getVelocity();
 
         if (entity.getTileCollisionType() == Entity.TileCollisionType.PASS)
-            return start.add(velocity);
+            return new CollisionResult(pos.add(vel), false, false);
 
-        float remaining = velocity.len();
-        if (remaining == 0f)
-            return start;
+        boolean hitX = false;
+        boolean hitY = false;
 
-        Vector2 direction = velocity.nor();
+        float newX = pos.x;
+        float newY = pos.y;
 
-        float stepSize = Entity.COORDINATE_SCALE * .25f; // smaller than tile
-        Vector2 resolved = start.cpy();
+        if (vel.x != 0f) {
+            float x = resolveX(entity, pos, vel.x);
+            hitX = (x != pos.x + vel.x);
+            newX = x;
+        }
+
+        pos.x = newX;
+
+        if (vel.y != 0f) {
+            float y = resolveY(entity, pos, vel.y);
+            hitY = (y != pos.y + vel.y);
+            newY = y;
+        }
+
+        return new CollisionResult(new Vector2(newX, newY), hitX, hitY);
+    }
+
+    private float resolveX(Entity entity, Vector2 pos, float dx) {
+        float remaining = Math.abs(dx);
+        float dir = Math.signum(dx);
 
         float size = entity.getType().scale();
-        float eps = .0001f;
+
+        float x = pos.x;
 
         while (remaining > 0f) {
-            float step = Math.min(stepSize, remaining);
+            float step = Math.min(STEP_SIZE, remaining);
 
-            if (direction.x != 0f) {
-                resolved.x += direction.x * step;
+            if (dir != 0f) {
+                x += dir * step;
 
-                float left = resolved.x;
-                float right = resolved.x + size;
-                float bottom = resolved.y;
-                float top = resolved.y + size;
+                float left = x + (PADDING / 2f);
+                float right = x + size - (PADDING / 2f);
+                float bottom = pos.y + (PADDING / 2f);
+                float top = pos.y + size - (PADDING / 2f);
 
-                int tileX = toTile(direction.x > 0 ? right : left);
+                int tileX = toTile(dir > 0 ? right : left);
                 int yStart = toTile(bottom);
-                int yEnd = toTile(top - eps);
+                int yEnd = toTile(top - EPS);
 
                 for (int y = yStart; y <= yEnd; y++) {
                     Tile tile = world.getGround(tileX, y);
                     if (tile != null && tile.isSolid()) {
                         if (entity.getTileCollisionType() == Entity.TileCollisionType.REMOVE) {
                             entity.remove();
-                            return resolved;
+                            return 0f;
                         }
-                        resolved.x -= direction.x * step;
-                        remaining = 0f;
-                        break;
-                    }
-                }
-            }
 
-            if (direction.y != 0f) {
-                resolved.y += direction.y * step;
-
-                float left = resolved.x;
-                float right = resolved.x + size;
-                float bottom = resolved.y;
-                float top = resolved.y + size;
-
-                int tileY = toTile(direction.y > 0 ? top : bottom);
-                int xStart = toTile(left);
-                int xEnd = toTile(right - eps);
-
-                for (int x = xStart; x <= xEnd; x++) {
-                    Tile tile = world.getGround(x, tileY);
-                    if (tile != null && tile.isSolid()) {
-                        if (entity.getTileCollisionType() == Entity.TileCollisionType.REMOVE) {
-                            entity.remove();
-                            return resolved;
+                        if (dir > 0) {
+                            x = tileX * Entity.COORDINATE_SCALE - size + (PADDING / 2f);
+                            entity.collidingRight = true;
+                        } else {
+                            x = (tileX + 1) * Entity.COORDINATE_SCALE - (PADDING / 2f);
+                            entity.collidingLeft = true;
                         }
-                        resolved.y -= direction.y * step;
+
                         remaining = 0f;
                         break;
                     }
@@ -237,7 +245,58 @@ public class CollisionManager {
             remaining -= step;
         }
 
-        return resolved;
+        return x;
+    }
+
+    private float resolveY(Entity entity, Vector2 pos, float dy) {
+        float remaining = Math.abs(dy);
+        float dir = Math.signum(dy);
+
+        float size = entity.getType().scale();
+
+        float y = pos.y;
+
+        while (remaining > 0f) {
+            float step = Math.min(STEP_SIZE, remaining);
+
+            if (dir != 0f) {
+                y += dir * step;
+
+                float left = pos.x + (PADDING / 2f);
+                float right = pos.x + size - (PADDING / 2f);
+                float bottom = y + (PADDING / 2f);
+                float top = y + size - (PADDING / 2f);
+
+                int tileY = toTile(dir > 0 ? top : bottom);
+                int xStart = toTile(left);
+                int xEnd = toTile(right - EPS);
+
+                for (int x = xStart; x <= xEnd; x++) {
+                    Tile tile = world.getGround(x, tileY);
+                    if (tile != null && tile.isSolid()) {
+                        if (entity.getTileCollisionType() == Entity.TileCollisionType.REMOVE) {
+                            entity.remove();
+                            return 0f;
+                        }
+
+                        if (dir > 0) {
+                            y = tileY * Entity.COORDINATE_SCALE - size + (PADDING / 2f);
+                            entity.collidingUp = true;
+                        } else {
+                            y = (tileY + 1) * Entity.COORDINATE_SCALE - (PADDING / 2f);
+                            entity.collidingDown = true;
+                        }
+
+                        remaining = 0f;
+                        break;
+                    }
+                }
+            }
+
+            remaining -= step;
+        }
+
+        return y;
     }
 
     private static int[][] getBulletForwardNeighbors(BulletEntity bullet) {
@@ -278,7 +337,14 @@ public class CollisionManager {
 
         return map;
     }
+
     private static boolean checkMask(Entity a, Entity b) {
         return (COLLISION_MASKS[a.getType().group().ordinal()] & (1 << b.getType().group().ordinal())) != 0;
     }
+
+    public record CollisionResult(
+        Vector2 position,
+        boolean hitX,
+        boolean hitY
+    ) {}
 }

@@ -171,22 +171,16 @@ public class CharacterEntity extends LivingEntity implements Attacker {
     public void tick(int gametime, float delta) {
         super.tick(gametime, delta);
 
-        if (collidingLeft || collidingRight)
-            getVelocity().x = 0f;
-
-        if (collidingUp || collidingDown)
-            getVelocity().y = 0f;
-
         if (isMoving()) {
             float speed = getStats().speed().value();
 
             float vx = 0f;
             float vy = 0f;
 
-            if (moveLeft) vx -= speed;
-            if (moveRight) vx += speed;
-            if (moveUp) vy += speed;
-            if (moveDown) vy -= speed;
+            if (moveLeft && !collidingLeft) vx -= speed;
+            if (moveRight && !collidingRight) vx += speed;
+            if (moveUp && !collidingUp) vy += speed;
+            if (moveDown && !collidingDown) vy -= speed;
 
             setVelocity(vx, vy);
         } else setVelocity(0f, 0f);
