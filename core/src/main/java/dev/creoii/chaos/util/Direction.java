@@ -22,6 +22,10 @@ public enum Direction {
         this.axis = axis;
     }
 
+    public Vector2 offset(Vector2 pos) {
+        return pos.cpy().add(unit.x, unit.y);
+    }
+
     public static Direction random(Random random) {
         return Direction.values()[random.nextInt(Direction.values().length)];
     }

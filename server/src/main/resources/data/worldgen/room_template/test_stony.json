@@ -11,6 +11,7 @@
     "min": 8,
     "max": 16
   },
+  "connection_width": 3,
   "floor_provider": "lava",
   "wall_provider": "stone",
   "hallway_provider": "lava",
