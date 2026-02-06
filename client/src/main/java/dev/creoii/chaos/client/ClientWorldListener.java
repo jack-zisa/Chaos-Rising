@@ -6,6 +6,7 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.FrameworkMessage;
 import com.esotericsoftware.kryonet.Listener;
 import dev.creoii.chaos.DataManager;
+import dev.creoii.chaos.chat.Message;
 import dev.creoii.chaos.client.render.entity.data.*;
 import dev.creoii.chaos.client.texture.TextureManager;
 import dev.creoii.chaos.effect.StatusEffect;
@@ -126,17 +127,14 @@ public class ClientWorldListener extends Listener {
                     entityRenderData.y = entry.y();
                     entityRenderData.xv = entry.xv();
                     entityRenderData.yv = entry.yv();
+
+                    if (entityRenderData.xv == 0f && entityRenderData.yv == 0f) { // teleported
+                        entityRenderData.renderX = entityRenderData.x;
+                        entityRenderData.renderY = entityRenderData.y;
+                    }
                 }
             });
-            case MoveEntityS2C(int id, float x, float y, float xv, float yv) -> {
-                EntityRenderData entityRenderData = world.getEntityManager().getEntityData(id);
-                if (entityRenderData != null) {
-                    entityRenderData.x = x;
-                    entityRenderData.y = y;
-                    entityRenderData.xv = xv;
-                    entityRenderData.yv = yv;
-                }
-            }
+            case ChatMessageReceiveS2C(Message message) -> world.getChatManager().messages().add(message);
             case EntityDisplayS2C(int id, String textureId, float scale) -> {
                 EntityRenderData entityRenderData = world.getEntityManager().getEntityData(id);
                 if (entityRenderData != null) {

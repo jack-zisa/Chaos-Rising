@@ -4,8 +4,8 @@ import java.io.IOException;
 
 public class ServerLauncher {
     public static void main(String[] args) throws IOException {
-        int tcpPort = 54556;
-        int udpPort = 54778;
+        int tcpPort = 54555;
+        int udpPort = 54777;
 
         if (args.length > 0) {
             try {

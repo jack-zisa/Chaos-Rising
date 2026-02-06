@@ -8,6 +8,7 @@ import dev.creoii.chaos.network.NetworkQueue;
 import dev.creoii.chaos.network.s2c.PlaceSetpieceS2C;
 import dev.creoii.chaos.network.s2c.SetTileS2C;
 import dev.creoii.chaos.network.s2c.SetTilesS2C;
+import dev.creoii.chaos.server.chat.ServerChatManager;
 import dev.creoii.chaos.server.util.ServerTiledMapTile;
 import dev.creoii.chaos.util.Tickable;
 import dev.creoii.chaos.world.map.MapGenerator;
@@ -28,6 +29,7 @@ public class ServerWorld implements World, Tickable {
     private final int width, height;
     private final ServerEntityManager entityManager;
     private final CollisionManager collisionManager;
+    private final ServerChatManager chatManager;
 
     public ServerWorld(ServerGame game, MapGenerator mapGenerator) {
         this.game = game;
@@ -37,6 +39,7 @@ public class ServerWorld implements World, Tickable {
         networkQueue = new NetworkQueue<>(null, new ConcurrentLinkedQueue<>());
         entityManager = new ServerEntityManager(this);
         collisionManager = new CollisionManager(this);
+        chatManager = new ServerChatManager(this);
 
         game.getServer().addListener(listener = new ServerWorldListener(this));
 
@@ -88,6 +91,11 @@ public class ServerWorld implements World, Tickable {
 
     public CollisionManager getCollisionManager() {
         return collisionManager;
+    }
+
+    @Override
+    public ServerChatManager getChatManager() {
+        return chatManager;
     }
 
     @Override
@@ -177,6 +185,8 @@ public class ServerWorld implements World, Tickable {
     @Override
     public void tick(int gametime, float delta) {
         collisionManager.checkCollisions();
+
+        chatManager.update();
 
         NetworkQueue.QueuedPacket packet;
         while ((packet = networkQueue.queue().poll()) != null) {

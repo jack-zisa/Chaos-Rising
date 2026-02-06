@@ -14,7 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import dev.creoii.chaos.client.chat.ChatManager;
+import dev.creoii.chaos.client.chat.ClientChatManager;
 import dev.creoii.chaos.chat.Message;
 import dev.creoii.chaos.client.render.entity.data.EntityRenderData;
 import dev.creoii.chaos.entity.Entity;
@@ -153,14 +153,14 @@ public class HudRenderer implements Renderable {
     private static void renderChat(Renderer renderer, SpriteBatch batch, BitmapFont font) {
         font.getData().setScale(1.5f);
 
-        ChatManager chatManager = renderer.getGame().getChatManager();
+        ClientChatManager chatManager = renderer.getGame().getWorld().getChatManager();
         if (chatManager.isActive()) {
             font.setColor(Color.WHITE);
             font.draw(batch, "> " + chatManager.getInput() + ((System.currentTimeMillis() / 400) % 2 == 0 ? "_" : ""), TEXT_PADDING, font.getCapHeight() + TEXT_PADDING);
             font.setColor(Color.LIGHT_GRAY);
         }
 
-        List<Message> messages = chatManager.getMessages();
+        List<Message> messages = chatManager.messages();
         int count = Math.min(20, messages.size());
 
         for (int i = count - 1; i >= 0; --i) {

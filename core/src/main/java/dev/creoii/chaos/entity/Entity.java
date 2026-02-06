@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.World;
 import dev.creoii.chaos.entity.serialization.EntityCustomData;
 import dev.creoii.chaos.util.Tickable;
+import dev.creoii.chaos.world.tile.Tile;
 import it.unimi.dsi.fastutil.ints.IntArraySet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 
@@ -83,20 +84,17 @@ public abstract class Entity implements Tickable {
         velocity.set(x, y);
     }
 
-    public float left() {
-        return pos.x + (type.scale() - collider.x) * 0.5f;
+    public float left()   { return pos.x; }
+    public float right()  { return pos.x + collider.x; }
+    public float bottom() { return pos.y; }
+    public float top()    { return pos.y + collider.y; }
+
+    public float getWidth() {
+        return collider.x;
     }
 
-    public float right() {
-        return left() + collider.x;
-    }
-
-    public float bottom() {
-        return pos.y + (type.scale() - collider.y) * 0.5f;
-    }
-
-    public float top() {
-        return bottom() + collider.y;
+    public float getHeight() {
+        return collider.y;
     }
 
     public int getSpawnTime() {
@@ -161,6 +159,13 @@ public abstract class Entity implements Tickable {
             return entity.id == id;
         }
         return false;
+    }
+
+    @Nullable
+    public Tile getTileOn() {
+        int x = Math.round(getPos().x / Entity.COORDINATE_SCALE);
+        int y = Math.round(getPos().y / Entity.COORDINATE_SCALE);
+        return world.getGround(x, y);
     }
 
     public abstract TileCollisionType getTileCollisionType();

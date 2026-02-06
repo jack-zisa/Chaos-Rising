@@ -110,7 +110,7 @@ public class InputManager extends InputAdapter {
         if (keycode == OptionsManager.DEBUG_KEY.intValue()) {
             game.setDebug(!game.isDebug());
             return true;
-        } else if (keycode == OptionsManager.INVENTORY_KEY.intValue()) {
+        } else if (keycode == OptionsManager.INVENTORY_KEY.intValue() && !game.getWorld().getChatManager().isActive()) {
             Renderer renderer = game.getRenderer();
             if (renderer.getCurrentScreen() == null) {
                 renderer.setCurrentScreen(new InventoryScreen(game, new Vector2(1084, 400), game.getCharacter().slots));
@@ -178,6 +178,12 @@ public class InputManager extends InputAdapter {
     public boolean scrolled(float amountX, float amountY) {
         game.getRenderer().updateZoom(amountY);
         return super.scrolled(amountX, amountY);
+    }
+
+    @Override
+    public boolean keyTyped(char character) {
+        forEach(inputtable -> inputtable.keyTyped(this, character));
+        return super.keyTyped(character);
     }
 
     private void updateMouse(int screenX, int screenY) {

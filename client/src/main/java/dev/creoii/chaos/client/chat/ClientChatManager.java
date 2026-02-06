@@ -1,10 +1,12 @@
 package dev.creoii.chaos.client.chat;
 
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputAdapter;
+import dev.creoii.chaos.ChatManager;
 import dev.creoii.chaos.OptionsManager;
 import dev.creoii.chaos.chat.Message;
-import dev.creoii.chaos.client.ClientGame;
+import dev.creoii.chaos.client.ClientWorld;
+import dev.creoii.chaos.client.input.InputManager;
+import dev.creoii.chaos.client.util.Inputtable;
 import dev.creoii.chaos.network.c2s.ChatMessageSendC2S;
 import dev.creoii.chaos.network.c2s.ExecuteCommandC2S;
 import dev.creoii.chaos.util.event.ExecuteCommandEvent;
@@ -12,22 +14,27 @@ import dev.creoii.chaos.util.event.MessageChatEvent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
-public class ChatManager extends InputAdapter {
-    private final ClientGame game;
+public class ClientChatManager implements ChatManager, Inputtable {
+    private final ClientWorld world;
     private final List<Message> messages;
     private final StringBuilder input = new StringBuilder();
     private boolean active = false;
     private boolean suppressNextChar = false;
 
-    public ChatManager(ClientGame game) {
-        this.game = game;
+    public ClientChatManager(ClientWorld world) {
+        this.world = world;
         messages = new ArrayList<>();
     }
 
-    public List<Message> getMessages() {
+    @Override
+    public ClientWorld world() {
+        return world;
+    }
+
+    @Override
+    public List<Message> messages() {
         return messages;
     }
 
@@ -47,22 +54,12 @@ public class ChatManager extends InputAdapter {
             return;
 
         String[] args = Arrays.copyOfRange(elements, 1, elements.length);
-        ExecuteCommandEvent.EVENT.invoker().onExecuteCommand(game.getWorld(), game.getCharacterId(), command, args);
-        game.getClient().sendTCP(new ExecuteCommandC2S(game.getCharacter().id, commandType, args));
-    }
-
-    public void update() {
-        Iterator<Message> it = messages.iterator();
-        while (it.hasNext()) {
-            Message message = it.next();
-            message.decrementCooldown();
-            if (message.getCooldown() <= 0)
-                it.remove();
-        }
+        ExecuteCommandEvent.EVENT.invoker().onExecuteCommand(world, world.getGame().getCharacterId(), command, args);
+        world.getGame().getClient().sendTCP(new ExecuteCommandC2S(world.getGame().getCharacter().id, commandType, args));
     }
 
     @Override
-    public boolean keyDown(int keycode) {
+    public boolean keyDown(InputManager manager, int keycode) {
         if (!active) {
             if (keycode == OptionsManager.COMMAND_KEY.intValue()) {
                 active = true;
@@ -87,10 +84,9 @@ public class ChatManager extends InputAdapter {
                 if (input.charAt(0) == '/') {
                     executeCommand(input.toString());
                 } else {
-                    Message message = new Message(game.getCharacterId(), input.toString());
-                    messages.add(message);
-                    game.getClient().sendTCP(new ChatMessageSendC2S(message));
-                    MessageChatEvent.EVENT.invoker().onMessageChat(game.getWorld(), message);
+                    Message message = new Message(world.getGame().getCharacterId(), input.toString());
+                    world.getGame().getClient().sendTCP(new ChatMessageSendC2S(message));
+                    MessageChatEvent.EVENT.invoker().onMessageChat(world, message);
                 }
             }
             input.setLength(0);
@@ -101,7 +97,7 @@ public class ChatManager extends InputAdapter {
     }
 
     @Override
-    public boolean keyTyped(char character) {
+    public boolean keyTyped(InputManager manager, char character) {
         if (!active)
             return false;
 

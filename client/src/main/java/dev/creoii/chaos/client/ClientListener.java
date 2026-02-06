@@ -5,7 +5,6 @@ import com.esotericsoftware.kryonet.FrameworkMessage;
 import com.esotericsoftware.kryonet.Listener;
 import dev.creoii.chaos.DataManager;
 import dev.creoii.chaos.World;
-import dev.creoii.chaos.chat.Message;
 import dev.creoii.chaos.client.render.entity.data.*;
 import dev.creoii.chaos.entity.serialization.*;
 import dev.creoii.chaos.client.input.CharacterController;
@@ -51,7 +50,6 @@ public class ClientListener extends Listener {
         }
 
         switch (object) {
-            case ChatMessageReceiveS2C(Message message) -> game.getChatManager().getMessages().add(message);
             case CharacterJoinS2C(int id, float x, float y, float scale, EntityCustomData customData) -> {
                 EntityGroup group = customData.getGroup();
                 if (group == EntityGroup.CHARACTER) {
@@ -80,6 +78,7 @@ public class ClientListener extends Listener {
                 ClientWorld world = new ClientWorld(game, World.createMapOfSize(width, height), seed);
                 world.getRayHandler().setAmbientLight(ambientLight);
                 game.setWorld(world);
+                game.getInputManager().addInput(world.getChatManager());
             }
             case SyncDataS2C(byte[] data) -> {
                 Path cacheRoot = Paths.get(System.getProperty("user.dir"), "cache", "data");

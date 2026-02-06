@@ -39,6 +39,7 @@ public interface NumberProvider extends Provider<Float> {
         case SQRT -> UnaryNumberProvider.SQRT_CODEC;
         case CBRT -> UnaryNumberProvider.CBRT_CODEC;
         case ABS -> UnaryNumberProvider.ABS_CODEC;
+        case CHARACTER_LEVEL -> CharacterLevelNumberProvider.CODEC;
     });
 
     Codec<NumberProvider> CODEC = Codec.either(Codec.FLOAT, DISPATCH_CODEC).xmap(
@@ -78,7 +79,8 @@ public interface NumberProvider extends Provider<Float> {
         STAT,
         TIME,
         ROOM_DEPTH,
-        UNARY, SIN, COS, TAN, SQRT, CBRT, ABS;
+        UNARY, SIN, COS, TAN, SQRT, CBRT, ABS,
+        CHARACTER_LEVEL;
 
         public static final Codec<Type> CODEC = Codec.STRING.xmap(s -> Type.valueOf(s.toUpperCase()), type -> type.name().toLowerCase());
     }

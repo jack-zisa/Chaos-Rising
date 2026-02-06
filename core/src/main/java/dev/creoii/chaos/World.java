@@ -27,6 +27,8 @@ public interface World extends Disposable {
 
     TiledMap getMap();
 
+    ChatManager getChatManager();
+
     @Nullable
     default MapLayer getLayer(int index) {
         return getMap().getLayers().get(index);

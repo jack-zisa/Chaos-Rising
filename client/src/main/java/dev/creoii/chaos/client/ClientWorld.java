@@ -1,5 +1,6 @@
 package dev.creoii.chaos.client;
 
+import box2dLight.PointLight;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -7,11 +8,13 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import dev.creoii.chaos.World;
+import dev.creoii.chaos.client.chat.ClientChatManager;
 import dev.creoii.chaos.client.render.Renderer;
 import dev.creoii.chaos.client.render.WorldRenderer;
 import dev.creoii.chaos.client.render.entity.EntityRenderManager;
 import dev.creoii.chaos.client.texture.TextureManager;
-import dev.creoii.chaos.light.CreoRayHandler;
+import dev.creoii.chaos.client.light.CreoRayHandler;
+import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.network.NetworkQueue;
 import dev.creoii.chaos.world.setpiece.Setpiece;
 import dev.creoii.chaos.world.tile.Tile;
@@ -29,6 +32,7 @@ public class ClientWorld implements World {
     private final OrthogonalTiledMapRenderer mapRenderer;
     private final EntityRenderManager entityManager;
     private final CreoRayHandler rayHandler;
+    private final ClientChatManager chatManager;
 
     public ClientWorld(ClientGame game, TiledMap map, long seed) {
         this.game = game;
@@ -40,6 +44,7 @@ public class ClientWorld implements World {
         listener = new ClientWorldListener(this);
         mapRenderer = new OrthogonalTiledMapRenderer(map, 4f);
         rayHandler = new CreoRayHandler();
+        chatManager = new ClientChatManager(this);
 
         game.getClient().addListener(listener);
     }
@@ -90,6 +95,11 @@ public class ClientWorld implements World {
     }
 
     @Override
+    public ClientChatManager getChatManager() {
+        return chatManager;
+    }
+
+    @Override
     public void setGround(int x, int y, Tile tile) {
         if (tile == null)
             return;
@@ -100,6 +110,14 @@ public class ClientWorld implements World {
             tiledMapTile.getProperties().put("id", tile.id());
             cell.setTile(tiledMapTile);
             tiledMapTileLayer.setCell(x, y, cell);
+
+            if (tile.hasLight()) {
+                PointLight light = new PointLight(getRayHandler(), tile.light().rays(), tile.light().color(), tile.light().distance(), x / Entity.COORDINATE_SCALE, y / Entity.COORDINATE_SCALE);
+                light.setStaticLight(tile.light().isStatic());
+                light.setSoft(tile.light().soft());
+                light.setXray(true);
+                light.setSoftnessLength(0f);
+            }
         }
     }
 
@@ -114,6 +132,14 @@ public class ClientWorld implements World {
             tiledMapTile.getProperties().put("id", tile.id());
             cell.setTile(tiledMapTile);
             tiledMapTileLayer.setCell(x, y, cell);
+
+            if (tile.hasLight()) {
+                PointLight light = new PointLight(getRayHandler(), tile.light().rays(), tile.light().color(), tile.light().distance(), x, y);
+                light.setStaticLight(tile.light().isStatic());
+                light.setSoft(tile.light().soft());
+                light.setXray(true);
+                light.setSoftnessLength(0f);
+            }
         }
     }
 
@@ -134,12 +160,15 @@ public class ClientWorld implements World {
         }
 
         worldRenderer.render(delta, renderer, debug);
+    }
 
-        rayHandler.updateAndRender();
+    public void renderLight(float delta, Renderer renderer, boolean debug) {
+        worldRenderer.renderLight(delta, renderer, debug);
     }
 
     @Override
     public void dispose() {
         map.dispose();
+        rayHandler.dispose();
     }
 }

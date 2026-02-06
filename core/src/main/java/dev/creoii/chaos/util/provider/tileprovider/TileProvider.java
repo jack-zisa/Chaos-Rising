@@ -11,6 +11,9 @@ public interface TileProvider extends Provider<Tile> {
     Codec<TileProvider> TYPE_CODEC = Type.CODEC.dispatch(TileProvider::getType, type -> switch (type) {
         case SIMPLE -> SimpleTileProvider.CODEC;
         case RANDOM -> RandomTileProvider.CODEC;
+        case NOISE -> NoiseTileProvider.CODEC;
+        case AT_POS -> AtPosTileProvider.CODEC;
+        case AT_ENTITY_POS -> AtEntityPosTileProvider.CODEC;
     });
     Codec<TileProvider> CODEC = Codec.either(Tile.ID_CODEC, TYPE_CODEC).xmap(either -> {
         return either.map(SimpleTileProvider::new, Function.identity());
@@ -20,7 +23,10 @@ public interface TileProvider extends Provider<Tile> {
 
     enum Type {
         SIMPLE,
-        RANDOM;
+        RANDOM,
+        NOISE,
+        AT_POS,
+        AT_ENTITY_POS;
 
         public static final Codec<Type> CODEC = Codec.STRING.xmap(s -> Type.valueOf(s.toUpperCase()), type -> type.name().toLowerCase());
     }

@@ -1,6 +1,7 @@
 package dev.creoii.chaos.util;
 
 import com.badlogic.gdx.math.Vector2;
+import com.mojang.serialization.Codec;
 
 import java.util.Map;
 import java.util.Random;
@@ -11,6 +12,7 @@ public enum Direction {
     EAST(new Vector2(0f, 0f), Axis.X),
     WEST(new Vector2(-1f, 0f), Axis.X);
 
+    public static final Codec<Direction> CODEC = Codec.STRING.xmap(s -> Direction.valueOf(s.toUpperCase()), direction -> direction.name().toLowerCase());
     private static final Map<Direction, Direction> OPPOSITES = Map.of(NORTH, SOUTH, SOUTH, NORTH, EAST, WEST, WEST, EAST);
     private final Vector2 unit;
     private final Axis axis;

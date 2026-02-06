@@ -20,7 +20,7 @@ public record CharacterController() implements Inputtable {
         ClientGame game = manager.getGame();
         CharacterEntityRenderData character = game.getCharacter();
 
-        if (game.getChatManager().isActive() || character == null)
+        if (game.getWorld().getChatManager().isActive() || character == null)
             return false;
 
         if (character.canMove()) {
@@ -45,15 +45,6 @@ public record CharacterController() implements Inputtable {
                 } else positive = dx > 0f;
 
                 game.getClient().sendUDP(new CharacterMoveStartC2S(character.id, axis, positive));
-
-                Vector2 newPos = new Vector2(character.x, character.y).add(new Vector2(dx, dy).scl(character.statContainer.speed().value() / 8f));
-
-                character.xv = newPos.x - character.x;
-                character.yv = newPos.y - character.y;
-                character.x = newPos.x;
-                character.y = newPos.y;
-                character.renderX = newPos.x;
-                character.renderY = newPos.y;
                 return true;
             }
         }
@@ -66,7 +57,7 @@ public record CharacterController() implements Inputtable {
         ClientGame game = manager.getGame();
         CharacterEntityRenderData character = game.getCharacter();
 
-        if (game.getChatManager().isActive() || character == null)
+        if (game.getWorld().getChatManager().isActive() || character == null)
             return;
 
         if (keycode == OptionsManager.ABILITY_KEY.intValue()) {
@@ -85,38 +76,41 @@ public record CharacterController() implements Inputtable {
         if (character == null)
             return false;
 
-        if (game.getChatManager().isActive() && character.isMoving() && OptionsManager.isMovementKey(keycode)) {
-            character.stopMoving();
-            game.getClient().sendUDP(new CharacterStopMoveC2S(character.id));
-            return false;
+        if (character.isMoving()) {
+            if (game.getWorld().getChatManager().isActive()) {
+                character.stopMoving();
+                game.getClient().sendUDP(new CharacterStopMoveC2S(character.id));
+                return true;
+            } else if (OptionsManager.isMovementKey(keycode)) {
+                boolean axis;
+                boolean positive;
+
+                if (keycode == OptionsManager.LEFT_KEY.intValue()) {
+                    axis = true;
+                    positive = false;
+                } else if (keycode == OptionsManager.RIGHT_KEY.intValue()) {
+                    axis = true;
+                    positive = true;
+                } else if (keycode == OptionsManager.UP_KEY.intValue()) {
+                    axis = false;
+                    positive = true;
+                } else if (keycode == OptionsManager.DOWN_KEY.intValue()) {
+                    axis = false;
+                    positive = false;
+                } else return false;
+
+                game.getClient().sendUDP(new CharacterMoveEndC2S(character.id, axis, positive));
+                return true;
+            }
         }
-
-        boolean axis;
-        boolean positive;
-
-        if (keycode == OptionsManager.LEFT_KEY.intValue()) {
-            axis = true;
-            positive = false;
-        } else if (keycode == OptionsManager.RIGHT_KEY.intValue()) {
-            axis = true;
-            positive = true;
-        } else if (keycode == OptionsManager.UP_KEY.intValue()) {
-            axis = false;
-            positive = true;
-        } else if (keycode == OptionsManager.DOWN_KEY.intValue()) {
-            axis = false;
-            positive = false;
-        } else return false;
-
-        game.getClient().sendUDP(new CharacterMoveEndC2S(character.id, axis, positive));
-        return true;
+        return false;
     }
 
     @Override
     public void touchHeld(InputManager manager, int screenX, int screenY, int pointer, int button) {
         ClientGame game = manager.getGame();
         CharacterEntityRenderData character = game.getCharacter();
-        if (game.getChatManager().isActive() || character == null)
+        if (game.getWorld().getChatManager().isActive() || character == null)
             return;
 
         Slot weaponSlot = character.getWeaponSlot();

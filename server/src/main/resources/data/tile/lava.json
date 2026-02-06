@@ -1,0 +1,7 @@
+{
+  "id": "lava",
+  "texture": "lava",
+  "light": {
+    "color": "0000ff"
+  }
+}

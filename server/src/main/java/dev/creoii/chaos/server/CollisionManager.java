@@ -1,8 +1,8 @@
 package dev.creoii.chaos.server;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.entity.BulletEntity;
-import dev.creoii.chaos.entity.CharacterEntity;
 import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.world.tile.Tile;
@@ -156,112 +156,88 @@ public class CollisionManager {
         collisions.clear();
     }
 
+    private static int toTile(float worldCoord) {
+        return MathUtils.floor(worldCoord / Entity.COORDINATE_SCALE);
+    }
+
     public Vector2 resolve(Entity entity) {
-        Vector2 remaining = entity.getVelocity().cpy();
-        Vector2 applied = new Vector2();
+        Vector2 start = entity.getPos().cpy();
+        Vector2 velocity = entity.getVelocity().cpy();
 
-        float maxStep = Entity.COORDINATE_SCALE * .5f;
+        if (entity.getTileCollisionType() == Entity.TileCollisionType.PASS)
+            return start.add(velocity);
 
-        while (remaining.len2() > .000001f) {
-            Vector2 step = remaining.cpy();
+        float remaining = velocity.len();
+        if (remaining == 0f)
+            return start;
 
-            if (step.len() > maxStep)
-                step.setLength(maxStep);
+        Vector2 direction = velocity.nor();
 
-            Vector2 resolved = resolveStep(entity, step);
+        float stepSize = Entity.COORDINATE_SCALE * .25f; // smaller than tile
+        Vector2 resolved = start.cpy();
 
-            entity.getPos().x += resolved.x;
-            entity.getPos().y += resolved.y;
-            applied.add(resolved);
+        float size = entity.getType().scale();
+        float eps = .0001f;
 
-            remaining.sub(resolved);
+        while (remaining > 0f) {
+            float step = Math.min(stepSize, remaining);
 
-            if (!resolved.epsilonEquals(step, .0001f))
-                break;
-        }
+            if (direction.x != 0f) {
+                resolved.x += direction.x * step;
 
-        return applied;
-    }
+                float left = resolved.x;
+                float right = resolved.x + size;
+                float bottom = resolved.y;
+                float top = resolved.y + size;
 
-    public Vector2 resolveStep(Entity entity, Vector2 step) {
-        Vector2 move = step.cpy();
+                int tileX = toTile(direction.x > 0 ? right : left);
+                int yStart = toTile(bottom);
+                int yEnd = toTile(top - eps);
 
-        if (entity.getTileCollisionType() == Entity.TileCollisionType.PASS || move.isZero())
-            return move;
-
-        if (move.x != 0f) {
-            float signX = Math.signum(move.x);
-
-            if (entity.collidingLeft && signX > 0f) entity.collidingLeft = false;
-            if (entity.collidingRight && signX < 0f) entity.collidingRight = false;
-
-            float edgeX = signX > 0f ? entity.right() : entity.left();
-            float targetX = edgeX + move.x;
-
-            int tileX = (int) Math.floor(targetX / Entity.COORDINATE_SCALE);
-
-            int y0 = (int) Math.floor(entity.bottom() / Entity.COORDINATE_SCALE);
-            int y1 = (int) Math.floor((entity.top() - SKIN) / Entity.COORDINATE_SCALE);
-
-            for (int ty = y0; ty <= y1; ty++) {
-                if (isSolid(tileX, ty)) {
-                    if (entity.getTileCollisionType() == Entity.TileCollisionType.STOP) {
-                        float tileEdgeWorldX = signX > 0f ? tileX * Entity.COORDINATE_SCALE : (tileX + 1f) * Entity.COORDINATE_SCALE;
-                        move.x = tileEdgeWorldX - edgeX - signX * SKIN;
-
-                        entity.collidingLeft = signX < 0f;
-                        entity.collidingRight = signX > 0f;
-                    } else entity.remove();
-
-                    break;
+                for (int y = yStart; y <= yEnd; y++) {
+                    Tile tile = world.getGround(tileX, y);
+                    if (tile != null && tile.isSolid()) {
+                        if (entity.getTileCollisionType() == Entity.TileCollisionType.REMOVE) {
+                            entity.remove();
+                            return resolved;
+                        }
+                        resolved.x -= direction.x * step;
+                        remaining = 0f;
+                        break;
+                    }
                 }
             }
-        } else {
-            entity.collidingLeft = false;
-            entity.collidingRight = false;
-        }
 
-        if (move.y != 0f) {
-            float signY = Math.signum(move.y);
+            if (direction.y != 0f) {
+                resolved.y += direction.y * step;
 
-            if (entity.collidingDown && signY > 0f) entity.collidingDown = false;
-            if (entity.collidingUp && signY < 0f) entity.collidingUp = false;
+                float left = resolved.x;
+                float right = resolved.x + size;
+                float bottom = resolved.y;
+                float top = resolved.y + size;
 
-            float edgeY = signY > 0f ? entity.top() : entity.bottom();
-            float targetY = edgeY + move.y;
+                int tileY = toTile(direction.y > 0 ? top : bottom);
+                int xStart = toTile(left);
+                int xEnd = toTile(right - eps);
 
-            int tileY = (int) Math.floor(targetY / Entity.COORDINATE_SCALE);
-
-            int x0 = (int) Math.floor(entity.left() / Entity.COORDINATE_SCALE);
-            int x1 = (int) Math.floor((entity.right() - SKIN) / Entity.COORDINATE_SCALE);
-
-            for (int tx = x0; tx <= x1; tx++) {
-                if (isSolid(tx, tileY)) {
-                    if (entity.getTileCollisionType() == Entity.TileCollisionType.STOP) {
-                        float tileEdgeWorldY = signY > 0f ? tileY * Entity.COORDINATE_SCALE : (tileY + 1f) * Entity.COORDINATE_SCALE;
-                        move.y = tileEdgeWorldY - edgeY - signY * SKIN;
-
-                        entity.collidingUp = signY > 0f;
-                        entity.collidingDown = signY < 0f;
-                    } else entity.remove();
-                    break;
+                for (int x = xStart; x <= xEnd; x++) {
+                    Tile tile = world.getGround(x, tileY);
+                    if (tile != null && tile.isSolid()) {
+                        if (entity.getTileCollisionType() == Entity.TileCollisionType.REMOVE) {
+                            entity.remove();
+                            return resolved;
+                        }
+                        resolved.y -= direction.y * step;
+                        remaining = 0f;
+                        break;
+                    }
                 }
             }
-        } else {
-            entity.collidingUp = false;
-            entity.collidingDown = false;
+
+            remaining -= step;
         }
 
-        return move;
-    }
-
-    private boolean isSolid(int x, int y) {
-        Tile tile = world.getGround(x, y);
-
-        if (tile == null)
-            return false;
-
-        return "stone".equals(tile.id());
+        return resolved;
     }
 
     private static int[][] getBulletForwardNeighbors(BulletEntity bullet) {

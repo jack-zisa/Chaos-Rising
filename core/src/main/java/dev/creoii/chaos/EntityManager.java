@@ -143,4 +143,6 @@ public class EntityManager<T> {
     public void free(int id) {
         freeIds.push(id);
     }
+
+    public void queueTeleport(Entity entity, float x, float y) {}
 }

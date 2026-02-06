@@ -2,7 +2,6 @@ package dev.creoii.chaos.client.render.entity.data;
 
 import dev.creoii.chaos.client.ClientGame;
 import dev.creoii.chaos.inventory.Slot;
-import dev.creoii.chaos.item.WeaponItem;
 import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.stat.StatContainer;
 
@@ -43,12 +42,6 @@ public class CharacterEntityRenderData extends LivingEntityRenderData {
     @Override
     public void tick(float delta) {
         super.tick(delta);
-
-        if (xv > .01f) {
-            facingRight = true;
-        } else if (xv < -.01f) {
-            facingRight = false;
-        }
     }
 
     public float getAttackSpeed() {

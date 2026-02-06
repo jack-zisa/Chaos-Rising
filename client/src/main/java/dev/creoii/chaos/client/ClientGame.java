@@ -9,7 +9,6 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Server;
 import dev.creoii.chaos.Game;
-import dev.creoii.chaos.client.chat.ChatManager;
 import dev.creoii.chaos.client.input.InputManager;
 import dev.creoii.chaos.network.CreoSerialization;
 import dev.creoii.chaos.network.NetworkQueue;
@@ -35,7 +34,6 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
     private Renderer renderer;
     private AssetManager assetManager;
     private final InputManager inputManager;
-    private final ChatManager chatManager;
     private ClientWorld world;
     private int characterId = -1;
     private boolean debug = false;
@@ -45,7 +43,6 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
         client = new Client(256 * 1024, 256 * 1024, new CreoSerialization());
         listener = new ClientListener(this);
         inputManager = new InputManager(this);
-        chatManager = new ChatManager(this);
     }
 
     @Override
@@ -63,7 +60,7 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
         client.start();
 
         try {
-            client.connect(5000, "localhost", 54556, 54778);
+            client.connect(5000, "localhost", 54555, 54777);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -76,7 +73,7 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
 
         assetManager.load();
 
-        Gdx.input.setInputProcessor(new InputMultiplexer(chatManager, inputManager, renderer.getStage()));
+        Gdx.input.setInputProcessor(new InputMultiplexer(inputManager, renderer.getStage()));
     }
 
     @Override
@@ -93,15 +90,17 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
             listener.handlePacket(networkQueue.connection(), packet);
         }
 
-        if (world != null) {
+        if (world != null && characterId >= 0) {
             float delta = Gdx.graphics.getDeltaTime();
 
-            chatManager.update();
+            world.getChatManager().update();
             inputManager.update();
 
             world.render(delta, renderer, debug);
 
             renderer.render(delta, debug);
+
+            world.renderLight(delta, renderer, debug);
         }
     }
 
@@ -163,10 +162,6 @@ public class ClientGame extends ApplicationAdapter implements Game, Disposable {
 
     public InputManager getInputManager() {
         return inputManager;
-    }
-
-    public ChatManager getChatManager() {
-        return chatManager;
     }
 
     public ClientWorld getWorld() {

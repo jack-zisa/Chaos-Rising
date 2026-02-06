@@ -162,6 +162,7 @@ public class CharacterEntity extends LivingEntity implements Attacker {
         levelUp(false);
     }
 
+    @Override
     public boolean isMoving() {
         return moveLeft || moveRight || moveUp || moveDown;
     }
@@ -169,6 +170,12 @@ public class CharacterEntity extends LivingEntity implements Attacker {
     @Override
     public void tick(int gametime, float delta) {
         super.tick(gametime, delta);
+
+        if (collidingLeft || collidingRight)
+            getVelocity().x = 0f;
+
+        if (collidingUp || collidingDown)
+            getVelocity().y = 0f;
 
         if (isMoving()) {
             float speed = getStats().speed().value();
@@ -194,11 +201,9 @@ public class CharacterEntity extends LivingEntity implements Attacker {
         if (axis) {
             if (positive) moveRight = false;
             else moveLeft = false;
-            getVelocity().x = 0f;
         } else {
             if (positive) moveUp = false;
             else moveDown = false;
-            getVelocity().y = 0f;
         }
     }
 
@@ -207,7 +212,6 @@ public class CharacterEntity extends LivingEntity implements Attacker {
         moveLeft = false;
         moveUp = false;
         moveDown = false;
-        setVelocity(0f, 0f);
     }
 
     public void updateMovement(boolean axis, boolean positive) {

@@ -5,7 +5,6 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.entity.EnemyEntity;
 import dev.creoii.chaos.entity.controller.EntityController;
-import dev.creoii.chaos.network.s2c.MoveEntityS2C;
 import dev.creoii.chaos.util.context.Context;
 import dev.creoii.chaos.util.provider.vecprovider.VecProvider;
 
@@ -35,7 +34,7 @@ public class TeleportAction extends InstantAction {
         Vector2 pos = this.pos.get(Context.rootOf(controller.getEntity()));
         controller.getEntity().setPos(pos.x, pos.y);
         if (!controller.getEntity().getWorld().getGame().isClient()) {
-            controller.getEntity().getWorld().getGame().getServer().sendToAllTCP(new MoveEntityS2C(controller.getEntity().getId(), pos.x, pos.y, 0f, 0f));
+            controller.getEntity().getWorld().getEntityManager().queueTeleport(controller.getEntity(), pos.x, pos.y);
         }
     }
 }

@@ -30,7 +30,6 @@ public class PacketRegistry {
         kryo.register(CharacterJoinS2C.class, PacketSerializer.INSTANCE);
         kryo.register(SpawnEntitiesS2C.class, PacketSerializer.INSTANCE);
         kryo.register(MoveEntitiesS2C.class, PacketSerializer.INSTANCE);
-        kryo.register(MoveEntityS2C.class, PacketSerializer.INSTANCE);
         kryo.register(EntityDisplayS2C.class, PacketSerializer.INSTANCE);
         kryo.register(EntityDamageS2C.class, PacketSerializer.INSTANCE);
         kryo.register(InventoryUpdateS2C.class, PacketSerializer.INSTANCE);
@@ -76,7 +75,6 @@ public class PacketRegistry {
         PacketSerializer.INSTANCE.register(CharacterJoinS2C.class, CharacterJoinS2C::write, CharacterJoinS2C::read);
         PacketSerializer.INSTANCE.register(SpawnEntitiesS2C.class, SpawnEntitiesS2C::write, SpawnEntitiesS2C::read);
         PacketSerializer.INSTANCE.register(MoveEntitiesS2C.class, MoveEntitiesS2C::write, MoveEntitiesS2C::read);
-        PacketSerializer.INSTANCE.register(MoveEntityS2C.class, MoveEntityS2C::write, MoveEntityS2C::read);
         PacketSerializer.INSTANCE.register(EntityDisplayS2C.class, EntityDisplayS2C::write, EntityDisplayS2C::read);
         PacketSerializer.INSTANCE.register(EntityDamageS2C.class, EntityDamageS2C::write, EntityDamageS2C::read);
         PacketSerializer.INSTANCE.register(InventoryUpdateS2C.class, InventoryUpdateS2C::write, InventoryUpdateS2C::read);

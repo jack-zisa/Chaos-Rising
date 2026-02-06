@@ -89,7 +89,8 @@ public class ServerWorldListener extends Listener {
         }
 
         else if (object instanceof ChatMessageSendC2S(Message message)) {
-            world.getGame().getServer().sendToAllExceptTCP(connection.getID(), new ChatMessageReceiveS2C(message));
+            world.getGame().getServer().sendToAllTCP(new ChatMessageReceiveS2C(message));
+            world.getChatManager().messages().add(message);
             MessageChatEvent.EVENT.invoker().onMessageChat(world, message);
         }
 

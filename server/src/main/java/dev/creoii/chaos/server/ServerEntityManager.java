@@ -2,6 +2,7 @@ package dev.creoii.chaos.server;
 
 import com.badlogic.gdx.math.Vector2;
 import dev.creoii.chaos.EntityManager;
+import dev.creoii.chaos.entity.CharacterEntity;
 import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.entity.EntityType;
 import dev.creoii.chaos.entity.LivingEntity;
@@ -22,14 +23,16 @@ import it.unimi.dsi.fastutil.objects.ObjectList;
 import java.util.*;
 
 public class ServerEntityManager extends EntityManager<Entity> implements Tickable {
-    private static final float MOVE_EPSILON = .001f;
+    private static final float EP2 = .001f * .001f;
     private final IntList removedEntities;
     private final ObjectList<MoveEntitiesS2C.Entry> moveEntries;
+    private final ObjectList<MoveEntitiesS2C.Entry> teleportQueue;
 
     public ServerEntityManager(ServerWorld world) {
         super(world);
         removedEntities = new IntArrayList();
         moveEntries = new ObjectArrayList<>();
+        teleportQueue = new ObjectArrayList<>();
         world.getGame().getTickManager().addTickable(this);
     }
 
@@ -151,19 +154,23 @@ public class ServerEntityManager extends EntityManager<Entity> implements Tickab
             for (Entity entity : map.clone().values()) {
                 entity.tick(gametime, delta);
 
-                entity.setPrevPos(entity.getPos().x, entity.getPos().y);
-                Vector2 resolved = ((ServerWorld) getWorld()).getCollisionManager().resolve(entity);
-
-                if (entity.canMove() && resolved.len2() > MOVE_EPSILON * MOVE_EPSILON) {
-                    float dx = entity.getPos().x - entity.getPrevPos().x;
-                    float dy = entity.getPos().y - entity.getPrevPos().y;
-
-                    if (Math.abs(dx) < MOVE_EPSILON) dx = 0f;
-                    if (Math.abs(dy) < MOVE_EPSILON) dy = 0f;
-
-                    moveEntries.add(new MoveEntitiesS2C.Entry(entity.getId(), entity.getPrevPos().x, entity.getPrevPos().y, dx, dy));
+                if (entity.canMove()) {
+                    Vector2 resolved = ((ServerWorld) getWorld()).getCollisionManager().resolve(entity);
+                    float dx = resolved.x - entity.getPos().x;
+                    float dy = resolved.y - entity.getPos().y;
+                    if (dx * dx + dy * dy > EP2) {
+                        entity.setPrevPos(entity.getPos().x, entity.getPos().y);
+                        entity.setPos(resolved.x, resolved.y);
+                        dx = entity.getPos().x - entity.getPrevPos().x;
+                        dy = entity.getPos().y - entity.getPrevPos().y;
+                        moveEntries.add(new MoveEntitiesS2C.Entry(entity.getId(), entity.getPos().x, entity.getPos().y, dx, dy));
+                    }
                 }
             }
+        }
+        if (!teleportQueue.isEmpty()) {
+            moveEntries.addAll(teleportQueue);
+            teleportQueue.clear();
         }
         if (!moveEntries.isEmpty()) {
             int size = moveEntries.size();
@@ -177,5 +184,9 @@ public class ServerEntityManager extends EntityManager<Entity> implements Tickab
     @Override
     public boolean removeEntity(int id) {
         return removedEntities.add(id);
+    }
+
+    public void queueTeleport(CharacterEntity character, float x, float y) {
+        teleportQueue.add(new MoveEntitiesS2C.Entry(character.getId(), x, y, 0f, 0f));
     }
 }
