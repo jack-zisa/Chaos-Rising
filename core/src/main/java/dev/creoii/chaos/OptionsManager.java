@@ -13,6 +13,7 @@ public final class OptionsManager {
     public static final Option<Integer> INVENTORY_KEY = new Option<>("key_inventory", Input.Keys.E);
     public static final Option<Integer> BACK_KEY = new Option<>("key_back", Input.Keys.ESCAPE);
     public static final Option<Integer> ABILITY_KEY = new Option<>("key_ability", Input.Keys.SPACE);
+    public static final Option<Integer> FULLSCREEN_KEY = new Option<>("key_fullscreen", Input.Keys.F11);
 
     public static boolean isMovementKey(int keycode) {
         return keycode == UP_KEY.intValue() || keycode == DOWN_KEY.intValue() || keycode == LEFT_KEY.intValue() || keycode == RIGHT_KEY.intValue();

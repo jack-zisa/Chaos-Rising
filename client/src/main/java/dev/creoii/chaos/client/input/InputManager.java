@@ -116,6 +116,10 @@ public class InputManager extends InputAdapter {
                 renderer.setCurrentScreen(new InventoryScreen(game, new Vector2(1084, 400), game.getCharacter().slots));
             } else renderer.clearCurrentScreen();
             return true;
+        } else if (keycode == OptionsManager.FULLSCREEN_KEY.intValue()) {
+            if (Gdx.graphics.isFullscreen()) Gdx.graphics.setWindowedMode(1280, 720);
+            else Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+            return true;
         }
 
         forEach(inputtable -> inputtable.keyDown(this, keycode));
