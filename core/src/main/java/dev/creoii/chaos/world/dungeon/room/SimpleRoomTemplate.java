@@ -8,24 +8,21 @@ import dev.creoii.chaos.World;
 import dev.creoii.chaos.util.Direction;
 import dev.creoii.chaos.util.context.ComponentTypes;
 import dev.creoii.chaos.util.context.Context;
-import dev.creoii.chaos.util.provider.numberprovider.ConstantNumberProvider;
 import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
 import dev.creoii.chaos.util.provider.tileprovider.TileProvider;
 import dev.creoii.chaos.world.dungeon.DungeonGenerator;
-import dev.creoii.chaos.world.tile.Tile;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public record SimpleRoomTemplate(String id, NumberProvider width, NumberProvider height, NumberProvider connectionWidth, TileProvider floorProvider, TileProvider wallProvider, TileProvider hallwayProvider, NumberProvider connections) implements RoomTemplate {
+public record SimpleRoomTemplate(String id, NumberProvider width, NumberProvider height, TileProvider floorProvider, TileProvider wallProvider, TileProvider hallwayProvider, NumberProvider connections) implements RoomTemplate {
     public static final MapCodec<SimpleRoomTemplate> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(
             Codec.STRING.fieldOf("id").forGetter(SimpleRoomTemplate::id),
             NumberProvider.CODEC.fieldOf("width").forGetter(SimpleRoomTemplate::width),
             NumberProvider.CODEC.fieldOf("height").forGetter(SimpleRoomTemplate::height),
-            NumberProvider.CODEC.fieldOf("connection_width").orElse(ConstantNumberProvider.ONE).forGetter(SimpleRoomTemplate::connectionWidth),
             TileProvider.CODEC.fieldOf("floor_provider").forGetter(SimpleRoomTemplate::floorProvider),
             TileProvider.CODEC.fieldOf("wall_provider").forGetter(SimpleRoomTemplate::wallProvider),
             TileProvider.CODEC.fieldOf("hallway_provider").forGetter(SimpleRoomTemplate::hallwayProvider),
@@ -65,7 +62,7 @@ public record SimpleRoomTemplate(String id, NumberProvider width, NumberProvider
 
             if (parent != null) {
                 // guaranteed connection point to previous room
-                Connection connection = createEdgeConnection(x, y, width, height, direction.getOpposite(), world, connectionWidth.getInt(context));
+                Connection connection = createEdgeConnection(x, y, width, height, direction.getOpposite(), world);
                 room.getConnections().add(connection);
                 --maxConnections;
             }
@@ -73,7 +70,7 @@ public record SimpleRoomTemplate(String id, NumberProvider width, NumberProvider
 
         for (int i = 0; i < maxConnections; ++i) {
             Direction randomDirection = Direction.random(world.getRandom());
-            Connection connection = createEdgeConnection(x, y, width, height, randomDirection, world, connectionWidth.getInt(context));
+            Connection connection = createEdgeConnection(x, y, width, height, randomDirection, world);
             room.getConnections().add(connection);
         }
 
@@ -125,50 +122,23 @@ public record SimpleRoomTemplate(String id, NumberProvider width, NumberProvider
         }
 
         room.getConnections().forEach(connection -> {
-            if (!connection.isConnected())
-                return;
-
-            int dx = connection.direction().getUnitX();
-            int dy = connection.direction().getUnitY();
-
-            int width = connection.width();
-            int half = width / 2;
-            
-            for (int w = -half; w <= half; w++) {
-                int x = connection.x() + -dy * w;
-                int y = connection.y() + dx * w;
-
-                Vector2 pos = new Vector2(x, y);
-                Context doorCtx = context.child().with(ComponentTypes.POS, pos);
-                world.setGround(x, y, hallwayProvider.get(doorCtx));
-                fillWallGaps(world, pos, wallProvider.get(doorCtx));
-
-                int outX = x + dx;
-                int outY = y + dy;
-
-                pos.set(outX, outY);
-                Context hallCtx = context.child().with(ComponentTypes.POS, pos);
-                world.setGround(outX, outY, hallwayProvider.get(hallCtx));
-                fillWallGaps(world, pos, wallProvider.get(hallCtx));
+            if (connection.isConnected()) {
+                Context child = context.child().with(ComponentTypes.POS, new Vector2(connection.x(), connection.y()));
+                Context backChild = context.child().with(ComponentTypes.POS, new Vector2(connection.x() + connection.direction().getUnitX(), connection.y() + connection.direction().getUnitY()));
+                world.setGround(connection.x(), connection.y(), hallwayProvider.get(child));
+                world.setGround(connection.x() + connection.direction().getUnitX(), connection.y() + connection.direction().getUnitY(), hallwayProvider.get(backChild));
             }
         });
+
         return new DungeonGenerator.PlacedRoom(pendingRoom, depth);
     }
 
-    private void fillWallGaps(World world, Vector2 pos, Tile wall) {
-        for (Direction direction : Direction.values()) {
-            Vector2 place = direction.offset(pos);
-            if (world.getGround((int) place.x, (int) place.y) == null)
-                world.setGround((int) place.x, (int) place.y, wall);
-        }
-    }
-
-    private static Connection createEdgeConnection(int x, int y, int width, int height, Direction direction, World world, int connectionWidth) {
+    private static Connection createEdgeConnection(int x, int y, int width, int height, Direction direction, World world) {
         return switch (direction) {
-            case NORTH -> new Connection(world.getRandom().nextInt(width - 2) + 1, height - 1, x + (world.getRandom().nextInt(width - 2) + 1), y + (height - 1), connectionWidth, Direction.NORTH);
-            case SOUTH -> new Connection(world.getRandom().nextInt(width - 2) + 1, 0, x + (world.getRandom().nextInt(width - 2) + 1), y, connectionWidth, Direction.SOUTH);
-            case WEST -> new Connection(0, world.getRandom().nextInt(height - 2) + 1, x, y + (world.getRandom().nextInt(height - 2) + 1), connectionWidth, Direction.WEST);
-            case EAST -> new Connection(width - 1, world.getRandom().nextInt(height - 2) + 1, x + (width - 1), y + (world.getRandom().nextInt(height - 2) + 1), connectionWidth, Direction.EAST);
+            case NORTH -> new Connection(world.getRandom().nextInt(width - 2) + 1, height - 1, x + (world.getRandom().nextInt(width - 2) + 1), y + (height - 1), Direction.NORTH);
+            case SOUTH -> new Connection(world.getRandom().nextInt(width - 2) + 1, 0, x + (world.getRandom().nextInt(width - 2) + 1), y, Direction.SOUTH);
+            case WEST -> new Connection(0, world.getRandom().nextInt(height - 2) + 1, x, y + (world.getRandom().nextInt(height - 2) + 1), Direction.WEST);
+            case EAST -> new Connection(width - 1, world.getRandom().nextInt(height - 2) + 1, x + (width - 1), y + (world.getRandom().nextInt(height - 2) + 1), Direction.EAST);
         };
     }
 }

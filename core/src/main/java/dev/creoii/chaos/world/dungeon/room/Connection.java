@@ -7,16 +7,14 @@ public class Connection {
     private final int localY;
     private int x;
     private int y;
-    private final int width;
     private final Direction direction;
     private Connection connection = null;
 
-    public Connection(int localX, int localY, int x, int y, int width, Direction direction) {
+    public Connection(int localX, int localY, int x, int y, Direction direction) {
         this.localX = localX;
         this.localY = localY;
         this.x = x;
         this.y = y;
-        this.width = width;
         this.direction = direction;
     }
 
@@ -26,10 +24,6 @@ public class Connection {
 
     public int y() {
         return y;
-    }
-
-    public int width() {
-        return width;
     }
 
     public int localX() {

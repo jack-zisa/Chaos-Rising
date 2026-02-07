@@ -3,7 +3,6 @@
   "type": "simple",
   "width": 24,
   "height": 24,
-  "connection_width": 3,
   "floor_provider": "grass",
   "wall_provider": "grass",
   "hallway_provider": "grass",
