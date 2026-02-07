@@ -21,6 +21,7 @@ public final class ComponentTypes {
     public static final ComponentType<StatusEffect> STATUS_EFFECT;
     public static final ComponentType<ItemStack> ITEM_STACK;
     public static final ComponentType<Integer> ROOM_DEPTH;
+    public static final ComponentType<Vector2> MOUSE_POS;
 
     public static void init() {}
 
@@ -35,5 +36,6 @@ public final class ComponentTypes {
         STATUS_EFFECT = ComponentType.create();
         ITEM_STACK = ComponentType.create();
         ROOM_DEPTH = ComponentType.create();
+        MOUSE_POS = ComponentType.create();
     }
 }

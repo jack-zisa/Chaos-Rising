@@ -6,7 +6,12 @@
     "bullet_id": "fireball_blast",
     "damage": 2,
     "bullet_count": 18,
-    "arc_gap": 20
+    "arc_gap": 20,
+    "source": {
+      "type": "mouse_pos"
+    },
+    "target": [0, 0]
+
   },
   "stat_bonus": [
     {

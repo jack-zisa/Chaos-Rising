@@ -28,6 +28,7 @@ public interface VecProvider extends Provider<Vector2> {
         case ROTATE_ANGLE -> RotateAngleVecProvider.CODEC;
         case ROTATED_OFFSET -> RotatedOffsetVecProvider.CODEC;
         case SOURCE -> SourceVecProvider.CODEC;
+        case MOUSE_POS -> MousePosVecProvider.CODEC;
         case UNARY -> UnaryVecProvider.CODEC;
         case SIN -> UnaryVecProvider.SIN_CODEC;
         case COS -> UnaryVecProvider.COS_CODEC;
@@ -64,6 +65,7 @@ public interface VecProvider extends Provider<Vector2> {
         ROTATE_ANGLE,
         ROTATED_OFFSET,
         SOURCE,
+        MOUSE_POS,
         UNARY, SIN, COS, TAN, SQRT, CBRT, ABS;
 
         public static final Codec<Type> CODEC = Codec.STRING.xmap(s -> Type.valueOf(s.toUpperCase()), type -> type.name().toLowerCase());

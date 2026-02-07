@@ -3,6 +3,7 @@ package dev.creoii.chaos.attack;
 import com.mojang.serialization.Codec;
 import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.item.EquipmentItem;
+import dev.creoii.chaos.util.context.Context;
 import dev.creoii.chaos.util.provider.vecprovider.SourceVecProvider;
 import dev.creoii.chaos.util.provider.vecprovider.VecProvider;
 
@@ -19,14 +20,14 @@ public interface Attack {
     /**
      * @param item null if attacking from an {@link dev.creoii.chaos.entity.EnemyEntity}.
      */
-    void attack(VecProvider targetPos, VecProvider sourcePos, Entity sourceEntity, EquipmentItem item, boolean force);
+    void attack(VecProvider targetPos, VecProvider sourcePos, Entity sourceEntity, EquipmentItem item, boolean force, boolean reset, Context context);
 
-    default void attack(VecProvider targetPos, VecProvider sourcePos, Entity sourceEntity, EquipmentItem item) {
-        attack(targetPos, sourcePos, sourceEntity, item, false);
+    default void attack(VecProvider targetPos, VecProvider sourcePos, Entity sourceEntity, EquipmentItem item, Context context) {
+        attack(targetPos, sourcePos, sourceEntity, item, false, true, context);
     }
 
-    default void attack(VecProvider targetPos, Entity sourceEntity, @Nullable EquipmentItem item) {
-        attack(targetPos, SourceVecProvider.INSTANCE, sourceEntity, item, false);
+    default void attack(VecProvider targetPos, Entity sourceEntity, @Nullable EquipmentItem item, Context context) {
+        attack(targetPos, SourceVecProvider.INSTANCE, sourceEntity, item, false, true, context);
     }
 
     enum Type {

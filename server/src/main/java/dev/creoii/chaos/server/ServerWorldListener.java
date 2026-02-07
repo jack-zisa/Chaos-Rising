@@ -1,5 +1,6 @@
 package dev.creoii.chaos.server;
 
+import com.badlogic.gdx.math.Vector2;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import dev.creoii.chaos.DataManager;
@@ -22,6 +23,8 @@ import dev.creoii.chaos.server.chat.command.Command;
 import dev.creoii.chaos.server.chat.command.Commands;
 import dev.creoii.chaos.util.EntityGroup;
 import dev.creoii.chaos.util.Mutable;
+import dev.creoii.chaos.util.context.ComponentTypes;
+import dev.creoii.chaos.util.context.Context;
 import dev.creoii.chaos.util.event.ExecuteCommandEvent;
 import dev.creoii.chaos.util.event.MessageChatEvent;
 import dev.creoii.chaos.util.provider.vecprovider.ConstantVecProvider;
@@ -73,7 +76,10 @@ public class ServerWorldListener extends Listener {
             if (character != null) {
                 ItemStack stack = slot.getStack();
                 if (stack.getItem() instanceof WeaponItem weaponItem) {
-                    weaponItem.getAttack().attack(new ConstantVecProvider(mouseX, mouseY), SourceVecProvider.INSTANCE, character, weaponItem);
+                    Vector2 mousePos = new Vector2(mouseX, mouseY);
+                    Context context = Context.rootOf(character);
+                    context.set(ComponentTypes.MOUSE_POS, mousePos);
+                    weaponItem.getAttack().attack(new ConstantVecProvider(mousePos), SourceVecProvider.INSTANCE, character, weaponItem, context);
                 }
             }
         }
@@ -83,7 +89,10 @@ public class ServerWorldListener extends Listener {
             if (character != null) {
                 ItemStack stack = slot.getStack();
                 if (stack.getItem() instanceof AbilityItem abilityItem) {
-                    abilityItem.getAttack().attack(ConstantVecProvider.ZERO, new ConstantVecProvider(mouseX, mouseY), character, abilityItem, true);
+                    Vector2 mousePos = new Vector2(mouseX, mouseY);
+                    Context context = Context.rootOf(character);
+                    context.set(ComponentTypes.MOUSE_POS, mousePos);
+                    abilityItem.getAttack().attack(ConstantVecProvider.ZERO, new ConstantVecProvider(mousePos), character, abilityItem, true, false, context);
                 }
             }
         }

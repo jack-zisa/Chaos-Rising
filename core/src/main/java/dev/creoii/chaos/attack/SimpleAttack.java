@@ -41,12 +41,11 @@ public record SimpleAttack(String bulletId, NumberProvider damage, int bulletCou
     }
 
     @Override
-    public void attack(VecProvider targetPos, VecProvider sourcePos, Entity sourceEntity, @Nullable EquipmentItem item, boolean force) {
+    public void attack(VecProvider targetPos, VecProvider sourcePos, Entity sourceEntity, @Nullable EquipmentItem item, boolean force, boolean reset, Context context) {
         if (!force && !Attacker.canAttack(sourceEntity, item)) {
             return;
         }
 
-        Context context = Context.rootOf(sourceEntity);
         Vector2 pos = source.isPresent() ? source.get().get(context) : sourcePos.get(context);
         Vector2 direction = target.isPresent() ? target.get().get(context).sub(pos).nor() : item == null ? ONE : targetPos.get(context).sub(pos).nor();
 
@@ -70,6 +69,7 @@ public record SimpleAttack(String bulletId, NumberProvider damage, int bulletCou
 
         sourceEntity.getWorld().getEntityManager().addEntities(bullets);
 
-        ((Attacker) sourceEntity).setLastAttackTime(System.currentTimeMillis());
+        if (reset)
+            ((Attacker) sourceEntity).setLastAttackTime(System.currentTimeMillis());
     }
 }

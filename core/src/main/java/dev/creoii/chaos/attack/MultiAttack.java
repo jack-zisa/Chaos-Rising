@@ -5,6 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.entity.Attacker;
 import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.item.EquipmentItem;
+import dev.creoii.chaos.util.context.Context;
 import dev.creoii.chaos.util.provider.vecprovider.VecProvider;
 
 import javax.annotation.Nullable;
@@ -27,11 +28,11 @@ public record MultiAttack(Set<Attack> attacks) implements Attack {
     }
 
     @Override
-    public void attack(VecProvider targetPos, VecProvider sourcePos, Entity sourceEntity, @Nullable EquipmentItem item, boolean force) {
+    public void attack(VecProvider targetPos, VecProvider sourcePos, Entity sourceEntity, @Nullable EquipmentItem item, boolean force, boolean reset, Context context) {
         if (!force && !Attacker.canAttack(sourceEntity, item)) {
             return;
         }
 
-        attacks.forEach(attack -> attack.attack(targetPos, sourcePos, sourceEntity, item, true));
+        attacks.forEach(attack -> attack.attack(targetPos, sourcePos, sourceEntity, item, true, reset, context));
     }
 }
