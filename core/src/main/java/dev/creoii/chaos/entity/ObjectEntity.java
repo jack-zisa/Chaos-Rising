@@ -57,6 +57,6 @@ public class ObjectEntity extends LivingEntity {
 
     @Override
     public TileCollisionType getTileCollisionType() {
-        return TileCollisionType.STOP;
+        return TileCollisionType.BLOCK;
     }
 }

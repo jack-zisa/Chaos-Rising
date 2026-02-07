@@ -84,11 +84,6 @@ public abstract class Entity implements Tickable {
         velocity.set(x, y);
     }
 
-    public float left()   { return pos.x; }
-    public float right()  { return pos.x + collider.x; }
-    public float bottom() { return pos.y; }
-    public float top()    { return pos.y + collider.y; }
-
     public float getWidth() {
         return collider.x;
     }
@@ -171,7 +166,7 @@ public abstract class Entity implements Tickable {
     public abstract TileCollisionType getTileCollisionType();
 
     public enum TileCollisionType {
-        STOP,
+        BLOCK,
         REMOVE,
         PASS
     }

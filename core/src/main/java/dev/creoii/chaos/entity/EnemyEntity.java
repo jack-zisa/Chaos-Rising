@@ -105,6 +105,6 @@ public class EnemyEntity extends LivingEntity implements Attacker {
 
     @Override
     public TileCollisionType getTileCollisionType() {
-        return TileCollisionType.STOP;
+        return TileCollisionType.BLOCK;
     }
 }

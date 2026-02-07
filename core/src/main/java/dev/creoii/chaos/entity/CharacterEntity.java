@@ -184,11 +184,6 @@ public class CharacterEntity extends LivingEntity implements Attacker {
 
             setVelocity(vx, vy);
         } else setVelocity(0f, 0f);
-
-        if (collidingRight) System.out.println("right");
-        if (collidingLeft) System.out.println("left");
-        if (collidingUp) System.out.println("up");
-        if (collidingDown) System.out.println("down");
     }
 
     public void stopMovement(boolean axis, boolean positive) {
@@ -220,6 +215,6 @@ public class CharacterEntity extends LivingEntity implements Attacker {
 
     @Override
     public TileCollisionType getTileCollisionType() {
-        return TileCollisionType.STOP;
+        return TileCollisionType.BLOCK;
     }
 }

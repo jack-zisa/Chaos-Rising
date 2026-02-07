@@ -78,12 +78,12 @@ public class ServerWorldListener extends Listener {
             }
         }
 
-        else if (object instanceof UseItemC2S(int id, Slot slot)) {
+        else if (object instanceof AbilityC2S(int id, Slot slot, float mouseX, float mouseY)) {
             CharacterEntity character = (CharacterEntity) world.getEntityManager().getEntity(EntityGroup.CHARACTER, id);
             if (character != null) {
                 ItemStack stack = slot.getStack();
                 if (stack.getItem() instanceof AbilityItem abilityItem) {
-                    abilityItem.getAttack().attack(ConstantVecProvider.ZERO, SourceVecProvider.INSTANCE, character, abilityItem);
+                    abilityItem.getAttack().attack(ConstantVecProvider.ZERO, new ConstantVecProvider(mouseX, mouseY), character, abilityItem, true);
                 }
             }
         }

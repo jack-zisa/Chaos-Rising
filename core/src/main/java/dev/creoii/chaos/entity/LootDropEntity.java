@@ -51,6 +51,6 @@ public class LootDropEntity extends Entity {
 
     @Override
     public TileCollisionType getTileCollisionType() {
-        return TileCollisionType.STOP;
+        return TileCollisionType.BLOCK;
     }
 }

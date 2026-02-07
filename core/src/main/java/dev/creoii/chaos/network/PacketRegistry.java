@@ -18,7 +18,7 @@ public class PacketRegistry {
         kryo.register(ExecuteCommandC2S.class, PacketSerializer.INSTANCE);
         kryo.register(LootDropCloseC2S.class, PacketSerializer.INSTANCE);
         kryo.register(SlotUpdateC2S.class, PacketSerializer.INSTANCE);
-        kryo.register(UseItemC2S.class, PacketSerializer.INSTANCE);
+        kryo.register(AbilityC2S.class, PacketSerializer.INSTANCE);
         kryo.register(AttackC2S.class, PacketSerializer.INSTANCE);
         kryo.register(ChatMessageSendC2S.class, PacketSerializer.INSTANCE);
         kryo.register(RequestWorldLoadC2S.class, PacketSerializer.INSTANCE);
@@ -63,7 +63,7 @@ public class PacketRegistry {
         PacketSerializer.INSTANCE.register(ExecuteCommandC2S.class, ExecuteCommandC2S::write, ExecuteCommandC2S::read);
         PacketSerializer.INSTANCE.register(LootDropCloseC2S.class, LootDropCloseC2S::write, LootDropCloseC2S::read);
         PacketSerializer.INSTANCE.register(SlotUpdateC2S.class, SlotUpdateC2S::write, SlotUpdateC2S::read);
-        PacketSerializer.INSTANCE.register(UseItemC2S.class, UseItemC2S::write, UseItemC2S::read);
+        PacketSerializer.INSTANCE.register(AbilityC2S.class, AbilityC2S::write, AbilityC2S::read);
         PacketSerializer.INSTANCE.register(AttackC2S.class, AttackC2S::write, AttackC2S::read);
         PacketSerializer.INSTANCE.register(ChatMessageSendC2S.class, ChatMessageSendC2S::write, ChatMessageSendC2S::read);
         PacketSerializer.INSTANCE.register(RequestWorldLoadC2S.class, RequestWorldLoadC2S::write, RequestWorldLoadC2S::read);

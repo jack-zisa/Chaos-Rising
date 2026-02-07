@@ -9,6 +9,7 @@ import dev.creoii.chaos.network.s2c.LivingStatUpdateS2C;
 import dev.creoii.chaos.network.s2c.StatusEffectS2C;
 import dev.creoii.chaos.util.event.DamageEntityEvent;
 import dev.creoii.chaos.util.stat.StatContainer;
+import dev.creoii.chaos.world.tile.Tile;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 
@@ -139,14 +140,19 @@ public abstract class LivingEntity extends Entity {
 
             if (instance.getDuration() > 0) {
                 instance.decrementDuration();
-            } else {
-                removeStatusEffect(instance);
-            }
+            } else removeStatusEffect(instance);
         }
 
-        int vitality = statContainer.vitality().value();
-        if (vitality > 0 && statContainer.health().value() < maxStatContainer.health().value() && gametime % 40 == 0) {
-            heal(Math.round(1f + .2f * vitality));
+        if (gametime % 20 == 0) {
+            int vitality = statContainer.vitality().value();
+            if (vitality > 0 && statContainer.health().value() < maxStatContainer.health().value()) {
+                heal(Math.round(1f + .2f * vitality));
+            }
+
+            Tile tile = getTileOn();
+            if (tile != null && "lava".equals(tile.id())) {
+                damage(4);
+            }
         }
     }
 }

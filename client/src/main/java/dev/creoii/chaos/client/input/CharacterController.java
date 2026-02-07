@@ -48,23 +48,15 @@ public record CharacterController() implements Inputtable {
             }
         }
 
-        return false;
-    }
-
-    @Override
-    public void keyHeld(InputManager manager, int keycode) {
-        ClientGame game = manager.getGame();
-        CharacterEntityRenderData character = game.getCharacter();
-
-        if (game.getWorld().getChatManager().isActive() || character == null)
-            return;
-
         if (keycode == OptionsManager.ABILITY_KEY.value()) {
             Slot abilitySlot = character.getAbilitySlot();
             if (abilitySlot.getStack().getItem() instanceof AbilityItem abilityItem) {
-                game.getClient().sendTCP(new UseItemC2S(character.id, abilitySlot));
+                Vector3 mousePos = game.getInputManager().getMousePos();
+                game.getClient().sendTCP(new AbilityC2S(character.id, abilitySlot, mousePos.x - (Entity.COORDINATE_SCALE / 2f), mousePos.y - (Entity.COORDINATE_SCALE / 2f)));
             }
         }
+
+        return false;
     }
 
     @Override
