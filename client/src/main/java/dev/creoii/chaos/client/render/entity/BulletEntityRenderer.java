@@ -21,6 +21,8 @@ public class BulletEntityRenderer extends SimpleEntityRenderer<BulletEntityRende
             sprite.setPosition(entity.renderX, entity.renderY);
 
             sprite.setOriginCenter();
+
+            entity.angle += entity.rotationSpeed * delta;
             sprite.setRotation(entity.angle);
 
             batch.disableBlending();

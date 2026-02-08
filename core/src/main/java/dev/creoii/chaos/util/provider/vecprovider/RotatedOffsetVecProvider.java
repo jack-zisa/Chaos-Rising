@@ -31,8 +31,11 @@ public record RotatedOffsetVecProvider(VecProvider from, VecProvider to, VecProv
 
     @Override
     public Vector2 get(ContextProvider context) {
-        Vector2 direction = to.get(context).sub(from.get(context));
-        return offset.get(context).rotateRad(direction.angleRad());
+        Vector2 to = this.to.get(context);
+        Vector2 from = this.from.get(context);
+        Vector2 offset = this.offset.get(context);
+        Vector2 direction = to.cpy().sub(from);
+        return offset.cpy().rotateRad(direction.angleRad());
     }
 
     @Override

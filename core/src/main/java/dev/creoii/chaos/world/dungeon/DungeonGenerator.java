@@ -78,7 +78,7 @@ public class DungeonGenerator implements ContextProvider {
         roomContext.set(ComponentTypes.POS, new Vector2(x, y));
         roomContext.set(ComponentTypes.ROOM_DEPTH, 0);
 
-        RoomTemplate template = dungeon.fallback().get(roomContext);
+        RoomTemplate template = dungeon.room().get(roomContext);
         RoomGenerator generator = new RoomGenerator(template, x, y, null, 0);
 
         roomContext.set(ComponentTypes.ROOM, generator);
@@ -101,7 +101,7 @@ public class DungeonGenerator implements ContextProvider {
         roomContext.set(ComponentTypes.POS, new Vector2(x, y));
         roomContext.set(ComponentTypes.ROOM_DEPTH, parent.depth() + 1);
 
-        RoomTemplate template = dungeon.fallback().get(roomContext);
+        RoomTemplate template = dungeon.room().get(roomContext);
         if (template == null)
             return;
 

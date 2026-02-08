@@ -22,6 +22,7 @@ public final class ComponentTypes {
     public static final ComponentType<ItemStack> ITEM_STACK;
     public static final ComponentType<Integer> ROOM_DEPTH;
     public static final ComponentType<Vector2> MOUSE_POS;
+    public static final ComponentType<Vector2> TARGET_POS;
 
     public static void init() {}
 
@@ -37,5 +38,6 @@ public final class ComponentTypes {
         ITEM_STACK = ComponentType.create();
         ROOM_DEPTH = ComponentType.create();
         MOUSE_POS = ComponentType.create();
+        TARGET_POS = ComponentType.create();
     }
 }

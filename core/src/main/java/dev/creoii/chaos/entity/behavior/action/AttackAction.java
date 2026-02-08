@@ -5,9 +5,12 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.attack.Attack;
 import dev.creoii.chaos.entity.Attacker;
 import dev.creoii.chaos.entity.EnemyEntity;
+import dev.creoii.chaos.entity.Entity;
 import dev.creoii.chaos.entity.controller.EntityController;
+import dev.creoii.chaos.util.context.ComponentTypes;
 import dev.creoii.chaos.util.context.Context;
 import dev.creoii.chaos.util.provider.entityprovider.SelfEntityProvider;
+import dev.creoii.chaos.util.provider.vecprovider.ConstantVecProvider;
 import dev.creoii.chaos.util.provider.vecprovider.EntityVecProvider;
 
 public class AttackAction extends Action {
@@ -37,8 +40,11 @@ public class AttackAction extends Action {
 
     @Override
     public void update(EntityController<? extends EnemyEntity> controller, int time, float delta) {
-        if (Attacker.canAttack(controller.getEntity())) {
-            attack.attack(new EntityVecProvider(new SelfEntityProvider()), controller.getEntity(), null, Context.rootOf(controller.getEntity()));
+        Entity entity = controller.getEntity();
+        if (Attacker.canAttack(entity)) {
+            Context context = Context.rootOf(entity);
+            context.set(ComponentTypes.TARGET_POS, entity.getPos());
+            attack.attack(new ConstantVecProvider(entity.getPos()), entity, null, context);
         }
     }
 

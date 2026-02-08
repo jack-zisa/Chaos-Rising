@@ -7,12 +7,13 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.util.EntityGroup;
 
-public record BulletData(String textureId, float xd, float yd, float angleOffset) implements EntityCustomData {
+public record BulletData(String textureId, float xd, float yd, float angleOffset, float rotationSpeed) implements EntityCustomData {
     public static final MapCodec<BulletData> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
         Codec.STRING.fieldOf("texture_id").forGetter(BulletData::textureId),
         Codec.FLOAT.fieldOf("xd").forGetter(BulletData::xd),
         Codec.FLOAT.fieldOf("yd").forGetter(BulletData::yd),
-        Codec.FLOAT.fieldOf("angle_offset").forGetter(BulletData::angleOffset)
+        Codec.FLOAT.fieldOf("angle_offset").forGetter(BulletData::angleOffset),
+        Codec.FLOAT.fieldOf("rotation_speed").forGetter(BulletData::rotationSpeed)
     ).apply(instance, BulletData::new));
 
     @Override
@@ -31,9 +32,10 @@ public record BulletData(String textureId, float xd, float yd, float angleOffset
         output.writeFloat(xd);
         output.writeFloat(yd);
         output.writeFloat(angleOffset);
+        output.writeFloat(rotationSpeed);
     }
 
     public static BulletData read(Input input) {
-        return new BulletData(input.readString(), input.readFloat(), input.readFloat(), input.readFloat());
+        return new BulletData(input.readString(), input.readFloat(), input.readFloat(), input.readFloat(), input.readFloat());
     }
 }

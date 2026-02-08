@@ -7,12 +7,12 @@ import dev.creoii.chaos.util.Identifiable;
 import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
 import dev.creoii.chaos.util.provider.roomprovider.RoomProvider;
 
-public record Dungeon(String id, NumberProvider maxDepth, RoomProvider fallback) implements Identifiable {
+public record Dungeon(String id, NumberProvider maxDepth, RoomProvider room) implements Identifiable {
     public static final Codec<Dungeon> CODEC = RecordCodecBuilder.create(instance -> {
         return instance.group(
             Codec.STRING.fieldOf("id").forGetter(Dungeon::id),
             NumberProvider.CODEC.fieldOf("max_depth").forGetter(Dungeon::maxDepth),
-            RoomProvider.CODEC.fieldOf("fallback").forGetter(Dungeon::fallback)
+            RoomProvider.CODEC.fieldOf("room").forGetter(Dungeon::room)
         ).apply(instance, Dungeon::new);
     });
     public static final Codec<Dungeon> ID_CODEC = Codec.STRING.xmap(DataManager::getDungeon, Dungeon::id);

@@ -1,10 +1,10 @@
 {
   "id": "crystal_arrow",
   "type": "bullet",
-  "lifetime": 150,
+  "lifetime": 15,
   "path": {
     "type": "simple",
-    "speed": 5,
+    "speed": 20,
     "offset": {
       "type": "mul",
       "a": {

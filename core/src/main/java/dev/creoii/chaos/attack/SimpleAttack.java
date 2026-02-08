@@ -7,6 +7,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.creoii.chaos.DataManager;
 import dev.creoii.chaos.entity.*;
 import dev.creoii.chaos.item.EquipmentItem;
+import dev.creoii.chaos.util.context.ComponentTypes;
 import dev.creoii.chaos.util.context.Context;
 import dev.creoii.chaos.util.provider.numberprovider.ConstantNumberProvider;
 import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
@@ -46,8 +47,11 @@ public record SimpleAttack(String bulletId, NumberProvider damage, int bulletCou
             return;
         }
 
+        Vector2 target = targetPos.get(context).cpy();
+        context.set(ComponentTypes.TARGET_POS, target);
+
         Vector2 pos = source.isPresent() ? source.get().get(context) : sourcePos.get(context);
-        Vector2 direction = target.isPresent() ? target.get().get(context).sub(pos).nor() : item == null ? ONE : targetPos.get(context).sub(pos).nor();
+        Vector2 direction = this.target.isPresent() ? this.target.get().get(context).sub(pos).nor() : item == null ? ONE : target.sub(pos).nor();
 
         float baseAngle = -arcGap * (bulletCount - 1) / 2f;
         float angleOffset = this.angleOffset.get(context);

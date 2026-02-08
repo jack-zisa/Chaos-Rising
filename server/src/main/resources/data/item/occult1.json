@@ -3,7 +3,7 @@
   "type": "weapon",
   "attack": {
     "type": "simple",
-    "bullet_id": "ice_magic_blade",
+    "bullet_id": "lightning_bolt",
     "damage": 10,
     "bullet_count": 3,
     "arc_gap": 10

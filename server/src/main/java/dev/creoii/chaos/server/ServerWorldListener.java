@@ -78,7 +78,8 @@ public class ServerWorldListener extends Listener {
                 if (stack.getItem() instanceof WeaponItem weaponItem) {
                     Vector2 mousePos = new Vector2(mouseX, mouseY);
                     Context context = Context.rootOf(character);
-                    context.set(ComponentTypes.MOUSE_POS, mousePos);
+                    context.set(ComponentTypes.MOUSE_POS, mousePos.cpy());
+                    context.set(ComponentTypes.TARGET_POS, mousePos.cpy());
                     weaponItem.getAttack().attack(new ConstantVecProvider(mousePos), SourceVecProvider.INSTANCE, character, weaponItem, context);
                 }
             }
@@ -91,7 +92,8 @@ public class ServerWorldListener extends Listener {
                 if (stack.getItem() instanceof AbilityItem abilityItem) {
                     Vector2 mousePos = new Vector2(mouseX, mouseY);
                     Context context = Context.rootOf(character);
-                    context.set(ComponentTypes.MOUSE_POS, mousePos);
+                    context.set(ComponentTypes.MOUSE_POS, mousePos.cpy());
+                    context.set(ComponentTypes.TARGET_POS, Vector2.Zero.cpy());
                     abilityItem.getAttack().attack(ConstantVecProvider.ZERO, new ConstantVecProvider(mousePos), character, abilityItem, true, false, context);
                 }
             }

@@ -12,7 +12,7 @@
       "type": "mouse_pos"
     },
     "target": {
-      "type": "source_pos"
+      "type": "source"
     }
   },
   "stat_bonus": [

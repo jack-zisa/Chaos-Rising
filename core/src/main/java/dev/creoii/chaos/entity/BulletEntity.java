@@ -18,6 +18,7 @@ public class BulletEntity extends Entity implements ContextProvider {
     private int damage;
     private int index;
     private float angleOffset;
+    private float rotationSpeed;
     private final BulletController controller;
     private Context context;
 
@@ -46,7 +47,7 @@ public class BulletEntity extends Entity implements ContextProvider {
     @Nullable
     @Override
     public EntityCustomData getCustomPacketData() {
-        return new BulletData(getType().id(), direction.x, direction.y, angleOffset);
+        return new BulletData(getType().id(), direction.x, direction.y, angleOffset, rotationSpeed);
     }
 
     @Override
@@ -94,12 +95,12 @@ public class BulletEntity extends Entity implements ContextProvider {
         this.index = index;
     }
 
-    public float getAngleOffset() {
-        return angleOffset;
-    }
-
     public void setAngleOffset(float angleOffset) {
         this.angleOffset = angleOffset;
+    }
+
+    public void setRotationSpeed(float rotationSpeed) {
+        this.rotationSpeed = rotationSpeed;
     }
 
     @Override

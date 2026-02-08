@@ -1,7 +1,7 @@
 {
   "id": "test_small",
   "max_depth": 40,
-  "fallback": {
+  "room": {
     "type": "random",
     "rooms": [
       "test_room_small",

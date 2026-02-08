@@ -18,6 +18,8 @@ public record SourceVecProvider() implements VecProvider {
     public Vector2 get(ContextProvider context) {
         if (context.has(ComponentTypes.ENTITY))
             return context.get(ComponentTypes.ENTITY).getPos().cpy();
+        else if (context.has(ComponentTypes.POS))
+            return context.get(ComponentTypes.POS).cpy();
         return null;
     }
 

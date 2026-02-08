@@ -21,7 +21,7 @@ public record EntityVecProvider(EntityProvider entity) implements VecProvider {
     public Vector2 get(ContextProvider context) {
         Entity entity = this.entity.get(context);
         if (entity == null)
-            return Vector2.Zero;
+            return Vector2.Zero.cpy();
         return entity.getPos().cpy();
     }
 

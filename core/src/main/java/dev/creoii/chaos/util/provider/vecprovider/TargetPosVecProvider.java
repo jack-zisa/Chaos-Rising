@@ -7,19 +7,19 @@ import dev.creoii.chaos.util.context.ContextProvider;
 
 import javax.annotation.Nullable;
 
-public record MousePosVecProvider() implements VecProvider {
-    private static final MousePosVecProvider INSTANCE = new MousePosVecProvider();
-    public static final MapCodec<MousePosVecProvider> CODEC = MapCodec.unit(INSTANCE);
+public record TargetPosVecProvider() implements VecProvider {
+    private static final TargetPosVecProvider INSTANCE = new TargetPosVecProvider();
+    public static final MapCodec<TargetPosVecProvider> CODEC = MapCodec.unit(INSTANCE);
 
     @Override
     public Type getType() {
-        return Type.MOUSE_POS;
+        return Type.TARGET_POS;
     }
 
     @Override
     @Nullable
     public Vector2 get(ContextProvider context) {
-        return context.has(ComponentTypes.MOUSE_POS) ? context.get(ComponentTypes.MOUSE_POS).cpy() : Vector2.Zero.cpy();
+        return context.has(ComponentTypes.TARGET_POS) ? context.get(ComponentTypes.TARGET_POS).cpy() : Vector2.Zero.cpy();
     }
 
     @Override

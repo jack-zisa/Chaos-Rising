@@ -4,11 +4,7 @@
   "lifetime": 150,
   "path": {
     "type": "simple",
-    "speed": {
-      "type": "curve",
-      "start": 12,
-      "end": -2.5,
-      "duration": 150
-    }
-  }
+    "speed": 12
+  },
+  "rotation_speed": -180
 }

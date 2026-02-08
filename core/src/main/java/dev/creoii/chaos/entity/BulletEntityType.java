@@ -4,7 +4,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dev.creoii.chaos.Game;
 import dev.creoii.chaos.World;
 import dev.creoii.chaos.entity.controller.bulletpath.BulletPath;
 import dev.creoii.chaos.entity.controller.bulletpath.EmptyBulletPath;
@@ -17,7 +16,7 @@ import dev.creoii.chaos.util.provider.numberprovider.NumberProvider;
 
 import java.util.Map;
 
-public record BulletEntityType(String id, float scale, int lifetime, NumberProvider angleOffset, BulletPath path, BooleanProvider piercing, BooleanProvider ignoresWalls) implements EntityType<BulletEntity> {
+public record BulletEntityType(String id, float scale, int lifetime, NumberProvider angleOffset, BulletPath path, BooleanProvider piercing, BooleanProvider ignoresWalls, NumberProvider rotationSpeed) implements EntityType<BulletEntity> {
     public static final MapCodec<BulletEntityType> CODEC = RecordCodecBuilder.mapCodec(instance -> {
         return instance.group(
             Codec.STRING.fieldOf("id").forGetter(BulletEntityType::id),
@@ -26,8 +25,9 @@ public record BulletEntityType(String id, float scale, int lifetime, NumberProvi
             NumberProvider.CODEC.fieldOf("angle_offset").orElse(ConstantNumberProvider.ZERO).forGetter(BulletEntityType::angleOffset),
             BulletPath.CODEC.fieldOf("path").orElse(EmptyBulletPath.INSTANCE).forGetter(BulletEntityType::path),
             BooleanProvider.CODEC.fieldOf("piercing").orElse(ConstantBooleanProvider.FALSE).forGetter(BulletEntityType::piercing),
-            BooleanProvider.CODEC.fieldOf("ignores_walls").orElse(ConstantBooleanProvider.FALSE).forGetter(BulletEntityType::ignoresWalls)
-        ).apply(instance, (id, scale, lifetime, angleOffset, path, piercing, ignoresWalls) -> new BulletEntityType(id, scale, lifetime, (NumberProvider) angleOffset.optimize(), path, (BooleanProvider) piercing.optimize(), (BooleanProvider) ignoresWalls.optimize()));
+            BooleanProvider.CODEC.fieldOf("ignores_walls").orElse(ConstantBooleanProvider.FALSE).forGetter(BulletEntityType::ignoresWalls),
+            NumberProvider.CODEC.fieldOf("rotation_speed").orElse(ConstantNumberProvider.ZERO).forGetter(BulletEntityType::rotationSpeed)
+        ).apply(instance, (id, scale, lifetime, angleOffset, path, piercing, ignoresWalls, rotationSpeed) -> new BulletEntityType(id, scale, lifetime, (NumberProvider) angleOffset.optimize(), path, (BooleanProvider) piercing.optimize(), (BooleanProvider) ignoresWalls.optimize(), (NumberProvider) rotationSpeed.optimize()));
     });
 
     @Override
@@ -43,7 +43,9 @@ public record BulletEntityType(String id, float scale, int lifetime, NumberProvi
     @Override
     public BulletEntity create(World world, int id, Vector2 pos, Map<String, Object> customData) {
         BulletEntity bullet = new BulletEntity(world, this, id, pos.cpy(), Vector2.Zero, lifetime, 0, 0);
-        bullet.setAngleOffset(angleOffset.get(Context.rootOf(bullet)));
+        Context context = Context.rootOf(bullet);
+        bullet.setAngleOffset(angleOffset.get(context));
+        bullet.setRotationSpeed(rotationSpeed.get(context));
         return bullet;
     }
 }

@@ -52,7 +52,7 @@ public class ClientWorldListener extends Listener {
 
                         float angle = MathUtils.atan2(bulletData.yd(), bulletData.xd()) * MathUtils.radiansToDegrees;
 
-                        world.getEntityManager().addEntity(id, new BulletEntityRenderData(id, x, y, 0f, 0f, bulletData.textureId(), scale, bulletData.xd(), bulletData.yd(), angle));
+                        world.getEntityManager().addEntity(id, new BulletEntityRenderData(id, x, y, 0f, 0f, bulletData.textureId(), scale, bulletData.xd(), bulletData.yd(), angle, bulletData.rotationSpeed()));
                     }
                     case ENEMY -> {
                         EnemyData enemyData = (EnemyData) customData;
@@ -92,7 +92,7 @@ public class ClientWorldListener extends Listener {
 
                         float angle = (MathUtils.atan2(bulletData.yd(), bulletData.xd()) * MathUtils.radiansToDegrees) + bulletData.angleOffset();
 
-                        world.getEntityManager().addEntity(id, new BulletEntityRenderData(id, x, y, 0f, 0f, bulletData.textureId(), scale, bulletData.xd(), bulletData.yd(), angle));
+                        world.getEntityManager().addEntity(id, new BulletEntityRenderData(id, x, y, 0f, 0f, bulletData.textureId(), scale, bulletData.xd(), bulletData.yd(), angle, bulletData.rotationSpeed()));
                     }
                     case ENEMY -> {
                         EnemyData enemyData = (EnemyData) entry.customData();

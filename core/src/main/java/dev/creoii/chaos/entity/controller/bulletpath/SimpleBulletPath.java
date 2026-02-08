@@ -57,7 +57,7 @@ public class SimpleBulletPath implements BulletPath {
 
     @Override
     public void update(EntityController<? extends BulletEntity> controller, int gametime, float dt) {
-        float speed = this.speed.init(gametime).get(context);
+        float speed = speed(controller);
         if (speed == 0)
             return;
 
